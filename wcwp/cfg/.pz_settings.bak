@@ -1,0 +1,31 @@
+#################################
+#
+if [ ${#pzhome} -eq 0 ] ; then
+myroot=home/panzw
+else 
+myroot=${pzhome}
+fi
+export myroot
+#
+cfgroot=$myroot/.wcwp
+export cfgroot
+#
+PZW_INC=$cfgroot/inc
+export PZW_INC
+#
+shroot=$cfgroot/sh
+export shroot
+#
+plroot=$cfgroot/pl
+export plroot
+###############################
+alias sshar='ssh arpoonin@74.220.215.245'
+alias f='cd /media/OTHER'
+alias mys='sh ~/.wcwp/mys.sh'
+alias rf='. $cfgroot/cfg/.pz_settings;cp $cfgroot/cfg/.pz_settings $cfgroot/cfg/.pz_settings.bak;'
+alias cfg='vi $cfgroot/cfg/.pz_settings'
+###############################
+. $cfgroot/cfg/.gmcc.inc.ksh
+. $cfgroot/cfg/.shell.inc.ksh
+. $cfgroot/cfg/.shell.awk.ksh
+. $cfgroot/cfg/.db2.inc.ksh

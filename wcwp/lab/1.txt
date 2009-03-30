@@ -1,0 +1,15 @@
+
+   Database Connection Information
+
+ Database server        = DB2/LINUX 9.5.0
+ SQL authorization ID   = PANZW
+ Local database alias   = POON
+
+
+                                Data type                     Column
+Column name                     schema    Data type name      Length     Scale Nulls
+------------------------------- --------- ------------------- ---------- ----- ------
+TEST                            SYSIBM    VARCHAR                     16     0 Yes   
+
+  1 record(s) selected.
+

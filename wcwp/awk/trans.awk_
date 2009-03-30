@@ -1,0 +1,101 @@
+BEGIN{FS=",";OFS=",";
+        bUNIX=(length("汉")==2)?1:0;
+        gregex="";
+        if(bUNIX){
+                gregex="((北区)|(东区)|(中区)|(西区)|(南沙)|(番禺)|(增城)|(花都)|(从化)|(越秀))";
+        }else{
+                gregex="((北区)|(东区)|(中区)|(西区)|(南沙)|(番禺)|(增城)|(花都)|(从化)|(越秀))";
+        }
+}
+{
+#GZ_AAGZ0HDA22       ,北区太和升音珊景店星级店,经销商暂保留,68
+        vMRKT_CHNL_CD=$1;
+        gsub(" ","",vMRKT_CHNL_CD)
+        vchnl_nam=$2;
+        vchnl_typ_nam=$3;
+        vusrcnt=$4;
+        
+        
+        vchnl_id1=substr(vMRKT_CHNL_CD,4);
+        where = match(vchnl_nam, gregex);
+        if(where == 0)
+        {
+                vTown="大广州";
+        }else{
+                vTown = substr(vchnl_nam,where,4);
+                gsub(/越秀/,"中区",vTown);
+        }
+        vchnl_typ=vchnl_typ_nam;
+        
+        if(match(vchnl_typ, "异常|客户经理") !=0){
+                #print FNR " | " vchnl_typ,vchnl_nam  >  "log_unknow.err";
+                if(match(vchnl_nam, "(渠道室$)|(综合部$)") !=0){
+                        vchnl_typ = "移动公司部门";
+                }
+                if(match(vchnl_nam, "服营厅[（(].他营2.[）)]$") !=0){
+                        vchnl_typ = "自有渠道_他营2";
+                        print FNR " | " vchnl_typ,vchnl_nam  >  "log_taying2.err";
+                }
+                if(match(vchnl_nam, "服营厅[（(].*他营1.*[）)]$") !=0){
+                        vchnl_typ = "自有渠道_他营1";
+                }
+                if(match(vchnl_nam, "POS收费专用渠道$") !=0){
+                        vchnl_typ = "POS收费专用";
+                }
+                if(match(vchnl_nam, "服营厅$") !=0){
+                        vchnl_typ = "自有渠道";
+                }
+                if(match(vchnl_nam, "服务厅$") !=0){
+                        vchnl_typ = "自有渠道";
+                }
+                if(match(vchnl_nam, "(公司$)|(店$)|(销售点$)|(商城$)") !=0){
+                        vchnl_typ = "社会渠道";
+                        print FNR " | " vchnl_typ,vchnl_nam  >  "log_test.err";
+                }
+                if(match(vchnl_nam, "(东区佳裕通信$)") !=0){
+                        vchnl_typ = "社会渠道";
+                }
+                if(match(vchnl_nam, "(北区良田中讯电信经营部$)") !=0){
+                        vchnl_typ = "社会渠道";
+                }
+                if(match(vchnl_nam, "(北区太和国丰购物商场$)") !=0){
+                        vchnl_typ = "社会渠道";
+                }
+                if(match(vchnl_nam, "(大客户服务室$)") !=0){
+                        vchnl_typ = "社会渠道";
+                }
+                if(match(vchnl_nam, "(客户服务.*广州.*中心话务一室勤工俭学组$)") !=0){
+                        vchnl_typ = "10086";
+                }
+                if(match(vchnl_nam, "(博罗中邮$)") !=0){
+                        vchnl_typ = "社会渠道";
+                }
+                #print FNR " | " vchnl_typ,vchnl_nam  >  "log_unknow.err";
+        }
+
+        cnt=match(vchnl_typ, "社会渠道|自有渠道|移动公司部门|POS收费专用|10086");
+        cnt+=gsub("(指定专营店)|(经销商暂保留)","社会渠道",vchnl_typ);
+        cnt+=gsub("增值代理商","社会渠道",vchnl_typ);
+        cnt+=gsub("特约代理点","社会渠道",vchnl_typ);
+        cnt+=gsub("沟通100服务厅","自有渠道",vchnl_typ);
+        cnt+=gsub("动感地带校园店","自有渠道",vchnl_typ);
+        cnt+=gsub("电子充值券经销商","代理渠道",vchnl_typ);
+        cnt+=gsub("BOSS后台","系统_IBOSS系统",vchnl_typ);
+        cnt+=gsub("渠道经销商","社会渠道",vchnl_typ);
+        cnt+=gsub("移动公司部门\/科室","移动公司部门",vchnl_typ);
+        cnt+=gsub(".*热线.*","10086",vchnl_typ);
+        
+        if(vMRKT_CHNL_CD == "GZ_-1"){
+                print "-1",vMRKT_CHNL_CD,"未知","大广州","NULL","未知";
+                next;
+        }
+
+        if(cnt ==0){
+                print FNR " | " vchnl_typ, $0 > "log_unknow.err";
+                next;
+        }
+        print vchnl_id1, vMRKT_CHNL_CD,vchnl_typ_nam,vTown,vchnl_typ,vchnl_nam;
+        
+
+
+}
