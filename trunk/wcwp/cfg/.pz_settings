@@ -1,7 +1,9 @@
 #################################
 #
+set -o vi
+
 if [ ${#pzhome} -eq 0 ] ; then
-myroot=home/pzw
+myroot=/home/$USER
 else 
 myroot=${pzhome}
 fi
@@ -25,7 +27,7 @@ alias mys='sh ~/.wcwp/mys.sh'
 alias rf='. $cfgroot/cfg/.pz_settings;cp $cfgroot/cfg/.pz_settings $cfgroot/cfg/.pz_settings.bak;'
 alias cfg='vi $cfgroot/cfg/.pz_settings'
 ###############################
-. $cfgroot/cfg/.gmcc.inc.ksh
+#. $cfgroot/cfg/.gmcc.inc.ksh
 . $cfgroot/cfg/.shell.inc.ksh
 . $cfgroot/cfg/.shell.awk.ksh
-. $cfgroot/cfg/.db2.inc.ksh
+#. $cfgroot/cfg/.db2.inc.ksh
