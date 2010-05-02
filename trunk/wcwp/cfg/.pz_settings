@@ -1,7 +1,7 @@
 #################################
 #
 if [ ${#pzhome} -eq 0 ] ; then
-myroot=home/panzw
+myroot=home/pzw
 else 
 myroot=${pzhome}
 fi
