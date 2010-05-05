@@ -26,6 +26,7 @@ alias f='cd /media/OTHER'
 alias mys='sh ~/.wcwp/mys.sh'
 alias rf='. $cfgroot/cfg/.pz_settings;cp $cfgroot/cfg/.pz_settings $cfgroot/cfg/.pz_settings.bak;'
 alias cfg='vi $cfgroot/cfg/.pz_settings'
+alias fr='rm -rf'
 ###############################
 #. $cfgroot/cfg/.gmcc.inc.ksh
 . $cfgroot/cfg/.shell.inc.ksh
