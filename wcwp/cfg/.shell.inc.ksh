@@ -5,7 +5,7 @@ PS1=['${PWD} ']
 export PS1
 #alias for ls
 alias lh='ls -al'
-alias lt='ls -alrt'
+#alias lt='ls -alrt'
 alias l1='ls -a1'
 alias le='ls -alh'
 alias lk='ls -als'
@@ -35,6 +35,12 @@ alias fo='find -name  *.o -type f ;'
 #alias for svn command
 alias svst='svn status'
 alias svci='svn ci -m '
+#alias for coding 
+svnbase="poonzref"
+devroot="${myroot}/${svnbase}/dev"
+alias gc='cd ${devroot}/gcc'
+alias cod='vim -p main.c myc.c myh.h'
+#alias rl='gcc -o main main.c myc.c -std=c99'
 #alias for local system
 alias sshar='ssh arpoonin@74.220.215.245'
 alias mys='sh ~/.wcwp/mys.sh'
