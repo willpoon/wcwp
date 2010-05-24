@@ -1,9 +1,7 @@
 #################################
-#
-set -o vi
-
 if [ ${#pzhome} -eq 0 ] ; then
 #using $USER to get more flexibility
+#
 myroot=/home/$USER
 else 
 myroot=${pzhome}
@@ -12,6 +10,9 @@ export myroot
 #
 cfgroot=$myroot/.wcwp
 export cfgroot
+#root for self dev commands
+binroot=${cfgroot}/bin
+export binroot
 #
 PZW_INC=$cfgroot/inc
 export PZW_INC
@@ -21,6 +22,8 @@ export shroot
 #
 plroot=$cfgroot/pl
 export plroot
+
+PATH=$PATH:$binroot
 ###############################
 #. $cfgroot/cfg/.gmcc.inc.ksh
 . $cfgroot/cfg/.shell.inc.ksh
