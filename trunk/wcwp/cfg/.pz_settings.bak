@@ -29,3 +29,4 @@ PATH=$PATH:$binroot
 . $cfgroot/cfg/.shell.inc.ksh
 . $cfgroot/cfg/.shell.awk.ksh
 . $cfgroot/cfg/.db2.inc.ksh
+. $cfgroot/cfg/.ora.inc.ksh
