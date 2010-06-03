@@ -1,7 +1,7 @@
 #################################
 #basic information
-user=system
-pass=qwer1234
+user1=pzw
+pass1=oracle
 host=
 para_qry=10
 para_dml=10
