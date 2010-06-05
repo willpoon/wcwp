@@ -7,7 +7,6 @@ exit 0
 else
 sqlplus sys/oracle as sysdba <<eof             
 startup;
-quit;
 eof
 fi
 
