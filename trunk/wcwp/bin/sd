@@ -1,0 +1,22 @@
+#######################################################################################################
+#!/usr/bin/ksh
+#author : panzw 
+#purse : perform a quick dupliacte_checksum
+. $PZW_INC/common.ksh
+#######################################################################################################
+if [  $# -eq 1 ] 
+then 
+dist_field="usr_nbr"
+else 
+dist_field=$2
+fi
+select_distinct="
+select count(0),count(distinct $dist_field) 
+from $1
+;
+"
+echo " "
+echo " "
+echo  "select count(0),count(distinct $dist_field) from $1 ;"
+ora_exec_sql "$select_distinct"
+

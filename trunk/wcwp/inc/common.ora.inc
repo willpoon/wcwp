@@ -1,5 +1,4 @@
 ####################################################################################
-. $cfgroot/cfg/.pz*se*
 . $PZW_INC/ora10g.cfg.inc
 
 #connect to acrm database
@@ -61,7 +60,16 @@ EOF
 ###################################################################################
 ora_ret(){    
 ret=`sqlplus -s $user1/$pass1 <<_eof
-set pagesize 0 linesize 200 feedback off
-$1
+	set pagesize 0 linesize 200 feedback off
+	$1
 _eof`
 }
+
+
+lastdate(){
+. $PZW_INC/common.ora.inc
+tm_intrvl_cd=$1
+ora_ret "SELECT to_char(LAST_DAY(to_date('$tm_intrvl_cd','yyyymm')),'yyyymmdd') last_date FROM dual;"; echo $ret
+}
+
+
