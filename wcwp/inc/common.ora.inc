@@ -66,10 +66,50 @@ _eof`
 }
 
 
-lastdate(){
-. $PZW_INC/common.ora.inc
+ora(){    
+sqlplus -s $user1/$pass1 <<_eof
+	set pagesize 0 linesize 200 feedback off
+	$1
+_eof
+}
+
+tm(){
+echo $1
+}
+
+curr_mo(){
+ora_ret "SELECT to_char(sysdate,'yyyymm') last_date FROM dual;"; echo $ret
+}
+
+today(){
+ora_ret "SELECT to_char(sysdate,'yyyymmdd') last_date FROM dual;"; echo $ret
+}
+
+yestoday(){
+ora_ret "SELECT to_char(sysdate-1,'yyyymmdd') last_date FROM dual;"; echo $ret
+}
+
+tomorrow(){
+ora_ret "SELECT to_char(sysdate+1,'yyyymmdd') last_date FROM dual;"; echo $ret
+}
+
+first_date(){
+echo $1"01"
+}
+
+last_date(){
 tm_intrvl_cd=$1
 ora_ret "SELECT to_char(LAST_DAY(to_date('$tm_intrvl_cd','yyyymm')),'yyyymmdd') last_date FROM dual;"; echo $ret
 }
+
+last_mo(){
+tm_intrvl_cd=$1
+ora_ret "SELECT to_char(add_months(to_date('$tm_intrvl_cd','yyyymm'),-1),'yyyymm') last_mo FROM dual;"; echo $ret
+}
+next_mo(){
+tm_intrvl_cd=$1
+ora_ret "SELECT to_char(add_months(to_date('$tm_intrvl_cd','yyyymm'),1),'yyyymm') last_mo FROM dual;"; echo $ret
+}
+
 
 

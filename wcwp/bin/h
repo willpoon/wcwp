@@ -1,0 +1,4 @@
+. $PZW_INC/common.ksh
+
+ora "select trim(sql_text) from   v\$sqlarea where PARSING_SCHEMA_NAME = 'PZW' and MODULE_HASH <> 0  and INVALIDATIONS <> 1 order by LAST_ACTIVE_TIME;"
+
