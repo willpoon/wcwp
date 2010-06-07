@@ -85,7 +85,7 @@ today(){
 ora_ret "SELECT to_char(sysdate,'yyyymmdd') last_date FROM dual;"; echo $ret
 }
 
-yestoday(){
+yesterday(){
 ora_ret "SELECT to_char(sysdate-1,'yyyymmdd') last_date FROM dual;"; echo $ret
 }
 
@@ -111,5 +111,26 @@ tm_intrvl_cd=$1
 ora_ret "SELECT to_char(add_months(to_date('$tm_intrvl_cd','yyyymm'),1),'yyyymm') last_mo FROM dual;"; echo $ret
 }
 
+ref_date(){
+echo ;
+}
+
+ref_mo(){
+echo ;
+}
+
+#p_n_mo yyyymmdd n
+p_n_date(){
+tm_intrvl_cd=$1
+n=$2
+ora_ret "SELECT to_char((to_date('$tm_intrvl_cd','yyyymmdd')-$n),'yyyymmdd') p_n_date FROM dual;"; echo $ret
+}
+
+#p_n_mo yyyymm n
+p_n_mo(){
+tm_intrvl_cd=$1
+n=$2
+ora_ret "SELECT to_char(add_months(to_date('$tm_intrvl_cd','yyyymm'),-$n),'yyyymm') p_n_date FROM dual;"; echo $ret
+}
 
 
