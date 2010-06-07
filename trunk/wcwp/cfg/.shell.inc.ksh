@@ -35,6 +35,7 @@ alias fo='find -name  *.o -type f ;'
 #alias for svn command
 alias svst='svn status'
 alias svci='svn ci -m '
+alias sva='svn add '
 #alias for coding 
 svnbase="poonzref"
 devroot="${myroot}/${svnbase}/dev"
