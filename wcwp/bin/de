@@ -7,7 +7,7 @@ sed -e 's/NULL//g'  | \
 sed -e 's/	//g'  | \
 #sed -e 's/	/%/g'  | \
 awk 'BEGIN{ FS="\t";OFS="," } \
-{printf "%-30s\n",","$1,$2}' |\
+{printf "%-30s   \n",$1}' |\
 sed -e '1,2d' 
 #|sed -e '1,3d;$d'
 
