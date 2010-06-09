@@ -1,0 +1,14 @@
+#echo select 1111 from dual\; >> ./g.sql
+#
+sql_file="./!!.sql"
+act_set_lin1="set lin 80;\n"
+act_sql_desc="desc $2;\n"
+act_host_rm="!rm -rf !!.sql\n"
+act_sql_gb=" select $3 , count(0) from $2 group by $3 order by 1 ;\n"
+act_sql_sc="select  count(0) from $2 ;\n"
+case $1 in 
+d)  echo -ne " $act_set_lin1 $act_sql_desc $act_host_rm" >  $sql_file ;;
+gb) echo -ne " $act_sql_gb $act_host_rm" > $sql_file ;;
+sc) echo -ne " $act_sql_sc $act_host_rm" > $sql_file ;;
+esac
+
