@@ -26,7 +26,6 @@ echo $PPID>$PPID.PPID
 }
 ###################
 ###################################################################################
-#ora_exec_sql()
 #execute sql 
 #remember to pass a sql statement with a ";" as delimiter
 ###################################################################################
@@ -46,10 +45,6 @@ EOF
 #echo `date +%m-%d:%H:%M:%S`  
 }
 
-###################################################################################
-#ora_disconnect(){
-#oracle is different from db2 , do nothing here!
-#}
 
 ###################################################################################
 #common tasks
@@ -67,10 +62,18 @@ _eof`
 
 
 ora(){    
-sqlplus -s $user1/$pass1 <<_eof
+case $2 in
+0)  UnP=${UnP0};;
+1)  UnP=${UnP1};;
+6)  UnP=${UnP6};;
+*)  UnP=${UnP6};;
+esac
+
+sqlplus -s  ${UnP} <<_eof
 	set pagesize 0 linesize 200 feedback off
 	$1
 _eof
+
 }
 
 tm(){
@@ -134,3 +137,11 @@ ora_ret "SELECT to_char(add_months(to_date('$tm_intrvl_cd','yyyymm'),-$n),'yyyym
 }
 
 
+ft(){
+keyword1=`echo $2|tr '[a-z]' '[A-Z]' `
+keyword2=`echo $3|tr '[a-z]' '[A-Z]' `
+keyword3=`echo $4|tr '[a-z]' '[A-Z]' `
+ora "
+select table_name from all_tables where table_name like '%${keyword1}%${keyword2}%${keyword3}%';
+" $1
+}

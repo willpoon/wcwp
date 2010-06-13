@@ -6,4 +6,5 @@ export ORACLE_SID=XE
 PATH=$PATH:$ORACLE_HOME/bin
 export PATH
 alias startora="sh $shroot/ora_startup.sh"
+alias runo="sh $shroot/ora_startup.sh"
 
