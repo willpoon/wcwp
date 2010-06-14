@@ -58,10 +58,14 @@ ret=`sqlplus -s $user1/$pass1 <<_eof
 	set pagesize 0 linesize 200 feedback off
 	$1
 _eof`
-}
-
+} 
 
 ora(){    
+
+#if [ $# -eq 1 ];then 
+#  UnP=${UnP6} ;
+#fi
+
 case $2 in
 0)  UnP=${UnP0};;
 1)  UnP=${UnP1};;
@@ -138,10 +142,12 @@ ora_ret "SELECT to_char(add_months(to_date('$tm_intrvl_cd','yyyymm'),-$n),'yyyym
 
 
 ft(){
-keyword1=`echo $2|tr '[a-z]' '[A-Z]' `
-keyword2=`echo $3|tr '[a-z]' '[A-Z]' `
-keyword3=`echo $4|tr '[a-z]' '[A-Z]' `
+arg1=$1"  ";
+keyword1=$( echo "$arg1"|tr '[a-z]' '[A-Z]'|cut -d" " -f 1,1 )
+keyword2=$( echo "$arg1"|tr '[a-z]' '[A-Z]'|cut -d" " -f 2,2 )
+keyword3=$( echo "$arg1"|tr '[a-z]' '[A-Z]'|cut -d" " -f 3,3 )
+
 ora "
-select table_name from all_tables where table_name like '%${keyword1}%${keyword2}%${keyword3}%';
-" $1
+select distinct table_name from all_tables where table_name like '%${keyword1}%${keyword2}%${keyword3}%';
+" $2
 }

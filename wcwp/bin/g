@@ -1,14 +1,49 @@
 #echo select 1111 from dual\; >> ./g.sql
 #
+#usage : g cmd para1 para2 para3 ...
+#
+arg1=$1;
+arg2=$2;
+arg3=$3;
+arg4=$4;
+
 sql_file="./!!.sql"
 act_set_lin1="set lin 80;\n"
-act_sql_desc="desc $2;\n"
-act_host_rm="!rm -rf !!.sql\n"
-act_sql_gb=" select $3 , count(0) from $2 group by $3 order by 1 ;\n"
-act_sql_sc="select  count(0) from $2 ;\n"
+act_set_echo_on="set echo on;\n"
+act_set_echo_off="set echo off;\n"
+act_sql_desc="desc $arg2;\n"
+act_host_rm="\n!rm -rf !!.sql\n"
+act_sql_gb=" select $arg3 , count(0) from $arg2 group by $arg3 order by 1 ;\n"
+act_sql_sc="select  count(0) from $arg2 ;\n"
+
+gen_sql_file(){
+statement=$1
+echo -ne "$act_set_echo_on" >$sql_file;
+echo -ne "$statement" >> $sql_file; 
+echo -ne "$act_set_echo_off" >>$sql_file;
+echo -ne "$act_host_rm" >>$sql_file;
+}
+
+ft(){
+#usage ft "key1 key2 key3"
+arg1=$1"  ";
+keyword1=$( echo "$arg1"|tr '[a-z]' '[A-Z]'|cut -d" " -f 1,1 )
+keyword2=$( echo "$arg1"|tr '[a-z]' '[A-Z]'|cut -d" " -f 2,2 )
+keyword3=$( echo "$arg1"|tr '[a-z]' '[A-Z]'|cut -d" " -f 3,3 )
+act_sql_ft=" select distinct table_name from all_tables where table_name like '%${keyword1}%${keyword2}%${keyword3}%';"
+echo -ne "$act_sql_ft \n"
+}
+##############  action   #################
 case $1 in 
-d)  echo -ne " $act_set_lin1 $act_sql_desc $act_host_rm" >  $sql_file ;;
-gb) echo -ne " $act_sql_gb $act_host_rm" > $sql_file ;;
-sc) echo -ne " $act_sql_sc $act_host_rm" > $sql_file ;;
+#d)  echo -ne " $act_set_lin1 $act_sql_desc " >  $sql_file ;;
+#gb) echo -ne " $act_sql_gb " > $sql_file ;;
+#sc) echo -ne " $act_sql_sc " > $sql_file ;;
+#ft) echo -ne " $( ft $arg2 $arg3 $arg4 )  " > $sql_file ;;
+d)  gen_sql_file " $act_set_lin1 $act_sql_desc" ;;
+gb) gen_sql_file " $act_sql_gb "  ;;
+sc) gen_sql_file " $act_sql_sc "  ;;
+ft) gen_sql_file " $( ft $arg2 $arg3 $arg4 )  " ;;
 esac
+
+#echo -ne "$act_host_rm" >>$sql_file;
 
