@@ -1,4 +1,5 @@
 #################################
+#check if $pzhome is define in .profile
 if [ ${#pzhome} -eq 0 ] ; then
 #using $USER to get more flexibility
 #
