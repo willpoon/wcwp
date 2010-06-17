@@ -7,4 +7,7 @@ PATH=$PATH:$ORACLE_HOME/bin
 export PATH
 alias startora="sh $shroot/ora_startup.sh"
 alias runo="sh $shroot/ora_startup.sh"
-
+TNS_ADMIN=$cfgroot/cfg
+export TNS_ADMIN
+LD_LIBRARY_PATH=$ORACLE_HOME/lib
+export LD_LIBRARY_PATH
