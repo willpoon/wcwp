@@ -8,9 +8,9 @@ arg3=$3;
 arg4=$4;
 
 sql_file="./!!.sql"
-act_set_lin1="set lin 80;\n"
-act_set_echo_on="set echo on;\n"
-act_set_echo_off="set echo off;\n"
+act_set_lin1="\nset lin 80;\n"
+act_set_echo_on="\nset echo on;\n"
+act_set_echo_off="\nset echo off;\n"
 act_sql_desc="desc $arg2;\n"
 act_host_rm="\n!rm -rf !!.sql\n"
 act_sql_gb=" select $arg3 , count(0) from $arg2 group by $arg3 order by 1 ;\n"
