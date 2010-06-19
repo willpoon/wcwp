@@ -2,7 +2,15 @@
 #common settings
 set -o vi
 PS1=['${PWD} ']
+
+ps1(){
+echo hi
+}
+
+
 export PS1
+LD_LIBRARY_PATH=/usr/lib32
+export LD_LIBRARY_PATH
 #alias for ls
 alias lh='ls -al'
 #alias lt='ls -alrt'
@@ -47,3 +55,4 @@ alias sshar='ssh arpoonin@74.220.215.245'
 alias mys='sh ~/.wcwp/mys.sh'
 alias rf='. $cfgroot/cfg/.pz_settings;cp $cfgroot/cfg/.pz_settings $cfgroot/cfg/.pz_settings.bak;'
 alias cfg='vi $cfgroot/cfg/.pz_settings'
+

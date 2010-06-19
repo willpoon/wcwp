@@ -1,0 +1,12 @@
+case $1 in 
+0) sqlplus sys/oracle  as sysdba;;
+1) sqlplus system/oracle ;;
+2) sqlplus pzw/oracle ;;
+esac
+<<!
+if [ $1 -eq 1 ] ; then 
+sqlplus system/oracle 
+else
+sqlplus sys/oracle  as sysdba
+fi
+!
