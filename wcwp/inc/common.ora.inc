@@ -151,3 +151,22 @@ ora "
 select distinct table_name from all_tables where table_name like '%${keyword1}%${keyword2}%${keyword3}%';
 " $2
 }
+
+runlsn(){
+ORACLE_SID=XE
+LSNR=$ORACLE_HOME/bin/lsnrctl
+SU=/bin/su
+ORACLE_OWNER=oracle
+ret=`ps -ef|grep -i lsnr |grep -v grep|wc -l`
+if [ $ret -lt 1 ]; then 
+#$SU -s /bin/bash $ORACLE_OWNER -c "$LSNR  start" > /dev/null 2>&1
+$SU -s /bin/bash $ORACLE_OWNER -c "$LSNR  stop" 
+$SU -s /bin/bash $ORACLE_OWNER -c "$LSNR  start" 
+fi
+}
+
+
+rora(){
+runlsn;
+runo;
+}

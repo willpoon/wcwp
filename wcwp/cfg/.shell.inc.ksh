@@ -29,6 +29,7 @@ alias ..3='cd ../../..'
 alias ..4='cd ../../../..' 
 alias pzh='cd ~/'
 alias f='cd /media/OTHER'
+alias cw='cd $cfgroot/'
 #alias for dirs
 alias rd='rmdir'
 alias md='mkdir'
@@ -55,4 +56,5 @@ alias sshar='ssh arpoonin@74.220.215.245'
 alias mys='sh ~/.wcwp/mys.sh'
 alias rf='. $cfgroot/cfg/.pz_settings;cp $cfgroot/cfg/.pz_settings $cfgroot/cfg/.pz_settings.bak;'
 alias cfg='vi $cfgroot/cfg/.pz_settings'
+alias cw='cd $cfgroot/'
 
