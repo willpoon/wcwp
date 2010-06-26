@@ -152,15 +152,31 @@ select distinct table_name from all_tables where table_name like '%${keyword1}%$
 " $2
 }
 
+fruno(){
+#startup database instance
+check_stat=`ps -ef|grep ${ORACLE_SID}|grep pmon|wc -l`;
+oracle_num=`expr $check_stat`
+if [ $oracle_num -gt 0 ]
+then
+return 0
+else
+sqlplus sys/oracle as sysdba <<eof             
+startup;
+eof
+fi
+}
+
 runlsn(){
 ORACLE_SID=XE
 LSNR=$ORACLE_HOME/bin/lsnrctl
 SU=/bin/su
 ORACLE_OWNER=oracle
 ret=`ps -ef|grep -i lsnr |grep -v grep|wc -l`
-if [ $ret -lt 1 ]; then 
-#$SU -s /bin/bash $ORACLE_OWNER -c "$LSNR  start" > /dev/null 2>&1
+if [ $ret -ge 1 ]; then 
+return 0
 $SU -s /bin/bash $ORACLE_OWNER -c "$LSNR  stop" 
+fi
+if [ $ret -lt 1 ]; then 
 $SU -s /bin/bash $ORACLE_OWNER -c "$LSNR  start" 
 fi
 }
@@ -168,5 +184,5 @@ fi
 
 rora(){
 runlsn;
-runo;
+fruno;
 }

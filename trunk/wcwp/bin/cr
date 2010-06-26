@@ -1,0 +1,35 @@
+SKM=PZW
+PREFIX=T_
+#SKM="\${SKM}"
+echo " "
+echo " "
+echo "DROP TABLE ${PREFIX}$1 PURGE;"|tr '[A-Z]'  '[a-z]' >>.cr.tmp
+echo CREATE TABLE ${PREFIX}$1|tr '[A-Z]'  '[a-z]' >>.cr.tmp
+echo \( >>.cr.tmp
+echo "rn	number">>.cr.tmp
+echo ",usr_nbr	varchar2(11)">>.cr.tmp
+echo \)\;>>.cr.tmp
+echo " ">>.cr.tmp
+echo "!load.sh tmp_pzw_$1 nbr .txt">>.cr.tmp
+echo " ">>.cr.tmp
+echo "--TRUNCATE TABLE  ${PREFIX}$1;"|tr '[A-Z]'  '[a-z]'>>.cr.tmp
+echo " ">>.cr.tmp
+echo " ">>.cr.tmp
+echo "delete from ${PREFIX}$1 where month = ;"|tr '[A-Z]'  '[a-z]' >>.cr.tmp
+echo " ">>.cr.tmp
+echo "INSERT INTO ${PREFIX}$1"|tr '[A-Z]'  '[a-z]'>>.cr.tmp
+echo "SELECT"|tr '[A-Z]'  '[a-z]'>>.cr.tmp
+echo "DISTINCT" >>.cr.tmp
+echo " ">>.cr.tmp
+echo " ">>.cr.tmp
+echo " ">>.cr.tmp
+echo "DROP TABLE ${PREFIX}$1 PURGE;"|tr '[A-Z]'  '[a-z]' >>.cr.tmp
+echo create table ${PREFIX}$1>>.cr.tmp
+echo " as" >>.cr.tmp
+echo select >>.cr.tmp
+echo "DISTINCT" >>.cr.tmp
+echo " "
+cat .cr.tmp|tr '[A-Z]'  '[a-z]'
+echo " "
+echo " "
+rm .cr.tmp
