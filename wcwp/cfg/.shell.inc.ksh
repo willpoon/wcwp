@@ -58,3 +58,11 @@ alias rf='. $cfgroot/cfg/.pz_settings;cp $cfgroot/cfg/.pz_settings $cfgroot/cfg/
 alias cfg='vi $cfgroot/cfg/.pz_settings'
 alias cw='cd $cfgroot/'
 
+
+
+#function 
+
+# set PS1 
+dol() {
+PS1=$
+}
