@@ -186,3 +186,35 @@ rora(){
 runlsn;
 fruno;
 }
+
+
+
+ora_exec_sql2(){
+orauser=`cat /tmp/orauser`
+
+    case $orauser in 
+        SYS)
+            UnP=${UnP0}
+        ;;
+        SYSTEM)
+            UnP=${UnP1}
+        ;;
+        PZW)
+            UnP=${UnP6}
+        ;;
+        *)
+            UnP=${UnP6}
+        ;;
+    esac;
+
+sqlplus -s ${UnP}<<EOF
+set echo off
+set pagesize 0
+set heading on
+set echo on
+$1
+quit
+EOF
+}
+
+

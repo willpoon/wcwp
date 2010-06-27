@@ -21,7 +21,11 @@ SET SQLPROMPT '&Y> '
 
 SET TERMOUT ON
 SET FEEDBACK ON
+set serverout on
+--SET LINESIZE 100
 --set echo off
 --test echo off
---SET LINESIZE 100
 
+--testing statements on login
+--exec dbms_output.put_line('hiilooo');
+host echo &_user > /tmp/orauser
