@@ -15,5 +15,5 @@ echo " "
 echo " "
 echo ${select_count}
 echo " "
-ora_exec_sql "$select_count"
+ora_exec_sql2 "$select_count"
 

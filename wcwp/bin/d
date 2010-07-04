@@ -1,6 +1,6 @@
 . $PZW_INC/common.ksh
 
-ora_exec_sql "desc $1 " | \
+ora_exec_sql2 "desc $1 " | \
 sed -e '/^$/d' | \
 sed -e 's/NOT//g' | \
 sed -e 's/NULL//g'  | \

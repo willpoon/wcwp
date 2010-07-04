@@ -182,9 +182,17 @@ fi
 }
 
 
+runlsn2(){
+#ret=`ps -ef|grep -i lsnr |grep -v grep|wc -l`
+#if [ $ret -ge 1 ]; then
+#return 0
+#fi
+/usr/lib/oracle/xe/rlsn.sh
+}
+
 rora(){
-runlsn;
-fruno;
+runlsn2;
+fruno >> /dev/null|echo oracle started
 }
 
 

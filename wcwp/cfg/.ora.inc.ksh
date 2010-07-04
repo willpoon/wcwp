@@ -10,6 +10,7 @@ alias runo="sh $shroot/ora_startup.sh"
 TNS_ADMIN=$cfgroot/cfg
 export TNS_ADMIN
 
+export NLS_LANG=AMERICAN_AMERICA.ZHS16GBK
 
 #alias
 alias lctl='lsnrctl'
