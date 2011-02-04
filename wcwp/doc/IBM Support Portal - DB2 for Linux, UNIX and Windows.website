@@ -3,6 +3,10 @@ Prop4=31,IBM Support Portal - DB2 for Linux, UNIX and Windows
 Prop3=19,2
 [{A7AF692E-098D-4C08-A225-D433CA835ED0}]
 Prop5=3,0
+Prop2=65,2C0000000000000001000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0302000057000000F1030000BD0100002B
+Prop3=0,
+Prop4=0,
+Prop6=3,1
 [InternetShortcut]
 URL=http://www-947.ibm.com/support/entry/portal/Documentation/Software/Information_Management/DB2_for_Linux,_UNIX_and_Windows
 IDList=
