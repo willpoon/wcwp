@@ -1,0 +1,17 @@
+对于db2多实例启动问题：
+类UNIX系统：以不同实例用户登陆系统然后启动实例即可。
+WINS系统：
+1、db2ilist先列出系统中存在的实例
+2、db2 get instance列出正在使用的实例
+3、设置 DB2INSTANCE 环境变量：
+　　set db2instance=<new_instance_name>，此处的new_instance_name即为要启动的实例名
+4、在注册表的全局级设置 DB2INSTDEF 注册表变量
+              db2set db2instdef=<new_instance_name> -g
+5、db2start启动实例
+
+上述方法已进行过测试。
+
+C:\Users\Administrator>set db2instance=db2inst2
+C:\Users\Administrator>db2start
+C:\Users\Administrator>db2 get instance
+ 当前数据库管理器实例是：DB2INST2
