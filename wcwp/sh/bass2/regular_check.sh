@@ -121,9 +121,6 @@ ifalarm(){
 
 putdatfile(){
 		#实现dat文件上传
-		FTPHOST=172.16.9.25
-		REMOTE_DIR=/bassapp/bass2/panzw2/data
-		LOCAL_DIR=${exp_dir}
 		HOME=/bassapp/bihome/panzw
 		export HOME
 		echo ">>>>>>目标主机 : ${FTPHOST}"
@@ -184,9 +181,6 @@ putdatfile(){
 
 putverffile(){
 		#实现verf文件上传
-		FTPHOST=172.16.9.25
-		REMOTE_DIR=/bassapp/bass2/panzw2/data
-		LOCAL_DIR=${exp_dir}
 		HOME=/bassapp/bihome/panzw
 		export HOME
 		echo ">>>>>>目标主机 : ${FTPHOST}"
@@ -259,6 +253,11 @@ difference_cnt=
 record_rpt_cnt=
 exp_dir="/bassapp/backapp/data/bass1/export/export_${deal_date}"
 rpt_dir="/bassapp/backapp/data/bass1/report/report_${deal_date}"
+#ftp config >>
+FTPHOST=172.16.9.25
+REMOTE_DIR=/bassapp/bass2/panzw2/data
+LOCAL_DIR=${exp_dir}
+#ftp config <<		
 #3.print *.dat 
 test -d ${exp_dir}
 if [ $? -eq 1 ] ; then 
