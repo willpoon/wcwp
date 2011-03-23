@@ -23,6 +23,7 @@ chkputtime(){
 	echo "非正常上传时段!!如要强制上传，请用 $0 force 来执行!!"
 	return 1
 	fi
+	return 0
 }
 
 
@@ -92,6 +93,32 @@ getmtime(){
 		return 0
 }
 
+
+#在DB2数据库中执行SQL
+DB2_SQL_EXEC()
+{
+DB2_OSS_DB="bassdb"
+DB2_OSS_USER="bass2"
+DB2_OSS_PASSWD="bass2"
+#echo ${DB2_OSS_PASSWD}	
+    db2 terminate;db2 connect to $DB2_OSS_DB user $DB2_OSS_USER using $DB2_OSS_PASSWD
+    eval $DB2_SQLCOMM
+    db2 commit
+    db2 connect reset
+}
+
+
+ifalarm(){
+	#如果存在告警未处理，返回1
+	sql_str="select 'xxxxx',count(0) from  app.sch_control_alarm where alarmtime >=  timestamp('${today}'||'000000') and flag = -1 and control_code like 'BASS1%'"
+	DB2_SQLCOMM="db2 \"${sql_str}\""
+	echo ${DB2_SQLCOMM}
+	alarm_cnt=`DB2_SQL_EXEC|grep 'xxxxx'|awk '{print $2}'`
+	if [ ${alarm_cnt} -gt 0 ];then
+		echo ">>>>>>尚有告警未处理!!请马上处理!!"
+	return 1
+}
+
 putdatfile(){
 		#实现dat文件上传
 		FTPHOST=172.16.9.25
@@ -154,11 +181,74 @@ putdatfile(){
 		
 		return 0
 }
-###################################main program##########################
-#1. 操作安全检查 
-secchk
 
-###
+putverffile(){
+		#实现verf文件上传
+		FTPHOST=172.16.9.25
+		REMOTE_DIR=/bassapp/bass2/panzw2/data
+		LOCAL_DIR=${exp_dir}
+		HOME=/bassapp/bihome/panzw
+		export HOME
+		echo ">>>>>>目标主机 : ${FTPHOST}"
+		echo ">>>>>>作业时间 : `date`"		
+		echo ">>>>>>PID\$\$ $$"
+		echo ">>>>>>修改 HOME : ${HOME}"
+		
+		ftp_mac_put_verf_file=${HOME}/put_verf.mac.ftp
+		ftped_file_list=${HOME}/bass1_put_log/ftped_dat_day_${deal_date}.lst
+		
+		#检查传输情况
+		if [ ! -f ${ftped_file_list} ];then 
+		echo ">>>>>>未找到dat上传日志文件,请确认dat是否已上传!!"		
+		return 1
+		else 
+		ftped_dat_cnt=`wc -l ${ftped_file_list}|awk '{print $1}'`
+		upload_dat_time=`getmtime ${ftped_file_list}`
+				if [ ${ftped_dat_cnt} -ne ${DAY_INTERFACE_CNT} ];then 
+					echo ">>>>>>dat上传数量不等于${DAY_INTERFACE_CNT},请确认dat是否已正确上传!!"		
+					return 1
+				fi
+		fi
+		
+		#生成ftp命令文件
+		echo "cd ${REMOTE_DIR}" > ${ftp_mac_put_verf_file}
+		echo "lcd ${LOCAL_DIR}" >> ${ftp_mac_put_verf_file}
+		echo "bin" >> ${ftp_mac_put_verf_file}
+		echo "prompt off" >> ${ftp_mac_put_verf_file}
+		echo "mput *.verf" >> ${ftp_mac_put_verf_file}
+		
+		if [ ! -f ${ftp_mac_put_verf_file} ];then 
+		echo ">>>>>>ftp macro 文件未生成 !!"
+		fi
+
+		ftp_mac_put_verf_file_cnt=`wc -l ${ftp_mac_put_verf_file}|awk '{print $1}'`		
+		if [ ${ftp_mac_put_verf_file_cnt} -ne 5 ];then 
+		echo ">>>>>>ftp macro 写入有误 !!"
+		fi
+
+		#上传
+		ftp -v ${FTPHOST} < ${ftp_mac_put_verf_file}
+		#恢复$HOME
+		HOME=/bassapp/bass1
+		export HOME
+		echo ">>>>>>恢复 HOME : ${HOME}"
+		
+		return 0	
+}
+###################################main program##########################
+
+#1. security check 
+secchk
+if [ $? -eq 1 ] ; then 
+exit
+fi
+#1.1 alarm check 
+ifalarm
+if [ $? -eq 1 ] ; then 
+exit
+fi
+
+#2.var define
 today=`date '+%Y%m%d'`
 deal_date=`yesterday ${today}`
 DAY_INTERFACE_CNT=56
@@ -169,20 +259,19 @@ difference_cnt=
 record_rpt_cnt=
 exp_dir="/bassapp/backapp/data/bass1/export/export_${deal_date}"
 rpt_dir="/bassapp/backapp/data/bass1/report/report_${deal_date}"
-###
-ls -lrt ${exp_dir}|grep dat
-
-echo "\n"
-echo ">>>>>>PID\$\$ $$"
-
-echo ">>>>>>today           当前日期 :${today}"
-echo ">>>>>>deal_date   处理数据日期 :${deal_date}"
-
+#3.print *.dat 
 test -d ${exp_dir}
 if [ $? -eq 1 ] ; then 
 echo ">>>>>>数据导出目录不存在！！请检查！！"
 exit
 fi
+ls -lrt ${exp_dir}|grep dat
+
+echo "\n"
+echo ">>>>>>PID\$\$ $$"
+#4.print datetime & basic info 
+echo ">>>>>>today           当前日期 :${today}"
+echo ">>>>>>deal_date   处理数据日期 :${deal_date}"
 
 echo ">>>>>>exp_dir     数据导出目录 :  ${exp_dir}"
 
@@ -220,8 +309,12 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>执行dat文件上传>>>>>>>>>>>>>>>>>>>>>>"
 if [ $# -eq 0 ];then 
 #检查上传时间
 chkputtime
-#执行上传
-echo putdatfile
+	if [ $? -eq 0 ];then 
+	#执行上传
+	echo putdatfile
+	else 
+	echo ">>>>>>由于不是正常上传时段，以下不做上传,只做简单检查 !!"
+	fi
 else 
 	#强制上传
 	if [ $# -eq 1 -a $1 = "force" ];then 
@@ -229,13 +322,14 @@ else
 	echo putdatfile
 	fi
 fi
-echo ">>>>>>>>>>>>>>>>>>>>>>>>完成dat文件上传>>>>>>>>>>>>>>>>>>>>>>"
+###>>>>>>>>>>>>>>>>>>>>>>>>完成dat文件上传>>>>>>>>>>>>>>>>>>>>>>
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>开始获取文件、记录级校验>>>>>>>>>>>>>>>>>>>>>>"
 #/bassapp/backapp/bin/bass1_report/bass1_report
 echo ">>>>>>>>>>>>>>>>>>>>>>>>结束获取文件、记录级校验>>>>>>>>>>>>>>>>>>>>>>"
 
 
+###>>>>>>>>>>>>>>>>>>>>>>>>查看报告返回情况>>>>>>>>>>>>>>>>>>>>>>
 
 test -d ${rpt_dir}
 if [ $? -eq 1 ] ; then 
@@ -285,3 +379,4 @@ echo ">>>>>>记录级校验返回完全！！"
 echo "\n"
 fi
 
+###>>>>>>>>>>>>>>>>>>>>>>>>结束查看报告返回情况>>>>>>>>>>>>>>>>>>>>>>
