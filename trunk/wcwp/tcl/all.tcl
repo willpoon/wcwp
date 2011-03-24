@@ -190,6 +190,12 @@ set aidbtclpath "/bassapp/tcl/aiomnivision/aitools"
 load "$aidbtclpath/lib/libdb2tcl.so"
 source "$aidbtclpath//bin//aidb_db2_webapp.tcl"
 source "/bassapp/tcl/aiomnivision/aitools/bin/aidb_db2.tcl"
+#全局变量:
+puts $env(DATABASE)
+puts $env(AITOOLSPATH)
+puts $env(DB_USER)
+puts $env(AGENTLOGDIR)
+
 #测试:
 set db bassdb
 set username bass2
