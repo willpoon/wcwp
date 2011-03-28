@@ -262,6 +262,12 @@ putverffile(){
 		
 		return 0	
 }
+
+interfaceat9(){
+	ls -lrt *01002*dat *01004*dat *02004*dat *02008*dat *02011*dat *02053*dat *06031*dat *06032*dat
+	interface9_cnt=`ls -1 *01002*dat *01004*dat *02004*dat *02008*dat *02011*dat *02053*dat *06031*dat *06032*dat|wc -l|awk '{print $1}'`
+	return ${interface9_cnt}
+}
 ###################################main program##########################
 
 
@@ -340,6 +346,12 @@ echo ">>>>>>verf_file_cnt  校验文件数 不等于 ${DAY_INTERFACE_CNT} ,请先处理！"
 exit
 fi
 
+#9点前接口正常是8个
+interfaceat9
+if [ $? -ne 8 ];then 
+echo ">>>>>>9点前接口不等于 8 个,请检查！"
+exit 
+fi
 #统计空文件数
 chkemptyfile
 
