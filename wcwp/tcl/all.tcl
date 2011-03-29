@@ -507,3 +507,8 @@ SYS_TASK_RUNLOG
 trace 是做什么用的?
 
 
+#tcl 头
+#!/bassapp/tcl/aiomnivision/aitools/bin/tclsh
+
+#command \
+exec tclsh8.4 "$0" "$@"

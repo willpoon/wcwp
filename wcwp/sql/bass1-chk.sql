@@ -7,7 +7,7 @@ order by alarmtime desc
 **/
 
 select * from  app.sch_control_alarm 
-where alarmtime >=  current timestamp - 2 days
+where alarmtime >=  current timestamp - 1 days
 and flag = -1
 and control_code like 'BASS1%'
 order by alarmtime desc 
@@ -17,7 +17,7 @@ order by alarmtime desc
 
 --接口文件级返回检查(正常情况为56条记录)
 select  * from APP.G_FILE_REPORT
-where filename like '%20110323%' and err_code='00';
+where filename like '%20110328%' and err_code='00';
 
 
 --接口记录集返回检查(正常情况为56条记录)
@@ -102,14 +102,16 @@ select * from
 bass1.g_s_22012_day 
 where time_id=int(replace(char(current date - 1 days),'-',''));
 
-20110323	20110323	2878      	1635972     	22901457    	389311      	3975018     	124       	329440      
+20110328	20110328	2364      	1627492     	22871900    	369353      	4151751     	137       	322376      
+20110328	R159_4	137.00000	138.00000	-0.00724	0.00000
+ 
 
 
 
   
   --调整脚本，''里更新一定的值就是
 --离网客户数
-update bass1.g_s_22012_day set m_off_users='120' 
+update bass1.g_s_22012_day set m_off_users='' 
 where time_id=20110323;
 commit;
 
@@ -132,3 +134,7 @@ select * from   app.sch_control_task where lower(cmd_line) like '%net%hlr%'
 select * from   app.sch_control_runlog where control_code like '%06031%'
 
 select count(0) from   BASS2.DIM_TACNUM_DEVID 
+select count(0) from   bass1.G_A_02059_DAY_down20110321
+
+select * from   G_A_02055_DAY
+
