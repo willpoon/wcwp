@@ -3,6 +3,17 @@
 #上传完verf 后 执行 bass1_rpt 
 #保证脚本重新执行不影响数据
 #检查空接口15-20个
+#sh reguar_check.sh #正常上传#检查上传时间#不满足就退出，不查后续报告返回
+#sh reguar_check.sh force #强制上传#不检查上传时间#
+#sh reguar_check.sh chk 任意非force参数 #不上传#不检查上传时间#只查后续报告
+#每次修改要重新生成unixtimestamp
+#修订记录：
+#2011-03-29 11:43:22 
+#1.add ifmod 
+#2.add user check 
+#3.add interfaceat9
+#4.and clear
+#5.修改ifalarm 执行条件: $1 = chk 跳过.
 
 secchk(){
 	#操作安全检查
@@ -103,7 +114,20 @@ getmtime(){
 		return 0
 }
 
-
+ifmod(){
+	#检查脚本是否被修改
+	#监控脚本最后修改时间，如果时间大于合法修改时间，退出。
+	script_file=/bassapp/bihome/panzw/regular_check.sh
+	last_mod_unix_time=1301371119
+	compare_timestamp=`expr ${last_mod_unix_time} + 100`
+	script_timestamp=`echo "puts [file mtime ${script_file}]"|tclsh`
+	echo ${script_timestamp}
+	if [ ${script_timestamp} -gt ${compare_timestamp} ] ; then 
+		echo ">>>>>>脚本被修改!!"	
+	return 1
+	fi
+	return 0
+	}
 #在DB2数据库中执行SQL
 DB2_SQL_EXEC()
 {
@@ -120,7 +144,10 @@ DB2_OSS_PASSWD="bass2"
 
 ifalarm(){
 	#如果存在告警未处理，返回1
-	sql_str="select 'xxxxx',count(0) from  app.sch_control_alarm where alarmtime >=  timestamp('"${today}"'||'000000') and flag = -1 and control_code like 'BASS1%'"
+	sql_str="select 'xxxxx',count(0) from  app.sch_control_alarm \
+	where alarmtime >=  timestamp('"${today}"'||'000000') \
+	and flag = -1 \
+	and control_code like 'BASS1%'"
 	DB2_SQLCOMM="db2 \"${sql_str}\""
 	echo ${DB2_SQLCOMM}
 	alarm_cnt=`DB2_SQL_EXEC|grep 'xxxxx'|awk '{print $2}'`
@@ -148,7 +175,7 @@ putdatfile(){
 		echo ">>>>>>目标主机 : ${FTPHOST}"
 		echo ">>>>>>作业时间 : `date`"		
 		echo ">>>>>>PID\$\$ $$"
-		echo ">>>>>>修改 HOME : ${HOME}"
+		#echo ">>>>>>修改 HOME : ${HOME}"
 		
 		ftp_mac_put_dat_file=${HOME}/put_dat.mac.ftp
 		ftped_file_list=${HOME}/bass1_put_log/ftped_dat_day_${deal_date}.lst
@@ -157,7 +184,7 @@ putdatfile(){
 		if [ -f ${ftped_file_list} ];then 
 		ftped_dat_cnt=`wc -l ${ftped_file_list}|awk '{print $1}'`
 		upload_dat_time=`getmtime ${ftped_file_list}`
-		echo ">>>>>>dat file 之前已经上传,请确认是否需要重新上传！\n>>>>>>如需重传，先删除${FTPHOST}上的'*.dat',再删除${ftped_file_list}  !!!"
+		echo ">>>>>>dat file 之前已经上传,请确认是否需要重新上传！\n>>>>>>如需重传，先删除${FTPHOST}上的'*.dat',再删除  ${ftped_file_list}  !!!"
 		echo ">>>>>>最近一次上传了${ftped_dat_cnt}个接口!时间是:${upload_dat_time}"
 		return 1
 		fi
@@ -189,7 +216,7 @@ putdatfile(){
 		#恢复$HOME
 		HOME=/bassapp/bass1
 		export HOME
-		echo ">>>>>>恢复 HOME : ${HOME}"
+		#echo ">>>>>>恢复 HOME : ${HOME}"
 		
 		#打印上传结果
 		if [ -f ${ftped_file_list} ];then 
@@ -211,7 +238,7 @@ putverffile(){
 		echo ">>>>>>目标主机 : ${FTPHOST}"
 		echo ">>>>>>作业时间 : `date`"		
 		echo ">>>>>>PID\$\$ $$"
-		echo ">>>>>>修改 HOME : ${HOME}"
+		#echo ">>>>>>修改 HOME : ${HOME}"
 		ftp_mac_put_dat_file=${HOME}/put_dat.mac.ftp
 		ftp_mac_put_verf_file=${HOME}/put_verf.mac.ftp
 		ftped_file_list=${HOME}/bass1_put_log/ftped_dat_day_${deal_date}.lst
@@ -258,14 +285,18 @@ putverffile(){
 		#恢复$HOME
 		HOME=/bassapp/bass1
 		export HOME
-		echo ">>>>>>恢复 HOME : ${HOME}"
+		#echo ">>>>>>恢复 HOME : ${HOME}"
 		
 		return 0	
 }
 
 interfaceat9(){
-	ls -lrt *01002*dat *01004*dat *02004*dat *02008*dat *02011*dat *02053*dat *06031*dat *06032*dat
+	cd ${exp_dir}
+	
+	ls -lrt *01002*dat *01004*dat *02004*dat *02008*dat *02011*dat *02053*dat *06031*dat *06032*dat|awk '{print $9,$8,$5}'
 	interface9_cnt=`ls -1 *01002*dat *01004*dat *02004*dat *02008*dat *02011*dat *02053*dat *06031*dat *06032*dat|wc -l|awk '{print $1}'`
+	cd /bassapp/bihome/panzw
+	echo ">>>>>>9点前接口: ${interface9_cnt} 个 ."
 	return ${interface9_cnt}
 }
 ###################################main program##########################
@@ -288,7 +319,19 @@ FTPHOST=172.16.9.25
 REMOTE_DIR=/bassapp/bass2/panzw2/data
 LOCAL_DIR=${exp_dir}
 #ftp config <<		
-
+#0.0 判断当前用户是否app
+LOGIN_USER=`ps -f|tail -1 |awk '{print $1}'`
+if [ ${LOGIN_USER} != "app"  ];then 
+echo ">>>>>>当前登录用户是 ${LOGIN_USER} , 请以 app 登录 !! "
+exit
+fi 
+#0.0 clear screen 
+clear 
+#0.1 modify check 
+ifmod
+if [ $? -eq 1 ] ; then 
+exit
+fi
 #1. security check 
 secchk
 if [ $? -eq 1 ] ; then 
@@ -296,8 +339,20 @@ exit
 fi
 
 #1.1 alarm check 
-
+#print 5.44 os info 
+echo "\n"
+echo ">>>>>>PID\$\$ $$"
+if [ $# -eq 0 ];then 
 ifalarm
+else
+		if [ $1 = "chk" ] ; then 
+		echo ">>>>>>跳过告警表查询步骤！！"
+		fi
+		if [ $1 = "force" ] ; then 
+		ifalarm
+		fi		
+fi 
+
 if [ $? -eq 1 ] ; then 
 exit
 fi
@@ -309,11 +364,9 @@ exit
 fi
 
 #3.print *.dat 
-ls -lrt ${exp_dir}|grep dat
+#ls -lrt ${exp_dir}|grep dat
 
-#print 5.44 os info 
-echo "\n"
-echo ">>>>>>PID\$\$ $$"
+
 #4.print datetime & basic info 
 echo ">>>>>>today           当前日期 :${today}"
 echo ">>>>>>deal_date   处理数据日期 :${deal_date}"
@@ -361,41 +414,41 @@ chkemptyfile
 if [ $# -eq 0 ];then 
 #检查上传时间
 chkputtime
-	if [ $? -eq 0 ];then 
-	#执行上传
-		#如返回校验，不应再上传
-		test -d ${rpt_dir}
-		if [ $? -eq 0 ] ; then 
-		echo ">>>>>>已返回文件级校验报告，不能重复上传!!"
-		exit
+		if [ $? -eq 0 ];then 
+		#执行上传
+			#如返回校验，不应再上传
+			test -d ${rpt_dir}
+			if [ $? -eq 0 ] ; then 
+			echo ">>>>>>已返回文件级校验报告，不能重复上传!!"
+			exit
+			fi
+			 putdatfile
+			ret_code=$?
+			if [ ${ret_code} -eq 0 ];then 
+			sleep 5
+			 putverffile
+			fi 
+		else 
+		#echo ">>>>>>由于不是正常上传时段，只做简单检查 !!"
+		echo "\n"
 		fi
-		 putdatfile
-		ret_code=$?
-		if [ ${ret_code} -eq 0 ];then 
-		sleep 5
-		 putverffile
-		fi 
-	else 
-	#echo ">>>>>>由于不是正常上传时段，只做简单检查 !!"
-	echo "\n"
-	fi
 else 
-	#强制上传
-	if [ $# -eq 1 -a $1 = "force" ];then 
-	#执行上传
-		#如返回校验，不应再上传
-		test -d ${rpt_dir}
-		if [ $? -eq 0 ] ; then 
-		echo ">>>>>>已返回文件级校验报告，不能重复上传!!"
-		exit
-		fi	
-	  putdatfile
-		ret_code=$?
-		if [ ${ret_code} -eq 0 ];then 
-		 sleep 5
-		 putverffile
-		fi 	
-	fi
+		#强制上传
+			if [ $# -eq 1 -a $1 = "force" ];then 
+				#执行上传
+					#如返回校验，不应再上传
+					test -d ${rpt_dir}
+					if [ $? -eq 0 ] ; then 
+					echo ">>>>>>已返回文件级校验报告，不能重复上传!!"
+					exit
+					fi	
+				  putdatfile
+					ret_code=$?
+					if [ ${ret_code} -eq 0 ];then 
+					 sleep 5
+					 putverffile
+					fi 	
+		 fi
 fi
 ###>>>>>>>>>>>>>>>>>>>>>>>>完成dat文件上传>>>>>>>>>>>>>>>>>>>>>>
 
@@ -406,7 +459,7 @@ fi
 test -d ${rpt_dir}
 if [ $? -eq 1 ] ; then 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>开始获取文件、记录级校验>>>>>>>>>>>>>>>>>>>>>>"
-echo /bassapp/backapp/bin/bass1_report/bass1_report
+/bassapp/backapp/bin/bass1_report/bass1_report
 echo ">>>>>>>>>>>>>>>>>>>>>>>>结束获取文件、记录级校验>>>>>>>>>>>>>>>>>>>>>>"
 		test -d ${rpt_dir}
 		if [ $? -eq 1 ] ; then 
