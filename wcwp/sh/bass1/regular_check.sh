@@ -14,7 +14,8 @@
 #3.add interfaceat9
 #4.and clear
 #5.修改ifalarm 执行条件: $1 = chk 跳过.
-
+#6.bass1_report 输出重定向
+#7.检测成功输出
 secchk(){
 	#操作安全检查
 	this_script=`pwd`/$0

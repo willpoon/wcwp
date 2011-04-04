@@ -14,6 +14,8 @@ echo $1
 fi
 }
 
+#解析interface_info.csv文件
+
 i=0
 #15个字段信息
 while [ i -lt 15 ]
@@ -44,6 +46,7 @@ BOSS_DB_MODULE=${info[14]}
 
 
 etl_load_table_map(){
+	#生成插入到etl_load_table_map的语句
 interface_file_name=$1
 interface_type=`echo ${interface_file_name} |awk '{print substr($1,1,1)}'`
 interface_code=`echo ${interface_file_name} |awk '{print substr($1,2,5)}'`

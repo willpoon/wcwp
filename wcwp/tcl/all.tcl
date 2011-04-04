@@ -512,3 +512,162 @@ trace 是做什么用的?
 
 #command \
 exec tclsh8.4 "$0" "$@"
+
+if { [string range [string tolower $tabname] 3 1] == "s"}{
+	set sql_buf "
+		select ${pk},count(0)  
+		from bass1.${tabname} 
+		group by ${pk} having count(0) > 1
+		"	
+	}
+else {
+	set sql_buf "
+		select ${pk},count(0)  
+		from bass1.${tabname}   
+		where time_id =$timestamp		
+		group by ${pk} having count(0) > 1
+		"		
+	}
+proc chkpkunique{tabname pk }{
+	set sql_buf "
+		select ${pk},count(0)  
+		from bass1.${tabname} 
+		where time_id =$timestamp
+		group by ${pk} having count(0) > 1
+		"
+	puts $sql_buf
+	set CHECK_VAL1 [get_single $sql_buf ]
+	puts $CHECK_VAL1
+	set CHECK_VAL1 [format "%.3f" [expr ${CHECK_VAL1} /1.00]]
+	puts $CHECK_VAL1
+	if {[format %.3f [expr ${CHECK_VAL1} ]]>0 } {
+		set grade 2
+	        set alarmcontent "接口 ${tabname} 主键唯一性校验未通过"
+	        WriteAlarm $app_name $optime $grade ${alarmcontent}
+    return -1	        
+	}
+		puts "接口 ${tabname} 主键唯一性校验OK!"
+	return 0
+}
+	
+invoke:
+#tabname不带schema
+set tabname "g_a_01002_day"
+set pk 			"cust_id"
+chkpkunique ${tabname} ${pk}
+
+proc chknull{tabname col}{
+	set sql_buf "
+		select count(0)  
+		from bass1.${tabname} 
+		where time_id =$timestamp
+		and ${col} is null
+		"	
+	puts $sql_buf
+	set CHECK_VAL1 [get_single $sql_buf ]
+	puts $CHECK_VAL1
+	set CHECK_VAL1 [format "%.3f" [expr ${CHECK_VAL1} /1.00]]
+	puts $CHECK_VAL1
+	if {[format %.3f [expr ${CHECK_VAL1} ]]>0 } {
+		set grade 2
+	        set alarmcontent "字段 ${tabname}.${col} 非空校验未通过!"
+	        WriteAlarm $app_name $optime $grade ${alarmcontent}
+    return -1	        
+	}
+		puts "字段 ${tabname}.${col} 非空校验ok!"
+	return 0
+		
+	}
+#tabname不带schema
+set tabname "g_a_01002_day"
+set col 			"cust_id"
+chknull ${tabname} ${col}
+
+
+chkfkvalid{maintabname fk dimtabname reftabname refkey}{
+	sql_buf "
+	select count(0) cnt
+	from ( select distinct ${fk} fk from ${maintabname} where time_id = $timestamp ) a 
+	where a.fk not in 
+		( 
+	 	select ${refkey} from ${dimtabname} where reftabname = '${reftabname}'
+		)
+	"
+	
+	puts $sql_buf
+	set CHECK_VAL1 [get_single $sql_buf ]
+	puts $CHECK_VAL1
+	set CHECK_VAL1 [format "%.3f" [expr ${CHECK_VAL1} /1.00]]
+	puts $CHECK_VAL1
+	if {[format %.3f [expr ${CHECK_VAL1} ]]>0 } {
+		set grade 2
+	        set alarmcontent "字段 ${maintabname}.${fk} 外键引用合法性校验未通过!"
+	        WriteAlarm $app_name $optime $grade ${alarmcontent}
+    return -1	        
+	}
+		puts "字段 ${maintabname}.${fk} 外键引用合法性校验OK!"
+	return 0
+	}
+
+#tabname不带schema
+set tabname "g_a_01002_day"
+set fk 			"cust_id"
+set dimtabname 			"dim_bass1_std1"
+set reftabname 			"bass1_std1_001"
+set  refkey 			"code"
+chkfkvalid ${tabname} ${col}
+
+#################################################################
+proc get_single {MySQL} {
+
+	global env
+
+	global conn
+
+	global handle
+
+	set handle [aidb_open $conn]
+	set sql_buff $MySQL
+  if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		WriteTrace $errmsg 1001
+		puts $errmsg
+		exit -1
+	}
+	if [catch {set result [lindex [aidb_fetch $handle] 0]} errmsg ] {
+		WriteTrace $errmsg 1002
+		puts $errmsg
+		exit -1
+	}
+	aidb_commit $conn
+	aidb_close $handle
+	
+	
+	return $result
+}	
+
+proc get_single_val {MySQL col} {
+
+	global env
+
+	global conn
+
+	global handle
+
+	set handle [aidb_open $conn]
+	set sql_buff $MySQL
+  if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		WriteTrace $errmsg 1001
+		puts $errmsg
+		exit -1
+	}
+	if [catch {set result [lindex [aidb_fetch $handle] $col]} errmsg ] {
+		WriteTrace $errmsg 1002
+		puts $errmsg
+		exit -1
+	}
+	aidb_commit $conn
+	aidb_close $handle
+	
+	
+	return $result
+}		

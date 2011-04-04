@@ -39,7 +39,7 @@ messages /bassapp/bass2/panzw2/msg/${table_name}.msg \\
 \n
 replace into ${table_name} nonrecoverable\""
 
-echo ${DB2_SQLCOMM}
+echo ${DB2_SQLCOMM}|sed -e 's/ $//g'
 
 db2 connect to bassdb user bass1 using bass1 
 
