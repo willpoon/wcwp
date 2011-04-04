@@ -108,8 +108,8 @@ db2 catalog database bassdb as bass2 at node bass2 authentication server
 db2 terminate
 
 
-db2 catalog tcpip node bassdb remote 172.16.5.56 server 50000
-db2 catalog database bassdb as bassdb at node bassdb authentication server
+db2 catalog tcpip node node48 remote 172.16.5.48 server 50000
+db2 catalog database bassdb as bassdb48 at node node48 authentication server
 db2 terminate
 
 
@@ -5275,5 +5275,13 @@ INSERT INTO BI.STG_CDR_OBS_CARD
 
                        
 SYS_TASK_RUNLOG£¿£¿£¿
+
+
+alias bin='cd /bassdb2/etl/E/boss/java/crm_interface/bin'
+alias pzh='cd /bassdb2/etl/E/panzw2'
+alias lo='cd /bassdb2/etl/L/boss'
+alias cfg='cd /bassdb2/etl/E/boss/java/crm_interface/bin/config/BOSS'
+alias bak='cd /bassdb2/etl/L/boss/backup'
+alias vlog='/bassdb2/etl/E/panzw2/ViewLoadLog_bassdb46.sh'
 
                        

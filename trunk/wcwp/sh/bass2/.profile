@@ -216,3 +216,33 @@ echo $sql
 }
 
 
+netrc(){
+machine 172.16.9.25
+login bass2
+password bass2
+machine 172.16.5.44
+login bass2
+password bass2
+
+machine 172.16.5.130
+login bass
+password 3jysjbx
+}
+
+
+ftp44(){
+HOME=${base_dir}
+export HOME
+ftp -v 172.16.5.44
+HOME=/bassapp/bass1
+export HOME
+}
+
+ftp130(){
+HOME=${base_dir}
+export HOME
+ftp -v 172.16.5.130
+HOME=/bassapp/bass1
+export HOME
+}
+
