@@ -2463,7 +2463,8 @@ vgop:
 $ ls -l *99008* *99014*
 
 
-db2look -d bassdb56 -e -i bass2 -w bass2 -z bass2 -t DWD_DSMP_equipment_DS_yyyymm  
+db2look -d bassdb56 -e -i bass2 -w bass2 -z bass1 -t  BASS1.G_MON_D_INTERFACE
+  
 
 drop table DWD_DSMP_WAP_MENU_DS_201012
 CREATE TABLE "BASS2   "."DWD_DSMP_WAP_MENU_DS_201012"  (
@@ -5269,7 +5270,8 @@ INSERT INTO BI.STG_CDR_OBS_CARD
                        
                        
 
-
+$ int -s zhanght_test.tcl > month_rpt_201103.txt
+$ cat  month_rpt_201103.txt| grep "[0-9]:" > month_rpt_201103_final.txt 
 
 
 
@@ -5285,3 +5287,40 @@ alias bak='cd /bassdb2/etl/L/boss/backup'
 alias vlog='/bassdb2/etl/E/panzw2/ViewLoadLog_bassdb46.sh'
 
                        
+                       
+create bass2.t_0x1f
+(cola varchar(10),colbvarchar(10))
+in tbs_3h;
+
+
+db2 "load client from /bassapp/bass1/panzw2/bass1/t0x1f.txt of del \
+messages ./t_0x1f.msg \
+modified by coldel0x1F replace into bass2.t_0x1f"
+
+
+db2 load  client from "/bassapp/bass1/panzw2/bass1/a.txt" of del modified by coldel0x1F  fastparse anyorder warningcount 1000 messages ./t0x1f.msg  replace into bass2.t_0x1f
+ 
+
+db2 load  client from "/bassapp/bass1/panzw2/bass1/b.txt" of del modified by coldel,  fastparse anyorder warningcount 1000 messages ./t0x1f.msg  replace into bass2.t_0x1f
+
+
+db2 "
+LOAD CLIENT FROM "./a.txt" OF DEL \
+MODIFIED BY CODEPAGE=1208 COLDEL0x1F \
+MESSAGES "./card.log" \
+INSERT INTO  bass2.t_0x1f
+"
+
+db2 load client from /bassapp/bass2/a.txt of del MODIFIED BY COLDEL0x1F insert into  bass2.t_0x1f
+db2 load client from /bassapp/bass2/a.txt of del MODIFIED BY COLDEL0x80 insert into  bass2.t_0x1f
+
+
+06021 TB_SVC_CORCHNL_BASIC 实体渠道基础信息 
+06022 TB_SVC_CORCHNL_RENT 实体渠道购建或租赁信息 
+06023 TB_SVC_CORCHNL_RES_CONF 实体渠道资源配置信息
+22061 TB_SVC_CORCHNL_BUSN_COST 实体渠道运营成本信息
+22062 TB_SVC_CORCHNL_PROC_INFO 实体渠道业务办理信息
+22063 TB_SVC_CORCHNL_SALRY_ALLOW 实体渠道酬金及补贴信息
+22064 TB_SVC_CORCHNL_ADD_BUSN_INFO 实体渠道重点增值业务办理信息"									
+									
+							                       

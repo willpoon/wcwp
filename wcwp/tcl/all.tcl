@@ -671,3 +671,38 @@ proc get_single_val {MySQL col} {
 	
 	return $result
 }		
+
+
+
+
+#------------------------内部函数部分--------------------------#	
+#  get_row 返回 SQL的行徝
+proc get_row {MySQL} {
+
+	global env
+
+	global conn
+
+	global handle
+
+	set handle [aidb_open $conn]
+	set sql_buff $MySQL
+	puts $sql_buff
+	puts "----------------------------------------------------------------------------------- "
+	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		WriteTrace "$errmsg" 2005
+		aidb_close $handle
+		puts $errmsg
+		exit -1
+	}
+	set p_row [aidb_fetch $handle]
+	aidb_commit $conn
+	aidb_close $handle
+	return $p_row
+}
+
+
+   set p_row [get_row $sqlbuf]
+   set RESULT_VAL1 [lindex $p_row 0]
+	 set RESULT_VAL2 [lindex $p_row 1]
+	 set RESULT_VAL3 [lindex $p_row 2]  

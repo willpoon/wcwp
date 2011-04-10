@@ -14,40 +14,72 @@ and flag = -1
 and control_code like 'BASS1%'
 order by alarmtime desc 
 
+--查询未导出接口 (未完全出数时)
+
+select unit_code from app.g_runlog 
+where time_id=int(replace(char(current date - 2 days),'-',''))
+and return_flag=1
+except
+select unit_code from app.g_runlog 
+where time_id=int(replace(char(current date - 1 days),'-',''))
+and return_flag=0
 
 
 /*********日***********/
 
---接口文件级返回检查(正常情况为56条记录)
-
+--接口文件级返回检查(正常情况为56条记录) file 
+--file lvl
 select  * from APP.G_FILE_REPORT
 where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err_code='00'
 
---接口记录集返回检查(正常情况为56条记录)
+--或者：有接口重传时、记录级重新返回时。
+--s_13100_20110301_22303_01_001.dat
+--file lvl
+select *
+from 
+(
+select  a.* ,row_number()over(partition by  substr(filename,18,5) order by deal_time desc ) rn 
+from APP.G_FILE_REPORT a
+where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err_code='00'
+) t where rn = 1
+
+--record 接口记录集返回检查(正常情况为56条记录) record
 select * from app.g_runlog 
 where time_id=int(replace(char(current date - 1 days),'-',''))
 and return_flag=1
 
 
---查询未返回接口
+--record 查询未返回接口 (已完全出数时) record
+
 select * from app.g_runlog 
 where time_id=int(replace(char(current date - 1 days),'-',''))
 and return_flag=0
 
-select current date - 1 month from bass2.dual
 
-current date - 1 month
-select substr(replace(char(current date - 1 month),'-',''),1,6) from bass2.dual
+-- record 未返回接口的详细信息 (day)  record
+select * from  BASS1.MON_ALL_INTERFACE 
+where INTERFACE_CODE in (
+select unit_code from app.g_runlog 
+where time_id=int(replace(char(current date - 1 days),'-',''))
+and return_flag=0
+)
+and type = 'd'
 
 /********月***********/
 
 ---月接口文件级返回检查(对于接口重送，相应的进行增加)
-select  * 
-from APP.G_FILE_REPORT
+--对于重传接口，根据重传次数会增加相应记录数，故做去重处理，防止重复统计
+--file 
+select *
+from 
+(
+select  a.* ,row_number()over(partition by  substr(filename,16,5) order by deal_time desc ) rn 
+from APP.G_FILE_REPORT a
 where substr(filename,9,6) = substr(replace(char(current date - 1 month),'-',''),1,6)
 and err_code='00'
 and length(filename)=length('s_13100_201002_03014_01_001.dat')
-order by deal_time desc
+) t where rn = 1
+
 
 --文件级返回失败检查
 select  * 
@@ -70,6 +102,15 @@ select * from app.g_runlog
 where time_id= int(substr(replace(char(current date - 1 month),'-',''),1,6))
 and return_flag=0
 
+--未返回接口的详细信息 (month)
+
+select * from  BASS1.MON_ALL_INTERFACE 
+where INTERFACE_CODE in (
+select unit_code from app.g_runlog 
+where time_id= int(substr(replace(char(current date - 1 month),'-',''),1,6))
+and return_flag=0
+)
+and type = 'm'
 
 
 --调度程序耗时:
@@ -108,24 +149,17 @@ where rule_code in ('R159_1','R159_2','R159_3','R159_4')
   and time_id=int(replace(char(current date - 1 days),'-',''))
 
 
-20110322	离网客户数	109.00000	107.00000	0.01869
-20110323	离网客户数	124.00000	120.00000	0.03333
-
 select * from     
 bass1.g_s_22012_day 
 where time_id=int(replace(char(current date - 1 days),'-',''))
-
-20110328	20110328	2364      	1627492     	22871900    	369353      	4151751     	137       	322376      
-20110328	R159_4	137.00000	138.00000	-0.00724	0.00000
- 
-
-
+20110406	离网客户数	131.00000	136.00000	-0.03676
+20110406	20110406	3144      	1620379     	23403737    	397454      	4118338     	131       	309773      
 
   
   --调整脚本，''里更新一定的值就是
 --离网客户数
-update bass1.g_s_22012_day set m_off_users='' 
-where time_id=20110323
+update bass1.g_s_22012_day set m_off_users='136' 
+where time_id=int(replace(char(current date - 1 days),'-',''))
 
 
 /**
@@ -142,9 +176,16 @@ where time_id=20110323
 94470 row(s) affected.
 
 
+--所有日接口代码：
+
+select b.CONTROL_CODE from    BASS1.MON_ALL_INTERFACE a, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)and a.TYPE = 'd'and b.control_code like '%DAY%'
+
+--所有月接口代码：
+select b.CONTROL_CODE from    BASS1.MON_ALL_INTERFACE a, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)and a.TYPE = 'm'and b.control_code like '%MONTH%'
 
 
 
 
 
-
+select * from app.sch_control_task  where control_code = 'BASS1_REPORT'
+ 
