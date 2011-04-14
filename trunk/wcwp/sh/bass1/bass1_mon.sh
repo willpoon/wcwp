@@ -6,17 +6,19 @@
 #5.数据导出与库表一致
 #6.传数提醒（备忘）
 #
+#原则：查库次数最小化
+
 #在DB2数据库中执行SQL
 DB2_SQL_EXEC()
 {
 DB2_OSS_DB="bassdb"
 DB2_OSS_USER="bass2"
 DB2_OSS_PASSWD="bass2"
-#echo ${DB2_OSS_PASSWD}	
     db2 terminate;db2 connect to $DB2_OSS_DB user $DB2_OSS_USER using $DB2_OSS_PASSWD
     eval $DB2_SQLCOMM 
 		if [ $? -ne 0 ];then 
 		echo "error occurs when running DB2_SQLCOMM!"
+		db2 connect reset 
 		return 1
 		fi
     db2 commit 
@@ -34,7 +36,6 @@ sendalarmsms(){
 	select  ('${MESSAGE_CONTENT}'),MOBILE_NUM from bass1.mon_user_mobile
 	"
 	DB2_SQLCOMM="db2 \"${sql_str}\""
-	#echo ${DB2_SQLCOMM}
 	DB2_SQL_EXEC > /dev/null
 	
   if [ $? -ne 0 ];then 
@@ -57,7 +58,6 @@ fn_d_file_lvl_ret_cnt(){
 						) t where rn = 1 with ur
 					 "
 	DB2_SQLCOMM="db2 \"${sql_str}\""
-	#echo ${DB2_SQLCOMM}
 	filelvl_ret_cnt=`DB2_SQL_EXEC|grep 'xxxxx'|awk '{print $2}'`	
   if [ $? -ne 0 ];then 
 	echo "error occurs while getting record_ret_cnt ! "
@@ -84,7 +84,6 @@ fn_d9_file_lvl_ret_cnt(){
 						) t where rn = 1 with ur 
 					 "
 	DB2_SQLCOMM="db2 \"${sql_str}\""
-	#echo ${DB2_SQLCOMM}
 	filelvl_ret_cnt=`DB2_SQL_EXEC|grep 'xxxxx'|awk '{print $2}'`	
   if [ $? -ne 0 ];then 
 	echo "fn_d9_file_lvl_ret_cnt:error occurs while getting record_ret_cnt ! "
@@ -139,7 +138,6 @@ fn_d13_file_lvl_ret_cnt(){
 						) t where rn = 1 with ur 
 					 "
 	DB2_SQLCOMM="db2 \"${sql_str}\""
-	#echo ${DB2_SQLCOMM}
 	filelvl_ret_cnt=`DB2_SQL_EXEC|grep 'xxxxx'|awk '{print $2}'`	
   if [ $? -ne 0 ];then 
 	echo "fn_d13_file_lvl_ret_cnt:error occurs while getting record_ret_cnt ! "
@@ -168,7 +166,6 @@ fn_d15_file_lvl_ret_cnt(){
 						) t where rn = 1 with ur 
 					 "
 	DB2_SQLCOMM="db2 \"${sql_str}\""
-	#echo ${DB2_SQLCOMM}
 	filelvl_ret_cnt=`DB2_SQL_EXEC|grep 'xxxxx'|awk '{print $2}'`	
   if [ $? -ne 0 ];then 
 	echo "fn_d15_file_lvl_ret_cnt:error occurs while getting record_ret_cnt ! "
@@ -188,7 +185,6 @@ fn_d_recordlvl_ret_cnt(){
 					 and return_flag=1 with ur 
 					 "
 	DB2_SQLCOMM="db2 \"${sql_str}\""
-	#echo ${DB2_SQLCOMM}
 	reclvl_ret_cnt=`DB2_SQL_EXEC|grep 'xxxxx'|awk '{print $2}'`	
   if [ $? -ne 0 ];then 
 	echo "error occurs while getting record_ret_cnt ! "
@@ -221,16 +217,17 @@ getunixtime2(){
 ##数据监控：提醒类
 ################################################################
 echo $$
+echo `date +%Y%m%d%H%M%S`
 start_run_time=`getunixtime2`
 while [ true ]
 do
-#设置退出条件
-if [ -f ./stop_bass1_mon ];then 
-echo "$0 normal exit"
-echo $$
-rm ./stop_bass1_mon
-exit
-fi
+	#设置退出条件
+	if [ -f ./stop_bass1_mon ];then 
+	echo "$0 normal exit"
+	echo $$
+	rm ./stop_bass1_mon
+	exit
+	fi
 #对部分提醒类短信，一天只发一次，故要发送一次后，要设置标志位，标记短信已发送1。在每天06：00重置为未发送0.
 			#初始化为1，已发送，以防不停地发!
 
@@ -238,10 +235,8 @@ fi
 			diffs=`expr $now_alert_time - $start_run_time`
 			#一次性初始化g_d_recordlvl_sent_flag,防止重复置0,将后面修改为1的状态覆盖了。
 			if [ $diffs -lt 60 ];then 
-			#echo $diffs
 			g_d_recordlvl_sent_flag=0
 			fi
-			#echo $g_d_recordlvl_sent_flag
 			#g_d_recordlvl_sent_flag：
 			#如果记录级全部返回，应为1
 			#如果未全部返回，应为0
@@ -251,7 +246,7 @@ fi
 			#在07-09期间，g_d_recordlvl_sent_flag = 0，处于等待发送状态。
 			#07点g_d_recordlvl_sent_flag清零
 			alert_time=`date +%H`
-			if [ ${alert_time} = "07" -a g_d_recordlvl_sent_flag -eq 1 ];then 			
+			if [ ${alert_time} = "07" -a ${g_d_recordlvl_sent_flag} -eq 1 ];then 			
 				g_d_recordlvl_sent_flag=0
 			fi
 			echo ${g_d_recordlvl_sent_flag}
@@ -279,9 +274,9 @@ fi
 			alert_time=`date +%H`
 			if [ ${alert_time} = "08" ];then 
 			
-			fn_d_file_lvl_ret_cnt      
-			v_d_filelvl_ret_cnt=$?     
-			echo ${v_d_filelvl_ret_cnt}
+				fn_d_file_lvl_ret_cnt      
+				v_d_filelvl_ret_cnt=$?     
+				echo ${v_d_filelvl_ret_cnt}
 			
 				if [ ${v_d_filelvl_ret_cnt} -eq 0 ]	;then 
 					MESSAGE_CONTENT="今日接口尚未上传！请抓紧上传！"
@@ -295,9 +290,9 @@ fi
 			#echo 2.2		
 			alert_time=`date +%H`
 			if [ ${alert_time} = "08" ];then 
-			fn_d9_file_lvl_ret_cnt
-			v_d_filelvl_ret_cnt=$?
-			echo ${v_d_filelvl_ret_cnt}
+				fn_d9_file_lvl_ret_cnt
+				v_d_filelvl_ret_cnt=$?
+				echo ${v_d_filelvl_ret_cnt}
 				if [ ${v_d_filelvl_ret_cnt} -ne 8 ]	;then 
 					MESSAGE_CONTENT="9点前接口不等于8个，请在9点前处理!"
 					sendalarmsms ${MESSAGE_CONTENT}
@@ -309,9 +304,9 @@ fi
 			#echo 2.3			
 			alert_time=`date +%H`
 			if [ ${alert_time} = "10" ];then 
-			fn_d11_file_lvl_ret_cnt
-			v_d_filelvl_ret_cnt=$?
-			echo ${v_d_filelvl_ret_cnt}
+				fn_d11_file_lvl_ret_cnt
+				v_d_filelvl_ret_cnt=$?
+				echo ${v_d_filelvl_ret_cnt}
 				if [ ${v_d_filelvl_ret_cnt} -ne 30 ]	;then 
 					MESSAGE_CONTENT="9点前接口不等于30个，请在11点前处理!"
 					sendalarmsms ${MESSAGE_CONTENT}
@@ -324,9 +319,9 @@ fi
 			#echo 2.4			
 			alert_time=`date +%H`
 			if [ ${alert_time} = "12" ];then 
-			fn_d13_file_lvl_ret_cnt
-			v_d_filelvl_ret_cnt=$?
-			echo ${v_d_filelvl_ret_cnt}
+				fn_d13_file_lvl_ret_cnt
+				v_d_filelvl_ret_cnt=$?
+				echo ${v_d_filelvl_ret_cnt}
 				if [ ${v_d_filelvl_ret_cnt} -ne 12 ]	;then 
 					MESSAGE_CONTENT="13点前接口不等于12个，请在13点前处理!"
 					sendalarmsms ${MESSAGE_CONTENT}
