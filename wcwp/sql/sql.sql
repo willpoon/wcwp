@@ -5303,6 +5303,9 @@ db2 load  client from "/bassapp/bass1/panzw2/bass1/a.txt" of del modified by col
 
 db2 load  client from "/bassapp/bass1/panzw2/bass1/b.txt" of del modified by coldel,  fastparse anyorder warningcount 1000 messages ./t0x1f.msg  replace into bass2.t_0x1f
 
+create bass2.t_0x1f
+(cola varchar(10),colbvarchar(10))
+in tbs_3h;
 
 db2 "
 LOAD CLIENT FROM "./a.txt" OF DEL \

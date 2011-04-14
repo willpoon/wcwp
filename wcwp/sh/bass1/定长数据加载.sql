@@ -95,7 +95,7 @@ timeformat=\\\"HHMMSS\\\" \\
 \n
 method L (${len_val}) \\
 \n
-messages /bassapp/bass2/panzw2/msg/${table_name}.msg \\
+messages ./${table_name}.msg \\
 \n
 replace into ${table_name} nonrecoverable\""
 
