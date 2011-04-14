@@ -1,3 +1,4 @@
+
 splfile(){
 #function:split large file
 #author:panzhiwei
@@ -475,3 +476,168 @@ getxlsdata(){
 				db2 connect reset
 				db2 terminate
 }
+
+
+
+
+test(){
+#测试：有条件地修改变量值，变量值的生存期	
+while [ true ]
+do
+			alert_time=`date +%S`
+			if [ ${alert_time} = "07" ];then 			
+				g_d_recordlvl_sent_flag=0
+			fi
+			echo ${g_d_recordlvl_sent_flag}
+				if [ ${g_d_recordlvl_sent_flag} -eq 0 ]	; then 
+					g_d_recordlvl_sent_flag=1
+					echo "now g_d_recordlvl_sent_flag:" $g_d_recordlvl_sent_flag
+				fi
+sleep 1
+done
+}
+
+
+getunixtime(){
+		#获得文件unixtimestamp
+		if [ $# -ne 1 ];then
+		echo "getmtime filename"
+		exit
+		fi
+		in_file=$1
+		if [ ! -f ${in_file} ];then 
+		echo "getmtime 所操作的文件 ${in_file} 不存在!!"
+		return 1
+		fi
+		tcltimestamp=`echo "puts [file mtime ${in_file}]"|tclsh`
+		echo $tcltimestamp
+		return 0
+}
+
+
+
+getunixtime(){
+		if [ $# -ne 1 ];then
+		echo "getmtime filename"
+		exit
+		fi
+		in_file=$1
+		if [ ! -f ${in_file} ];then 
+		echo "getmtime 所操作的文件 ${in_file} 不存在!!"
+		return 1
+		fi
+		tcltimestamp=`echo "puts [file mtime ${in_file}]"|tclsh|awk -F'\r' '{print $1}'`
+		echo  $tcltimestamp
+		return 0
+}
+#getunixtime test.sh
+
+
+getunixtime2(){
+		if [ $# -ne 0 ];then
+		echo "getmtime"
+		exit
+		fi
+		touchfile="./.getunixtime2$$"
+		touch $touchfile
+		in_file=$touchfile
+		if [ ! -f ${in_file} ];then 
+		echo "getmtime 所操作的文件 ${in_file} 不存在!!"
+		return 1
+		fi
+		tcltimestamp=`echo "puts [file mtime ${in_file}]"|tclsh|awk -F'\r' '{print $1}'`
+		echo  $tcltimestamp
+		rm $touchfile
+		return 0
+}
+#getunixtime test.sh
+
+
+test2(){
+#测试：在循环中只为变量g_d_recordlvl_sent_flag赋值一次，无论循环多少遍！
+touch test.sh
+start_run_time=`getunixtime test.sh`
+start_num=`echo  $start_run_time`
+while [ true ]
+do
+			touch test.sh
+			now_alert_time=`getunixtime test.sh`
+			now_num=`echo  $now_alert_time`
+			
+			#echo $start_num
+			#echo $now_num
+			#diffs=9
+			diffs=`expr $now_alert_time - $start_run_time`
+			#echo $diffs
+			if [ $diffs -lt 60 ];then 
+			echo $diffs
+			g_d_recordlvl_sent_flag=0
+			fi
+			echo $g_d_recordlvl_sent_flag
+			#if [ ${alert_time} = "07" ];then 			
+			#	g_d_recordlvl_sent_flag=0
+			#fi
+			#echo ${g_d_recordlvl_sent_flag}
+			#	if [ ${g_d_recordlvl_sent_flag} -eq 0 ]	; then 
+			#		g_d_recordlvl_sent_flag=1
+			#		echo "now g_d_recordlvl_sent_flag:" $g_d_recordlvl_sent_flag
+			#	fi
+sleep 5
+done
+}
+
+#test2
+
+
+test3(){
+#测试：在循环中只为变量g_d_recordlvl_sent_flag赋值一次，无论循环多少遍！
+start_run_time=`getunixtime2`
+start_num=`echo  $start_run_time`
+while [ true ]
+do
+			now_alert_time=`getunixtime2`
+			now_num=`echo  $now_alert_time`
+			
+			#echo $start_num
+			#echo $now_num
+			#diffs=9
+			diffs=`expr $now_alert_time - $start_run_time`
+			#echo $diffs
+			if [ $diffs -lt 60 ];then 
+			echo $diffs
+			g_d_recordlvl_sent_flag=0
+			fi
+			echo $g_d_recordlvl_sent_flag
+			#if [ ${alert_time} = "07" ];then 			
+			#	g_d_recordlvl_sent_flag=0
+			#fi
+			#echo ${g_d_recordlvl_sent_flag}
+			#	if [ ${g_d_recordlvl_sent_flag} -eq 0 ]	; then 
+			#		g_d_recordlvl_sent_flag=1
+			#		echo "now g_d_recordlvl_sent_flag:" $g_d_recordlvl_sent_flag
+			#	fi
+sleep 5
+done
+}
+
+test3
+
+
+getunixtime2(){                                                                     
+	#sun os date 不能求 unixtimestamp , 唯有这样来取了！有一定的绝对误差。 
+	#这个版本改用 touch "." 来刷新时间，不用借助手工touch 一个文件.
+		if [ $# -ne 0 ];then                                                            
+		echo "getmtime"                                                                 
+		exit                                                                            
+		fi                                                                              
+		touchfile="."                                                                   
+		touch $touchfile                                                                
+		in_file=$touchfile                                                              
+		if [ ! -d ${in_file} ];then                                                     
+		echo "getmtime 所操作的文件 ${in_file} 不存在!!"                                
+		return 1                                                                        
+		fi                                                                              
+		tcltimestamp=`echo "puts [file mtime ${in_file}]"|tclsh|awk -F'\r' '{print $1}'`
+		echo  $tcltimestamp                                                             
+		return 0                                                                        
+}                                                                                   

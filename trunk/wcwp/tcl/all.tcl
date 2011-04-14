@@ -706,3 +706,4 @@ proc get_row {MySQL} {
    set RESULT_VAL1 [lindex $p_row 0]
 	 set RESULT_VAL2 [lindex $p_row 1]
 	 set RESULT_VAL3 [lindex $p_row 2]  
+	 

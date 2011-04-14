@@ -116,7 +116,7 @@ and type = 'm'
 --调度程序耗时:
 select A.*,char(a.RUNTIME/60)||'min',char(a.RUNTIME/60/60)||'hr' from   app.sch_control_runlog A
 where control_code like 'BASS1%DAY%'
-and a.RUNTIME/60 > 10
+and a.RUNTIME/60 > 5
 ORDER BY RUNTIME DESC 
 
 
@@ -148,17 +148,17 @@ from bass1.g_rule_check
 where rule_code in ('R159_1','R159_2','R159_3','R159_4')
   and time_id=int(replace(char(current date - 1 days),'-',''))
 
-
+select max(target3) from  bass1.g_rule_check where rule_code = 'R159_1'
 select * from     
 bass1.g_s_22012_day 
 where time_id=int(replace(char(current date - 1 days),'-',''))
-20110406	离网客户数	131.00000	136.00000	-0.03676
-20110406	20110406	3144      	1620379     	23403737    	397454      	4118338     	131       	309773      
+20110411	离网客户数	83.00000	85.00000	-0.02352
+20110411	20110411	3133      	1634273     	23648119    	406854      	3882865     	83        	309424      
 
   
   --调整脚本，''里更新一定的值就是
 --离网客户数
-update bass1.g_s_22012_day set m_off_users='136' 
+update bass1.g_s_22012_day set m_off_users='85' 
 where time_id=int(replace(char(current date - 1 days),'-',''))
 
 
@@ -184,8 +184,37 @@ select b.CONTROL_CODE from    BASS1.MON_ALL_INTERFACE a, app.sch_control_task 
 select b.CONTROL_CODE from    BASS1.MON_ALL_INTERFACE a, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)and a.TYPE = 'm'and b.control_code like '%MONTH%'
 
 
+		   
+--每月月初跑
+--G_S_21003_STORE_DAY
+--每月月初插入上月全月数据
+delete from G_S_21003_STORE_DAY 
+where TIME_ID/100 = int(substr(replace(char(current date - 1 month),'-',''),1,6))
+
+insert into G_S_21003_STORE_DAY
+select *
+from G_S_21003_TO_DAY
+where TIME_ID/100 = int(substr(replace(char(current date - 1 month),'-',''),1,6))
+
+--统计备份情况()
+select count(0) from G_S_21003_STORE_DAY 
+where TIME_ID/100 = int(substr(replace(char(current date - 1 month),'-',''),1,6))
+
+select count(0) from G_S_21003_TO_DAY 
+where TIME_ID/100 = int(substr(replace(char(current date - 1 month),'-',''),1,6))
+
+--统计备份情况()
+select count(0) from G_S_21003_STORE_DAY 
+where TIME_ID/100 = int(substr(replace(char(current date - 2 month),'-',''),1,6))
+
+select count(0) from G_S_21003_TO_DAY 
+where TIME_ID/100 = int(substr(replace(char(current date - 2 month),'-',''),1,6))
+
+--两者一致，则在G_S_21003_TO_DAY删除前两个月前的数据(如现在是5月，保留3，4月，删除2月数据)
+--提高程序速度
+delete from G_S_21003_TO_DAY 
+where TIME_ID/100 = int(substr(replace(char(current date - 2 month),'-',''),1,6))
 
 
 
-select * from app.sch_control_task  where control_code = 'BASS1_REPORT'
- 
+
