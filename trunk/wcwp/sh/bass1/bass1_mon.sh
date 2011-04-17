@@ -8,6 +8,53 @@
 #
 #原则：查库次数最小化
 
+yesterday()
+{
+	#usage:yesterday yyyymmdd
+        year=`echo "$1"|cut -c1-4`
+        month=`echo "$1"|cut -c5-6`
+        day=`echo "$1"|cut -c7-8`
+
+        month=`expr $month + 0`
+        day=`expr $day - 1`
+
+        if [ $day -eq 0 ]; then
+                month=`expr $month - 1`
+                if [ $month -eq 0 ]; then
+                        month=12
+                        day=31
+                        year=`expr $year - 1`
+                else
+                        case $month in
+                                1|3|5|7|8|10|12) day=31;;
+                                4|6|9|11) day=30;;
+                                2)
+                                        if [ `expr $year % 4` -eq 0 ]; then
+                                                if [ `expr $year % 400` -eq 0 ]; then
+                                                        day=29
+                                                elif [ `expr $year % 100` -eq 0 ]; then
+                                                        day=28
+                                                else
+                                                        day=29
+                                                fi
+                                        else
+                                                day=28
+                                        fi ;;
+                        esac
+                fi
+        fi
+
+        if [ $month -lt 10 ] ; then
+                month=`echo "0$month"`
+        fi
+
+        if [ $day -lt 10 ] ; then
+                day=`echo "0$day"`
+        fi
+        echo $year$month$day
+        return 1
+}
+
 #在DB2数据库中执行SQL
 DB2_SQL_EXEC()
 {
@@ -217,7 +264,6 @@ getunixtime2(){
 ##数据监控：提醒类
 ################################################################
 echo $$
-echo `date +%Y%m%d%H%M%S`
 start_run_time=`getunixtime2`
 while [ true ]
 do
@@ -228,7 +274,9 @@ do
 	rm ./stop_bass1_mon
 	exit
 	fi
-#对部分提醒类短信，一天只发一次，故要发送一次后，要设置标志位，标记短信已发送1。在每天06：00重置为未发送0.
+	#日志时间
+	echo `date +%Y%m%d%H%M%S`	
+	#对部分提醒类短信，一天只发一次，故要发送一次后，要设置标志位，标记短信已发送1。在每天06：00重置为未发送0.
 			#初始化为1，已发送，以防不停地发!
 
 			now_alert_time=`getunixtime2`
@@ -254,12 +302,13 @@ do
 			#1.1日数据：监控记录级返回，当全部返回时触发。
 			#echo 1.1
 			alert_time=`date +%H`
-			if [ ${alert_time} -ge "08" ];then 			
+			#加入${g_d_recordlvl_sent_flag} -eq 0 ，双重判断，减少扫表次数(从16*5次减少到1*5次)
+			if [ ${alert_time} -ge "08" -a ${g_d_recordlvl_sent_flag} -eq 0 ];then 			
 				fn_d_recordlvl_ret_cnt
 				v_d_recordlvl_ret_cnt=$?
 				echo ${v_d_recordlvl_ret_cnt}
 				if [ ${v_d_recordlvl_ret_cnt} -eq 56 -a ${g_d_recordlvl_sent_flag} -eq 0 ]	; then 
-					MESSAGE_CONTENT="日接口(day)记录级校验已全部正常返回!!"
+					MESSAGE_CONTENT="日接口(day)记录级校验已全部正常返回."
 					sendalarmsms ${MESSAGE_CONTENT}
 					#将发送标记置为已发送！
 					g_d_recordlvl_sent_flag=1
@@ -346,13 +395,45 @@ do
 
 
 ################################################################
-##月数据监控
+##导出监控
 ################################################################
-
+			alert_time=`date +%H`
+			if [ ${alert_time} = "03" -o ${alert_time} = "04" -o ${alert_time} = "05" -o ${alert_time} = "06" -o ${alert_time} = "07" ];then 
+					sql_str="select 'xxxxx', count(0) from   app.sch_control_runlog  a \
+									where a.control_code like 'BASS1%EXP%DAY%' \
+									and date(a.begintime) =  date(current date) \
+									and flag = 0 with ur 
+					"
+					DB2_SQLCOMM="db2 \"${sql_str}\""	
+					exp_cnt=`DB2_SQL_EXEC|grep 'xxxxx'|awk '{print $2}'`			
+					today=`date '+%Y%m%d'`
+					deal_date=`yesterday ${today}`
+					exp_dir="/bassapp/backapp/data/bass1/export/export_${deal_date}"				
+					dat_file_cnt=`ls -lrt ${exp_dir}/*.dat | wc -l|awk '{print $1}'`
+					echo "dat_file_cnt  数据文件数 :${dat_file_cnt}"				
+				if [ ${dat_file_cnt} -ne  ${exp_cnt} ];then 
+					MESSAGE_CONTENT="  数据文件数 不等于 ${exp_cnt} ,请先处理！"
+					echo ${MESSAGE_CONTENT}
+					sendalarmsms ${MESSAGE_CONTENT}				
+				fi	
+											
+				verf_file_cnt=`ls -lrt ${exp_dir}/*.verf | wc -l|awk '{print $1}'`
+				echo "verf_file_cnt 校验文件数 :${verf_file_cnt}"								
+				if [ ${verf_file_cnt} -ne  ${exp_cnt}  ];then 
+					MESSAGE_CONTENT="  校验文件数 不等于 ${exp_cnt} ,请先处理！"
+					echo ${MESSAGE_CONTENT}
+					sendalarmsms ${MESSAGE_CONTENT}						
+				fi
+		 fi
 
 
 ################################################################
 ##表空间监控
+################################################################
+
+                                                                
+################################################################
+##月数据监控                                                    
 ################################################################
 sleep 600
 done
