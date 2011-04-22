@@ -5327,3 +5327,6 @@ db2 load client from /bassapp/bass2/a.txt of del MODIFIED BY COLDEL0x80 insert i
 22064 TB_SVC_CORCHNL_ADD_BUSN_INFO 实体渠道重点增值业务办理信息"									
 									
 							                       
+
+Q3:R 2708~3247							                       
+
