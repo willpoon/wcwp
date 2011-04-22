@@ -25,16 +25,19 @@ where time_id=int(replace(char(current date - 1 days),'-',''))
 and return_flag=0
 
 
-/*********日***********/
+/*********日**************************************************************************************/
 
 --接口文件级返回检查(正常情况为56条记录) file 
 --file lvl
 select  * from APP.G_FILE_REPORT
 where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err_code='00'
 
+
+
 --或者：有接口重传时、记录级重新返回时。
 --s_13100_20110301_22303_01_001.dat
 --file lvl
+
 select *
 from 
 (
@@ -43,17 +46,33 @@ from APP.G_FILE_REPORT a
 where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err_code='00'
 ) t where rn = 1
 
+----------------------求未上传（文件级返回）接口！ (当日没返回文件级的接口)
+select * from   BASS1.MON_ALL_INTERFACE where interface_code 
+not in (select substr(filename,18,5) from 
+APP.G_FILE_REPORT
+where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err_code='00'
+) and type='d'
+
+
 --record 接口记录集返回检查(正常情况为56条记录) record
+
 select * from app.g_runlog 
 where time_id=int(replace(char(current date - 1 days),'-',''))
 and return_flag=1
 
 
---record 查询未返回接口 (已完全出数时) record
+--record 查询未返回接口 (已完全上报时) record
 
 select * from app.g_runlog 
 where time_id=int(replace(char(current date - 1 days),'-',''))
 and return_flag=0
+
+--求未导出接口 (通过上一天与本日比较)
+select * from app.g_runlog 
+where time_id=int(replace(char(current date - 2 days),'-',''))
+and unit_code 
+not in (select unit_code  from  app.g_runlog where time_id=int(replace(char(current date - 1 days),'-',''))
+ )
 
 
 -- record 未返回接口的详细信息 (day)  record
@@ -65,7 +84,20 @@ and return_flag=0
 )
 and type = 'd'
 
-/********月***********/
+
+--查询未运行的导出程序
+SELECT * FROM bass1.MON_ALL_INTERFACE  t
+WHERE t.INTERFACE_CODE not IN (
+select substr(a.control_code,15,5) from   app.sch_control_runlog  A
+where control_code like 'BASS1_EXP%DAY'
+AND date(a.begintime) =  date(current date)
+AND FLAG = 0
+)
+AND TYPE='d'
+
+
+
+/********月***************************************************************************************/
 
 ---月接口文件级返回检查(对于接口重送，相应的进行增加)
 --对于重传接口，根据重传次数会增加相应记录数，故做去重处理，防止重复统计
@@ -148,12 +180,14 @@ from bass1.g_rule_check
 where rule_code in ('R159_1','R159_2','R159_3','R159_4')
   and time_id=int(replace(char(current date - 1 days),'-',''))
 
-select max(target3) from  bass1.g_rule_check where rule_code = 'R159_1'
+20110418	离网客户数	84.00000	85.00000	-0.01176
+
+
 select * from     
 bass1.g_s_22012_day 
 where time_id=int(replace(char(current date - 1 days),'-',''))
-20110411	离网客户数	83.00000	85.00000	-0.02352
-20110411	20110411	3133      	1634273     	23648119    	406854      	3882865     	83        	309424      
+
+20110418	20110418	2809      	1653466     	24223905    	424455      	3733032     	84       	318506      
 
   
   --调整脚本，''里更新一定的值就是
@@ -214,6 +248,50 @@ where TIME_ID/100 = int(substr(replace(char(current date - 2 month),'-',''),1,6)
 --提高程序速度
 delete from G_S_21003_TO_DAY 
 where TIME_ID/100 = int(substr(replace(char(current date - 2 month),'-',''),1,6))
+
+
+
+
+
+--生成重导日数据的命令
+
+select b.*, lower( '/bassapp/backapp/bin/bass1_export/bass1_export '||substr(a.control_code,11,13)||' '||char(current date - 1 days) ) exp_cmdfrom   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE bwhere a.control_code like 'BASS1%EXP%DAY%'and date(a.begintime) =  date(current date)and substr(a.control_code,15,5) = b.interface_code and b.type='d'
+--生成重导月数据的命令
+
+select b.*, lower( '/bassapp/backapp/bin/bass1_export/bass1_export '||substr(a.control_code,11,15)||' '||substr(char(current date - 1 month) ,1,7)) exp_cmdfrom   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE bwhere a.control_code like 'BASS1%EXP%MONTH%'and month(a.begintime) =  month(current date)and substr(a.control_code,15,5) = b.interface_code and b.type='m'
+
+
+--单独put 某个接口:day
+
+
+
+select b.*, lower( 'put *'||b.interface_code||'*.dat ' ) put_dat, lower( 'put *'||b.interface_code||'*.verf ' ) put_verf
+from   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE bwhere a.control_code like 'BASS1%EXP%DAY%'and date(a.begintime) =  date(current date)and substr(a.control_code,15,5) = b.interface_code and b.type='d'
+--单独put 某个接口:month
+
+select b.*, lower( 'put *'||b.interface_code||'*.dat ' ) put_dat, lower( 'put *'||b.interface_code||'*.verf ' ) put_verffrom   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE bwhere a.control_code like 'BASS1%EXP%MONTH%'and month(a.begintime) =  month(current date)and substr(a.control_code,15,5) = b.interface_code and b.type='m'
+
+select cast(row_number()over() as char(8)) from  bass1.g_i_06032_day where time_id = 20110415
+select \n\r from bass2.dual
+VALUES 'Hello everyone' || CHR(10) || CHR(13) || 'i''m wave'  
+
+
+
+
+
+
+--接口号 -  表名 对应关系
+
+select substr(control_code , 11,5) unit_code,substr(b.CONTROL_CODE,7,13) from    BASS1.MON_ALL_INTERFACE a, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)and a.TYPE = 'd'and b.control_code like '%DAY%'
+
+
+select * from table(
+select substr(control_code , 11,5) unit_code,substr(b.CONTROL_CODE,7,15),b.control_code from    BASS1.MON_ALL_INTERFACE a, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)and a.TYPE = 'm'and b.control_code like '%MONTH%'
+) t where unit_code = ''
+
+
+select * from   G_S_21003_MONTH
+
 
 
 
