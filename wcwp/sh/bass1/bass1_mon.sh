@@ -307,7 +307,7 @@ do
 				echo ${v_d_recordlvl_ret_cnt}
 				if [ ${v_d_recordlvl_ret_cnt} -eq 56 -a ${g_d_recordlvl_sent_flag} -eq 0 ]	; then 
 					MESSAGE_CONTENT="日接口(day)记录级校验已全部正常返回."
-					sendalarmsms ${MESSAGE_CONTENT}
+					sendalarmsms "${MESSAGE_CONTENT}"
 					#将发送标记置为已发送！
 					g_d_recordlvl_sent_flag=1
 				fi
@@ -327,7 +327,7 @@ do
 			
 				if [ ${v_d_filelvl_ret_cnt} -eq 0 ]	;then 
 					MESSAGE_CONTENT="今日接口尚未上传！请抓紧上传！"
-					sendalarmsms ${MESSAGE_CONTENT}
+					sendalarmsms "${MESSAGE_CONTENT}"
 				fi
 			fi
 			
@@ -342,7 +342,7 @@ do
 				echo ${v_d_filelvl_ret_cnt}
 				if [ ${v_d_filelvl_ret_cnt} -ne 8 ]	;then 
 					MESSAGE_CONTENT="9点前接口不等于8个，请在9点前处理!"
-					sendalarmsms ${MESSAGE_CONTENT}
+					sendalarmsms "${MESSAGE_CONTENT}"
 				fi
 			fi
 			
@@ -356,7 +356,7 @@ do
 				echo ${v_d_filelvl_ret_cnt}
 				if [ ${v_d_filelvl_ret_cnt} -ne 30 ]	;then 
 					MESSAGE_CONTENT="9点前接口不等于30个，请在11点前处理!"
-					sendalarmsms ${MESSAGE_CONTENT}
+					sendalarmsms "${MESSAGE_CONTENT}"
 				fi
 			fi
 			
@@ -371,7 +371,7 @@ do
 				echo ${v_d_filelvl_ret_cnt}
 				if [ ${v_d_filelvl_ret_cnt} -ne 12 ]	;then 
 					MESSAGE_CONTENT="13点前接口不等于12个，请在13点前处理!"
-					sendalarmsms ${MESSAGE_CONTENT}
+					sendalarmsms "${MESSAGE_CONTENT}"
 				fi
 			fi
 			
@@ -386,7 +386,7 @@ do
 			echo ${v_d_filelvl_ret_cnt}
 				if [ ${v_d_filelvl_ret_cnt} -ne 6 ]	;then 
 					MESSAGE_CONTENT="15点前接口不等于6个，请在15点前处理!"
-					sendalarmsms ${MESSAGE_CONTENT}
+					sendalarmsms "${MESSAGE_CONTENT}"
 				fi
 			fi
 			
@@ -410,17 +410,17 @@ do
 					dat_file_cnt=`ls -lrt ${exp_dir}/*.dat | wc -l|awk '{print $1}'`
 					echo "dat_file_cnt  数据文件数 :${dat_file_cnt}"				
 				if [ ${dat_file_cnt} -ne  ${exp_cnt} ];then 
-					MESSAGE_CONTENT="  数据文件数 不等于 ${exp_cnt} ,请先处理！"
+					MESSAGE_CONTENT="数据文件数：${dat_file_cnt}不等于 ${exp_cnt},请先处理！"
 					echo ${MESSAGE_CONTENT}
-					sendalarmsms ${MESSAGE_CONTENT}				
+					sendalarmsms "${MESSAGE_CONTENT}"
 				fi	
 											
 				verf_file_cnt=`ls -lrt ${exp_dir}/*.verf | wc -l|awk '{print $1}'`
 				echo "verf_file_cnt 校验文件数 :${verf_file_cnt}"								
 				if [ ${verf_file_cnt} -ne  ${exp_cnt}  ];then 
-					MESSAGE_CONTENT="  校验文件数 不等于 ${exp_cnt} ,请先处理！"
+					MESSAGE_CONTENT="校验文件数:${verf_file_cnt}不等于${exp_cnt},请先处理！"
 					echo ${MESSAGE_CONTENT}
-					sendalarmsms ${MESSAGE_CONTENT}						
+					sendalarmsms "${MESSAGE_CONTENT}"
 				fi
 		 fi
 
