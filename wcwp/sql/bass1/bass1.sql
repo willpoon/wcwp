@@ -967,3 +967,34 @@ pwd:   abcd@1234
 
 route add 132.32.22.0 mask 255.255.255.0 10.233.20.113 
 
+alter table TABLENAME ALTER column columnName SET DATA TYPE varchar(10000)
+
+TABLENAME:表名
+
+columnName:列名
+
+free_res_val1
+：空的就是收费的，非空就是免费
+is null 收费
+is not null 免费
+
+
+不占用套餐流量的免费流量， free_res_val1 is null 
+
+套餐内:
+免费
+is not null 
+
+套餐外:
+--------------------------------------
+1.免费流量：
+1.1套餐内流量：free_res_val1 is not null and sum(charge1+charge2+charge3+charge4)/10 = 0  
+1.2非套餐内的免费流量：free_res_val1 is  null 
+2.收费流量：
+2.1无套餐流量：sum(charge1+charge2+charge3+charge4)/10 > 0 
+2.2套餐外流量：
+--------------------------------------
+
+2、通信费：客户使用手机报业务产生的通信费（如短信上行费用、 GPRS费用等），按现有资费标准执行。 
+4、为什么接收手机报彩信的时候产生了GPRS流量费？ 
+答：正常情况下，客户在国内接收手机报彩信产品是不会产生GPRS流量费的，但是如果客户出国时接收了手机报彩信，则会产生国际漫游 GPRS流量费，客户可以在出发前拨打10086进行退订或暂停。客户出国后，会收到相关提醒短信，如果不希望在国外接收手机报彩信，可按照短信提示内容进行操作或者拨打免费客服热线+8613800100186进行处理。 
