@@ -4,6 +4,7 @@
 #r1 : 记录级返回时间监控（只提示一次）
 #r2 : 各个时间点接口上传监控、上传提醒。如未处理指定小时内10分钟提醒一次。
 #r3 : 接口文件导出监控（3-6点每10分钟扫描一次，有异常即触发告警）
+#r4 : 增加监控：凌晨4：00若接口导出为0，告警。
 ##############################################################
 
 yesterday()
@@ -341,7 +342,7 @@ do
 				v_d_filelvl_ret_cnt=$?
 				echo ${v_d_filelvl_ret_cnt}
 				if [ ${v_d_filelvl_ret_cnt} -ne 8 ]	;then 
-					MESSAGE_CONTENT="9点前接口不等于8个，请在9点前处理!"
+					MESSAGE_CONTENT="9点前接口文件级返回不等于8个，请在9点前处理，确认是否已上传!"
 					sendalarmsms "${MESSAGE_CONTENT}"
 				fi
 			fi
@@ -355,7 +356,7 @@ do
 				v_d_filelvl_ret_cnt=$?
 				echo ${v_d_filelvl_ret_cnt}
 				if [ ${v_d_filelvl_ret_cnt} -ne 30 ]	;then 
-					MESSAGE_CONTENT="9点前接口不等于30个，请在11点前处理!"
+					MESSAGE_CONTENT="9点前接口文件级返回不等于30个，请在11点前处理，确认是否已上传!"
 					sendalarmsms "${MESSAGE_CONTENT}"
 				fi
 			fi
@@ -370,7 +371,7 @@ do
 				v_d_filelvl_ret_cnt=$?
 				echo ${v_d_filelvl_ret_cnt}
 				if [ ${v_d_filelvl_ret_cnt} -ne 12 ]	;then 
-					MESSAGE_CONTENT="13点前接口不等于12个，请在13点前处理!"
+					MESSAGE_CONTENT="13点前接口文件级返回不等于12个，请在13点前处理，确认是否已上传!"
 					sendalarmsms "${MESSAGE_CONTENT}"
 				fi
 			fi
@@ -385,7 +386,7 @@ do
 			v_d_filelvl_ret_cnt=$?
 			echo ${v_d_filelvl_ret_cnt}
 				if [ ${v_d_filelvl_ret_cnt} -ne 6 ]	;then 
-					MESSAGE_CONTENT="15点前接口不等于6个，请在15点前处理!"
+					MESSAGE_CONTENT="15点前接口文件级返回不等于6个，请在15点前处理，确认是否已上传!"
 					sendalarmsms "${MESSAGE_CONTENT}"
 				fi
 			fi
@@ -408,12 +409,21 @@ do
 					deal_date=`yesterday ${today}`
 					exp_dir="/bassapp/backapp/data/bass1/export/export_${deal_date}"				
 					dat_file_cnt=`ls -lrt ${exp_dir}/*.dat | wc -l|awk '{print $1}'`
-					echo "dat_file_cnt  数据文件数 :${dat_file_cnt}"				
-				if [ ${dat_file_cnt} -ne  ${exp_cnt} ];then 
+					echo "dat_file_cnt数据文件数 :${dat_file_cnt}"				
+				#4：00检查导出非0	
+				if [ ${alert_time} = "04" ];then
+						if [ ${dat_file_cnt} -eq  0 ];then
+								MESSAGE_CONTENT="数据文件数：${dat_file_cnt},导出延迟,请核查！"
+								echo ${MESSAGE_CONTENT}
+								sendalarmsms "${MESSAGE_CONTENT}"
+						fi
+				fi
+				
+				if [ ${dat_file_cnt} -ne  ${exp_cnt} ];then
 					MESSAGE_CONTENT="数据文件数：${dat_file_cnt}不等于 ${exp_cnt},请先处理！"
 					echo ${MESSAGE_CONTENT}
 					sendalarmsms "${MESSAGE_CONTENT}"
-				fi	
+				fi
 											
 				verf_file_cnt=`ls -lrt ${exp_dir}/*.verf | wc -l|awk '{print $1}'`
 				echo "verf_file_cnt 校验文件数 :${verf_file_cnt}"								

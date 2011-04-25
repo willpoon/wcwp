@@ -13,7 +13,7 @@
                      and day_new_mark = 1 and test_mark<>1                     and a.cust_id = b.cust_idgroup by    b.cust_nameorder by 2 desc                    select a.*,b.*
                     from bass2.dw_product_20110324 a ,bass2.dwd_cust_msg_20110324 b 
                    where usertype_id in (1,2,9) 
-                     and day_new_mark = 1 and test_mark<>1                     and a.cust_id = b.cust_idselect count(0) from session.int_check_user_status where create_date = '20110324'and test_flag = '0'                     4231 3月23日	 3月24日2880	4239select * from   g_s_22012_day20110324	20110324	`4231      	1636785     	23021010    	412022      	3873747     	3424      	335706      20110323	20110323	`2878      	1635972     	22901457    	389311      	3975018     	120       	329440      select b.cust_name,a.CRM_BRAND_ID1, count(0)                    from bass2.dw_product_20110323 a ,bass2.dwd_cust_msg_20110323 b                    where usertype_id in (1,2,9)                      and day_new_mark = 1 and test_mark<>1                     and a.cust_id = b.cust_idand  b.CHANNEL_ID in(91000047,91000048,91000049,91000046,91000050,91000035,97000019,91000012,97000023)group by    b.cust_name, a.CRM_BRAND_ID1order by 3 desc                      select b.cust_name,b.CHANNEL_ID, count(0)                    from bass2.dw_product_20110322 a ,bass2.dwd_cust_msg_20110322 b                    where usertype_id in (1,2,9)                      and day_new_mark = 1 and test_mark<>1                     and a.cust_id = b.cust_idgroup by    b.cust_name, b.CHANNEL_IDorder by 3 desc 拉萨市东城区代理店	91000046	126拉萨市南城区代理店	91000049	114拉萨市西城区代理店	91000047	113拉萨市开发区代理店	91000048	78拉萨市北城区代理店	91000050	77拉萨市邮政局	91000012	38拉萨万利文体商贸有限公司	91000035	11巴桑	97000019	1王玉萍	97000023	1索南顿珠	97000023	1普布次仁	97000019	1欧珠	97000019	1洛桑顿珠	97000019	1洪吉	97000023	1次仁桑珠	97000019	1次仁德吉	97000019	1巴桑	97000023	1declare global temporary table session.int_check_user_status    (   user_id        CHARACTER(15),   product_no     CHARACTER(15),   test_flag      CHARACTER(1),   sim_code       CHARACTER(15),   usertype_id    CHARACTER(4),   create_date    CHARACTER(15),   time_id        int)                            partitioning key            (   user_id     ) using hashing           with replace on commit preserve rows not logged in tbs_user_tempinsert into session.int_check_user_status (         user_id            ,product_no         ,test_flag          ,sim_code           ,usertype_id          ,create_date        ,time_id )select e.user_id        ,e.product_no          ,case when e.usertype_id in ('1','2') then '0' else '1' end  test_flag        ,e.sim_code        ,f.usertype_id          ,e.create_date          ,f.time_id       from (select user_id,create_date,product_no,sim_code,usertype_id                    ,row_number() over(partition by user_id order by time_id desc ) row_id     from bass1.g_a_02004_day  where time_id<=20110324) einner join ( select user_id,usertype_id,time_id,row_number() over(partition by user_id order by time_id desc ) row_id                  from bass1.g_a_02008_day               where time_id<=20110324 ) f on f.user_id=e.user_idwhere e.row_id=1 and f.row_id=1commitselect * from bass2.ODS_PRODUCT_ORD_CUST_20110324where bill_id in(select product_no from bass2.dw_product_20110324where cust_id in(   select cust_id from bass2.dw_cust_20110324    where cust_id in        (        select cust_id from bass2.dw_product_20110324        where user_id in            (            select user_id from session.int_check_user_status             where create_date = '20110324'            and test_flag='0'            )        )    and cust_name like '%代理%'))select business_id,count(*) from bass2.ODS_PRODUCT_ORD_CUST_20110324where bill_id in(select product_no from bass2.dw_product_20110324where cust_id in(   select cust_id from bass2.dw_cust_20110324    where cust_id in        (        select cust_id from bass2.dw_product_20110324        where user_id in            (            select user_id from session.int_check_user_status             where create_date = '20110324'            and test_flag='0'            )        )    and cust_name like '%代理%'))group by business_idBUSINESS_ID	    2191000000007	31191000000008	2191000000012	1191000000145	2063191000001017	45191000001024	116193000000001	12select * from bass2.ODS_PROD_UP_PRODUCT_ITEM_20110324where product_item_id in (191000000145)select b.CHANNEL_ID, count(0)                    from bass2.dw_product_20110324 a ,bass2.dwd_cust_msg_20110324 b                    where usertype_id in (1,2,9)                      and day_new_mark = 1 and test_mark<>1                     and a.cust_id = b.cust_idand b.cust_name like '%代理%'group by    b.CHANNEL_IDorder by 2 desc 91000047	56891000048	53591000049	23191000046	17791000050	173select b.CHANNEL_ID, count(0)                    from bass2.dw_product_20110321 a ,bass2.dwd_cust_msg_20110321 b                    where usertype_id in (1,2,9)                      and day_new_mark = 1 and test_mark<>1                     and a.cust_id = b.cust_idand b.CHANNEL_ID in (91000047,91000048,91000049,91000046,91000050)group by    b.CHANNEL_IDorder by 1 desc select * from bass2.ODS_PROD_UP_PRODUCT_ITEM_20110324where product_item_id in (191000000145)select * from BASS2.ODS_CHANNEL_INFO_20110324 bwhere  b.CHANNEL_ID in (91000047,91000048,91000049,91000046,91000050)order by 1 desc drop table BASS1.G_A_02059_DAY_down20110321CREATE TABLE BASS1.G_A_02059_DAY_down20110321 (  ENTERPRISE_ID         CHARACTER(20),  USER_ID               CHARACTER(20),  ENTERPRISE_BUSI_TYPE  CHARACTER(4),  MANAGE_MODE           CHARACTER(1),  ORDER_DATE            CHARACTER(8),  STATUS_ID             CHARACTER(1) )  DATA CAPTURE NONE IN TBS_APP_BASS1 INDEX IN TBS_INDEX  PARTITIONING KEY   (USER_ID   ) USING HASHINGselect count(0)from (select         ENTERPRISE_ID        ,USER_ID        ,ENTERPRISE_BUSI_TYPE        ,MANAGE_MODE        ,ORDER_DATE        ,STATUS_ID from bass1.G_A_02059_DAYexcept select         ENTERPRISE_ID        ,USER_ID        ,ENTERPRISE_BUSI_TYPE        ,MANAGE_MODE        ,ORDER_DATE        ,STATUS_ID from  bass1.G_A_02059_DAY_down20110321        ) tselect ENTERPRISE_IDfrom (select t.*,row_number()over(partition by ENTERPRISE_ID order by time_id desc) rn from (select *from BASS1.G_A_02055_DAY_down20110321 where MANAGE_MODE = '2'and time_id <20110301 and ENTERPRISE_BUSI_TYPE = '1340') t ) t2 where rn = 1  and  STATUS_ID ='1'  exceptselect ENTERPRISE_IDfrom (select t.*,row_number()over(partition by ENTERPRISE_ID order by time_id desc) rn from (select *from BASS1.G_A_02055_DAY where MANAGE_MODE = '2'and time_id <20110301 and ENTERPRISE_BUSI_TYPE = '1340') t ) t2 where rn = 1  and  STATUS_ID ='1'        select * from   G_A_02055_DAY where ENTERPRISE_ID = '89103000041929'select * from   G_A_02055_DAY_down20110321 where ENTERPRISE_ID = '89103000041929'select * from   bass2.dw_enterprise_member_mid_20110327 where enterprise_id = '89103000041929'select count(0)from (select distinct trim(ENTERPRISE_ID) ENTERPRISE_ID,trim(USER_ID) from bass1.G_A_02059_DAY_down20110321 a exceptselect distinct trim(ENTERPRISE_ID) ENTERPRISE_ID,trim(USER_ID) from bass1.G_A_02059_DAY b) tselect count(0) , count(distinct trim(ENTERPRISE_ID)) ENTERPRISE_ID from bass1.G_A_02059_DAY_down20110321bass1.G_A_02059_DAY_down20110321select ascii(ENTERPRISE_ID),ENTERPRISE_IDfrom  bass1.G_A_02059_DAY_down20110321 where ENTERPRISE_ID like  '%89403000904884%'fetch first 1 rows only     select ascii(ENTERPRISE_ID)from  bass1.G_A_02059_DAY where ENTERPRISE_ID = '89403000904884'fetch first 1 rows onlydrop table BASS1.G_A_02059_DAY_down20110321CREATE TABLE BASS1.G_A_02059_DAY_down20110321 (  ENTERPRISE_ID         CHARACTER(20),  USER_ID               CHARACTER(20),  ENTERPRISE_BUSI_TYPE  CHARACTER(4),  MANAGE_MODE           CHARACTER(1),  ORDER_DATE            CHARACTER(8),  STATUS_ID             CHARACTER(1) )  DATA CAPTURE NONE IN TBS_APP_BASS1 INDEX IN TBS_INDEX  PARTITIONING KEY   (USER_ID   ) USING HASHING           select * from BASS1.G_A_02055_DAY where enterprise_id = '89202999392356'        CREATE TABLE BASS1.G_A_02055_DAY_down20110321 (TIME_ID               INTEGER,  ENTERPRISE_ID         CHARACTER(20),  ENTERPRISE_BUSI_TYPE  CHARACTER(4),  MANAGE_MODE           CHARACTER(1),  PAY_TYPE              CHARACTER(1),  CREATE_MODE           CHARACTER(1),  ORDER_DATE            CHARACTER(8),  STATUS_ID             CHARACTER(1) )  DATA CAPTURE NONE IN TBS_APP_BASS1 INDEX IN TBS_INDEX  PARTITIONING KEY   (ENTERPRISE_ID,    TIME_ID   ) USING HASHINGALTER TABLE BASS1.G_A_02055_DAY_down20110321  LOCKSIZE ROW  APPEND OFF  NOT VOLATILEselect * from   BASS1.G_A_02055_DAY_down20110321select * from   bass2.dw_enterbass2.DWD_GROUP_ORDER_FEATUR_${timestamp}select tabname from syscat.tables where tabname like '%DWD_ENTERPRISE_SUB%'select * from   G_A_02055_DAY_down20110321 where ENTERPRISE_ID = '89103000041929'select date(DONE_DATE) from   bass2.DWD_ENTERPRISE_SUB_20101001 WHERE GROUP_ID = '89103000041929'AND DONE_DATE LIKE '2009-11%'select 20110328,a.ENTERPRISE_ID,a.ENTERPRISE_BUSI_TYPE,a.MANAGE_MODE,a.PAY_TYPE,a.CREATE_MODE,'20110328' ORDER_DATE,'2' STATUS_IDfrom bass1.G_A_02055_DAY_down20110321 awhere  ENTERPRISE_ID = '89103000041929'select * from G_A_02055_DAYwhere ENTERPRISE_ID = '89103000041929'and ENTERPRISE_BUSI_TYPE = '1340'delete from   G_A_02055_DAY where ENTERPRISE_ID = '89103000041929'select * from app.sch_control_alarm select * from   G_A_02055_DAYselect * from app.sch_control_alarm where alarmtime >= timestamp('20110329'||'000000') --and flag = -1 and control_code like 'BASS1%'select * from bass2.dim_test_enterpriseselect * from syscat.tables where tabname like 'DIM%ENTERPRISE%'select * from    BASS1.t_grp_id_old_new_map--目标表drop table BASS1.t_grp_id_old_new_mapCREATE TABLE BASS1.t_grp_id_old_new_map (	 area_id            		INTEGER              ----数据日期        	,OLD_ENTERPRISE_ID      		CHAR(20)             ----old集团客户标识    	,NEW_ENTERPRISE_ID      		CHAR(20)            ----new集团客户标识    	,ENTERPRISE_NAME    		CHAR(60)       								----集团客户名称*     )  DATA CAPTURE NONE IN TBS_APP_BASS1 INDEX IN TBS_INDEX  PARTITIONING KEY   (OLD_ENTERPRISE_ID,NEW_ENTERPRISE_ID) USING HASHINGALTER TABLE BASS1.t_grp_id_old_new_map  LOCKSIZE ROW  APPEND OFF  NOT VOLATILEselect distinct length(trim(NEW_ENTERPRISE_ID)) from   BASS1.t_grp_id_old_new_mapwhere  length(trim(NEW_ENTERPRISE_ID)) <> 14select * from   BASS1.t_grp_id_old_new_mapwhere  length(trim(NEW_ENTERPRISE_ID)) = 14select * from   BASS1.t_grp_id_old_new_mapwhere  length(trim(NEW_ENTERPRISE_ID)) = 14and NEW_ENTERPRISE_ID like '8%'and OLD_ENTERPRISE_ID <> NEW_ENTERPRISE_ID  CREATE TABLE BASS1.grp_id_old_new_map_20110330 like BASS1.t_grp_id_old_new_map  DATA CAPTURE NONE IN TBS_APP_BASS1 INDEX IN TBS_INDEX  PARTITIONING KEY   (OLD_ENTERPRISE_ID,NEW_ENTERPRISE_ID) USING HASHINGALTER TABLE BASS1.grp_id_old_new_map_20110330  LOCKSIZE ROW  APPEND OFF  NOT VOLATILE      insert into   BASS1.grp_id_old_new_map_20110330select * from   BASS1.t_grp_id_old_new_mapwhere  length(trim(NEW_ENTERPRISE_ID)) = 14and NEW_ENTERPRISE_ID like '8%'and OLD_ENTERPRISE_ID <> NEW_ENTERPRISE_IDselect * from   BASS1.grp_id_old_new_map_20110330select count(0),count(distinct OLD_ENTERPRISE_ID) from   BASS1.grp_id_old_new_map_20110330select count(0),count(distinct NEW_ENTERPRISE_ID) from   BASS1.grp_id_old_new_map_20110330select *from (        select a.*,row_number()over(partition by OLD_ENTERPRISE_ID order by ENTERPRISE_NAME desc ) rn  from   BASS1.t_grp_id_old_new_map awhere  length(trim(NEW_ENTERPRISE_ID)) = 14and NEW_ENTERPRISE_ID like '8%'and OLD_ENTERPRISE_ID <> NEW_ENTERPRISE_ID) torder by 2,5delete from  BASS1.grp_id_old_new_map_20110330insert into   BASS1.grp_id_old_new_map_20110330select          AREA_ID        ,OLD_ENTERPRISE_ID        ,NEW_ENTERPRISE_ID        ,ENTERPRISE_NAMEfrom (        select a.*,row_number()over(partition by OLD_ENTERPRISE_ID order by ENTERPRISE_NAME desc ) rn  from   BASS1.t_grp_id_old_new_map awhere  length(trim(NEW_ENTERPRISE_ID)) = 14and NEW_ENTERPRISE_ID like '8%'and OLD_ENTERPRISE_ID <> NEW_ENTERPRISE_ID) t where rn = 1select * from    BASS1.grp_id_old_new_map_20110330select count(0) from app.g_unit_info where unit_code='77780'select * from app.g_unit_info where unit_code='77780'delete from app.g_unit_info where unit_code='77780'insert into app.g_unit_info values ('77780',0,'重要集团客户拍照置换清单','BASS1.G_I_77780_DAY',1,0,0)CREATE TABLE BASS1.dim_bass1_std_map (	 interface_code       INTEGER            	,dim_table_id      		CHAR(20)       NOT NULL      	,code                 CHAR(9)        NOT NULL				       	,code_name    		    CHAR(60)       NOT NULL											 )  DATA CAPTURE NONE IN TBS_APP_BASS1 INDEX IN TBS_INDEX  PARTITIONING KEY   (dim_table_id,code) USING HASHINGALTER TABLE BASS1.dim_bass1_std_map  LOCKSIZE ROW  APPEND OFF  NOT VOLATILE      select * from   BASS1.dim_bass1_std_map where dim_table_id = 'BASS_STD1_0001'    select ENTER_TYPE_ID from   G_I_77778_DAYgroup by ENTER_TYPE_IDselect * from   G_I_77778_DAYselect count(0)from (select distinct ENTER_TYPE_ID ENTER_TYPE_ID from   G_I_77778_DAY) a where ENTER_TYPE_ID  not in (select code from BASS1.dim_bass1_std_map where interface_code = '77780' and dim_table_id ='BASS_STD1_0001')group by ENTER_TYPE_IDdrop table BASS1.dim_bass1_std_mapCREATE TABLE BASS1.dim_bass1_std_map (	 interface_code       CHAR(5)            	,dim_table_id      		CHAR(20)       NOT NULL      	,code                 CHAR(9)        NOT NULL				       	,code_name    		    CHAR(60)       NOT NULL											 )  DATA CAPTURE NONE IN TBS_APP_BASS1 INDEX IN TBS_INDEX  PARTITIONING KEY   (dim_table_id,code) USING HASHINGALTER TABLE BASS1.dim_bass1_std_map  LOCKSIZE ROW  APPEND OFF  NOT VOLATILEselect * from  bass1.G_I_77778_DAY create nickname xzbass1.G_I_77778_DAY 
+                     and day_new_mark = 1 and test_mark<>1                     and a.cust_id = b.cust_idselect count(0) from session.int_check_user_status where create_date = '20110324'and test_flag = '0'                     4231 3月23日	 3月24日2880	4239select * from   g_s_22012_day20110324	20110324	`4231      	1636785     	23021010    	412022      	3873747     	3424      	335706      20110323	20110323	`2878      	1635972     	22901457    	389311      	3975018     	120       	329440      select b.cust_name,a.CRM_BRAND_ID1, count(0)                    from bass2.dw_product_20110323 a ,bass2.dwd_cust_msg_20110323 b                    where usertype_id in (1,2,9)                      and day_new_mark = 1 and test_mark<>1                     and a.cust_id = b.cust_idand  b.CHANNEL_ID in(91000047,91000048,91000049,91000046,91000050,91000035,97000019,91000012,97000023)group by    b.cust_name, a.CRM_BRAND_ID1order by 3 desc                      select b.cust_name,b.CHANNEL_ID, count(0)                    from bass2.dw_product_20110322 a ,bass2.dwd_cust_msg_20110322 b                    where usertype_id in (1,2,9)                      and day_new_mark = 1 and test_mark<>1                     and a.cust_id = b.cust_idgroup by    b.cust_name, b.CHANNEL_IDorder by 3 desc 拉萨市东城区代理店	91000046	126拉萨市南城区代理店	91000049	114拉萨市西城区代理店	91000047	113拉萨市开发区代理店	91000048	78拉萨市北城区代理店	91000050	77拉萨市邮政局	91000012	38拉萨万利文体商贸有限公司	91000035	11巴桑	97000019	1王玉萍	97000023	1索南顿珠	97000023	1普布次仁	97000019	1欧珠	97000019	1洛桑顿珠	97000019	1洪吉	97000023	1次仁桑珠	97000019	1次仁德吉	97000019	1巴桑	97000023	1declare global temporary table session.int_check_user_status    (   user_id        CHARACTER(15),   product_no     CHARACTER(15),   test_flag      CHARACTER(1),   sim_code       CHARACTER(15),   usertype_id    CHARACTER(4),   create_date    CHARACTER(15),   time_id        int)                            partitioning key            (   user_id     ) using hashing           with replace on commit preserve rows not logged in tbs_user_tempinsert into session.int_check_user_status (         user_id            ,product_no         ,test_flag          ,sim_code           ,usertype_id          ,create_date        ,time_id )select e.user_id        ,e.product_no          ,case when e.usertype_id in ('1','2') then '0' else '1' end  test_flag        ,e.sim_code        ,f.usertype_id          ,e.create_date          ,f.time_id       from (select user_id,create_date,product_no,sim_code,usertype_id                    ,row_number() over(partition by user_id order by time_id desc ) row_id     from bass1.g_a_02004_day  where time_id<=20110324) einner join ( select user_id,usertype_id,time_id,row_number() over(partition by user_id order by time_id desc ) row_id                  from bass1.g_a_02008_day               where time_id<=20110324 ) f on f.user_id=e.user_idwhere e.row_id=1 and f.row_id=1commitselect * from bass2.ODS_PRODUCT_ORD_CUST_20110324where bill_id in(select product_no from bass2.dw_product_20110324where cust_id in(   select cust_id from bass2.dw_cust_20110324    where cust_id in        (        select cust_id from bass2.dw_product_20110324        where user_id in            (            select user_id from session.int_check_user_status             where create_date = '20110324'            and test_flag='0'            )        )    and cust_name like '%代理%'))select business_id,count(*) from bass2.ODS_PRODUCT_ORD_CUST_20110324where bill_id in(select product_no from bass2.dw_product_20110324where cust_id in(   select cust_id from bass2.dw_cust_20110324    where cust_id in        (        select cust_id from bass2.dw_product_20110324        where user_id in            (            select user_id from session.int_check_user_status             where create_date = '20110324'            and test_flag='0'            )        )    and cust_name like '%代理%'))group by business_idBUSINESS_ID	    2191000000007	31191000000008	2191000000012	1191000000145	2063191000001017	45191000001024	116193000000001	12select * from bass2.ODS_PROD_UP_PRODUCT_ITEM_20110324where product_item_id in (191000000145)select b.CHANNEL_ID, count(0)                    from bass2.dw_product_20110324 a ,bass2.dwd_cust_msg_20110324 b                    where usertype_id in (1,2,9)                      and day_new_mark = 1 and test_mark<>1                     and a.cust_id = b.cust_idand b.cust_name like '%代理%'group by    b.CHANNEL_IDorder by 2 desc 91000047	56891000048	53591000049	23191000046	17791000050	173select b.CHANNEL_ID, count(0)                    from bass2.dw_product_20110321 a ,bass2.dwd_cust_msg_20110321 b                    where usertype_id in (1,2,9)                      and day_new_mark = 1 and test_mark<>1                     and a.cust_id = b.cust_idand b.CHANNEL_ID in (91000047,91000048,91000049,91000046,91000050)group by    b.CHANNEL_IDorder by 1 desc select * from bass2.ODS_PROD_UP_PRODUCT_ITEM_20110324where product_item_id in (191000000145)select * from BASS2.ODS_CHANNEL_INFO_20110324 bwhere  b.CHANNEL_ID in (91000047,91000048,91000049,91000046,91000050)order by 1 desc drop table BASS1.G_A_02059_DAY_down20110321CREATE TABLE BASS1.G_A_02059_DAY_down20110321 (  ENTERPRISE_ID         CHARACTER(20),  USER_ID               CHARACTER(20),  ENTERPRISE_BUSI_TYPE  CHARACTER(4),  MANAGE_MODE           CHARACTER(1),  ORDER_DATE            CHARACTER(8),  STATUS_ID             CHARACTER(1) )  DATA CAPTURE NONE IN TBS_APP_BASS1 INDEX IN TBS_INDEX  PARTITIONING KEY   (USER_ID   ) USING HASHINGselect count(0)from (select         ENTERPRISE_ID        ,USER_ID        ,ENTERPRISE_BUSI_TYPE        ,MANAGE_MODE        ,ORDER_DATE        ,STATUS_ID from bass1.G_A_02059_DAYexcept select         ENTERPRISE_ID        ,USER_ID        ,ENTERPRISE_BUSI_TYPE        ,MANAGE_MODE        ,ORDER_DATE        ,STATUS_ID from  bass1.G_A_02059_DAY_down20110321        ) tselect ENTERPRISE_IDfrom (select t.*,row_number()over(partition by ENTERPRISE_ID order by time_id desc) rn from (select *from BASS1.G_A_02055_DAY_down20110321 where MANAGE_MODE = '2'and time_id <20110301 and ENTERPRISE_BUSI_TYPE = '1340') t ) t2 where rn = 1  and  STATUS_ID ='1'  exceptselect ENTERPRISE_IDfrom (select t.*,row_number()over(partition by ENTERPRISE_ID order by time_id desc) rn from (select *from BASS1.G_A_02055_DAY where MANAGE_MODE = '2'and time_id <20110301 and ENTERPRISE_BUSI_TYPE = '1340') t ) t2 where rn = 1  and  STATUS_ID ='1'        select * from   G_A_02055_DAY where ENTERPRISE_ID = '89103000041929'select * from   G_A_02055_DAY_down20110321 where ENTERPRISE_ID = '89103000041929'select * from   bass2.dw_enterprise_member_mid_20110327 where enterprise_id = '89103000041929'select count(0)from (select distinct trim(ENTERPRISE_ID) ENTERPRISE_ID,trim(USER_ID) from bass1.G_A_02059_DAY_down20110321 a exceptselect distinct trim(ENTERPRISE_ID) ENTERPRISE_ID,trim(USER_ID) from bass1.G_A_02059_DAY b) tselect count(0) , count(distinct trim(ENTERPRISE_ID)) ENTERPRISE_ID from bass1.G_A_02059_DAY_down20110321bass1.G_A_02059_DAY_down20110321select ascii(ENTERPRISE_ID),ENTERPRISE_IDfrom  bass1.G_A_02059_DAY_down20110321 where ENTERPRISE_ID like  '%89403000904884%'fetch first 1 rows only     select ascii(ENTERPRISE_ID)from  bass1.G_A_02059_DAY where ENTERPRISE_ID = '89403000904884'fetch first 1 rows onlydrop table BASS1.G_A_02059_DAY_down20110321CREATE TABLE BASS1.G_A_02059_DAY_down20110321 (  ENTERPRISE_ID         CHARACTER(20),  USER_ID               CHARACTER(20),  ENTERPRISE_BUSI_TYPE  CHARACTER(4),  MANAGE_MODE           CHARACTER(1),  ORDER_DATE            CHARACTER(8),  STATUS_ID             CHARACTER(1) )  DATA CAPTURE NONE IN TBS_APP_BASS1 INDEX IN TBS_INDEX  PARTITIONING KEY   (USER_ID   ) USING HASHING           select * from BASS1.G_A_02055_DAY where enterprise_id = '89202999392356'        CREATE TABLE BASS1.G_A_02055_DAY_down20110321 (TIME_ID               INTEGER,  ENTERPRISE_ID         CHARACTER(20),  ENTERPRISE_BUSI_TYPE  CHARACTER(4),  MANAGE_MODE           CHARACTER(1),  PAY_TYPE              CHARACTER(1),  CREATE_MODE           CHARACTER(1),  ORDER_DATE            CHARACTER(8),  STATUS_ID             CHARACTER(1) )  DATA CAPTURE NONE IN TBS_APP_BASS1 INDEX IN TBS_INDEX  PARTITIONING KEY   (ENTERPRISE_ID,    TIME_ID   ) USING HASHINGALTER TABLE BASS1.G_A_02055_DAY_down20110321  LOCKSIZE ROW  APPEND OFF  NOT VOLATILEselect * from   BASS1.G_A_02055_DAY_down20110321select * from   bass2.dw_enterbass2.DWD_GROUP_ORDER_FEATUR_${timestamp}select tabname from syscat.tables where tabname like '%DWD_ENTERPRISE_SUB%'select * from   G_A_02055_DAY_down20110321 where ENTERPRISE_ID = '89103000041929'select date(DONE_DATE) from   bass2.DWD_ENTERPRISE_SUB_20101001 WHERE GROUP_ID = '89103000041929'AND DONE_DATE LIKE '2009-11%'select 20110328,a.ENTERPRISE_ID,a.ENTERPRISE_BUSI_TYPE,a.MANAGE_MODE,a.PAY_TYPE,a.CREATE_MODE,'20110328' ORDER_DATE,'2' STATUS_IDfrom bass1.G_A_02055_DAY_down20110321 awhere  ENTERPRISE_ID = '89103000041929'select * from G_A_02055_DAYwhere ENTERPRISE_ID = '89103000041929'and ENTERPRISE_BUSI_TYPE = '1340'delete from   G_A_02055_DAY where ENTERPRISE_ID = '89103000041929'select * from app.sch_control_alarm select * from   G_A_02055_DAYselect * from app.sch_control_alarm where alarmtime >= timestamp('20110329'||'000000') --and flag = -1 and control_code like 'BASS1%'select * from bass2.dim_test_enterpriseselect * from syscat.tables where tabname like 'DIM%ENTERPRISE%'select * from    BASS1.t_grp_id_old_new_map--目标表drop table BASS1.t_grp_id_old_new_mapCREATE TABLE BASS1.t_grp_id_old_new_map (	 area_id            		INTEGER              ----数据日期        	,OLD_ENTERPRISE_ID      		CHAR(20)             ----old集团客户标识    	,NEW_ENTERPRISE_ID      		CHAR(20)            ----new集团客户标识    	,ENTERPRISE_NAME    		CHAR(60)       								----集团客户名称*     )  DATA CAPTURE NONE IN TBS_APP_BASS1 INDEX IN TBS_INDEX  PARTITIONING KEY   (OLD_ENTERPRISE_ID,NEW_ENTERPRISE_ID) USING HASHINGALTER TABLE BASS1.t_grp_id_old_new_map  LOCKSIZE ROW  APPEND OFF  NOT VOLATILEselect distinct length(trim(NEW_ENTERPRISE_ID)) from   BASS1.t_grp_id_old_new_mapwhere  length(trim(NEW_ENTERPRISE_ID)) <> 14select * from   BASS1.t_grp_id_old_new_mapwhere  length(trim(NEW_ENTERPRISE_ID)) = 14select * from   BASS1.t_grp_id_old_new_mapwhere  length(trim(NEW_ENTERPRISE_ID)) = 14and NEW_ENTERPRISE_ID like '8%'and OLD_ENTERPRISE_ID <> NEW_ENTERPRISE_ID  CREATE TABLE BASS1.grp_id_old_new_map_20110330 like BASS1.t_grp_id_old_new_map  DATA CAPTURE NONE IN TBS_APP_BASS1 INDEX IN TBS_INDEX  PARTITIONING KEY   (OLD_ENTERPRISE_ID,NEW_ENTERPRISE_ID) USING HASHINGALTER TABLE BASS1.grp_id_old_new_map_20110330  LOCKSIZE ROW  APPEND OFF  NOT VOLATILE      insert into   BASS1.grp_id_old_new_map_20110330select * from   BASS1.t_grp_id_old_new_mapwhere  length(trim(NEW_ENTERPRISE_ID)) = 14and NEW_ENTERPRISE_ID like '8%'and OLD_ENTERPRISE_ID <> NEW_ENTERPRISE_IDselect * from   BASS1.grp_id_old_new_map_20110330select count(0),count(distinct OLD_ENTERPRISE_ID) from   BASS1.grp_id_old_new_map_20110330select count(0),count(distinct NEW_ENTERPRISE_ID) from   BASS1.grp_id_old_new_map_20110330select *from (        select a.*,row_number()over(partition by OLD_ENTERPRISE_ID order by ENTERPRISE_NAME desc ) rn  from   BASS1.t_grp_id_old_new_map awhere  length(trim(NEW_ENTERPRISE_ID)) = 14and NEW_ENTERPRISE_ID like '8%'and OLD_ENTERPRISE_ID <> NEW_ENTERPRISE_ID) torder by 2,5delete from  BASS1.grp_id_old_new_map_20110330insert into   BASS1.grp_id_old_new_map_20110330select          AREA_ID        ,OLD_ENTERPRISE_ID        ,NEW_ENTERPRISE_ID        ,ENTERPRISE_NAMEfrom (        select a.*,row_number()over(partition by OLD_ENTERPRISE_ID order by ENTERPRISE_NAME desc ) rn  from   BASS1.t_grp_id_old_new_map awhere  length(trim(NEW_ENTERPRISE_ID)) = 14and NEW_ENTERPRISE_ID like '8%'and OLD_ENTERPRISE_ID <> NEW_ENTERPRISE_ID) t where rn = 1select * from    BASS1.grp_id_old_new_map_20110330select count(0) from app.g_unit_info where unit_code='04002'select * from app.g_unit_info where unit_code='77780'delete from app.g_unit_info where unit_code='77780'insert into app.g_unit_info values ('77780',0,'重要集团客户拍照置换清单','BASS1.G_I_77780_DAY',1,0,0)CREATE TABLE BASS1.dim_bass1_std_map (	 interface_code       INTEGER            	,dim_table_id      		CHAR(20)       NOT NULL      	,code                 CHAR(9)        NOT NULL				       	,code_name    		    CHAR(60)       NOT NULL											 )  DATA CAPTURE NONE IN TBS_APP_BASS1 INDEX IN TBS_INDEX  PARTITIONING KEY   (dim_table_id,code) USING HASHINGALTER TABLE BASS1.dim_bass1_std_map  LOCKSIZE ROW  APPEND OFF  NOT VOLATILE      select * from   BASS1.dim_bass1_std_map where dim_table_id = 'BASS_STD1_0001'    select ENTER_TYPE_ID from   G_I_77778_DAYgroup by ENTER_TYPE_IDselect * from   G_I_77778_DAYselect count(0)from (select distinct ENTER_TYPE_ID ENTER_TYPE_ID from   G_I_77778_DAY) a where ENTER_TYPE_ID  not in (select code from BASS1.dim_bass1_std_map where interface_code = '77780' and dim_table_id ='BASS_STD1_0001')group by ENTER_TYPE_IDdrop table BASS1.dim_bass1_std_mapCREATE TABLE BASS1.dim_bass1_std_map (	 interface_code       CHAR(5)            	,dim_table_id      		CHAR(20)       NOT NULL      	,code                 CHAR(9)        NOT NULL				       	,code_name    		    CHAR(60)       NOT NULL											 )  DATA CAPTURE NONE IN TBS_APP_BASS1 INDEX IN TBS_INDEX  PARTITIONING KEY   (dim_table_id,code) USING HASHINGALTER TABLE BASS1.dim_bass1_std_map  LOCKSIZE ROW  APPEND OFF  NOT VOLATILEselect * from  bass1.G_I_77778_DAY create nickname xzbass1.G_I_77778_DAY 
 for db25.bass1.G_I_77778_DAYinsert into bass1.G_I_77778_DAY select * from  xzbass1.G_I_77778_DAY  drop nickname xzbass1.G_I_77778_DAY select * from syscat.tables where tabschema = 'XZBASS2'------------nick name select * from  bass1.G_I_77778_DAY create nickname xzbass1.G_I_77778_DAY for db25.bass1.G_I_77778_DAYinsert into bass1.G_I_77778_DAY select * from  xzbass1.G_I_77778_DAY  drop nickname xzbass1.G_I_77778_DAY ------------nick name select count(0)
 from 
 (select distinct EC_TYPE EC_TYPE from   G_I_77778_DAY) a 
@@ -5605,7 +5605,7 @@ and ent_busi_id = '1220'
 ) t
 select * from   G_S_03017_MONTHwhere enterprise_id is nullgroup by timselect time_id,REGION_FLAG,count(0) cnt from BASS1.g_a_02052_month awhere REGION_FLAG = '3'group by time_id ,REGION_FLAGselect REGION_FLAG,count(0) cnt from BASS1.g_a_02052_monthgroup by REGION_FLAGselect * from BASS1.g_a_02052_monthwhere time_id = 201001and REGION_FLAG = '3'group by REGION_FLAGselect * from   MON_ALL_INTERFACE where interface_code = '02052'select * from table(
 select substr(control_code , 11,5) unit_code,substr(b.CONTROL_CODE,7,15),b.control_code from    BASS1.MON_ALL_INTERFACE a, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)and a.TYPE = 'm'and b.control_code like '%MONTH%'
-) t where unit_code = '02052'
+) t where unit_code = '02022'
 select *  from bass2.STAT_ZD_VILLAGE_USERS_201007    select count(0) from   bass2.dw_product_201007 a , bass2.STAT_ZD_VILLAGE_USERS_201007 b where MONTH_CALL_MARK = 1and a.user_id = b.USER_ID                     and  usertype_id in (1,2,9) 
                      and userstatus_id in (1,2,3,6,8)
                      and test_mark<>1                     and LOCNTYPE_ID = 3283292select count(0) from   bass2.dw_product_200907 a , bass2.STAT_ZD_VILLAGE_USERS_200907 b where MONTH_CALL_MARK = 1and a.user_id = b.USER_ID                     and  usertype_id in (1,2,9) 
@@ -6569,7 +6569,7 @@ from         t_region_flag a
 inner join t_int_check_user_status b on a.user_id = b.user_id
 inner join      t_BASE_BILL_DURATION c on b.PRODUCT_NO = c.PRODUCT_NO1217756select  time_id,target1,target3 from 
 bass1.g_rule_check where rule_code = 'C1'
-and time_id between  20110301 and 20110307order by 1 desc select * from   bass2.DIM_UP_SP_SERVICEselect * from   bass2.dw_cdr_select * from    bass2.CDR_GPRS_LOCAL_20110421  select * from    bass2.CDR_GPRS_roamin_20110421  select * from   dw_newbusi_gprs_   SELECT * FROM bass2.DIM_PROD_UP_PRODUCT_ITEMWHERE ITEM_TYPE='OFFER_PLAN'	  AND DEL_FLAG='1'	  AND SUPPLIER_ID IS NOT NULL	  WITH UR;   SELECT * FROM bass2.DIM_NEWBUSI_SPINFOWITH UR;  SELECT * FROM bass2.DIM_PROD_UP_PRODUCT_ITEM a a.PRODUCT_ITEM_ID ;    select * from bass2.DW_PRODUCT_INS_OFF_INS_PROD_201103 b b.OFFER_ID    select a.*,b.*  --select count(0),count(distinct PRODUCT_ITEM_ID)  from (select OFFER_ID,count(0) cntfrom bass2.DW_PRODUCT_INS_OFF_INS_PROD_201103group by OFFER_ID) a ,(  SELECT PRODUCT_ITEM_ID,EXTEND_ID2 ,name FROM bass2.DIM_PROD_UP_PRODUCT_ITEMWHERE ITEM_TYPE='OFFER_PLAN'	  AND DEL_FLAG='1'	  AND SUPPLIER_ID IS NOT NULL) b where a.OFFER_ID = b.PRODUCT_ITEM_ID     
+and time_id between  20110301 and 20110307order by 1 desc select * from   bass2.ODS_UP_SP_SERVICE_20110421select bill_flag,operator_name,count(0) from    bass2.ODS_DIM_UP_SP_SERVICE_20110421group by bill_flag,operator_nameorder by 1 desc select count(0),count(distinct operator_code) from   bass2.ODS_DIM_UP_SP_SERVICE_20110421select * from   bass2.dw_cdr_select * from    bass2.CDR_GPRS_LOCAL_20110421  select * from    bass2.CDR_GPRS_roamin_20110421  select * from   dw_newbusi_gprs_   SELECT * FROM bass2.DIM_PROD_UP_PRODUCT_ITEMWHERE ITEM_TYPE='OFFER_PLAN'	  AND DEL_FLAG='1'	  AND SUPPLIER_ID IS NOT NULL	  WITH UR;   SELECT * FROM bass2.DIM_NEWBUSI_SPINFOWITH UR;  SELECT * FROM bass2.DIM_PROD_UP_PRODUCT_ITEMwhere name like '全球通88%'  a a.PRODUCT_ITEM_ID ;    select * from bass2.DW_PRODUCT_INS_OFF_INS_PROD_201103 b b.OFFER_ID    select a.*,b.*  --select count(0),count(distinct PRODUCT_ITEM_ID)  from (select OFFER_ID,count(0) cntfrom bass2.DW_PRODUCT_INS_OFF_INS_PROD_201103where valid_date < '2011-03-01' and expire_date >  '2011-03-01'group by OFFER_ID) a ,(  SELECT PRODUCT_ITEM_ID,EXTEND_ID2 ,name FROM bass2.DIM_PROD_UP_PRODUCT_ITEMWHERE ITEM_TYPE='OFFER_PLAN'	  AND DEL_FLAG='1'	  AND SUPPLIER_ID IS NOT NULL) b where a.OFFER_ID = b.PRODUCT_ITEM_ID     
 
 drop table BASS1.G_I_77780_DAY_DOWN20110422
 CREATE TABLE BASS1.G_I_77780_DAY_DOWN20110422
@@ -6614,4 +6614,496 @@ CREATE TABLE BASS1.G_I_77780_DAY_DOWN20110422
 ALTER TABLE BASS1.G_I_77780_DAY_DOWN20110422
   LOCKSIZE ROW
   APPEND OFF
-  NOT VOLATILE    
+  NOT VOLATILE   select POINT_FEEDBACK_IDselect POINT_FEEDBACK_ID , count(0) 
+--,  count(distinct POINT_FEEDBACK_ID ) 
+from G_S_02007_month 
+group by  POINT_FEEDBACK_ID 
+order by 1     select user_id,ord_code,max(offer_name) offer_name,count(*) cnt from  bass2.dw_product_ord_so_log_dm_201103  a where  (a.offer_name like '%充值卡%' or a.offer_name like '%送%话费%') 
+	         group by user_id,ord_code select * from   G_S_04003_DAYG_S_04003_DAYFLOWUP                         SYSIBM    CHARACTER                10     0 No    
+FLOWDOWN                       SYSIBM    CHARACTER                10     0 No    select b.*from 
+(
+select BASE_PROD_ID , count(0) 
+--,  count(distinct BASE_PROD_ID ) 
+from g_i_02018_month 
+group by  BASE_PROD_ID 
+) a ,bass2.dim_prod_up_product_item  b where a.BASE_PROD_ID = char(b.product_item_id)
+select BASE_PROD_TYPE , count(0) 
+--,  count(distinct BASE_PROD_TYPE ) 
+from g_i_02018_month 
+group by  BASE_PROD_TYPE 
+order by 1 
+select * from   bass2.dim_prod_up_product_item              where name like '%全球通%88%'and item_type = 'OFFER_PLAN'and BUSINESS_DOMAIN_ID = 'Y'select substr(control_code , 11,5) unit_code,substr(b.CONTROL_CODE,7,13) from    BASS1.MON_ALL_INTERFACE a, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)and a.TYPE = 'd'and b.control_code like '%DAY%'
+select * from BASS1.MON_ALL_INTERFACE where upper(INTERFACE_name) like  '%GPRS%'        aidb_runstats $objectTable 1	free_res_val1：空的就是收费的，非空就是免费is null 收费is not null 免费不占用套餐流量的免费流量， free_res_val1 is null 套餐内:免费is not null 套餐外:select /**                  sum(bigint(data_flow_up1+data_flow_up2))*1.0/1024/1024/1024   as up_flows
+                  ,sum(bigint(data_flow_down1+data_flow_down2))*1.0/1024/1024/1024 as down_flows                  --                  ,sum(case when free_res_val1 is not null and (charge1+charge2+charge3+charge4) = 0 then              bigint(data_flow_up1+data_flow_up2+data_flow_down1+data_flow_down2)*1.0/1024/1024/1024  else 0 end     ) free_is_pkg                  ,sum(case when free_res_val1 is  null and (charge1+charge2+charge3+charge4) = 0 then              bigint(data_flow_up1+data_flow_up2+data_flow_down1+data_flow_down2)*1.0/1024/1024/1024  else 0 end     ) free_not_pkg             **/                  sum( case when (charge1+charge2+charge3+charge4) > 0 then              bigint(data_flow_up1+data_flow_up2+data_flow_down1+data_flow_down2)*1.0/1024/1024/1024  else  0 end             ) not_free_not_pkgfrom  bass2.CDR_GPRS_LOCAL_20110423select                   sum(bigint(data_flow_up1+data_flow_up2))*1.0/1024/1024/1024   as up_flows
+                  ,sum(bigint(data_flow_down1+data_flow_down2))*1.0/1024/1024/1024 as down_flows            from bass2.CDR_GPRS_LOCAL_20110423
+            where drtype_id not in (8307)
+              and bigint(product_no) not between 14734500000 
+              and 14734999999 and apn_ni <> 'JF.XZ.IP.MOBILE.LAN.CHINAMOBILE'
+              and service_code not in ('1010000001','1010000002','2000000000')              select count(0) from                 bass2.CDR_GPRS_LOCAL_20110423where  free_res_val1 is null and free_res_val2 is not null                     select * from bass2.DIM_GPRS_SERVICE_CODE          select * from syscat.tables where tabname LIKE '%DIM%GPRS%'            \select count(0), sum(charge1+charge2+charge3+charge4),sum( bigint(data_flow_up1+data_flow_up2+data_flow_down1+data_flow_down2)*1.0/1024/1024/1024 )from   bass2.CDR_GPRS_LOCAL_20110423where SERVICE_CODE = '1040000001'Dw_newbusi_gprs_dsselect BASE_PROD_NAME,BASE_PROD_TYPE,count(0) from   bass1.g_i_02018_monthwhere BASE_PROD_NAME like '%全球通%'and time_id = 201103group by BASE_PROD_NAME,BASE_PROD_TYPEselect * from    bass1.dim_base_prod_map
+select BASE_PROD_TYPE , count(0) 
+--,  count(distinct BASE_PROD_TYPE ) 
+from bass1.g_i_02018_month 
+group by  BASE_PROD_TYPE 
+order by 1 
+select * from    bass2.Dim_prod_up_offerselect * from   BASS1.MON_ALL_INTERFACE where unit_code = '04002'select cast(row_number()over() as char(8)) from  bass1.g_i_06032_day where time_id = 20110415
+select \n\r from bass2.dual
+VALUES 'Hello everyone' || CHR(10) || CHR(13) || 'i''m wave'  
+
+select * from  bass2.dim_product_item b where  b.prod_id in (90004024,90004025,90004026,90004027,90004028,99001676,99001677,90004050,90008961,90004047,90004048,90004049,90004052,90004053,90004054,90004055,90004023,90004305,73900001,73900002,73900003,73900004,73900005,73900006)    drop table BASS1.dim_gprs_pkg_flow;
+CREATE TABLE BASS1.dim_gprs_pkg_flow
+ (
+	prod_id integer,
+	flow decimal(12,2)
+ )
+  DATA CAPTURE NONE
+ IN TBS_APP_BASS1
+ INDEX IN TBS_INDEX
+  PARTITIONING KEY
+   (prod_id
+   ) USING HASHING;
+
+ALTER TABLE BASS1.dim_gprs_pkg_flow
+  LOCKSIZE ROW
+  APPEND OFF
+  NOT VOLATILE;
+    BASS1.dim_gprs_pkg_flow values
+insert into bass1.dim_gprs_pkg_flow values (90004013,10);
+insert into bass1.dim_gprs_pkg_flow values (90001311,10);
+insert into bass1.dim_gprs_pkg_flow values (90004011,10);
+insert into bass1.dim_gprs_pkg_flow values (90009610,10);
+insert into bass1.dim_gprs_pkg_flow values (99001694,10);
+insert into bass1.dim_gprs_pkg_flow values (90009401,10);
+insert into bass1.dim_gprs_pkg_flow values (90004012,10);
+insert into bass1.dim_gprs_pkg_flow values (90004303,10);
+insert into bass1.dim_gprs_pkg_flow values (90009334,20);
+insert into bass1.dim_gprs_pkg_flow values (99001642,20);
+insert into bass1.dim_gprs_pkg_flow values (90004304,20);
+insert into bass1.dim_gprs_pkg_flow values (99001612,20);
+insert into bass1.dim_gprs_pkg_flow values (99001613,20);
+insert into bass1.dim_gprs_pkg_flow values (99001643,20);
+insert into bass1.dim_gprs_pkg_flow values (90600006,20);
+insert into bass1.dim_gprs_pkg_flow values (90001214,20);
+insert into bass1.dim_gprs_pkg_flow values (90400006,20);
+insert into bass1.dim_gprs_pkg_flow values (90300006,20);
+insert into bass1.dim_gprs_pkg_flow values (90001324,30);
+insert into bass1.dim_gprs_pkg_flow values (90001330,30);
+insert into bass1.dim_gprs_pkg_flow values (90001329,30);
+insert into bass1.dim_gprs_pkg_flow values (90001323,30);
+insert into bass1.dim_gprs_pkg_flow values (90001326,30);
+insert into bass1.dim_gprs_pkg_flow values (90001327,30);
+insert into bass1.dim_gprs_pkg_flow values (90001321,30);
+insert into bass1.dim_gprs_pkg_flow values (90001313,30);
+insert into bass1.dim_gprs_pkg_flow values (90009392,30);
+insert into bass1.dim_gprs_pkg_flow values (90004024,30);
+insert into bass1.dim_gprs_pkg_flow values (90001212,30);
+insert into bass1.dim_gprs_pkg_flow values (90004040,30);
+insert into bass1.dim_gprs_pkg_flow values (90004015,30);
+insert into bass1.dim_gprs_pkg_flow values (90008109,30);
+insert into bass1.dim_gprs_pkg_flow values (90001213,30);
+insert into bass1.dim_gprs_pkg_flow values (90009614,30);
+insert into bass1.dim_gprs_pkg_flow values (90001320,30);
+insert into bass1.dim_gprs_pkg_flow values (90009722,30);
+insert into bass1.dim_gprs_pkg_flow values (99001136,30);
+insert into bass1.dim_gprs_pkg_flow values (90001312,30);
+insert into bass1.dim_gprs_pkg_flow values (90001322,30);
+insert into bass1.dim_gprs_pkg_flow values (90001325,30);
+insert into bass1.dim_gprs_pkg_flow values (99001670,30);
+insert into bass1.dim_gprs_pkg_flow values (90001319,30);
+insert into bass1.dim_gprs_pkg_flow values (90001328,30);
+insert into bass1.dim_gprs_pkg_flow values (90004302,30);
+insert into bass1.dim_gprs_pkg_flow values (90009424,30);
+insert into bass1.dim_gprs_pkg_flow values (90003312,50);
+insert into bass1.dim_gprs_pkg_flow values (90003306,50);
+insert into bass1.dim_gprs_pkg_flow values (90001315,50);
+insert into bass1.dim_gprs_pkg_flow values (90003311,50);
+insert into bass1.dim_gprs_pkg_flow values (90003305,50);
+insert into bass1.dim_gprs_pkg_flow values (90003308,50);
+insert into bass1.dim_gprs_pkg_flow values (99001614,50);
+insert into bass1.dim_gprs_pkg_flow values (90003315,50);
+insert into bass1.dim_gprs_pkg_flow values (90003307,50);
+insert into bass1.dim_gprs_pkg_flow values (90001314,50);
+insert into bass1.dim_gprs_pkg_flow values (90003316,50);
+insert into bass1.dim_gprs_pkg_flow values (99001660,60);
+insert into bass1.dim_gprs_pkg_flow values (99001644,60);
+insert into bass1.dim_gprs_pkg_flow values (90009292,70);
+insert into bass1.dim_gprs_pkg_flow values (90009721,70);
+insert into bass1.dim_gprs_pkg_flow values (90004305,70);
+insert into bass1.dim_gprs_pkg_flow values (90004023,70);
+insert into bass1.dim_gprs_pkg_flow values (99001002,77);
+insert into bass1.dim_gprs_pkg_flow values (99001335,77);
+insert into bass1.dim_gprs_pkg_flow values (99001504,77);
+insert into bass1.dim_gprs_pkg_flow values (99001316,77);
+insert into bass1.dim_gprs_pkg_flow values (99001502,77);
+insert into bass1.dim_gprs_pkg_flow values (99001320,77);
+insert into bass1.dim_gprs_pkg_flow values (99001009,77);
+insert into bass1.dim_gprs_pkg_flow values (99001311,77);
+insert into bass1.dim_gprs_pkg_flow values (99001308,77);
+insert into bass1.dim_gprs_pkg_flow values (99001001,77);
+insert into bass1.dim_gprs_pkg_flow values (99001317,77);
+insert into bass1.dim_gprs_pkg_flow values (99001663,85);
+insert into bass1.dim_gprs_pkg_flow values (99001676,100);
+insert into bass1.dim_gprs_pkg_flow values (90003213,100);
+insert into bass1.dim_gprs_pkg_flow values (99001661,100.50);
+insert into bass1.dim_gprs_pkg_flow values (99001645,100.50);
+insert into bass1.dim_gprs_pkg_flow values (90009133,140);
+insert into bass1.dim_gprs_pkg_flow values (99001685,150);
+insert into bass1.dim_gprs_pkg_flow values (90001316,150);
+insert into bass1.dim_gprs_pkg_flow values (90008110,150);
+insert into bass1.dim_gprs_pkg_flow values (99001634,150);
+insert into bass1.dim_gprs_pkg_flow values (90009393,150);
+insert into bass1.dim_gprs_pkg_flow values (99001137,150);
+insert into bass1.dim_gprs_pkg_flow values (90009720,150);
+insert into bass1.dim_gprs_pkg_flow values (90009723,150);
+insert into bass1.dim_gprs_pkg_flow values (90009615,150);
+insert into bass1.dim_gprs_pkg_flow values (99001671,150);
+insert into bass1.dim_gprs_pkg_flow values (90009431,150);
+insert into bass1.dim_gprs_pkg_flow values (92001002,150);
+insert into bass1.dim_gprs_pkg_flow values (90004025,150);
+insert into bass1.dim_gprs_pkg_flow values (90003019,154);
+insert into bass1.dim_gprs_pkg_flow values (99001677,200);
+insert into bass1.dim_gprs_pkg_flow values (90009328,210);
+insert into bass1.dim_gprs_pkg_flow values (90009329,210);
+insert into bass1.dim_gprs_pkg_flow values (90001317,300);
+insert into bass1.dim_gprs_pkg_flow values (90003314,400);
+insert into bass1.dim_gprs_pkg_flow values (90003310,400);
+insert into bass1.dim_gprs_pkg_flow values (90003303,400);
+insert into bass1.dim_gprs_pkg_flow values (90003301,400);
+insert into bass1.dim_gprs_pkg_flow values (90003304,400);
+insert into bass1.dim_gprs_pkg_flow values (90003302,400);
+insert into bass1.dim_gprs_pkg_flow values (90003313,400);
+insert into bass1.dim_gprs_pkg_flow values (90003309,400);
+insert into bass1.dim_gprs_pkg_flow values (73700001,500);
+insert into bass1.dim_gprs_pkg_flow values (90009616,500);
+insert into bass1.dim_gprs_pkg_flow values (90009724,500);
+insert into bass1.dim_gprs_pkg_flow values (99001672,500);
+insert into bass1.dim_gprs_pkg_flow values (99001690,500);
+insert into bass1.dim_gprs_pkg_flow values (99001687,500);
+insert into bass1.dim_gprs_pkg_flow values (90004014,500);
+insert into bass1.dim_gprs_pkg_flow values (99001689,500);
+insert into bass1.dim_gprs_pkg_flow values (90004026,500);
+insert into bass1.dim_gprs_pkg_flow values (90009437,500);
+insert into bass1.dim_gprs_pkg_flow values (90004052,500);
+insert into bass1.dim_gprs_pkg_flow values (90009490,500);
+insert into bass1.dim_gprs_pkg_flow values (99001686,500);
+insert into bass1.dim_gprs_pkg_flow values (90001318,500);
+insert into bass1.dim_gprs_pkg_flow values (99001606,501);
+insert into bass1.dim_gprs_pkg_flow values (99001662,501);
+insert into bass1.dim_gprs_pkg_flow values (99001646,525);
+insert into bass1.dim_gprs_pkg_flow values (90004047,600);
+insert into bass1.dim_gprs_pkg_flow values (90004017,800);
+insert into bass1.dim_gprs_pkg_flow values (90004018,800);
+insert into bass1.dim_gprs_pkg_flow values (90009293,800);
+insert into bass1.dim_gprs_pkg_flow values (90004020,800);
+insert into bass1.dim_gprs_pkg_flow values (90004019,800);
+insert into bass1.dim_gprs_pkg_flow values (90009114,980);
+insert into bass1.dim_gprs_pkg_flow values (90009617,1024);
+insert into bass1.dim_gprs_pkg_flow values (99001673,1024);
+insert into bass1.dim_gprs_pkg_flow values (99001692,1024);
+insert into bass1.dim_gprs_pkg_flow values (99001691,1024);
+insert into bass1.dim_gprs_pkg_flow values (99001664,1026);
+insert into bass1.dim_gprs_pkg_flow values (99001605,1026);
+insert into bass1.dim_gprs_pkg_flow values (90004053,2048);
+insert into bass1.dim_gprs_pkg_flow values (99001693,2048);
+insert into bass1.dim_gprs_pkg_flow values (90004016,2048);
+insert into bass1.dim_gprs_pkg_flow values (99001138,2048);
+insert into bass1.dim_gprs_pkg_flow values (90004027,2048);
+insert into bass1.dim_gprs_pkg_flow values (73700002,2048);
+insert into bass1.dim_gprs_pkg_flow values (90009438,2048);
+insert into bass1.dim_gprs_pkg_flow values (90009491,2048);
+insert into bass1.dim_gprs_pkg_flow values (90004048,2248);
+insert into bass1.dim_gprs_pkg_flow values (90004049,3372);
+insert into bass1.dim_gprs_pkg_flow values (90004028,5120);
+insert into bass1.dim_gprs_pkg_flow values (90004054,5120);
+insert into bass1.dim_gprs_pkg_flow values (99001139,5120);
+insert into bass1.dim_gprs_pkg_flow values (90009439,5120);
+insert into bass1.dim_gprs_pkg_flow values (73700003,5120);
+insert into bass1.dim_gprs_pkg_flow values (99001517,10000);
+insert into bass1.dim_gprs_pkg_flow values (99001518,10000);
+insert into bass1.dim_gprs_pkg_flow values (73700004,10240);
+insert into bass1.dim_gprs_pkg_flow values (90004050,10240);
+insert into bass1.dim_gprs_pkg_flow values (90004055,10240);
+insert into bass1.dim_gprs_pkg_flow values (90004007,13800);
+insert into bass1.dim_gprs_pkg_flow values (90004001,21150);
+insert into bass1.dim_gprs_pkg_flow values (90004010,23200);
+insert into bass1.dim_gprs_pkg_flow values (90004006,184000);
+insert into bass1.dim_gprs_pkg_flow values (90004008,188416);
+insert into bass1.dim_gprs_pkg_flow values (90004002,288768);
+insert into bass1.dim_gprs_pkg_flow values (90004009,471040);
+insert into bass1.dim_gprs_pkg_flow values (90004003,721920);
+  select count(0),count(distinct user_id)
+		from bass2.dwd_product_sprom_active_20110301 a,
+			 BASS1.dim_gprs_pkg_flow  b
+		where a.sprom_id=b.prod_id
+		  and replace(char(date(a.valid_date)),'-','')<='20110301'
+		  and replace(char(date(a.expire_date)),'-','')>'20110301'
+		  
+    select * from BASS1.dim_gprs_pkg_flow   runstats on table bass1.dim_gprs_pkg_flow with distribution and detailed indexes all               drop table BASS1.t_gprs_prod_user;
+CREATE TABLE BASS1.t_gprs_prod_user
+ (
+user_id VARCHAR(20),
+prod_id integer,
+valid_date TIMESTAMP,
+expire_date TIMESTAMP
+ )
+  DATA CAPTURE NONE
+ IN TBS_APP_BASS1
+ INDEX IN TBS_INDEX
+  PARTITIONING KEY
+   (user_id
+   ) USING HASHING;
+
+ALTER TABLE BASS1.t_gprs_prod_user
+  LOCKSIZE ROW
+  APPEND OFF
+  NOT VOLATILE;
+  
+insert into BASS1.t_gprs_prod_user
+  select user_id,b.prod_id,a.valid_date,a.expire_date
+		from bass2.dwd_product_sprom_active_20110301 a,
+			 BASS1.dim_gprs_pkg_flow  b
+		where a.sprom_id=b.prod_id
+		  and replace(char(date(a.valid_date)),'-','')<='20110301'
+		  and replace(char(date(a.expire_date)),'-','')>'20110301'		                select * from BASS1.t_gprs_prod_user  where valid_date is null      insert into  BASS1.t_gprs_prod_user2
+select user_id,prod_id,valid_date
+from  
+(select a.*,row_number()over(PARTITION by user_id order by expire_date desc , valid_date desc  ) rn from 
+BASS1.t_gprs_prod_user a
+) t where t.rn = 1
+
+  drop table BASS1.t_gprs_prod_user2;
+CREATE TABLE BASS1.t_gprs_prod_user2
+ (
+user_id VARCHAR(20),
+prod_id integer,
+valid_date TIMESTAMP
+ )
+  DATA CAPTURE NONE
+ IN TBS_APP_BASS1
+ INDEX IN TBS_INDEX
+  PARTITIONING KEY
+   (user_id
+   ) USING HASHING;
+
+ALTER TABLE BASS1.t_gprs_prod_user2
+  LOCKSIZE ROW
+  APPEND OFF
+  NOT VOLATILE;
+  
+  
+drop table BASS1.t_gprs_prod_user;
+CREATE TABLE BASS1.t_gprs_prod_user
+ (
+user_id VARCHAR(20),
+prod_id integer,
+	flow decimal(12,2),
+	valid_date TIMESTAMP,
+expire_date TIMESTAMP
+ )
+  DATA CAPTURE NONE
+ IN TBS_APP_BASS1
+ INDEX IN TBS_INDEX
+  PARTITIONING KEY
+   (user_id
+   ) USING HASHING;
+
+ALTER TABLE BASS1.t_gprs_prod_user
+  LOCKSIZE ROW
+  APPEND OFF
+  NOT VOLATILE;      
+insert into BASS1.t_gprs_prod_user
+  select user_id,b.prod_id,b.flow,a.valid_date,a.expire_date
+		from bass2.dwd_product_sprom_active_20110301 a,
+			 BASS1.dim_gprs_pkg_flow  b
+		where a.sprom_id=b.prod_id
+		  and replace(char(date(a.valid_date)),'-','')<='20110301'
+		  and replace(char(date(a.expire_date)),'-','')>'20110301'		  
+
+  
+  drop table BASS1.t_gprs_prod_user2;
+CREATE TABLE BASS1.t_gprs_prod_user2
+ (
+user_id VARCHAR(20),
+prod_id integer,
+	flow decimal(12,2),
+valid_date TIMESTAMP
+ )
+  DATA CAPTURE NONE
+ IN TBS_APP_BASS1
+ INDEX IN TBS_INDEX
+  PARTITIONING KEY
+   (user_id
+   ) USING HASHING;
+
+ALTER TABLE BASS1.t_gprs_prod_user2
+  LOCKSIZE ROW
+  APPEND OFF
+  NOT VOLATILE;
+  
+  
+insert into  BASS1.t_gprs_prod_user2
+select user_id,prod_id,valid_date
+from  
+(select a.*,row_number()over(PARTITION by user_id order by expire_date|| valid_date desc  ) rn 
+BASS1.t_gprs_prod_user a
+) t where t.rn = 1
+
+ 
+
+insert into  BASS1.t_gprs_prod_user2
+select user_id,prod_id,flow,valid_date
+from  
+(select a.*,row_number()over(PARTITION by user_id order by expire_date desc , valid_date desc   ) rn from 
+BASS1.t_gprs_prod_user a
+) t where t.rn = 1
+
+  select sum(flow)/1024
+from  BASS1.t_gprs_prod_user2
+select * from    BASS1.t_gprs_prod_user2  delete from BASS1.t_gprs_sum;  drop table BASS1.t_gprs_sum;
+CREATE TABLE BASS1.t_gprs_sum
+ (
+        UP_FLOWS                DECIMAL(12,2)         
+        ,DOWN_FLOWS              DECIMAL(12,2)            
+        ,FREE_IS_PKG             DECIMAL(12,2)              
+        ,FREE_NOT_PKG             DECIMAL(12,2)              
+        ,NOT_FREE_NOT_PKG        DECIMAL(12,2)         
+ )
+  DATA CAPTURE NONE
+ IN TBS_APP_BASS1
+ INDEX IN TBS_INDEX
+  PARTITIONING KEY
+   (UP_FLOWS
+   ) USING HASHING;
+
+ALTER TABLE BASS1.t_gprs_sum
+  LOCKSIZE ROW
+  APPEND OFF
+  NOT VOLATILE;
+        select * from  BASS1.t_gprs_sum       select 
+                  sum(bigint(data_flow_up1+data_flow_up2))*1.0/1024/1024/1024   as up_flows
+                  ,sum(bigint(data_flow_down1+data_flow_down2))*1.0/1024/1024/1024 as down_flows
+                  ,sum(case when free_res_val1 is not null and (charge1+charge2+charge3+charge4) = 0 then 
+             bigint(data_flow_up1+data_flow_up2+data_flow_down1+data_flow_down2)*1.0/1024/1024/1024  else 0 end     ) free_is_pkg
+                  ,sum(case when free_res_val1 is  null and (charge1+charge2+charge3+charge4) = 0 then 
+             bigint(data_flow_up1+data_flow_up2+data_flow_down1+data_flow_down2)*1.0/1024/1024/1024  else 0 end     ) free_not_pkg
+                  ,sum( case when (charge1+charge2+charge3+charge4) > 0 then 
+             bigint(data_flow_up1+data_flow_up2+data_flow_down1+data_flow_down2)*1.0/1024/1024/1024  else  0 end
+             ) not_free_not_pkg 
+from  bass2.CDR_GPRS_LOCAL_20110322 a
+left join BASS1.t_gprs_prod_user2 b on  a.user_id = b.user_id 
+where  b.user_id is null select min(flow) from BASS1.t_gprs_prod_user2
+ drop table BASS1.t_gprs_sum2;
+CREATE TABLE BASS1.t_gprs_sum2
+ (
+        UP_FLOWS                DECIMAL(12,5)         
+        ,DOWN_FLOWS              DECIMAL(12,5)            
+        ,FREE_IS_PKG             DECIMAL(12,5)              
+        ,FREE_NOT_PKG             DECIMAL(12,5)              
+        ,NOT_FREE_NOT_PKG        DECIMAL(12,5)         
+ )
+  DATA CAPTURE NONE
+ IN TBS_APP_BASS1
+ INDEX IN TBS_INDEX
+  PARTITIONING KEY
+   (UP_FLOWS
+   ) USING HASHING;
+
+ALTER TABLE BASS1.t_gprs_sum2
+  LOCKSIZE ROW
+  APPEND OFF
+  NOT VOLATILE;
+      select * from t_gprs_sum      select sum(UP_FLOWS+DOWN_FLOWS) all_flow,sum(FREE_IS_PKG) FREE_IS_PKG,sum(FREE_NOT_PKG) FREE_NOT_PKG,sum(NOT_FREE_NOT_PKG) NOT_FREE_NOT_PKG  from t_gprs_sum  select sum(flow)/1024 from BASS1.t_gprs_prod_user2      select flow,count(0)  from  BASS1.t_gprs_prod_user2  group by flow  order by 1  select * from   BASS1.t_gprs_sum2            select sum(UP_FLOWS+DOWN_FLOWS) all_flow,sum(FREE_IS_PKG) FREE_IS_PKG,sum(FREE_NOT_PKG) FREE_NOT_PKG,sum(NOT_FREE_NOT_PKG) NOT_FREE_NOT_PKG  from t_gprs_sum2     select * from  bass2.DW_PRODUCT_BASS1_20110323   dim_up_product_   select * from  bass2.DIM_PROD_UP_PRODUCT_ITEM where name like '%全球通%' and item_type = 'OFFER_PLAN'     select * from  bass2.DIM_PROD_UP_PRODUCT_ITEM where name like '%尊享%' and item_type = 'OFFER_PLAN'   SELECT * FROM G_S_04002_DAY WHERE TIME_ID = 20110321 bass1.fn_get_all_dim  select * from syscat.functions where funcname = 'FN_GET_ALL_DIM'select * from BODY
+CREATE FUNCTION BASS1.FN_GET_ALL_DIM(GID VARCHAR(20),DID VARCHAR(20)) RETURNS VARCHAR(10) DETERMINISTIC NO EXTERNAL ACTION LANGUAGE SQL BEGIN ATOMIC RETURN SELECT BASS1_VALUE FROM BASS1.ALL_DIM_LKP WHERE BASS1_TBID = GID AND XZBAS_VALUE = DID; END
+select * from  bass1.g_s_03004_monthwhere time_id = 201103and ACCT_ITEM_ID in ('0626','0627')dim_acct_item	随e行G3上网卡包月不限流量不封顶	80000508	帐目科目	BASS_STD1_0074	0626	GPRS套餐费
+dim_acct_item	数据时长月基本费 	80000512	帐目科目	BASS_STD1_0074	0626	GPRS套餐费
+dim_acct_item	超出套餐数据时长费 	80000513	帐目科目	BASS_STD1_0074	0627	GPRS通信费
+select * from BASS1.ALL_DIM_LKPwhere BASS1_TBID = 'BASS_STD1_0074'select c.*from (select user_idfrom  bass1.g_s_03004_monthwhere time_id = 201103and ACCT_ITEM_ID in ('0626','0627')) a ,bass2.dw_product_201103 b , bass2.dwd_cust_msg_20110331 c where a.user_id = b.user_id and b.cust_id = c.cust_idt_int_check_user_statusselect * from    bass1.g_s_03004_monthselect count(0)from  bass1.td_check_user_mobile a , t_int_check_user_status c  where a.PRODUCT_NO = c.PRODUCT_NOselect count(0) from   G_S_03005_MONTHwhere time_id = 201103and ITEM_ID in ('0626','0627')select b.*from  bass1.td_check_user_mobile a , t_int_check_user_status c , (select user_idfrom  bass1.g_s_03004_monthwhere time_id = 201103and ACCT_ITEM_ID in ('0626','0627')) b , bass2.dwd_cust_msg_20110331 dwhere a.product_no = c.product_no and c.user_id = b.user_id select * from  bass2.dwd_cust_msg_20110331 fetch first 10 rows only  select count(0) from    t_int_check_user_statusselect b.*from  t_int_check_user_status c , (select user_idfrom  bass1.g_s_03004_monthwhere time_id = 201103and ACCT_ITEM_ID in ('0626','0627')) bwhere c.user_id = b.user_id 
+declare global temporary table session.int_check_user_status
+    (
+   user_id        CHARACTER(15),
+   product_no     CHARACTER(15),
+   test_flag      CHARACTER(1),
+   sim_code       CHARACTER(15),
+   usertype_id    CHARACTER(4),
+   create_date    CHARACTER(15),
+   brand_id       CHARACTER(4),
+   time_id        int
+    )                            
+partitioning key           
+ (
+   user_id    
+ ) using hashing           
+with replace on commit preserve rows not logged in tbs_user_temp
+
+--session临时表跑数慢，建实体表
+drop table t_int_check_user_status
+create table t_int_check_user_status like     session.int_check_user_status
+  DATA CAPTURE NONE
+ IN TBS_APP_BASS1
+ INDEX IN TBS_INDEX
+  PARTITIONING KEY
+   (user_id
+   ) USING HASHINGdrop table t_int_check_user_status
+create table t_int_check_user_status like     session.int_check_user_status
+  DATA CAPTURE NONE
+ IN TBS_APP_BASS1
+ INDEX IN TBS_INDEX
+  PARTITIONING KEY
+   (user_id
+   ) USING HASHING
+
+
+
+--抓取用户资料入表
+insert into t_int_check_user_status (
+     user_id    
+    ,product_no 
+    ,test_flag  
+    ,sim_code   
+    ,usertype_id  
+    ,create_date
+    ,brand_id
+    ,time_id )
+select e.user_id
+    ,e.product_no  
+    ,case when e.usertype_id in ('1','2') then '0' else '1' end  test_flag
+    ,e.sim_code
+    ,f.usertype_id  
+    ,e.create_date  
+    ,e.brand_id
+    ,f.time_id       
+from (select user_id,create_date,product_no,brand_id,sim_code,usertype_id
+                ,row_number() over(partition by user_id order by time_id desc ) row_id   
+from bass1.g_a_02004_day
+where time_id<=20110331 and SIM_CODE = '0') e
+inner join ( select user_id,usertype_id,time_id,row_number() over(partition by user_id order by time_id desc ) row_id   
+           from bass1.g_a_02008_day
+           where time_id<=20110331 ) f on f.user_id=e.user_id
+where e.row_id=1 and f.row_id=1
+
+select count(0) from   bass1.td_check_user_mobile
+select count(0)
+from 
+(
+select product_no from t_int_check_user_status where usertype_id NOT IN ('2010','2020','2030','9000')
+except 
+select product_no from  bass1.td_check_user_mobile
+)t
+select  b.ITEM_ID, UPPER(item_name) ,count(0)                             from   bass2.dw_acct_shoulditem_201103 a , bass2.dim_acct_item b
+                        where a.ITEM_ID = b.item_id                         and  UPPER(item_name) like '%GPRS%' group by    b.ITEM_ID, UPPER(item_name) order by 1,2ITEM_ID	2	3
+80000103	优惠GPRS费	30
+80000634	随E行-GPRS费	4011
+80000663	M2M GPRS功能费	18
+80000664	M2M_GPRS功能费(5元30M/月)	18
+                      select  b.ITEM_ID, UPPER(item_name) ,count(0)                             from   bass2.dw_acct_shoulditem_201103 a , bass2.dim_acct_item b
+                        where a.ITEM_ID = b.item_id                         AND  UPPER(item_name) like '%流量%'group by    b.ITEM_ID, UPPER(item_name) order by 1,2ITEM_ID	2	3
+80000078	超出套餐数据流量费	677714
+80000104	数据流量月基本费	187057
+80000462	G3上网本超出套餐流量费	206
+80000531	G3上网卡超出套餐流量费	140
+                        
+                          a.item_id in (80000508,80000512,80000513) 0626	GPRS套餐费	包含相应数据流量的GPRS月使用费
+0627	GPRS通信费	套餐用户超出部分的GPRS通信费，以及非套餐用户的GPRS通信费
+                                                    dim_acct_item	随e行G3上网卡包月不限流量不封顶	80000508	帐目科目	BASS_STD1_0074	0626	GPRS套餐费
+dim_acct_item	数据时长月基本费 	80000512	帐目科目	BASS_STD1_0074	0626	GPRS套餐费
+dim_acct_item	超出套餐数据时长费 	80000513	帐目科目	BASS_STD1_0074	0627	GPRS通信费
+select * from   bass2.dim_acct_item where UPPER(item_name) like '%GPRS%'select count(0),count(distinct item_id ) from    bass2.dim_acct_item 
