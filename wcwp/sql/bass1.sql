@@ -6569,7 +6569,21 @@ from         t_region_flag a
 inner join t_int_check_user_status b on a.user_id = b.user_id
 inner join      t_BASE_BILL_DURATION c on b.PRODUCT_NO = c.PRODUCT_NO1217756select  time_id,target1,target3 from 
 bass1.g_rule_check where rule_code = 'C1'
-and time_id between  20110301 and 20110307order by 1 desc select * from   bass2.ODS_UP_SP_SERVICE_20110421select bill_flag,operator_name,count(0) from    bass2.ODS_DIM_UP_SP_SERVICE_20110421group by bill_flag,operator_nameorder by 1 desc select count(0),count(distinct operator_code) from   bass2.ODS_DIM_UP_SP_SERVICE_20110421select * from   bass2.dw_cdr_select * from    bass2.CDR_GPRS_LOCAL_20110421  select * from    bass2.CDR_GPRS_roamin_20110421  select * from   dw_newbusi_gprs_   SELECT * FROM bass2.DIM_PROD_UP_PRODUCT_ITEMWHERE ITEM_TYPE='OFFER_PLAN'	  AND DEL_FLAG='1'	  AND SUPPLIER_ID IS NOT NULL	  WITH UR;   SELECT * FROM bass2.DIM_NEWBUSI_SPINFOWITH UR;  SELECT * FROM bass2.DIM_PROD_UP_PRODUCT_ITEMwhere name like '全球通88%'  a a.PRODUCT_ITEM_ID ;    select * from bass2.DW_PRODUCT_INS_OFF_INS_PROD_201103 b b.OFFER_ID    select a.*,b.*  --select count(0),count(distinct PRODUCT_ITEM_ID)  from (select OFFER_ID,count(0) cntfrom bass2.DW_PRODUCT_INS_OFF_INS_PROD_201103where valid_date < '2011-03-01' and expire_date >  '2011-03-01'group by OFFER_ID) a ,(  SELECT PRODUCT_ITEM_ID,EXTEND_ID2 ,name FROM bass2.DIM_PROD_UP_PRODUCT_ITEMWHERE ITEM_TYPE='OFFER_PLAN'	  AND DEL_FLAG='1'	  AND SUPPLIER_ID IS NOT NULL) b where a.OFFER_ID = b.PRODUCT_ITEM_ID     
+and time_id between  20110301 and 20110307order by 1 desc select * from   bass2.ODS_UP_SP_SERVICE_20110421select bill_flag,operator_name,count(0) from    bass2.ODS_DIM_UP_SP_SERVICE_20110421group by bill_flag,operator_nameorder by 1 desc select * from    bass2.ODS_DIM_UP_SP_SERVICE_20110421select count(0),count(distinct operator_code) from   bass2.ODS_DIM_UP_SP_SERVICE_20110421select * from   bass2.dw_cdr_select * from    bass2.CDR_GPRS_LOCAL_20110421  select * from    bass2.CDR_GPRS_roamin_20110421  select * from   dw_newbusi_gprs_   SELECT * FROM bass2.DIM_PROD_UP_PRODUCT_ITEMWHERE ITEM_TYPE='OFFER_PLAN'	  AND DEL_FLAG='1'	  AND SUPPLIER_ID IS NOT NULL	  WITH UR;   SELECT * FROM bass2.DIM_NEWBUSI_SPINFOWITH UR;  SELECT * FROM bass2.DIM_PROD_UP_PRODUCT_ITEMwhere name like '全球通88%'  a a.PRODUCT_ITEM_ID ;    select * from bass2.DW_PRODUCT_INS_OFF_INS_PROD_201103 b b.OFFER_ID    select a.*,b.*  --select count(0),count(distinct PRODUCT_ITEM_ID)  from (select OFFER_ID,count(0) cntfrom bass2.DW_PRODUCT_INS_OFF_INS_PROD_201103where valid_date < '2011-03-01' and expire_date >  '2011-03-01'group by OFFER_ID) a ,(  SELECT PRODUCT_ITEM_ID,EXTEND_ID2 ,name FROM bass2.DIM_PROD_UP_PRODUCT_ITEMWHERE ITEM_TYPE='OFFER_PLAN'	  AND DEL_FLAG='1'	  AND SUPPLIER_ID IS NOT NULL) b where a.OFFER_ID = b.PRODUCT_ITEM_IDselect b.EXTEND_ID2,a.cnt
+from 
+(
+select OFFER_ID,count(0) cnt
+from bass2.DW_PRODUCT_INS_OFF_INS_PROD_201103
+where valid_date < '2011-03-01' and expire_date >  '2011-03-01'
+group by OFFER_ID
+) a ,(
+SELECT PRODUCT_ITEM_ID,EXTEND_ID2 ,name FROM bass2.DIM_PROD_UP_PRODUCT_ITEM
+        WHERE ITEM_TYPE='OFFER_PLAN'
+  AND DEL_FLAG='1'
+  AND SUPPLIER_ID IS NOT NULL
+) b 
+where a.OFFER_ID = b.PRODUCT_ITEM_ID
+   
 
 drop table BASS1.G_I_77780_DAY_DOWN20110422
 CREATE TABLE BASS1.G_I_77780_DAY_DOWN20110422
@@ -7011,7 +7025,7 @@ ALTER TABLE BASS1.t_gprs_sum2
   LOCKSIZE ROW
   APPEND OFF
   NOT VOLATILE;
-      select * from t_gprs_sum      select sum(UP_FLOWS+DOWN_FLOWS) all_flow,sum(FREE_IS_PKG) FREE_IS_PKG,sum(FREE_NOT_PKG) FREE_NOT_PKG,sum(NOT_FREE_NOT_PKG) NOT_FREE_NOT_PKG  from t_gprs_sum  select sum(flow)/1024 from BASS1.t_gprs_prod_user2      select flow,count(0)  from  BASS1.t_gprs_prod_user2  group by flow  order by 1  select * from   BASS1.t_gprs_sum2            select sum(UP_FLOWS+DOWN_FLOWS) all_flow,sum(FREE_IS_PKG) FREE_IS_PKG,sum(FREE_NOT_PKG) FREE_NOT_PKG,sum(NOT_FREE_NOT_PKG) NOT_FREE_NOT_PKG  from t_gprs_sum2     select * from  bass2.DW_PRODUCT_BASS1_20110323   dim_up_product_   select * from  bass2.DIM_PROD_UP_PRODUCT_ITEM where name like '%全球通%' and item_type = 'OFFER_PLAN'     select * from  bass2.DIM_PROD_UP_PRODUCT_ITEM where name like '%尊享%' and item_type = 'OFFER_PLAN'   SELECT * FROM G_S_04002_DAY WHERE TIME_ID = 20110321 bass1.fn_get_all_dim  select * from syscat.functions where funcname = 'FN_GET_ALL_DIM'select * from BODY
+      select * from t_gprs_sum      select sum(UP_FLOWS+DOWN_FLOWS) all_flow,sum(FREE_IS_PKG) FREE_IS_PKG,sum(FREE_NOT_PKG) FREE_NOT_PKG,sum(NOT_FREE_NOT_PKG) NOT_FREE_NOT_PKG  from t_gprs_sum  select sum(flow)/1024 from BASS1.t_gprs_prod_user2      select flow,count(0)  from  BASS1.t_gprs_prod_user2  group by flow  order by 1  select * from   BASS1.t_gprs_sum2            select sum(UP_FLOWS+DOWN_FLOWS) all_flow,sum(FREE_IS_PKG) FREE_IS_PKG,sum(FREE_NOT_PKG) FREE_NOT_PKG,sum(NOT_FREE_NOT_PKG) NOT_FREE_NOT_PKG  from t_gprs_sum2     select * from  bass2.DW_PRODUCT_BASS1_20110323   dim_up_product_   select * from  bass2.DIM_PROD_UP_PRODUCT_ITEM where name like '%全球通%' and name not like '%存%' and name not like '%积分%' and item_type = 'OFFER_PLAN' and extend_id is not null     select * from  bass2.DIM_PROD_UP_PRODUCT_ITEM where name like '%尊享%' and item_type = 'OFFER_PLAN'      select * from  bass2.DIM_PROD_UP_PRODUCT_ITEM where name like '%凤凰资讯%'     and item_type = 'OFFER_PLAN'SELECT * FROM G_S_04002_DAY WHERE TIME_ID = 20110321 bass1.fn_get_all_dim  select * from syscat.functions where funcname = 'FN_GET_ALL_DIM'select * from BODY
 CREATE FUNCTION BASS1.FN_GET_ALL_DIM(GID VARCHAR(20),DID VARCHAR(20)) RETURNS VARCHAR(10) DETERMINISTIC NO EXTERNAL ACTION LANGUAGE SQL BEGIN ATOMIC RETURN SELECT BASS1_VALUE FROM BASS1.ALL_DIM_LKP WHERE BASS1_TBID = GID AND XZBAS_VALUE = DID; END
 select * from  bass1.g_s_03004_monthwhere time_id = 201103and ACCT_ITEM_ID in ('0626','0627')dim_acct_item	随e行G3上网卡包月不限流量不封顶	80000508	帐目科目	BASS_STD1_0074	0626	GPRS套餐费
 dim_acct_item	数据时长月基本费 	80000512	帐目科目	BASS_STD1_0074	0626	GPRS套餐费
@@ -7107,3 +7121,167 @@ select product_no from  bass1.td_check_user_mobile
 dim_acct_item	数据时长月基本费 	80000512	帐目科目	BASS_STD1_0074	0626	GPRS套餐费
 dim_acct_item	超出套餐数据时长费 	80000513	帐目科目	BASS_STD1_0074	0627	GPRS通信费
 select * from   bass2.dim_acct_item where UPPER(item_name) like '%GPRS%'select count(0),count(distinct item_id ) from    bass2.dim_acct_item 
+drop view t_gprs_03
+
+create view t_gprs_03
+as
+select 
+                  sum(bigint(data_flow_up1+data_flow_up2))*1.0/1024/1024/1024   as up_flows
+                  ,sum(bigint(data_flow_down1+data_flow_down2))*1.0/1024/1024/1024 as down_flows
+                  --
+                  ,sum(case when free_res_val1 is not null and (charge1+charge2+charge3+charge4) = 0 then 
+             bigint(data_flow_up1+data_flow_up2+data_flow_down1+data_flow_down2)*1.0/1024/1024/1024  else 0 end     ) free_is_pkg
+                  ,sum(case when free_res_val1 is  null and (charge1+charge2+charge3+charge4) = 0 then 
+             bigint(data_flow_up1+data_flow_up2+data_flow_down1+data_flow_down2)*1.0/1024/1024/1024  else 0 end     ) free_not_pkg
+             
+                  ,sum( case when (charge1+charge2+charge3+charge4) > 0 then 
+             bigint(data_flow_up1+data_flow_up2+data_flow_down1+data_flow_down2)*1.0/1024/1024/1024  else  0 end
+             ) not_free_not_pkg 
+from  bass2.CDR_GPRS_LOCAL_20110423 a,
+BASS1.t_gprs_prod_user2 b 
+where a.user_id = b.user_id 
+ 
+ UP_FLOWS	DOWN_FLOWS	FREE_IS_PKG	FREE_NOT_PKG
+40.15598522219	226.62631536461	128.06665484731	122.77105686100
+
+
+ 40.15598522219	226.62631536461	128.06665484731	122.77105686100
+not_free_not_pkg
+ 15.94457482177
+ 
+ 
+   select * from  bass1.g_i_02019_month  where OVER_PROD_AREA = '1' and OVER_PROD_NAME like '%阅读%'  select * from  bass1.g_i_02018_month where base_prod_type = '113'    select * from  bass2.dim_prod_up_plan_plan_rel    WITH  tmp1 as ( select 
+		    a.product_item_id                         base_prod_id,
+		    b.trademark
+		from bass2.dim_prod_up_product_item a,
+		  bass2.Dim_prod_up_offer b
+		where a.item_type = 'OFFER_PLAN' 
+		and b.offer_type in ('OFFER_PLAN')
+		and a.product_item_id = b.offer_id
+		and a.platform_id in (1,2)) t        select count(0),count(distinct PEER_SEQ) from    bass2.DW_ACCT_PAYMENT_DM_201103 select * from   bass2.DW_ACCT_PAYMENT_DM_201103 where remarks like '%SP退费%'select * from   bass2.DW_ACCT_PAYMENT_DM_201103 where upper(remarks) like '%SP%'select replace(char(date(a.OP_TIME)),'-','')  time_id
+,count(0) op_time
+,sum(amount) back_cnt
+from bass2.DW_ACCT_PAYMENT_DM_201103 a
+where a.remarks like '%SP退费%'
+group by replace(char(date(a.OP_TIME)),'-','')select replace(char(date(a.OP_TIME)),'-','')  time_id
+,count(0) back_cnt
+,sum(amount) back_fee
+from bass2.DW_ACCT_PAYMENT_DM_201103 a
+where a.remarks like '%SP退费%'
+and replace(char(date(a.OP_TIME)),'-','') = '20110330'
+group by replace(char(date(a.OP_TIME)),'-','')select replace(char(date(a.OP_TIME)),'-','')  time_id
+,char(count(0)) back_cnt
+,char(bigint(sum(amount))) back_fee
+from bass2.DW_ACCT_PAYMENT_DM_201103 a
+where a.remarks like '%SP退费%'
+and replace(char(date(a.OP_TIME)),'-','') = '20110330'
+group by replace(char(date(a.OP_TIME)),'-','')
+select count(0),count(distinct sp_code ) from   bass2.DIM_NEWBUSI_SPINFOselect count(0),count(distinct serv_code ) from   bass2.DIM_NEWBUSI_SPINFOselect tabname from syscat.tables where tabname like  'VGOP%20110407%' select * from   bass2.VGOP_11201_20110407VGOP_11201_20110407select sum(bigint(free_point)) from   g_i_02006_month where time_id = 201103select case 
+     when a.crm_brand_id2=70 then '1' 
+     else '0' 
+    end    ,count(0) cnt from  bass2.dw_product_bass1_20110401 a,BASS1.t_gprs_prod_user2 b where a.user_id = b.user_id group by case 
+     when a.crm_brand_id2=70 then '1' 
+     else '0' 
+    end              select product_no,b.flowfrom  bass2.dw_product_bass1_20110401 a,BASS1.t_gprs_prod_user2 b where a.user_id = b.user_id and  a.crm_brand_id2=70group by case 
+     when a.crm_brand_id2=70 then '1' 
+     else '0' 
+    end                            db2 runstats on table bass1.t_gprs_prod_user2 with distribution and detailed indexes all    db2 runstats on table  bass2.dw_product_bass1_20110401 with distribution and detailed indexes all    CREATE TABLE BASS1.mon_interface_not_empty
+ (
+interface_code  char(5)
+ )
+  DATA CAPTURE NONE
+ IN TBS_APP_BASS1
+ INDEX IN TBS_INDEX
+  PARTITIONING KEY
+   (interface_code) USING HASHING
+   
+  ALTER TABLE BASS1.mon_interface_not_empty
+  LOCKSIZE ROW
+  APPEND OFF
+  NOT VOLATILE    insert into BASS1.mon_interface_not_empty values 
+ ('01002')
+,('02004')
+,('02008')
+,('02011')
+,('02014')
+,('02015')
+,('02016')
+,('02018')
+,('02019')
+,('02020')
+,('02021')
+,('02047')
+,('02049')
+,('02050')
+,('02052')
+,('02053')
+,('02063')
+,('03001')
+,('03002')
+,('03004')
+,('03005')
+,('03013')
+,('04002')
+,('04004')
+,('04005')
+,('04006')
+,('04007')
+,('04008')
+,('04011')
+,('05001')
+,('05002')
+,('05003')
+,('06021')
+,('06022')
+,('06023')
+,('06011')
+,('06012')
+,('06029')
+,('06031')
+,('06032')
+,('21001')
+,('21002')
+,('21007')
+,('21003')
+,('21008')
+,('21011')
+,('21012')
+,('21013')
+,('21014')
+,('21015')
+,('21020')
+,('22012')
+,('22013')
+,('22038')
+,('22039')
+,('22032')
+,('22033')
+,('22035')
+,('22052')
+,('22070')
+,('22073')
+,('22061')
+,('22062')
+,('22063')
+,('22064')
+,('22065')
+,('22049')
+,('22050')
+,('22055')
+,('22056')
+,('22101')
+,('22102')
+,('22103')
+,('22104')
+,('22105')
+,('22201')
+,('22202')
+,('22203')
+,('22080')
+,('22081')
+,('22082')
+,('22083')
+,('22084')
+,('22085')
+;
+    select * from bass1.MON_ALL_INTERFACEwhere interface_code not in (select  interface_code  from     BASS1.mon_interface_not_empty  )

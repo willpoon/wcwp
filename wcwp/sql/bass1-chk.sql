@@ -277,7 +277,7 @@ select b.*, lower( 'put *'||b.interface_code||'*.dat ' ) put_dat, lower( 'p
 --接口号 -  表名 对应关系
 select * from table(
 select substr(control_code , 11,5) unit_code,substr(b.CONTROL_CODE,7,13) from    BASS1.MON_ALL_INTERFACE a, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)and a.TYPE = 'd'and b.control_code like '%DAY%'
-) t where unit_code = '22302'
+) t where unit_code = '04008'
 
 select * from table(
 select substr(control_code , 11,5) unit_code,substr(b.CONTROL_CODE,7,15),b.control_code from    BASS1.MON_ALL_INTERFACE a, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)and a.TYPE = 'm'and b.control_code like '%MONTH%'
@@ -302,36 +302,7 @@ select * from G_S_22302_DAY
 
 select count(0),count(distinct enterprise_id) from G_S_22302_DAY where time_id in (20110423,20110424)
 
-select * from BASS1.MON_ALL_INTERFACE a where a.INTERFACE_CODE = '02015'
+select * from BASS1.MON_ALL_INTERFACE a where a.INTERFACE_CODE = '04008'
 
-
-create view t_gprs_03
-as
-select 
-                  sum(bigint(data_flow_up1+data_flow_up2))*1.0/1024/1024/1024   as up_flows
-                  ,sum(bigint(data_flow_down1+data_flow_down2))*1.0/1024/1024/1024 as down_flows
-                  --
-                  ,sum(case when free_res_val1 is not null and (charge1+charge2+charge3+charge4) = 0 then 
-             bigint(data_flow_up1+data_flow_up2+data_flow_down1+data_flow_down2)*1.0/1024/1024/1024  else 0 end     ) free_is_pkg
-                  ,sum(case when free_res_val1 is  null and (charge1+charge2+charge3+charge4) = 0 then 
-             bigint(data_flow_up1+data_flow_up2+data_flow_down1+data_flow_down2)*1.0/1024/1024/1024  else 0 end     ) free_not_pkg
-             
-                  ,sum( case when (charge1+charge2+charge3+charge4) > 0 then 
-             bigint(data_flow_up1+data_flow_up2+data_flow_down1+data_flow_down2)*1.0/1024/1024/1024  else  0 end
-             ) not_free_not_pkg 
-from  bass2.CDR_GPRS_LOCAL_20110423 a,
-BASS1.t_gprs_prod_user2 b 
-where a.user_id = b.user_id 
- 
- UP_FLOWS	DOWN_FLOWS	FREE_IS_PKG	FREE_NOT_PKG
-40.15598522219	226.62631536461	128.06665484731	122.77105686100
-
-
- 40.15598522219	226.62631536461	128.06665484731	122.77105686100
-not_free_not_pkg
- 15.94457482177
- 
- 
- 
  
  
