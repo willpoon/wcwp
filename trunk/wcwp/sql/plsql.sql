@@ -135,7 +135,7 @@ select  to_char(CREATE_DATE,'yyyymmdd') op_time,count(0)
  
  
  
- 
+ select count(0),count(distinct sp_code) from   kf.TONGYI_TUIDING
  
  
  SELECT * FROM DIM_PROD_UP_PRODUCT_ITEMWHERE ITEM_TYPE='OFFER_PLAN'	  AND DEL_FLAG='1'	  AND SUPPLIER_ID IS NOT NULL	  WITH UR;	  SELECT * FROM DIM_NEWBUSI_SPINFOWITH UR;	  SELECT * FROM DW_PRODUCT_INS_OFF_INS_PROD_201103WHERE OFFER_ID=113110146851WITH UR;
@@ -168,6 +168,10 @@ select  to_char(CREATE_DATE,'yyyymmdd') op_time,count(0)
  ,a.name
  
  
+   select * from ngcp.pm_sp_operator_code@dbl_jfdb where sp_type
+select * from ngcp.pm_serv_type_vs_expr@dbl_jfdb serv_type
+
+ 
 --22083 ²»¼ÇÂ¼ÒµÎñ£¬ÎÞ°ì·¨ÌáÈ¡¡£
 ÔÂ·Ý
 ÒµÎñ´úÂë
@@ -180,7 +184,8 @@ select  to_char(CREATE_DATE,'yyyymmdd') op_time,count(0)
 
  
  
- select * from  KF.KF_SMS_CMD_RECEIVE_201104
+ select * from  KF.KF_SMS_CMD_RECEIVE_201104@dbl_crmdb
+ 
  
  
  
@@ -249,6 +254,8 @@ group by PHONE_ID||SERV_CODE
 13628931714 100869019236	7
 15889084736 100869010132	2
 
+
+
 select  PHONE_ID||SERV_CODE,count(0)
 from 
 (select * from kf.Kf_Sms_Cmd_Receive_201104 a  where cmd_id = 405129 and to_char(a.CREATE_DATE,'yyyymm') = '201104' ) a ,
@@ -305,3 +312,218 @@ from (select *  from so.his_dsmp_sms_send_message  a where  RSP_SEQ LIKE '%10086
         
 --
 select * from DW_NEWBUSI_ISMG_201103        
+select * from   kf.TONGYI_TUIDING
+        
+ select      
+             to_char(a.CREATE_DATE,'yyyymmdd') op_time
+             ,TYCX_QUERY             qry_cnt
+             ,TYCX_TUIDING           cancel_cnt
+             ,TYCX_TUIDING_FAIL      cancel_fail_cnt
+             ,TYCX_TOUSU_LIANG       complaint_cnt
+             , b.tuiding_cnt cancel_busi_type_cnt
+        from KF.THREE_ITEM_STAT a ,
+              (select  to_char(CREATE_DATE,'yyyymmdd') op_time,count(distinct sp_code) tuiding_cnt
+                       from   
+                        kf.TONGYI_TUIDING a
+                        where sts = 1
+                        group by to_char(a.CREATE_DATE,'yyyymmdd')
+                    ) b 
+        where to_char(CREATE_DATE,'yyyymmdd')>= '20110401' 
+and    to_char(a.CREATE_DATE,'yyyymmdd') = b.op_time
+
+
+        
+   select * from    product.UP_SP_info@dbl_ggdb
+   
+
+
+ select  to_char(a.CREATE_DATE,'yyyymm') op_time
+ ,a.sp_code
+ ,a.name
+ ,b.sp_name ÒµÎñÌá¹©ÉÌÃû³Æ
+ ,sum(case when a.sts = 1 then 1 else 0 end ) ³É¹¦ÍË¶©Á¿
+ ,0 Í¶ËßÁ¿
+ ,0 ¶©¹ºÓÃ»§Êý
+ from  kf.TONGYI_TUIDING a ,product.UP_SP_info@dbl_ggdb b 
+ where a.sp_id = b.sp_code
+ group by to_char(a.CREATE_DATE,'yyyymm')
+  ,a.sp_code
+ ,a.name
+ ,b.sp_name 
+
+
+
+select count(0) from ngcp.pm_sp_operator_code@dbl_jfdb
+select count(0) from ngcp.pm_serv_type_vs_expr@dbl_jfdb
+
+select * from   ngcp.pm_serv_type_vs_expr@dbl_jfdb
+
+select count(0) from ngcp.pm_sp_operator_code@dbl_jfdb a ,ngcp.pm_serv_type_vs_expr@dbl_jfdb b 
+ where a.sp_type = b.serv_type
+ 
+ 
+select * from ngcp.pm_serv_type_vs_expr@dbl_jfdb
+select count(0)
+from (
+select distinct  a.operator_code,sp_type from   ngcp.pm_sp_operator_code@dbl_jfdb a
+) a 
+
+select * from product.UP_SP_info@dbl_ggdb
+
+select sp_code,count(0) cnt  from   kf.TONGYI_TUIDING
+group by sp_code
+
+
+select 
+from (
+select distinct  a.operator_code,sp_type from   ngcp.pm_sp_operator_code@dbl_jfdb a
+) a ,
+(select sp_code,count(0) cnt  from   kf.TONGYI_TUIDING
+group by sp_code
+) b where a.operator_code = b.sp_code
+
+
+select b.sp_code,expr_id,a.delay_time
+from (
+select distinct  a.operator_code,a.expr_id,b.delay_time from ngcp.pm_sp_operator_code@dbl_jfdb a ,ngcp.pm_serv_type_vs_expr@dbl_jfdb b 
+ where a.sp_type = b.serv_type
+) a ,
+(select sp_code,count(0) cnt  from   kf.TONGYI_TUIDING
+group by sp_code
+) b where a.operator_code = b.sp_code
+
+
+select count(0)
+from (
+select distinct  a.operator_code,b.expr_id,b.delay_time from ngcp.pm_sp_operator_code@dbl_jfdb a ,ngcp.pm_serv_type_vs_expr@dbl_jfdb b 
+ where a.sp_type = b.serv_type
+) a ,
+(select sp_code,count(0) cnt  from   kf.TONGYI_TUIDING
+group by sp_code
+) b where a.operator_code = b.sp_code
+
+select a.*
+from (
+select distinct  a.operator_code,b.sp_code,b.expr_id,b.delay_time from ngcp.pm_sp_operator_code@dbl_jfdb a ,ngcp.pm_serv_type_vs_expr@dbl_jfdb b 
+ where a.sp_type = b.serv_type
+) a ,
+(select sp_code,count(0) cnt  from   kf.TONGYI_TUIDING
+group by sp_code
+) b where a.operator_code = b.sp_code
+
+
+select confirm_code , count(0)
+from so.his_dsmp_sms_send_message
+where confirm_code > '9999'
+group by confirm_code
+
+7601	13658901768	100865018330	2	0	DSMP	
+×ð¾´µÄ¿Í»§£¬ÄúºÃ£¡Äú½«¶©¹ºÓÉÉîÛÚÌÚÑ¶¹«Ë¾Ìá¹©µÄ³¬¼¶QQÒµÎñ£¬10.0Ôª/ÔÂ£¨ÓÉÖÐ¹úÒÆ¶¯´úÊÕ·Ñ£©£¬ÇëÔÚ24Ð¡Ê±ÄÚ»Ø¸´¡°ÊÇ¡±È·ÈÏ¶©¹º£¬»Ø¸´ÆäËûÄÚÈÝºÍ²»»Ø¸´Ôò²»¶©¹º¡
+£ÖÐ¹úÒÆ¶¯	2010-06-26 7:11:01.000	2	2010-06-26 7:11:01.000	2010-06-26 7:13:46.000	2010-06-26 7:13:48.000	[NULL]	ÊÇ	ÊÇ	2010-06-26 7:13:46.000	workflow-0158816891	901012	[NULL]	[NULL]	-XXSQQ
+
+
+select * from   so.his_dsmp_sms_send_message  
+
+
+select ext1 sp_id
+,ext4 sp_busi_code
+,count(0) alert_sms_cnt
+,count(distinct case when confirm_code is not null or return_message is not null then bill_id||RSP_SEQ||ext1||ext4 end ) reply_sms_cnt
+,sum(case when trim(confirm_code) <>'ÊÇ' and  trim(confirm_code) = trim(return_message)  then 1 else 0 end ) cancel_cnt
+,0 hotline_out_cnt
+,0 complaint_cnt
+from so.his_dsmp_sms_send_message  a 
+where  RSP_SEQ LIKE '%10086901%' and  to_char(a.CREATE_DATE,'yyyymm') = '201104'  
+and ext4 is not null 
+group by ext1
+,ext4
+
+select message  
+from so.his_dsmp_sms_send_message  a 
+where  RSP_SEQ LIKE '10086901%' and  to_char(a.CREATE_DATE,'yyyymm') = '201104'  
+and ext4 is not null 
+and  return_message is null
+
+
+select count(0),suM(alert_sms_cnt),sum(reply_sms_cnt),sum(cancel_cnt),sum(null_cnt)
+from (
+select ext1 sp_id
+,ext4 sp_busi_code
+,count(0) alert_sms_cnt
+,count(distinct case when trim(confirm_code) <>'ÊÇ' and return_message is not null then bill_id||RSP_SEQ||ext1||ext4 end ) reply_sms_cnt
+,sum(case when trim(confirm_code) <>'ÊÇ' and  trim(confirm_code) = trim(return_message)  then 1 else 0 end ) cancel_cnt
+,0 hotline_out_cnt
+,0 complaint_cnt
+,sum(case when return_message is null then 1 else 0 end ) null_cnt
+from so.his_dsmp_sms_send_message  a 
+where  RSP_SEQ LIKE '10086901%' and  to_char(a.CREATE_DATE,'yyyymm') = '201104'  
+and ext4 is not null 
+group by ext1
+,ext4
+) t 
+7520	111022	2063
+
+
+select ext1 sp_id
+,ext4 sp_busi_code
+,count(0) alert_sms_cnt
+,count(distinct case when trim(confirm_code) <>'ÊÇ' and return_message is not null then bill_id||RSP_SEQ||ext1||ext4 end ) reply_sms_cnt
+,sum(case when trim(confirm_code) <>'ÊÇ' and  trim(confirm_code) = trim(return_message)  then 1 else 0 end ) cancel_cnt
+,0 hotline_out_cnt
+,0 complaint_cnt
+from so.his_dsmp_sms_send_message  a 
+where  RSP_SEQ LIKE '%10086901%' and  to_char(a.CREATE_DATE,'yyyymm') = '201104'  
+and ext4 is not null
+and exists (select 1 from  kf.Kf_Sms_Cmd_Receive_201104 b  where b.cmd_id = 405129 and to_char(b.CREATE_DATE,'yyyymm') = '201104'  and a.bill_id = b.PHONE_ID and  a.RSP_SEQ = b.SERV_CODE )
+group by ext1
+,ext4
+
+
+
+
+select count(0),suM(alert_sms_cnt),sum(reply_sms_cnt)
+from (
+select ext1 sp_id
+,ext4 sp_busi_code
+,count(0) alert_sms_cnt
+,count(distinct case when trim(confirm_code) <>'ÊÇ' and return_message is not null then bill_id||RSP_SEQ||ext1||ext4 end ) reply_sms_cnt
+,sum(case when trim(confirm_code) <>'ÊÇ' and  trim(confirm_code) = trim(return_message)  then 1 else 0 end ) cancel_cnt
+,0 hotline_out_cnt
+,0 complaint_cnt
+from so.his_dsmp_sms_send_message  a 
+where  RSP_SEQ LIKE '%10086901%' and  to_char(a.CREATE_DATE,'yyyymm') = '201104'  
+and ext4 is not null
+and exists (select 1 from  kf.Kf_Sms_Cmd_Receive_201104 b  where b.cmd_id = 405129 and to_char(b.CREATE_DATE,'yyyymm') = '201104'  and a.bill_id = b.PHONE_ID and  a.RSP_SEQ = b.SERV_CODE )
+group by ext1
+,ext4
+) t 
+721	2695	2063
+
+select count(0) from  kf.Kf_Sms_Cmd_Receive_201104 b  where b.cmd_id = 405129 and to_char(b.CREATE_DATE,'yyyymm') = '201104' 
+
+select  PHONE_ID||SERV_CODE,count(0)
+from 
+(select * from kf.Kf_Sms_Cmd_Receive_201104 a  where cmd_id = 405129 and to_char(a.CREATE_DATE,'yyyymm') = '201104' ) a ,
+(select *  from so.his_dsmp_sms_send_message  a where  RSP_SEQ LIKE '%10086901%' and  to_char(a.CREATE_DATE,'yyyymm') = '201104'  ) b 
+where a.PHONE_ID = b.BILL_ID and a.SERV_CODE = RSP_SEQ
+group by PHONE_ID||SERV_CODE
+ having count(0) > 1
+ 
+ 
+  select      
+             to_char(a.CREATE_DATE,'yyyymmdd') op_time
+             ,TYCX_QUERY             qry_cnt
+             ,TYCX_TUIDING           cancel_cnt
+             ,TYCX_TUIDING_FAIL      cancel_fail_cnt
+             ,TYCX_TOUSU_LIANG       complaint_cnt
+             , b.tuiding_cnt cancel_busi_type_cnt
+        from KF.THREE_ITEM_STAT a ,
+              (select  to_char(CREATE_DATE,'yyyymmdd') op_time,count(distinct sp_code) tuiding_cnt
+                       from   
+                        kf.TONGYI_TUIDING a
+                        where sts = 1
+                        group by to_char(a.CREATE_DATE,'yyyymmdd')
+                    ) b 
+        where to_char(CREATE_DATE,'yyyymmdd')>= '20110401' 
+and    to_char(a.CREATE_DATE,'yyyymmdd') = b.op_time
+ 
