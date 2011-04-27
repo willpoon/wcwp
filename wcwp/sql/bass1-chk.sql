@@ -305,4 +305,26 @@ select count(0),count(distinct enterprise_id) from G_S_22302_DAY where time_id i
 select * from BASS1.MON_ALL_INTERFACE a where a.INTERFACE_CODE = '04008'
 
  
- 
+ select * from  app.sch_control_before where control_code = 'BASS1_INT_CHECK_Z345_DAY.tcl'
+ select * from  app.sch_control_before where before_control_code = 'BASS1_INT_CHECK_Z345_DAY.tcl'
+ BASS1_INT_CHECK_Z345_DAY.tcl	int -s INT_CHECK_Z345_DAY.tcl	2	准确性指标R022：动感地带用户到达数变动率超出集团考核范围	2011-04-27 3:09:29.549279	[NULL]	-1	[NULL]
+BASS1_INT_CHECK_Z345_DAY.tcl	int -s INT_CHECK_Z345_DAY.tcl	2	准确性指标R021：神州行用户到达数变动率超出集团考核范围	2011-04-27 3:07:10.948531	[NULL]	-1	[NULL]
+
+select * from   BASS1.G_RULE_CHECK  where rule_code in ('R021')
+and time_id > 20110401
+
+select * from   BASS1.G_RULE_CHECK  where rule_code in ('R021')
+and time_id > 20110401
+
+
+select * from   BASS1.G_RULE_CHECK  where rule_code in ('R021')
+and time_id > 20110401
+20110426	R021	929980.00000	953866.00000	-0.02504	0.00000
+20110425	R021	953866.00000	954734.00000	-0.00090	0.00000
+
+select * from   BASS1.G_RULE_CHECK  where rule_code in ('R022')
+and time_id > 20110401
+
+20110426	R022	373681.00000	386079.00000	-0.03211	0.00000
+20110425	R022	386079.00000	388145.00000	-0.00532	0.00000
+
