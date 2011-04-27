@@ -7158,7 +7158,7 @@ not_free_not_pkg
 		where a.item_type = 'OFFER_PLAN' 
 		and b.offer_type in ('OFFER_PLAN')
 		and a.product_item_id = b.offer_id
-		and a.platform_id in (1,2)) t        select count(0),count(distinct PEER_SEQ) from    bass2.DW_ACCT_PAYMENT_DM_201103 select * from   bass2.DW_ACCT_PAYMENT_DM_201103 where remarks like '%SP退费%'select * from   bass2.DW_ACCT_PAYMENT_DM_201103 where upper(remarks) like '%SP%'select replace(char(date(a.OP_TIME)),'-','')  time_id
+		and a.platform_id in (1,2)) t        select * from  bass2.DW_ACCT_PAYMENT_DM_201103  fetch first 10 rows only          select count(0),count(distinct PEER_SEQ) from    bass2.DW_ACCT_PAYMENT_DM_201103 select * from   bass2.DW_ACCT_PAYMENT_DM_201103 where remarks like '%SP退费%'select * from   bass2.DW_ACCT_PAYMENT_DM_201103 where upper(remarks) like '%SP%'select replace(char(date(a.OP_TIME)),'-','')  time_id
 ,count(0) op_time
 ,sum(amount) back_cnt
 from bass2.DW_ACCT_PAYMENT_DM_201103 a
@@ -7284,4 +7284,8 @@ interface_code  char(5)
 ,('22084')
 ,('22085')
 ;
-    select * from bass1.MON_ALL_INTERFACEwhere interface_code not in (select  interface_code  from     BASS1.mon_interface_not_empty  )
+    select * from bass1.MON_ALL_INTERFACEwhere interface_code not in (select  interface_code  from     BASS1.mon_interface_not_empty  )WITH TEST(NAME_TEST, BDAY_TEST) AS   
+(   
+VALUES ('张三','1997-7-1'),('李四','1949-10-1')   
+)   select * from test
+SELECT NAME_TEST FROM TEST WHERE BDAY_TEST='1949-10-1'

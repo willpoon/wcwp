@@ -188,3 +188,66 @@ getxlsdata(){
 				db2 connect reset
 				db2 terminate
 }
+
+
+
+cdz(){
+#compare data size
+#run at /bassapp/bihome/panzw
+#no parameter needed
+today=`date '+%Y%m%d'`
+deal_date=`yesterday ${today}`
+prev_date=`yesterday ${deal_date}`
+prev_data_path=/bassapp/backapp/data/bass1/export/export_${prev_date}
+this_data_path=/bassapp/backapp/data/bass1/export/export_${deal_date}
+ls -lrt ${this_data_path}/*.dat  | \
+awk '{print $9,$5}'|\
+awk 'BEGIN{FS="_";OFS="_"}{print $5,$6,$7}' |\
+sort > /bassapp/bihome/panzw/tmp/.tmp1$$
+#
+ls -lrt ${prev_data_path}/*.dat  | \
+awk '{print $9,$5}'|\
+awk 'BEGIN{FS="_";OFS="_"}{print $5,$6,$7}' |\
+sort > /bassapp/bihome/panzw/tmp/.tmp2$$
+#-v deal_date=${deal_date} -v prev_date=${prev_date}
+echo |nawk -v deal_date=${deal_date} -v prev_date=${prev_date} '{printf "%-30s%-20s%-20s\n", "filename","date:"deal_date,"date:"prev_date}'
+paste -d " " /bassapp/bihome/panzw/tmp/.tmp1$$ /bassapp/bihome/panzw/tmp/.tmp2$$|awk '{printf "%-30s%-20s%-20s\n", $1,$2,$4}'
+wc -l /bassapp/bihome/panzw/tmp/.tmp1$$
+wc -l /bassapp/bihome/panzw/tmp/.tmp2$$
+rm /bassapp/bihome/panzw/tmp/.tmp1$$
+rm /bassapp/bihome/panzw/tmp/.tmp2$$
+}
+
+
+
+cds(){
+#alias of cdz2	
+#compare data size
+#run at /bassapp/bihome/panzw
+#no parameter needed
+today=`date '+%Y%m%d'`
+deal_date=`yesterday ${today}`
+prev_date=`yesterday ${deal_date}`
+prev_data_path=/bassapp/backapp/data/bass1/export/export_${prev_date}
+this_data_path=/bassapp/backapp/data/bass1/export/export_${deal_date}
+ls -lrt ${this_data_path}/*.dat  | \
+awk '{print $9,$5}'|\
+awk 'BEGIN{FS="/"}{print $8}' |\
+awk 'BEGIN{FS="_";OFS="_"}{print $4,$3,$1,$6}' |\
+sort > /bassapp/bihome/panzw/tmp/.tmp1$$
+
+ls -lrt ${prev_data_path}/*.dat  | \
+awk '{print $9,$5}'|\
+awk 'BEGIN{FS="/"}{print $8}' |\
+awk 'BEGIN{FS="_";OFS="_"}{print $4,$3,$1,$6}' |\
+sort > /bassapp/bihome/panzw/tmp/.tmp2$$
+echo |nawk -v deal_date=${deal_date} -v prev_date=${prev_date} '{printf "%-30s%-20s%-20s\n", "filename","date:"deal_date,"date:"prev_date}'
+paste -d " " /bassapp/bihome/panzw/tmp/.tmp1$$ /bassapp/bihome/panzw/tmp/.tmp2$$ |\
+awk '{printf "%-30s%-20s%-20s\n", $1,$2,$4}'
+wc -l /bassapp/bihome/panzw/tmp/.tmp1$$
+wc -l /bassapp/bihome/panzw/tmp/.tmp2$$
+#
+rm /bassapp/bihome/panzw/tmp/.tmp1$$
+rm /bassapp/bihome/panzw/tmp/.tmp2$$
+}
+

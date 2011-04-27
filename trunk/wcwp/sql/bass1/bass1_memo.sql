@@ -1012,3 +1012,17 @@ VALUES ('张三','1997-7-1'),('李四','1949-10-1')
 SELECT NAME_TEST FROM TEST WHERE BDAY_TEST='1949-10-1' 
 
 --22085 不能传空的。
+
+while read filename
+do
+touch $filename.tcl
+done<<!
+G_S_22080_DAY
+G_S_22081_MONTH
+G_S_22082_DAY
+G_S_22083_MONTH
+G_S_22084_DAY		
+G_S_22085_MONTH
+G_I_02022_DAY
+G_I_02023_DAY
+!
