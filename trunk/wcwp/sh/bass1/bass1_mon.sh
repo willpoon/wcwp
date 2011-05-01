@@ -263,6 +263,26 @@ getunixtime2(){
 ##数据监控：提醒类
 ################################################################
 echo $$
+##define global var
+d_at09_cnt=8
+d_at11_cnt=30
+d_at13_cnt=17
+d_at15_cnt=6
+d_all_cnt=61
+#
+m_on03_cnt=12
+m_on05_cnt=15
+m_on08_cnt=30
+m_on10_cnt=17
+m_on15_cnt=10
+m_all_cnt=84
+
+
+
+
+
+##
+
 start_run_time=`getunixtime2`
 while [ true ]
 do
@@ -306,7 +326,7 @@ do
 				fn_d_recordlvl_ret_cnt
 				v_d_recordlvl_ret_cnt=$?
 				echo ${v_d_recordlvl_ret_cnt}
-				if [ ${v_d_recordlvl_ret_cnt} -eq 56 -a ${g_d_recordlvl_sent_flag} -eq 0 ]	; then 
+				if [ ${v_d_recordlvl_ret_cnt} -eq ${d_all_cnt} -a ${g_d_recordlvl_sent_flag} -eq 0 ]	; then 
 					MESSAGE_CONTENT="日接口(day)记录级校验已全部正常返回."
 					sendalarmsms "${MESSAGE_CONTENT}"
 					#将发送标记置为已发送！
@@ -341,8 +361,8 @@ do
 				fn_d9_file_lvl_ret_cnt
 				v_d_filelvl_ret_cnt=$?
 				echo ${v_d_filelvl_ret_cnt}
-				if [ ${v_d_filelvl_ret_cnt} -ne 8 ]	;then 
-					MESSAGE_CONTENT="9点前接口文件级返回不等于8个，请在9点前处理，确认是否已上传!"
+				if [ ${v_d_filelvl_ret_cnt} -ne ${d_at09_cnt} ]	;then 
+					MESSAGE_CONTENT="9点前接口文件级返回不等于${d_at09_cnt}个，请在9点前处理，确认是否已上传!"
 					sendalarmsms "${MESSAGE_CONTENT}"
 				fi
 			fi
@@ -355,8 +375,8 @@ do
 				fn_d11_file_lvl_ret_cnt
 				v_d_filelvl_ret_cnt=$?
 				echo ${v_d_filelvl_ret_cnt}
-				if [ ${v_d_filelvl_ret_cnt} -ne 30 ]	;then 
-					MESSAGE_CONTENT="9点前接口文件级返回不等于30个，请在11点前处理，确认是否已上传!"
+				if [ ${v_d_filelvl_ret_cnt} -ne ${d_at11_cnt} ]	;then 
+					MESSAGE_CONTENT="9点前接口文件级返回不等于${d_at11_cnt}个，请在11点前处理，确认是否已上传!"
 					sendalarmsms "${MESSAGE_CONTENT}"
 				fi
 			fi
@@ -370,8 +390,8 @@ do
 				fn_d13_file_lvl_ret_cnt
 				v_d_filelvl_ret_cnt=$?
 				echo ${v_d_filelvl_ret_cnt}
-				if [ ${v_d_filelvl_ret_cnt} -ne 12 ]	;then 
-					MESSAGE_CONTENT="13点前接口文件级返回不等于12个，请在13点前处理，确认是否已上传!"
+				if [ ${v_d_filelvl_ret_cnt} -ne ${d_at13_cnt} ]	;then 
+					MESSAGE_CONTENT="13点前接口文件级返回不等于${d_at13_cnt}个，请在13点前处理，确认是否已上传!"
 					sendalarmsms "${MESSAGE_CONTENT}"
 				fi
 			fi
@@ -385,8 +405,8 @@ do
 			fn_d15_file_lvl_ret_cnt
 			v_d_filelvl_ret_cnt=$?
 			echo ${v_d_filelvl_ret_cnt}
-				if [ ${v_d_filelvl_ret_cnt} -ne 6 ]	;then 
-					MESSAGE_CONTENT="15点前接口文件级返回不等于6个，请在15点前处理，确认是否已上传!"
+				if [ ${v_d_filelvl_ret_cnt} -ne ${d_at15_cnt} ]	;then 
+					MESSAGE_CONTENT="15点前接口文件级返回不等于${d_at15_cnt}个，请在15点前处理，确认是否已上传!"
 					sendalarmsms "${MESSAGE_CONTENT}"
 				fi
 			fi
