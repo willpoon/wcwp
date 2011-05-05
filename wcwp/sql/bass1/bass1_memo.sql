@@ -1026,3 +1026,24 @@ G_S_22085_MONTH
 G_I_02022_DAY
 G_I_02023_DAY
 !
+drwxr-xr-x    2 500      503          4096 Apr 01 09:13 sample
+
+
+
+
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_02007_MONTH 2011-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_02007_MONTH 2011-02 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_02007_MONTH 2011-03 &
+
+
+
+
+db2 connect to bassdb user bass2 using bass2
+
+db2 "load client from /bassdb2/etl/L/boss/error/I0202520110503000000.AVL of del \
+modified by coldel$   nochardel timestampformat=\"YYYYMMDDHHMMSS\" \
+fastparse anyorder warningcount 1000 \
+messages ./msg/ODS_AS_WORK_ACCEPT_20110503.log \
+replace into ODS_AS_WORK_ACCEPT_20110503"
+
+

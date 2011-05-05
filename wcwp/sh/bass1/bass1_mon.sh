@@ -427,10 +427,13 @@ do
 					exp_cnt=`DB2_SQL_EXEC|grep 'xxxxx'|awk '{print $2}'`			
 					today=`date '+%Y%m%d'`
 					deal_date=`yesterday ${today}`
-					exp_dir="/bassapp/backapp/data/bass1/export/export_${deal_date}"				
+					exp_dir="/bassapp/backapp/data/bass1/export/export_${deal_date}"
+					#sleep to wait file move to exp_dir					
+					sleep 5
 					dat_file_cnt=`ls -lrt ${exp_dir}/*.dat | wc -l|awk '{print $1}'`
 					echo "dat_file_cnt数据文件数 :${dat_file_cnt}"				
 				#4：00检查导出非0	
+				echo s1
 				if [ ${alert_time} = "04" ];then
 						if [ ${dat_file_cnt} -eq  0 ];then
 								MESSAGE_CONTENT="数据文件数：${dat_file_cnt},导出延迟,请核查！"
@@ -438,13 +441,13 @@ do
 								sendalarmsms "${MESSAGE_CONTENT}"
 						fi
 				fi
-				
+				echo s2
 				if [ ${dat_file_cnt} -ne  ${exp_cnt} ];then
 					MESSAGE_CONTENT="数据文件数：${dat_file_cnt}不等于 ${exp_cnt},请先处理！"
 					echo ${MESSAGE_CONTENT}
 					sendalarmsms "${MESSAGE_CONTENT}"
 				fi
-											
+				echo s3							
 				verf_file_cnt=`ls -lrt ${exp_dir}/*.verf | wc -l|awk '{print $1}'`
 				echo "verf_file_cnt 校验文件数 :${verf_file_cnt}"								
 				if [ ${verf_file_cnt} -ne  ${exp_cnt}  ];then 
