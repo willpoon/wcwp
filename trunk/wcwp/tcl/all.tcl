@@ -707,3 +707,108 @@ proc get_row {MySQL} {
 	 set RESULT_VAL2 [lindex $p_row 1]
 	 set RESULT_VAL3 [lindex $p_row 2]  
 	 
+
+proc chkpkunique{tabname pk }{
+	set sql_buf "
+		select count(0)  cnt
+		from bass1.${tabname} 
+		where time_id =$timestamp
+		group by ${pk} having count(0) > 1
+		"
+	puts $sql_buf
+	set CHECK_VAL1 [get_single $sql_buf ]
+	puts $CHECK_VAL1
+	set CHECK_VAL1 [format "%.3f" [expr ${CHECK_VAL1} /1.00]]
+	puts $CHECK_VAL1
+	if {[format %.3f [expr ${CHECK_VAL1} ]]>0 } {
+		set grade 2
+	        set alarmcontent "接口 ${tabname} 主键唯一性校验未通过"
+	        WriteAlarm $app_name $optime $grade ${alarmcontent}
+    return -1	        
+	}
+		puts "接口 ${tabname} 主键唯一性校验OK!"
+	return 0
+}
+	
+invoke:
+#tabname不带schema
+set tabname "g_a_01002_day"
+set pk 			"cust_id"
+chkpkunique ${tabname} ${pk}
+	 
+	 
+
+
+#################################################################
+# 函数名称: chkpkunique
+# 功能描述: 返回一条查询结果
+# 输入参数: tabname pk
+# 输出参数: 
+# 返回值:   0成功；-1失败
+#################################################################
+proc chkpkunique {in_tabname in_pk in_timestamp} {
+	global env
+
+	global conn
+
+	global handle	
+	
+	set tabname $in_tabname
+	set pk $in_pk	
+	set timestamp $in_timestamp	
+	set sql_buf " select count(0) dup_cnt
+	from (
+		select count(0)  cnt
+		from bass1.$tabname
+		where time_id =$timestamp
+		group by $pk having count(0) > 1
+		) t 
+		"
+	set CHECK_VAL1 [get_single $sql_buf ]
+	puts $CHECK_VAL1
+	set CHECK_VAL1 [format "%.3f" [expr ${CHECK_VAL1} /1.00]]
+	puts $CHECK_VAL1
+	if {[format %.3f [expr ${CHECK_VAL1} ]]>0 } {
+		set grade 2
+	        set alarmcontent "接口 ${tabname} 主键唯一性校验未通过"
+	        WriteAlarm $app_name $optime $grade ${alarmcontent}
+    return -1	        
+	}
+		puts "${tabname} primary key check OK!"
+	return 0
+}
+
+
+
+#################################################################
+# 函数名称: chkpkunique
+# 功能描述: 返回一条查询结果
+# 输入参数: tabname pk
+# 输出参数: 
+# 返回值:   0成功；-1失败
+#################################################################
+proc aidb_runstats {tablename  {flag 1}} {
+
+switch $flag {
+            1 {set  sqlbuf "runstats on table $tablename on all columns and indexes all " }
+            2 {set  sqlbuf "runstats on table $tablename  on key columns and indexes all " }
+            3 {set  sqlbuf "runstats on table $tablename with distribution and detailed indexes all " }
+            default {
+               set  sqlbuf "runstats on table $tablename on all columns and indexes all " 
+             }
+ }
+
+exec db2 connect to bassdb user bass1 using bass1  > /dev/null
+puts "$sqlbuf"
+exec db2 $sqlbuf
+exec db2 terminate > /dev/null
+}
+	 
+
+      #得到上个月的1号日期
+      #set sql_buff "select date('$ThisMonthFirstDay')-1 month from bass2.dual"
+	#puts $sql_buff
+	#set LastMonthFirstDay [get_single $sql_buff]
+	#puts $LastMonthFirstDay
+	
+		 

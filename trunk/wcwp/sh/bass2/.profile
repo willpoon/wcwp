@@ -12,6 +12,13 @@ alias pzh='cd /bassapp/bass2/panzw2'
 #alias desc='db2 describe table '
 alias gocrm='cd /bassapp/bass2/ifboss/crm_interface/bin/config/CRM'
 alias gocfg='cd /bassapp/bass2/ifboss/crm_interface/bin/config/'
+
+nowpts=`ps |awk '{print $2}' |grep pts|uniq`
+USER=`who |grep $nowpts|awk '{print $1}'`
+export USER
+echo $USER
+
+
 descf() { db2 describe table $1 | awk -F" " '{print $1}'
 }
 
@@ -246,3 +253,23 @@ HOME=/bassapp/bass1
 export HOME
 }
 
+ints(){
+date +%Y%m%d%H%M%S
+logfile="/bassapp/bihome/panzw/tmp/tclrunlog/$1.`date +%Y%m%d%H%M%S`"
+time int -s $1 |tee $logfile
+date +%Y%m%d%H%M%S
+}
+
+looktb(){
+if [ $# -ne 2 ];then 
+echo "$0 <skm> <tb>"
+return 1
+fi
+case $USER in
+app)  PWD=app;;
+bass1)  PWD=bass1;;
+bass2)  PWD=bass2;;
+panzw)  USER=bass1;export USER;PWD=bass1;;
+esac
+db2look -d bassdb -e -i $USER -w $PWD -z $1 -t $2
+}

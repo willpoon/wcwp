@@ -344,7 +344,7 @@ Ethernet adapter 本地连接:
 
         Autoconfiguration Enabled . . . . : Yes
 
-        IP Address. . . . . . . . . . . . : 172.16.24.146
+        IP cress. . . . . . . . . . . . : 172.16.24.146
 
         Subnet Mask . . . . . . . . . . . : 255.255.255.128
 
@@ -5330,3 +5330,100 @@ db2 load client from /bassapp/bass2/a.txt of del MODIFIED BY COLDEL0x80 insert i
 
 Q3:R 2708~3247							                       
 
+
+
+        select 
+                20110428 as TIME_ID
+                ,a.PRODUCT_INSTANCE_ID as USER_ID
+                ,bass1.fn_get_all_dim('BASS_STD1_0115',char(a.offer_id)) as ADD_PKG_ID
+                ,replace(char(date(a.VALID_DATE)),'-','') as VALID_DT
+                from  bass2.Dw_product_ins_off_ins_prod_ds as a 
+                ,                bass2.dw_product_20110428 as b
+                    where b.usertype_id in (1,2,9) 
+                    and b.userstatus_id in (1,2,3,6,8)
+                    and b.test_mark<>1
+                          and a.OP_TIME = '2011-04-28'
+                          and a.state=1
+                    and date(a.VALID_DATE)<='2011-04-28'
+                    and a.valid_type = 1
+                    and bass1.fn_get_all_dim('BASS_STD1_0115',char(a.offer_id)) is not null 
+                    and  b.user_id = a.PRODUCT_INSTANCE_ID 
+                    
+                    
+
+Reorganize the table for one or more of the following reasons:
+
+ Reorganize due to excessive overflow records (F1). The total number of overflow rows in the table should be less than 5 percent of the total number of rows. Overflow rows can occur when rows are updated and the new rows no longer fit in the data page where it was originally written. This usually occurs as a result of VARCHAR columns or an ALTER TABLE statement.
+
+ Reorganize due to excesses free space (F2). The table size in bytes (TSIZE) should be more than 70 percent of the total space allocated for the table. There should be less than 30% free space.
+
+ Reorganize due to excessive free pages (F3). The number of pages that contain no rows at all should be less than 20% of the total number of pages. Pages can become empty after rows are deleted.
+
+ Running a reorganization of the table may not resolve the problem(s) and subsequent advice may still identify this as a problem. Refer to the UDB Administration Guide for further information.
+ 
+
+bossintf =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 172.16.5.49)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME =bossintf) 
+    )
+)
+testjf =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 172.16.9.10)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = jftest)
+    )
+)
+
+crmtest =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 172.16.9.22)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = crmtest)
+    )
+)
+
+nfjdzcdb =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 172.16.6.63)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = zwdb)
+    )
+  )
+
+xzkfdb =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.233.30.78)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = xzkfdb)
+    )
+)
+
+
+BASS2.ETL_TASK_RUNNING 
+                     
+                     
+
+接口事务：
+1.《接口列表》 提供接口列表信息查询，不入库，不调用。
+2. bass2.ETL_LOAD_TABLE_MAP 配置后供加载程序调用。
+3.bass2.USYS_TABLE_MAINTAIN 配置后供自动建表程序调用。
+4.app.sch_control_task  配置后供自动调度程序调用。
+
+
+
+$ db2look -d bassdb -e -i app -w app -z bass2 -t DWD_DSMP_sp_oper_code_201011
+test ok!
+
+nowpts=`ps |awk '{print $2}' |grep pts|uniq`
+USER=`who |grep $nowpts|awk '{print $1}'`
+export USER
+echo $USER

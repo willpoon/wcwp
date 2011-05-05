@@ -3,7 +3,7 @@ splfile(){
 #function:split large file
 #author:panzhiwei
 #run:splfile [filename] [linecount]
-#example:splfile s_13100_201102_21003_00_001 900000
+#example:splfile s_13100_201102_21003_00_001 7500000
 if [ $# -ne 2 ];then 
 echo splfile [filename] [linecount]
 return 2

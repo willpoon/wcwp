@@ -30,23 +30,25 @@ select count(*) from kf.Kf_Sms_Cmd_Receive_201104 where cmd_id =405003 and sts=4
  select * from  KF.THREE_ITEM_STAT
  
  
+ select count(0) from   KF.THREE_ITEM_STAT
+ 
  select TYCX_QUERY             查询量,
              TYCX_TUIDING           退订量,
              TYCX_TUIDING_FAIL      退订失败量,
              TYCX_TUIDING_AVG       人均单次退订业务的数量,
-             TYCX_FIRST20_BUSI_NAME 退定量居前20的业务名称,
+             --TYCX_FIRST20_BUSI_NAME 退定量居前20的业务名称,
              TYCX_TOUSU_LIANG       投诉量,
              KOUFEI_TIXING          扣费提醒发送量,
              KOUFEI_DXHFL           短信回复量,
              KOUFEI_REXWH           热线外呼量,
              KOUFEI_TUIDINGL        业务成功退订量,
-             KOUFEI_TDFIRST20_NAME  退订量居前20的业务名称,
+             --KOUFEI_TDFIRST20_NAME  退订量居前20的业务名称,
              KOUFEI_TOUSU_LIAN      投诉量,
              MW_SHOULILIANG         受理量,
              MW_TUIFEI              退费金额,
              MW_ZYFIRST20_NAME      收费争议投诉量居前20的业务名称,
              CREATE_DATE            统计的数据时间
-        from KF.THREE_ITEM_STAT where to_char(CREATE_DATE,'yyyymmdd')='20110401' 
+        from KF.THREE_ITEM_STAT
         --and to_char(CREATE_DATE,'yyyymmdd')<'20110332' 
         order by CREATE_DATE asc;
 
@@ -66,6 +68,9 @@ autocommit on
 select * from kf.KF_SMS_DYNAMIC_PARA_201104;
 commit;
 
+select to_char(a.CREATE_DATE,'yyyymmdd'),count(0)
+from  KF.THREE_ITEM_STAT a 
+group by to_char(a.CREATE_DATE,'yyyymmdd')
 
 
 --22080
@@ -168,6 +173,10 @@ select  to_char(CREATE_DATE,'yyyymmdd') op_time,count(0)
  ,a.name
  
  
+   select * from ngcp.pm_sp_operator_code@dbl_jfdb 
+   where rownum < 100
+   
+ 
    select * from ngcp.pm_sp_operator_code@dbl_jfdb where sp_type
 select * from ngcp.pm_serv_type_vs_expr@dbl_jfdb serv_type
 
@@ -184,8 +193,9 @@ select * from ngcp.pm_serv_type_vs_expr@dbl_jfdb serv_type
 
  
  
- select * from  KF.KF_SMS_CMD_RECEIVE_201104@dbl_crmdb
+ select * from  KF.KF_SMS_CMD_RECEIVE_201104@dbl_crmdb where rownum < 1
  
+ where 
  
  
  
@@ -200,6 +210,17 @@ group by prod_id
 
         
 select serv_code from KF.KF_SMS_CMD_RECEIVE_201104 where cmd_id = 405129;  －－这个是所有扣费提醒回复短厅信的服务代码。也是营业是能过serv_code来下发信息给用户的，用户是回复到这个短口的
+
+select count(0) from   
+
+select * from   ngcp.pm_sp_operator_code@dbl_jfdb
+where rownum < 1
+
+
+select  b.operator_code,operator_name 
+from (select distinct ext4 from  so.his_dsmp_sms_send_message ) a
+join ngcp.pm_sp_operator_code@dbl_jfdb  b on a.ext4 =b.operator_code 
+
 
 
 
@@ -220,6 +241,11 @@ from
 where a.PHONE_ID = b.BILL_ID and a.SERV_CODE = RSP_SEQ
  
  2708	2591
+
+
+select *  from so.his_dsmp_sms_send_message  a where  RSP_SEQ LIKE '%10086901%' and  to_char(a.CREATE_DATE,'yyyymm') = '201103' 
+and ext4 = '600902002002975051'
+
 
 
 select count(0),count(distinct PHONE_ID||SERV_CODE)
@@ -393,6 +419,15 @@ group by sp_code
 ) b where a.operator_code = b.sp_code
 
 
+select  from    ngcp.pm_sp_operator_code@dbl_jfdb 
+
+
+select count(0)
+from (select distinct operator_code,operator_name from  ngcp.pm_sp_operator_code@dbl_jfdb 
+) a
+
+
+
 select count(0)
 from (
 select distinct  a.operator_code,b.expr_id,b.delay_time from ngcp.pm_sp_operator_code@dbl_jfdb a ,ngcp.pm_serv_type_vs_expr@dbl_jfdb b 
@@ -401,6 +436,8 @@ select distinct  a.operator_code,b.expr_id,b.delay_time from ngcp.pm_sp_operator
 (select sp_code,count(0) cnt  from   kf.TONGYI_TUIDING
 group by sp_code
 ) b where a.operator_code = b.sp_code
+
+select * from    ngcp.pm_sp_operator_code@dbl_jfdb
 
 select a.*
 from (
@@ -527,3 +564,213 @@ group by PHONE_ID||SERV_CODE
         where to_char(CREATE_DATE,'yyyymmdd')>= '20110401' 
 and    to_char(a.CREATE_DATE,'yyyymmdd') = b.op_time
  
+ 
+ select * from  bass1.g_i_02022_day
+ 
+ 
+ 
+ 
+
+select * from   ams.scrd_gift_update@lnk_zwdb
+
+SC_MONTH_BACKUP	X_YYMM	用户	积分_月末镜像表SC_PAYMENT	X_YYMM	用户	积分_记录SC_SCORELIST	X_YYYY_YYMM	用户	积分明细表ODS_PRODUCT_SC_MONTH_BACKUP_YYYYMMODS_PRODUCT_SC_PAYMENT_YYYYMMDDODS_PRODUCT_SC_SCORELIST_YYYYMM
+SCRD_ORD_GIFT_INFO
+
+select * from    ams.payment_0891_1103@lnk_zwdb
+WHERE opt_code='4158' AND state=0 
+
+
+
+select * from   ams.scrd_info@lnk_zwdb
+select table_name from all_tables@lnk_zwdb where table_name like '%SCRD%'
+
+select  item_id ,count(0) from   ams.SCRD_ORD_INFO@lnk_zwdb
+group by item_id
+
+
+SCRD_ORD_GIFT_INFO
+
+select  item_id ,count(0) from   ams.SCRD_ORD_GIFT_INFO@lnk_zwdb
+group by item_id
+
+select * from    ams.SCRD_ORD_GIFT_INFO@lnk_zwdb
+
+
+select * from channel.CHANNEL_LOCAL_BUSI @dbl_ggdb where 1=1 and entity_type in(72,73 ) and rec_status=1/*ext_field1  充值卡序列号ext_field7  充值卡面值 单位分ext_field9  渠道编号*/
+
+
+
+select * from   
+ams.scrd_ord_info@lnk_zwdb a
+,ams.scrd_gift_update@lnk_zwdb b 
+where a.item_id = b.item_id 
+
+
+  select * from ams.scrd_ord_info
+
+
+
+
+
+ams.scrd_info
+
+
+
+
+select   a.ord_seq,a.mob_num,order_opr_time,order_sum_point,in_date,sts,ord_type,exp_ord_type,exp_reason,comments
+,ord_sts,org_id,item_id,item_name,exp_num,exp_ord_opt_time,item_type,item_point,item_point_value,type1,type2
+,b.ITEM_E_PRICE
+,b.ITEM_G_POINT
+,b.ITEM_M_POINT
+,b.ITEM_B_PRICE
+,b.ITEM_STATUS
+,b.TYPE3
+from   
+ams.scrd_ord_info@lnk_zwdb a
+,ams.scrd_gift_update@lnk_zwdb b 
+where a.item_id = b.item_id 
+
+
+
+select   
+ a.ord_seq
+,a.mob_num
+,a.order_opr_time
+,a.order_sum_point
+,a.in_date
+,a.sts
+,a.ord_type
+,a.exp_ord_type
+,a.exp_reason
+,a.comments
+,a.ord_sts
+,a.org_id
+,a.item_id
+,a.item_name
+,a.exp_num
+,a.exp_ord_opt_time
+,a.item_type
+,a.item_point
+,a.item_point_value
+,a.type1
+,a.type2
+,b.ITEM_E_PRICE
+,b.ITEM_G_POINT
+,b.ITEM_M_POINT
+,b.ITEM_B_PRICE
+,b.ITEM_STATUS
+,b.TYPE3
+from   
+ams.scrd_ord_info@lnk_zwdb a
+,ams.scrd_gift_update@lnk_zwdb b 
+where a.item_id = b.item_id 
+
+
+
+select   
+substr( ord_seq,1,8)
+,substr( ord_seq,1,4)||'-'||substr( ord_seq,5,2)||'-'||substr( ord_seq,7,2)
+,a.ord_seq
+,a.mob_num
+--,a.ord_opr_time
+,a.order_sum_point
+--,a.in_date
+--,a.sts
+,a.ord_type
+,a.exp_ord_type
+,a.exp_reason
+--,a.comments
+,a.ord_sts
+,a.org_id
+,a.item_id
+,a.item_name
+,a.exp_num
+,a.exp_ord_opt_time
+,b.item_type
+,b.item_point
+,b.item_point_value
+,b.type1
+--,b.type2
+,b.ITEM_E_PRICE
+,b.ITEM_G_POINT
+,b.ITEM_M_POINT
+,b.ITEM_B_PRICE
+,b.ITEM_STATUS
+--,b.TYPE3
+from   
+ams.scrd_ord_info@lnk_zwdb a
+,ams.scrd_gift_update@lnk_zwdb b 
+where a.item_id = b.item_id 
+
+
+select    to_date(substr( ord_seq,1,8),'yyyy-dd') ,a.ord_seq ,a.mob_num ,a.order_sum_point ,a.ord_type ,a.exp_ord_type ,a.exp_reason ,a.ord_sts ,a.org_id ,a.item_id ,a.item_name ,a.exp_num ,a.exp_ord_opt_time ,b.item_type ,b.item_point ,b.item_point_value ,b.type1 ,b.ITEM_E_PRICE ,b.ITEM_G_POINT ,b.ITEM_M_POINT ,b.ITEM_B_PRICE ,b.ITEM_STATUS from    ams.scrd_ord_info a ,ams.scrd_gift_update b  where a.item_id = b.item_id 
+
+
+select (nvl(order_sum_point,0)) from ams.scrd_ord_info@lnk_zwdb 
+
+
+
+ams.scrd_ord_info
+
+
+          
+select count(0) from    ams.scrd_ord_gift_info@lnk_zwdb 
+select count(0) from   ams.scrd_ord_gift_info@lnk_zwdb 
+          
+
+  select count(0) from ams.scrd_ord_info@lnk_zwdb a,
+ams.scrd_ord_gift_info@lnk_zwdb  b,
+  ams.scrd_gift_update@lnk_zwdb c where a.ord_seq = b.ord_seq and b.item_id = c.item_id
+and a.ord_seq like '201104%'
+and order_sum_point>0
+
+
+          
+          
+  select type1,count(0) from ams.scrd_ord_info@lnk_zwdb a,
+ams.scrd_ord_gift_info@lnk_zwdb  b,
+  ams.scrd_gift_update@lnk_zwdb c where a.ord_seq = b.ord_seq and b.item_id = c.item_id
+and a.ord_seq like '201104%'
+and order_sum_point>0
+group by type1
+
+          
+
+select    substr( a.ord_seq,1,8)OP_TIME ,a.ord_seq ,a.SUB_ORD_SEQ,a.mob_num ,a.order_sum_point ,a.ord_type ,a.exp_ord_type ,a.exp_reason ,a.ord_sts ,a.org_id ,a.item_id ,a.item_name ,c.item_type ,c.item_point ,c.item_point_value ,c.type1 ,c.ITEM_E_PRICE ,c.ITEM_G_POINT ,c.ITEM_M_POINT ,c.ITEM_B_PRICE ,c.ITEM_STATUS 
+from ams.scrd_ord_info@lnk_zwdb a,
+ams.scrd_ord_gift_info@lnk_zwdb  b,
+  ams.scrd_gift_update@lnk_zwdb c where a.ord_seq = b.ord_seq and c.item_id = b.item_id
+and c.file_name like '%CRMPRODUCT_%'
+
+--and a.ord_seq like '201104%'
+
+
+       
+       
+       
+
+select count(0) from ams.scrd_ord_info a,
+ams.scrd_ord_gift_info  b,
+  ams.scrd_gift_update c where a.ord_seq = b.ord_seq and b.item_id = c.item_id and c.file_name like '%CRMPRODUCT_%'; 
+       
+       
+      
+          
+
+  select count(0) from ams.scrd_ord_info@lnk_zwdb a,
+ams.scrd_ord_gift_info@lnk_zwdb  b,
+  ams.scrd_gift_update@lnk_zwdb c where a.ord_seq = b.ord_seq and b.item_id = c.item_id
+--and a.ord_seq like '201104%'
+and c.file_name like '%CRMPRODUCT_%'
+
+select * from 
+  ams.scrd_gift_update@lnk_zwdb
+  
+  
+
+      
+ select * from       
+ channel.CHANNEL_LOCAL_BUSI@dbl_ggdb
+ 
+
+      
