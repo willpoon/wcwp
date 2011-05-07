@@ -148,6 +148,27 @@ select * from app.g_runlog
 where time_id= int(substr(replace(char(current date - 1 month),'-',''),1,6))
 and return_flag=1
 
+--已上传未返回 (b表将为NULL)
+
+select a.*,b.*
+FROM 
+(
+    select t.*
+    from 
+    (
+    select  a.* ,row_number()over(partition by  substr(filename,16,5) order by deal_time desc ) rn 
+    from APP.G_FILE_REPORT a
+    where substr(filename,9,6) = substr(replace(char(current date - 1 month),'-',''),1,6)
+    and err_code='00'
+    and length(filename)=length('s_13100_201002_03014_01_001.dat')
+    ) t where rn = 1
+) a 
+left join 
+(
+select * from app.g_runlog 
+where time_id= int(substr(replace(char(current date - 1 month),'-',''),1,6))
+and return_flag=1
+) b on substr(a.filename,16,5) = b.unit_code 
 
 /**
 --查询未返回月接口 记录级
@@ -378,38 +399,7 @@ select substr(control_code , 11,5) unit_code,substr(b.CONTROL_CODE,7,15),b.contr
 ) t where unit_code = ''
 
 
-select * from   bass1.mon_all_interface where INTERFACE_CODE = '02007'
-
-select * from app.sch_control_before where control_code = 'BASS1_G_S_22302_DAY.tcl'
-
-SELECT * FROM app.sch_control_RUNLOG
-WHERE control_code IN (
-select BEFORE_CONTROL_CODE  from app.sch_control_before where control_code = 'BASS1_G_S_22302_DAY.tcl'
-)
-
-BASS2_Dw_enterprise_industry_apply.tcl
-
-
-
-SELECT * FROM app.sch_control_RUNLOG
-WHERE control_code IN (
-select BEFORE_CONTROL_CODE  from app.sch_control_before where 
-control_code like 'BASS1_G_I_02018_MONTH.tcl'
-)
-
-
-
-select * from    app.sch_control_before
-where control_code like '%02018%'
-
-
-select *  from app.sch_control_runlog where control_code = 'BASS1_G_I_02018_MONTH.tcl'
-
-
-select time_id,count(0)
-from BASS1.G_S_22302_DAY
-group by time_id 
-order by 1 desc 
+select * from   bass1.mon_all_interface where INTERFACE_CODE = '22063'
 
 
 
@@ -425,144 +415,14 @@ set flag = -2
 where control_code like 'BASS1_INT_CHECK%'
 AND date(a.begintime) =  date(current date)
 AND FLAG = 0
-
-
-alter table BASS1.G_S_04003_DAY ALTER column FLOWUP 	SET DATA TYPE CHARACTER(13)
-alter table BASS1.G_S_04003_DAY ALTER column FLOWDOWN  SET DATA TYPE CHARACTER(13)
-
-FLOWUP                         SYSIBM    CHARACTER                13     0 No    
-FLOWDOWN                       SYSIBM    CHARACTER                13     0 No   
-
-
-
-select time_id , count(0) from   BASS1.G_USER_LST
-group by time_id 
-
-
-
-
-
-select ent_busi_type from   BASS1.G_S_22302_DAY where time_id = 20110501
-except   
-select ent_busi_type from   BASS1.G_S_22302_DAY where time_id = 20110430
-
-
-
-
-select ent_busi_type,count(0)
-from BASS1.G_S_22302_DAY
-where time_id = 20110501
-group by ent_busi_type 
-order by 1 desc 
-
-
-
-
-select ent_busi_type,count(0)
-from BASS1.G_S_22302_DAY
-where time_id = 20110430
-group by ent_busi_type 
-order by 1 desc 
-
-
-
-
-
-
-select * from app.g_unit_info
-where unit_code in ('02022','02023','22080','22082','22084')
-
-update app.g_unit_info
-set table_name = lower(table_name)
-where unit_code in ('22081','22083','2208')
-
-
-
-
-
-select * from   g_s_04003_day where time_id = 20110502
-
-
-select over_prod_id , bigint(over_prod_id) from bass1.g_i_02019_month b  where  b.time_id = 201104
-
-
-
-
-CREATE TABLE "BASS1   "."G_S_04003_DAY_B20110504"  (
-                  "TIME_ID" INTEGER NOT NULL , 
-                  "PRODUCT_NO" CHAR(15) NOT NULL , 
-                  "IMSI" CHAR(15) NOT NULL , 
-                  "HOME_LOCN" CHAR(6) NOT NULL , 
-                  "ROAM_LOCN" CHAR(6) NOT NULL , 
-                  "USER_TYPE" CHAR(1) NOT NULL , 
-                  "ROAM_TYPE_ID" CHAR(3) NOT NULL , 
-                  "START_DATE" CHAR(8) NOT NULL , 
-                  "START_TIME" CHAR(6) NOT NULL , 
-                  "END_DATE" CHAR(8) NOT NULL , 
-                  "END_TIME" CHAR(6) NOT NULL , 
-                  "CALL_DURATION" CHAR(6) NOT NULL , 
-                  "FLOWUP" CHAR(13) NOT NULL , 
-                  "FLOWDOWN" CHAR(13) NOT NULL , 
-                  "SVCITEM_ID" CHAR(2) NOT NULL , 
-                  "SERVICE_CODE" CHAR(2) NOT NULL , 
-                  "WLAN_ATTESTATION_CODE" CHAR(2) NOT NULL , 
-                  "HOTSPOT_AREA_ID" CHAR(16) NOT NULL , 
-                  "AS_IP" CHAR(8) NOT NULL , 
-                  "ATTESTATION_AS_IP" CHAR(8) NOT NULL , 
-                  "CALL_FEE" CHAR(6) NOT NULL , 
-                  "INFO_FEE" CHAR(6) NOT NULL , 
-                  "SERVICE_ID" CHAR(8) NOT NULL , 
-                  "ISP_ID" CHAR(6) NOT NULL , 
-                  "BELONG_OPER_ID" CHAR(5) NOT NULL , 
-                  "ROAM_OPER_ID" CHAR(5) NOT NULL , 
-                  "REASON_OF_STOP_CODE" CHAR(2) NOT NULL )   
-                 DISTRIBUTE BY HASH("TIME_ID",  
-                 "PRODUCT_NO")   
-                   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" NOT LOGGED INITIALLY ; 
-
-
-
-insert into G_S_04003_DAY_B20110504
-select * from G_S_04003_DAY
-
-select count(0) from    G_S_04003_DAY_B20110504
-select count(0) from    G_S_04003_DAY
-
-
-select * from    G_S_04003_DAY
-where time_id = 20110503
-
-
-
-
-
-select count(0) from    G_S_02007_MONTH
-where time_id = 201104
-
-
-select POINT_FEEDBACK_ID , count(0) 
---,  count(distinct POINT_FEEDBACK_ID ) 
-from G_S_02007_MONTH 
-group by  POINT_FEEDBACK_ID 
-order by 1 
-
-
-select count(0) from    G_S_02007_MONTH
-where 
-time_id = ''
-POINT_FEEDBACK_ID
-not in 
-('2210','2220','2230','2240','2250'
-,'1100','1200','1300','2100','2100')
-
-
-                select count(0) 
-                from    G_S_02007_MONTH
-                where 
-                time_id = 201104
-                and POINT_FEEDBACK_ID   not in ('2210','2220','2230','2240','2250'
-                                                                ,'1100','1200','1300','2100','2100')
+                      
                                                                 
                                                                 
                                                                 
+select count(*) from bass1.g_i_06021_month
+where channel_id not in
+(select distinct channel_id from bass1. g_s_22063_month where time_id =201104)
+  and time_id =201104
+  and channel_type in ('2','3')
+  and channel_status='1'
                                                                 

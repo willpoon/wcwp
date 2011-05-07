@@ -1,11 +1,5 @@
-$ splfile s_13100_201104_21003_00_001.dat 7500000
-no such file : s_13100_201104_21003_00_001.dat.dat
-$ splfile s_13100_201104_21003_00_001 7500000    
-...backup s_13100_201104_21003_00_001.dat to s_13100_201104_21003_00_001.bak...
-...spliting...
+特别关注：02052
 
-7号的接口02052依赖报表的手工入库数据bass2.stat_zd_village_users_yyyymm(农村客户统计表用户基础表),春节期间找谁，请问报表相关人，
-once : 积分数据修复？？有没有总部类？
 ls -lhrt \
  *02006*.dat \
  *02007*.dat \
@@ -36,9 +30,45 @@ ls -lhrt \
  *22305*.dat \
  *22306*.dat \
  *22307*.dat \
- *22401*.dat 
+ *22401*.dat |awk '{print $9,$8,$5}'|sort
  
  
+  --1>分割21003 : split -7000000 s_13100_201101_21003_00_001.dat
+
+7号的接口02052依赖报表的手工入库数据bass2.stat_zd_village_users_yyyymm(农村客户统计表用户基础表),春节期间找谁，请问报表相关人，
+/**
+   
+update app.sch_control_task 
+set time_value = 510
+where CONTROL_CODE in (
+select b.CONTROL_CODE from    
+BASS1.MON_ALL_INTERFACE a
+, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)
+and a.INTERFACE_CODE   
+in 
+(
+ '22085'
+,'22081'
+,'22083'
+)
+)
+and       time_value = -1
+
+
+update app.sch_control_task  a
+set time_value = 510
+where a.control_code = 'BASS1_G_A_02052_MONTH.tcl'
+and       time_value = 512
+
+**/
+
+
+$ splfile s_13100_201104_21003_00_001.dat 7500000
+no such file : s_13100_201104_21003_00_001.dat.dat
+$ splfile s_13100_201104_21003_00_001 7500000    
+...backup s_13100_201104_21003_00_001.dat to s_13100_201104_21003_00_001.bak...
+...spliting...
+
  
 	select b.CONTROL_CODE 
 	from    
@@ -178,37 +208,29 @@ and err_code='00'
 and length(filename)=length('s_13100_201002_03014_01_001.dat')
 ) t where rn = 1
 
-
-               
-update app.sch_control_task 
-set time_value = 510
-where CONTROL_CODE in (
-select b.CONTROL_CODE from    
-BASS1.MON_ALL_INTERFACE a
-, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)
-and a.INTERFACE_CODE   
-in 
+--检查将要上传的'm',8 是否已上传过？
+select * from    bass1.MON_ALL_INTERFACE 
+where type = 'm'
+and deadline = 8
+and  interface_code  in 
+(select substr(filename,16,5)
+from 
 (
- '22085'
-,'22081'
-,'22083'
-)
-)
-and       time_value = -1
+select  a.* ,row_number()over(partition by  substr(filename,16,5) order by deal_time desc ) rn 
+from APP.G_FILE_REPORT a
+where substr(filename,9,6) = substr(replace(char(current date - 1 month),'-',''),1,6)
+and err_code='00'
+and length(filename)=length('s_13100_201002_03014_01_001.dat')
+) t where rn = 1)
 
 
-update app.sch_control_task  a
-set time_value = 510
-where a.control_code = 'BASS1_G_A_02052_MONTH.tcl'
-and       time_value = 512
 
 
-检查是否有已上传，避免重复上传
-select * from bass1.MON_ALL_INTERFACE
-where INTERFACE_CODE in (
-select unit_code  from app.g_runlog 
-where time_id= int(substr(replace(char(current date - 1 month),'-',''),1,6))
-and return_flag=0
-)
-
-
+$ awk -F'~'  '{ print substr($1,length($1)-36,2) }' s_13100_201104_22083_01_001.dat|sort|uniq -c
+  72 10
+ 502 20
+$ awk -F'~'  '{ print substr($1,length($1)-36,2) }' s_13100_201104_22083_00_001.dat|sort|uniq -c
+  60 11
+  12 12
+ 502 20
+             

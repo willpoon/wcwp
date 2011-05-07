@@ -5603,7 +5603,35 @@ select 27	,'89103001061802'   ent_id from bass2.dual union all
 select 28	,'89103001051735'   ent_id from bass2.dual union all
 select 29	,'89103001245853'   ent_id from bass2.dual 
 ) tleft join G_I_77780_DAY_DOWN20110415 b on t.ent_id = b.ENTERPRISE_ID89103000545529select * from   G_I_77780_DAYwhere ENTERPRISE_ID = '89103001223457'select count(0),count(distinct xx ) from    G_I_77780_DAY_DOWN20110415select count(0),count(distinct enterprise_id ),count(distinct id),count(distinct enterprise_id||id) from    G_I_77780_DAY_DOWN201104153460	3083	3412	3458
-select count(0) from   G_S_03017_MONTH where time_id = 20110315720select count(0) from   G_S_03018_MONTH where time_id = 201103175427update app.g_runlog set return_flag = 0
+select count(0) from   G_S_03017_MONTH where time_id = 20110315720select count(0) from   G_S_03018_MONTH where time_id = 201103175427
+
+select sum(income)*1.00/100
+from (
+select sum(bigint(income)) income from   g_s_03017_month
+where time_id = 201103
+and manage_mod = '2'
+and ent_busi_id = '1220'
+union all 
+select sum(bigint(income)) income from   g_s_03018_month
+where time_id = 201103
+and manage_mod = '2'
+and ent_busi_id = '1220'
+) t
+                    
+                    
+select count(0)
+from 
+(
+select t.*,row_number()over(partition by user_id order by time_id desc ) rn 
+from 
+(
+select * from G_A_02061_DAY
+where ENTERPRISE_BUSI_TYPE = '1220'
+and  MANAGE_MODE = '2'
+and length(trim(user_id)) = 14
+) t
+) t2
+where rn = 1 and STATUS_ID ='1'update app.g_runlog set return_flag = 0
 where time_id= int(substr(replace(char(current date - 1 month),'-',''),1,6))
 and return_flag=1and unit_code = '03017'update app.g_runlog set return_flag = 0
 where time_id= int(substr(replace(char(current date - 1 month),'-',''),1,6))
@@ -10559,7 +10587,7 @@ and time_value = 312
 	where a.INTERFACE_CODE = substr(b.control_code , 11,5)    and b.control_code = c.control_code 
 		and a.TYPE = 'm'
 		and b.control_code like '%MONTH%'
-		and upload_time = '每月8日前'                
+		and upload_time = '每月10日前'                
 update  app.sch_control_task a
 set time_value = 310
 where control_code in 
@@ -10872,7 +10900,48 @@ from BASS2.dw_acct_payment_dm_201104
 group by staff_org_id
                   ,case when opt_code in ('4464','4465','4864','4865') then '2' else '1' end
 
-select * from   BASS1.G_S_22062_MONTHselect sum(bigint(card_sale_cnt)) from    BASS1.G_S_22062_MONTHselect * from    BASS2.DW_CHANNEL_INFO_201104 select * from   ams.scrd_gift_updateselect * from   bass2.Dw_product_sc_payment_dm_201103select * from   bass2.Dwd_product_sc_scorelist_201103select * from    bass2.dim_pub_channel     select staff_org_id
+select * from   BASS1.G_S_22062_MONTHselect sum(bigint(card_sale_cnt)) from    BASS1.G_S_22062_MONTHwhere time_id = 201103select * from    BASS2.DW_CHANNEL_INFO_201104 select * from   ams.scrd_gift_updateselect * from   bass2.Dw_product_sc_payment_dm_201103select * from   bass2.Dwd_product_sc_scorelist_201103select * from    bass2.dim_pub_channel update  app.sch_control_runlog 
+set flag = -2 
+where control_code in 
+(
+	select b.CONTROL_CODE 
+	from    
+	BASS1.MON_ALL_INTERFACE a
+	, app.sch_control_task b 
+	where a.INTERFACE_CODE = substr(control_code , 11,5)
+		and a.TYPE = 'm'
+		and b.control_code like '%MONTH%'
+		and upload_time = '每月15日前'
+)
+and  flag = 0 
+
+--重运校验代码
+update  app.sch_control_runlog 
+set flag = -2 
+where control_code in 
+(
+		select control_code from app.sch_control_runlog 
+		where control_code in 
+		(
+				select distinct control_code from   app.sch_control_before 
+				where  before_control_code in 
+				   (
+						select b.CONTROL_CODE from    
+						BASS1.MON_ALL_INTERFACE a
+						, app.sch_control_task b 
+							where a.INTERFACE_CODE = substr(control_code , 11,5)
+							and a.TYPE = 'm'
+							and b.control_code like '%MONTH%'
+							and upload_time = '每月15日前'
+						)
+				and control_code like '%CHECK%'
+				and  control_code in (select control_code from app.sch_control_task where cc_flag = 1)
+		)
+		and flag = 0
+		and date(endtime) < current date
+		and month(endtime)  = month(current timestamp)
+)
+    select staff_org_id
           ,sum(case when opt_code='4158' AND state='0' then 1 else 0 end )
 from BASS2.dw_acct_payment_dm_201104
 group by staff_org_idhaving sum(case when opt_code='4158' AND state='0' then 1 else 0 end )> 0
@@ -11499,7 +11568,7 @@ AND TYPE='m'
 		and a.TYPE = 'm'
 		and b.control_code like '%MONTH%'
 		and upload_time = '每月8日前'
-                           select b.*, lower( 'put *'||b.interface_code||'*.dat ' ) put_dat, lower( 'put *'||b.interface_code||'*.verf ' ) put_verffrom   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE bwhere a.control_code like 'BASS1%EXP%MONTH%'and( month(a.begintime) =  month(current date) or  month(a.begintime) = 04 )and substr(a.control_code,15,5) = b.interface_code and b.type='m'and upload_time = '每月8日前'
+                           select b.*, lower( 'put *'||b.interface_code||'*.dat ' ) put_dat, lower( 'put *'||b.interface_code||'*.verf ' ) put_verffrom   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE bwhere a.control_code like 'BASS1%EXP%MONTH%'and( month(a.begintime) =  month(current date) or  month(a.begintime) = 04 )and substr(a.control_code,15,5) = b.interface_code and b.type='m'and upload_time = '每月10日前'
 where UNIT_CODE in 
 (
  '22085'
@@ -11603,7 +11672,7 @@ where control_code in
 		and b.control_code like '%MONTH%'
 		and upload_time = '每月3日前'
 )update  app.sch_control_runlog 
-set flag = -2 --select * from app.sch_control_runlog 
+set flag = -2 select * from app.sch_control_runlog 
 where control_code in 
 (
 	select b.CONTROL_CODE 
@@ -11613,5 +11682,682 @@ where control_code in
 	where a.INTERFACE_CODE = substr(control_code , 11,5)
 		and a.TYPE = 'm'
 		and b.control_code like '%MONTH%'
-		and upload_time = '每月8日前'
-)and 
+		and upload_time = '每月8日前'        and  INTERFACE_CODEin(
+'22040'
+,'22085'
+,'02017'
+,'03018'
+,'22305'
+,'03017'
+,'22072'
+,'21020'
+,'21011'
+,'22304'
+,'22401'
+,'21012'
+,'22303'
+,'22036'
+,'03012'
+,'22306'
+,'02007'
+,'02006'
+,'21006'
+,'21008'
+,'22204'
+,'03015'
+,'22307'
+,'03016')
+)and  flag not in (0,-2)
+update  app.sch_control_runlog 
+set flag = -2 --select * from app.sch_control_runlog 
+where control_code in 
+(
+		select control_code from app.sch_control_runlog 
+		where control_code in 
+		(
+				select distinct control_code from   app.sch_control_before 
+				where  before_control_code in 
+				   (
+						select b.CONTROL_CODE from    
+						BASS1.MON_ALL_INTERFACE a
+						, app.sch_control_task b 
+							where a.INTERFACE_CODE = substr(control_code , 11,5)
+							and a.TYPE = 'm'
+							and b.control_code like '%MONTH%'
+							and upload_time = '每月8日前'
+						)
+				and control_code like '%CHECK%'
+				and  control_code in (select control_code from app.sch_control_task where cc_flag = 1)
+		)
+		and flag = 0
+		and date(endtime) < current date
+		and month(endtime)  = month(current timestamp)
+)
+update  app.sch_control_runlog 
+set flag = -2 --select * from app.sch_control_runlog 
+where control_code in 
+(
+		select control_code from app.sch_control_runlog 
+		where control_code in 
+						(
+						select distinct control_code from   app.sch_control_before 
+						where  before_control_code in 
+							 (
+							    select b.CONTROL_CODE from    
+							    BASS1.MON_ALL_INTERFACE a
+							    , app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)
+							    and a.TYPE = 'm'
+							    and b.control_code like '%MONTH%'
+							    and upload_time = '每月8日前'                                and INTERFACE_CODEin(
+'22040'
+,'22085'
+,'02017'
+,'03018'
+,'22305'
+,'03017'
+,'22072'
+,'21020'
+,'21011'
+,'22304'
+,'22401'
+,'21012'
+,'22303'
+,'22036'
+,'03012'
+,'22306'
+,'02007'
+,'02006'
+,'21006'
+,'21008'
+,'22204'
+,'03015'
+,'22307'
+,'03016')
+						    )
+						    and control_code like 'BASS1%EXP%'
+						)
+		and flag = 0
+		and date(endtime) <= current date 
+		and month(endtime)  = month(current timestamp)        
+)
+and control_code not in ('BASS1_G_S_05001_MONTH.tcl','BASS1_G_S_05002_MONTH.tcl')
+\select * from bass1.mon_all_interfacewhere interface_code in ('02017','03012','21006','22040','22306','22401')alter table bass1.MON_ALL_INTERFACE add column deadline smallint
+alter table bass1.MON_ALL_INTERFACE add column deadline smallint
+
+select upload_time , count(0) 
+--,  count(distinct upload_time ) 
+from bass1.MON_ALL_INTERFACE 
+group by  upload_time 
+order by 1 UPLOAD_TIME
+每月8日前
+每月5日前
+每月3日前
+每月15日前
+每月10日前
+
+每日15点前
+每日13点前
+每日11点前
+select * from    bass1.MON_ALL_INTERFACE where type = 'm'and deadline = 8and  interface_code  in (select substr(filename,16,5)
+from 
+(
+select  a.* ,row_number()over(partition by  substr(filename,16,5) order by deal_time desc ) rn 
+from APP.G_FILE_REPORT a
+where substr(filename,9,6) = substr(replace(char(current date - 1 month),'-',''),1,6)
+and err_code='00'
+and length(filename)=length('s_13100_201002_03014_01_001.dat')
+) t where rn = 1)update   bass1.MON_ALL_INTERFACE a
+set deadline = (
+select 
+case 
+when UPLOAD_TIME = '每日9点前' then 9
+when UPLOAD_TIME = '每日11点前' then 11
+when UPLOAD_TIME = '每日13点前' then 13
+when UPLOAD_TIME = '每日15点前' then 15
+when UPLOAD_TIME = '每月3日前' then 3
+when UPLOAD_TIME = '每月5日前' then 5
+when UPLOAD_TIME = '每月8日前' then 8
+when UPLOAD_TIME = '每月10日前' then 10
+when UPLOAD_TIME = '每月11日前' then 11
+when UPLOAD_TIME = '每月15日前' then 15
+end deadline
+from  bass1.MON_ALL_INTERFACE b where a.INTERFACE_CODE = b.INTERFACE_CODE and a.type = b.type) 
+select * from   app.sch_control_before where control_code = 'BASS1_G_A_02052_MONTH.tcl'select * from    app.g_runlog 
+where time_id in (201103)
+and return_flag=1and unit_code in ('03017','03018')select * from   app.sch_control_runlog_hiswhere control_code like '%03018%'select * from   app.g_file_reportwhere filename like '%03017%'select BUSI_BILLING_TYPE , count(0) 
+--,  count(distinct BUSI_BILLING_TYPE ) 
+from G_S_22083_MONTH 
+group by  BUSI_BILLING_TYPE 
+order by 1 
+select * from    bass1.G_S_22083_MONTH
+select bill_flag , count(0) 
+--,  count(distinct bill_flag ) 
+from bass1.G_S_22083_MONTH_2 
+group by  bill_flag 
+order by 1 
+select * from (                 select      201104 TIME_ID
+                             ,'201104' op_time
+                             ,a.BUSI_CODE
+                             ,c.OPERATOR_NAME BUSI_NAME
+                             ,d.SP_NAME BUSI_PROVIDER_NAME
+                             ,case when b.bill_flag = 3 and DELAY_TIME = 72 then '11' 
+                                        when b.bill_flag = 3 and b.DELAY_TIME = 0 then '12'
+                                                                        else '20' end  BUSI_BILLING_TYPE                             , b.BILL_FLAG f1,c.BILL_FLAG f2
+                             ,char(sum(a.CANCEL_CNT))   CANCEL_CNT 
+                             ,char(sum(a.COMPLAINT_CNT)) COMPLAINT_CNT   
+                             ,char(sum(value(e.ORDER_CNT,0))) ORDER_CNT      
+                        			from   bass1.G_S_22083_MONTH_1 a 
+			       join  bass1.G_S_22083_MONTH_2 b  on a.SP_ID = b.SP_ID and a.BUSI_CODE = b.BUSI_CODE
+			       join bass2.DIM_PM_SP_OPERATOR_CODE c on  a.SP_ID = char(c.SP_CODE) and a.BUSI_CODE = c.OPERATOR_CODE
+				JOIN BASS1.G_S_22083_MONTH_3 D ON a.sp_id = d.SP_CODE
+				left join BASS1.G_S_22083_MONTH_4 e on a.sp_id = e.SP_ID and a.BUSI_CODE = b.BUSI_CODE
+			group by 
+                     a.BUSI_CODE
+                     ,c.OPERATOR_NAME 
+                     ,d.SP_NAME                     , b.BILL_FLAG,c.BILL_FLAG
+                     ,case when b.bill_flag = 3 and DELAY_TIME = 72 then '11' 
+                                when b.bill_flag = 3 and b.DELAY_TIME = 0 then '12'
+                                                                else '20' end                                                                      ) t                                                                 where f1 <> f2                                                                                                                                
+select * from app.sch_control_before where control_code = 'BASS1_G_S_22302_DAY.tcl'
+
+SELECT * FROM app.sch_control_RUNLOG
+WHERE control_code IN (
+select BEFORE_CONTROL_CODE  from app.sch_control_before where control_code = 'BASS1_G_S_22302_DAY.tcl'
+)
+
+BASS2_Dw_enterprise_industry_apply.tcl
+
+
+
+SELECT * FROM app.sch_control_RUNLOG
+WHERE control_code IN (
+select BEFORE_CONTROL_CODE  from app.sch_control_before where 
+control_code like 'BASS1_G_I_02018_MONTH.tcl'
+)
+
+
+
+select * from    app.sch_control_before
+where control_code like '%02018%'
+
+
+select *  from app.sch_control_runlog where control_code = 'BASS1_G_I_02018_MONTH.tcl'
+
+
+select time_id,count(0)
+from BASS1.G_S_22302_DAY
+group by time_id 
+order by 1 desc 
+
+
+alter table BASS1.G_S_04003_DAY ALTER column FLOWUP 	SET DATA TYPE CHARACTER(13)
+alter table BASS1.G_S_04003_DAY ALTER column FLOWDOWN  SET DATA TYPE CHARACTER(13)
+
+FLOWUP                         SYSIBM    CHARACTER                13     0 No    
+FLOWDOWN                       SYSIBM    CHARACTER                13     0 No   
+
+
+
+select time_id , count(0) from   BASS1.G_USER_LST
+group by time_id 
+
+
+
+
+
+select ent_busi_type from   BASS1.G_S_22302_DAY where time_id = 20110501
+except   
+select ent_busi_type from   BASS1.G_S_22302_DAY where time_id = 20110430
+
+
+
+
+select ent_busi_type,count(0)
+from BASS1.G_S_22302_DAY
+where time_id = 20110501
+group by ent_busi_type 
+order by 1 desc 
+
+
+
+
+select ent_busi_type,count(0)
+from BASS1.G_S_22302_DAY
+where time_id = 20110430
+group by ent_busi_type 
+order by 1 desc 
+
+
+
+
+
+
+select * from app.g_unit_info
+where unit_code in ('02022','02023','22080','22082','22084')
+
+update app.g_unit_info
+set table_name = lower(table_name)
+where unit_code in ('22081','22083','2208')
+
+
+
+
+
+select * from   g_s_04003_day where time_id = 20110502
+
+
+select over_prod_id , bigint(over_prod_id) from bass1.g_i_02019_month b  where  b.time_id = 201104
+
+
+
+
+CREATE TABLE "BASS1   "."G_S_04003_DAY_B20110504"  (
+                  "TIME_ID" INTEGER NOT NULL , 
+                  "PRODUCT_NO" CHAR(15) NOT NULL , 
+                  "IMSI" CHAR(15) NOT NULL , 
+                  "HOME_LOCN" CHAR(6) NOT NULL , 
+                  "ROAM_LOCN" CHAR(6) NOT NULL , 
+                  "USER_TYPE" CHAR(1) NOT NULL , 
+                  "ROAM_TYPE_ID" CHAR(3) NOT NULL , 
+                  "START_DATE" CHAR(8) NOT NULL , 
+                  "START_TIME" CHAR(6) NOT NULL , 
+                  "END_DATE" CHAR(8) NOT NULL , 
+                  "END_TIME" CHAR(6) NOT NULL , 
+                  "CALL_DURATION" CHAR(6) NOT NULL , 
+                  "FLOWUP" CHAR(13) NOT NULL , 
+                  "FLOWDOWN" CHAR(13) NOT NULL , 
+                  "SVCITEM_ID" CHAR(2) NOT NULL , 
+                  "SERVICE_CODE" CHAR(2) NOT NULL , 
+                  "WLAN_ATTESTATION_CODE" CHAR(2) NOT NULL , 
+                  "HOTSPOT_AREA_ID" CHAR(16) NOT NULL , 
+                  "AS_IP" CHAR(8) NOT NULL , 
+                  "ATTESTATION_AS_IP" CHAR(8) NOT NULL , 
+                  "CALL_FEE" CHAR(6) NOT NULL , 
+                  "INFO_FEE" CHAR(6) NOT NULL , 
+                  "SERVICE_ID" CHAR(8) NOT NULL , 
+                  "ISP_ID" CHAR(6) NOT NULL , 
+                  "BELONG_OPER_ID" CHAR(5) NOT NULL , 
+                  "ROAM_OPER_ID" CHAR(5) NOT NULL , 
+                  "REASON_OF_STOP_CODE" CHAR(2) NOT NULL )   
+                 DISTRIBUTE BY HASH("TIME_ID",  
+                 "PRODUCT_NO")   
+                   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" NOT LOGGED INITIALLY ; 
+
+
+
+insert into G_S_04003_DAY_B20110504
+select * from G_S_04003_DAY
+
+select count(0) from    G_S_04003_DAY_B20110504
+select count(0) from    G_S_04003_DAY
+
+
+select * from    G_S_04003_DAY
+where time_id = 20110503
+
+
+
+
+
+select count(0) from    G_S_02007_MONTH
+where time_id = 201104
+
+
+select POINT_FEEDBACK_ID , count(0) 
+--,  count(distinct POINT_FEEDBACK_ID ) 
+from G_S_02007_MONTH 
+group by  POINT_FEEDBACK_ID 
+order by 1 
+
+
+select count(0) from    G_S_02007_MONTH
+where 
+time_id = ''
+POINT_FEEDBACK_ID
+not in 
+('2210','2220','2230','2240','2250'
+,'1100','1200','1300','2100','2100')
+
+
+                select count(0) 
+                from    G_S_02007_MONTH
+                where 
+                time_id = 201104
+                and POINT_FEEDBACK_ID   not in ('2210','2220','2230','2240','2250'
+                                                                ,'1100','1200','1300','2100','2100')
+                                                                
+                                                                
+                                                                                                                                                                                                                    	select *
+	from    
+	BASS1.MON_ALL_INTERFACE a
+	, app.sch_control_task b     ,app.sch_control_runlog c 
+	where a.INTERFACE_CODE = substr(b.control_code , 11,5)    and b.control_code = c.control_code 
+		and a.TYPE = 'm'
+		and b.control_code like '%MONTH%'
+		and upload_time = '每月10日前'                                                                                                                                                                                                                                                                                                                                                              
+	select b.CONTROL_CODE 
+	from    
+	BASS1.MON_ALL_INTERFACE a
+	, app.sch_control_task b 
+	where a.INTERFACE_CODE = substr(control_code , 11,5)
+		and a.TYPE = 'm'
+		and b.control_code like '%MONTH%'
+		and upload_time = '每月10日前'
+	union all
+				select distinct control_code from   app.sch_control_before 
+				where  before_control_code in 
+				   (
+						select b.CONTROL_CODE from    
+						BASS1.MON_ALL_INTERFACE a
+						, app.sch_control_task b 
+							where a.INTERFACE_CODE = substr(control_code , 11,5)
+							and a.TYPE = 'm'
+							and b.control_code like '%MONTH%'
+							and upload_time = '每月10日前'
+						)
+				and control_code like '%CHECK%'
+				and  control_code in (select control_code from app.sch_control_task where cc_flag = 1)	
+	union all 
+		select control_code from app.sch_control_runlog 
+		where control_code in 
+						(
+						select distinct control_code from   app.sch_control_before 
+						where  before_control_code in 
+							 (
+							    select b.CONTROL_CODE from    
+							    BASS1.MON_ALL_INTERFACE a
+							    , app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)
+							    and a.TYPE = 'm'
+							    and b.control_code like '%MONTH%'
+							    and upload_time = '每月10日前'
+						    )
+						    and control_code like 'BASS1%EXP%'
+						)	
+	
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          update  app.sch_control_runlog 
+set flag = -2 
+where control_code in 
+(
+	select b.CONTROL_CODE 
+	from    
+	BASS1.MON_ALL_INTERFACE a
+	, app.sch_control_task b 
+	where a.INTERFACE_CODE = substr(control_code , 11,5)
+		and a.TYPE = 'm'
+		and b.control_code like '%MONTH%'
+		and upload_time = '每月10日前'
+)
+and  flag = 0 and control_code not in ('BASS1_G_S_05001_MONTH.tcl','BASS1_G_S_05002_MONTH.tcl')
+                                                                                                                                                                                                                                                                                                                                                      update  app.sch_control_runlog 
+set flag = -2 
+where control_code in 
+(
+		select control_code from app.sch_control_runlog 
+		where control_code in 
+		(
+				select distinct control_code from   app.sch_control_before 
+				where  before_control_code in 
+				   (
+						select b.CONTROL_CODE from    
+						BASS1.MON_ALL_INTERFACE a
+						, app.sch_control_task b 
+							where a.INTERFACE_CODE = substr(control_code , 11,5)
+							and a.TYPE = 'm'
+							and b.control_code like '%MONTH%'
+							and upload_time = '每月8日前'
+						)
+				and control_code like '%CHECK%'
+				and  control_code in (select control_code from app.sch_control_task where cc_flag = 1)
+		)
+		and flag = 0
+		and date(endtime) < current date
+		and month(endtime)  = month(current timestamp)
+)
+update  app.sch_control_runlog 
+set flag = -2 
+where control_code in 
+(
+		select control_code from app.sch_control_runlog 
+		where control_code in 
+		(
+				select distinct control_code from   app.sch_control_before 
+				where  before_control_code in 
+				   (
+						select b.CONTROL_CODE from    
+						BASS1.MON_ALL_INTERFACE a
+						, app.sch_control_task b 
+							where a.INTERFACE_CODE = substr(control_code , 11,5)
+							and a.TYPE = 'm'
+							and b.control_code like '%MONTH%'
+							and upload_time = '每月10日前'
+						)
+				and control_code like '%CHECK%'
+				and  control_code in (select control_code from app.sch_control_task where cc_flag = 1)
+		)
+		and flag = 0
+		and date(endtime) < current date
+		and month(endtime)  = month(current timestamp)
+)
+                                                                                                                  update  app.sch_control_runlog 
+set flag = -2 
+where control_code in 
+(
+		select control_code from app.sch_control_runlog 
+		where control_code in 
+						(
+						select distinct control_code from   app.sch_control_before 
+						where  before_control_code in 
+							 (
+							    select b.CONTROL_CODE from    
+							    BASS1.MON_ALL_INTERFACE a
+							    , app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)
+							    and a.TYPE = 'm'
+							    and b.control_code like '%MONTH%'
+							    and upload_time = '每月10日前'
+						    )
+						    and control_code like 'BASS1%EXP%'
+						)
+		and flag = 0
+		and date(endtime) <= current date 
+		and month(endtime)  = month(current timestamp)
+)
+and control_code not in ('BASS1_G_S_05001_MONTH.tcl','BASS1_G_S_05002_MONTH.tcl')
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        select * from app.sch_control_runlog where control_code like '%05001%'                                                                                                                     BASS1_EXP_G_S_05001_MONTH	2011-05-05 18:29:40.371433	[NULL]	[NULL]	1
+select * from   app.sch_control_before where control_code like '%22062%'select * from   app.sch_control_before where control_code like '%local_bus%'BASS2_Dw_channel_local_busi_ds.tcl	TR1_L_14108
+insert into app.sch_control_beforeselect 'BASS1_G_S_22062_MONTH.tcl','BASS2_Dw_channel_local_busi_ds.tcl' from bass2.dualselect * from    bass1.MON_ALL_INTERFACE 
+where type = 'm'
+and deadline = 10
+and  interface_code  in 
+(select substr(filename,16,5)
+from 
+(
+select  a.* ,row_number()over(partition by  substr(filename,16,5) order by deal_time desc ) rn 
+from APP.G_FILE_REPORT a
+where substr(filename,9,6) = substr(replace(char(current date - 1 month),'-',''),1,6)
+and err_code='00'
+and length(filename)=length('s_13100_201002_03014_01_001.dat')
+) t where rn = 1)
+select time_id ,sum(bigint(BASE_BILL_DURATION))
+--,  count(distinct time_id ) 
+from G_S_21001_DAY where time_id between 20110401 and 20110506
+group by  time_id 
+order by 1  desc 
+select BRAND_ID,SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,CALL_TYPE_ID,MNS_TYPE from G_S_21001_DAYwhere time_id = 20110503exceptselect BRAND_ID,SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,CALL_TYPE_ID,MNS_TYPE from G_S_21001_DAYwhere time_id = 20110502select a.*,value(b.dur,0),a.dur - value(b.dur,0)from (select BRAND_ID,SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,CALL_TYPE_ID,MNS_TYPE ,sum(bigint(BASE_BILL_DURATION)) durfrom G_S_21001_DAYwhere time_id = 20110503group by BRAND_ID,SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,CALL_TYPE_ID,MNS_TYPE ) a left join (select BRAND_ID,SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,CALL_TYPE_ID,MNS_TYPE ,sum(bigint(BASE_BILL_DURATION)) durfrom G_S_21001_DAYwhere time_id = 20110502group by BRAND_ID,SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,CALL_TYPE_ID,MNS_TYPE ) b on a.BRAND_ID||a.SVC_TYPE_ID||a.TOLL_TYPE_ID||a.IP_TYPE_ID||a.ROAM_TYPE_ID||a.CALL_TYPE_ID||a.MNS_TYPE =b.BRAND_ID||b.SVC_TYPE_ID||b.TOLL_TYPE_ID||b.IP_TYPE_ID||b.ROAM_TYPE_ID||b.CALL_TYPE_ID||b.MNS_TYPE select a.*,value(b.dur,0),a.dur - value(b.dur,0)from (select BRAND_ID,SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,CALL_TYPE_ID,MNS_TYPE ,sum(bigint(BASE_BILL_DURATION)) durfrom G_S_21001_DAYwhere time_id = 20110501group by BRAND_ID,SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,CALL_TYPE_ID,MNS_TYPE ) a left join (select BRAND_ID,SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,CALL_TYPE_ID,MNS_TYPE ,sum(bigint(BASE_BILL_DURATION)) durfrom G_S_21001_DAYwhere time_id = 20110502group by BRAND_ID,SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,CALL_TYPE_ID,MNS_TYPE ) b on a.BRAND_ID||a.SVC_TYPE_ID||a.TOLL_TYPE_ID||a.IP_TYPE_ID||a.ROAM_TYPE_ID||a.CALL_TYPE_ID||a.MNS_TYPE =b.BRAND_ID||b.SVC_TYPE_ID||b.TOLL_TYPE_ID||b.IP_TYPE_ID||b.ROAM_TYPE_ID||b.CALL_TYPE_ID||b.MNS_TYPE select 
+         time_id,
+         case when rule_code='R159_1' then '新增客户数'
+              when rule_code='R159_2' then '客户到达数'
+              when rule_code='R159_3' then '上网本客户数'
+              when rule_code='R159_4' then '离网客户数'
+         end,
+         target1,
+         target2,
+         target3
+from bass1.g_rule_check
+where 
+    rule_code in ('R159_1','R159_2','R159_3','R159_4')
+    and time_id between 20110401 and 20110506    order by 1 desc    select a.*,value(b.dur,0),a.dur - value(b.dur,0)from (select SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,CALL_TYPE_ID,MNS_TYPE ,sum(bigint(BASE_BILL_DURATION)) durfrom G_S_21001_DAYwhere time_id = 20110501group by SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,CALL_TYPE_ID,MNS_TYPE ) a left join (select SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,CALL_TYPE_ID,MNS_TYPE ,sum(bigint(BASE_BILL_DURATION)) durfrom G_S_21001_DAYwhere time_id = 20110502group by SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,CALL_TYPE_ID,MNS_TYPE ) b on a.SVC_TYPE_ID||a.TOLL_TYPE_ID||a.IP_TYPE_ID||a.ROAM_TYPE_ID||a.CALL_TYPE_ID||a.MNS_TYPE =b.SVC_TYPE_ID||b.TOLL_TYPE_ID||b.IP_TYPE_ID||b.ROAM_TYPE_ID||b.CALL_TYPE_ID||b.MNS_TYPE       select a.*,value(b.dur,0),a.dur - value(b.dur,0)from (select SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,sum(bigint(BASE_BILL_DURATION)) durfrom G_S_21001_DAYwhere time_id = 20110501group by SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID) a left join (select SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,sum(bigint(BASE_BILL_DURATION)) durfrom G_S_21001_DAYwhere time_id = 20110502group by SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID) b on a.SVC_TYPE_ID||a.TOLL_TYPE_ID||a.IP_TYPE_ID||a.ROAM_TYPE_ID=b.SVC_TYPE_ID||b.TOLL_TYPE_ID||b.IP_TYPE_ID||b.ROAM_TYPE_ID         select a.*,value(b.dur,0),a.dur - value(b.dur,0)from (select SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,sum(bigint(BASE_BILL_DURATION)) durfrom G_S_21001_DAYwhere time_id = 20110501group by SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID) a left join (select SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID,sum(bigint(BASE_BILL_DURATION)) durfrom G_S_21001_DAYwhere time_id = 20110502group by SVC_TYPE_ID,TOLL_TYPE_ID,IP_TYPE_ID,ROAM_TYPE_ID) b on a.SVC_TYPE_ID||a.TOLL_TYPE_ID||a.IP_TYPE_ID||a.ROAM_TYPE_ID=b.SVC_TYPE_ID||b.TOLL_TYPE_ID||b.IP_TYPE_ID||b.ROAM_TYPE_ID        select DAY_CALL_MARK,count(0)from bass2.dw_product_20110502group by   DAY_CALL_MARK1	975411
+1	931536
+  select DAY_CALL_MARK,count(0)from bass2.dw_product_20110503group by   DAY_CALL_MARK1	944630
+select time_id,ROAM_TYPE_ID,sum(bigint(BASE_BILL_DURATION))from G_S_21001_DAYwhere  time_id between 20110401 and 20110506and ROAM_TYPE_ID <> '500'group by time_id,ROAM_TYPE_IDorder by 1 desc , 2 desc select time_id,sum(bigint(BASE_BILL_DURATION))from G_S_21001_DAYwhere  time_id between 20110401 and 20110506and ROAM_TYPE_ID <> '500'group by time_idorder by 1 desc , 2 desc select count(0) from    bass2.cdr_call_dtl_201105029327822select count(0) from    bass2.cdr_call_dtl_2011050110350327select count(0) from    bass2.cdr_call_dtl_2011050310206502select count(0),count(distinct product_no) from    bass2.cdr_call_dtl_2011050310206502	944629
+select count(0),count(distinct product_no) from    bass2.cdr_call_dtl_201105029327822	931534
+select count(0),count(distinct product_no) from    bass2.cdr_call_dtl_2011050110350327	975409
+select count(0),count(distinct product_no) from    bass2.cdr_call_dtl_201005018959663	839616
+select count(0),count(distinct product_no) from    bass2.cdr_call_dtl_201005027900994	802405
+select count(0),count(distinct product_no) from    bass2.cdr_call_dtl_201005037893695	800935
+select count(0),count(distinct product_no) from    bass2.cdr_call_dtl_201004038042325	799054
+select count(0),count(distinct product_no) from    bass2.cdr_call_dtl_201004047972046	804797
+select count(0),count(distinct product_no) from    bass2.cdr_call_dtl_201004058014808	806938
+select OWE_MARK,count(0)from bass2.dw_product_201104 group by owe_mark1	1065148
+select OWE_MARK,count(0)from bass2.dw_product_201103group by owe_mark1	1004838
+select OWE_MARK,count(0)from bass2.dw_product_201102group by owe_mark1	958718
+select * from syscat.tables where tabname like '%OWE%' select BILL_CYCLE,count(distinct USER_ID )from  bass2.DW_ACCT_OWE_201004group by BILL_CYCLEhaving sum(UNPAY_FEE) >  0201004	226855201104	294487
+select BILL_CYCLE,count(distinct USER_ID )from  bass2.DW_ACCT_OWE_201003group by BILL_CYCLEhaving sum(UNPAY_FEE) >  0201003	215599
+201103	284380
+select BILL_CYCLE,count(distinct USER_ID )from  bass2.DW_ACCT_OWE_201102group by BILL_CYCLEhaving sum(UNPAY_FEE) >  0201102	294667
+select * from   BASS1.ALL_DIM_LKP where bass1_tbid='BASS_STD2_0012'select count(0),count(distinct product_no) from    bass2.cdr_call_dtl_20110502where roamtype_id <> 01114930	114246
+select count(0),count(distinct product_no) from    bass2.cdr_call_dtl_20110501where roamtype_id <> 01249954	121657
+select count(0),count(distinct product_no) from    bass2.cdr_call_dtl_20110503where roamtype_id <> 01	2
+1166203	110917
+select count(0),count(distinct product_no) from    bass2.cdr_call_dtl_20110430where roamtype_id <> 01	2
+1262590	122586
+select count(0),count(distinct product_no) from    bass2.cdr_call_dtl_20110429where roamtype_id <> 01	2
+1281704	119684
+select a.*,value(b.dur,0),a.dur - value(b.dur,0)from (select SVC_TYPE_ID,TOLL_TYPE_ID,ROAM_TYPE_ID,sum(bigint(BASE_BILL_DURATION)) durfrom G_S_21001_DAYwhere time_id = 20110503group by SVC_TYPE_ID,TOLL_TYPE_ID,ROAM_TYPE_ID) a left join (select SVC_TYPE_ID,TOLL_TYPE_ID,ROAM_TYPE_ID,sum(bigint(BASE_BILL_DURATION)) durfrom G_S_21001_DAYwhere time_id = 20110502group by SVC_TYPE_ID,TOLL_TYPE_ID,ROAM_TYPE_ID) b on a.SVC_TYPE_ID||a.TOLL_TYPE_ID||a.ROAM_TYPE_ID=b.SVC_TYPE_ID||b.TOLL_TYPE_ID||b.ROAM_TYPE_ID              select a.*,value(b.dur,0),a.dur - value(b.dur,0) 下降from (select TOLL_TYPE_ID,ROAM_TYPE_ID,sum(bigint(BASE_BILL_DURATION)) durfrom G_S_21001_DAYwhere time_id = 20110501group by TOLL_TYPE_ID,ROAM_TYPE_ID) a left join (select TOLL_TYPE_ID,ROAM_TYPE_ID,sum(bigint(BASE_BILL_DURATION)) durfrom G_S_21001_DAYwhere time_id = 20110502group by TOLL_TYPE_ID,ROAM_TYPE_ID) b on a.TOLL_TYPE_ID||a.ROAM_TYPE_ID=b.TOLL_TYPE_ID||b.ROAM_TYPE_ID          select a.*,value(b.dur,0),a.dur - value(b.dur,0) 下降from (select TOLL_TYPE_ID,ROAM_TYPE_ID,sum(bigint(BASE_BILL_DURATION)) durfrom G_S_21001_DAYwhere time_id = 20110428group by TOLL_TYPE_ID,ROAM_TYPE_ID) a left join (select TOLL_TYPE_ID,ROAM_TYPE_ID,sum(bigint(BASE_BILL_DURATION)) durfrom G_S_21001_DAYwhere time_id = 20110429group by TOLL_TYPE_ID,ROAM_TYPE_ID) b on a.TOLL_TYPE_ID||a.ROAM_TYPE_ID=b.TOLL_TYPE_ID||b.ROAM_TYPE_IDROAM_TYPE_ID = 500  为非漫游   select time_id ,sum(bigint(BASE_BILL_DURATION))
+--,  count(distinct time_id ) 
+from G_S_21001_DAY where time_id between 20110401 and 20110506and ROAM_TYPE_ID = '500'
+group by  time_id 
+order by 1  desc 
+	select b.CONTROL_CODE 
+	from    
+	BASS1.MON_ALL_INTERFACE a
+	, app.sch_control_task b 
+	where a.INTERFACE_CODE = substr(control_code , 11,5)
+		and a.TYPE = 'm'
+		and b.control_code like '%MONTH%'
+		and upload_time = '每月15日前'
+	union all
+				select distinct control_code from   app.sch_control_before 
+				where  before_control_code in 
+				   (
+						select b.CONTROL_CODE from    
+						BASS1.MON_ALL_INTERFACE a
+						, app.sch_control_task b 
+							where a.INTERFACE_CODE = substr(control_code , 11,5)
+							and a.TYPE = 'm'
+							and b.control_code like '%MONTH%'
+							and upload_time = '每月15日前'
+						)
+				and control_code like '%CHECK%'
+				and  control_code in (select control_code from app.sch_control_task where cc_flag = 1)	
+	union all 
+		select control_code from app.sch_control_runlog 
+		where control_code in 
+						(
+						select distinct control_code from   app.sch_control_before 
+						where  before_control_code in 
+							 (
+							    select b.CONTROL_CODE from    
+							    BASS1.MON_ALL_INTERFACE a
+							    , app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)
+							    and a.TYPE = 'm'
+							    and b.control_code like '%MONTH%'
+							    and upload_time = '每月15日前'
+						    )
+						    and control_code like 'BASS1%EXP%'
+						)	
+	    update  app.sch_control_runlog 
+set flag = -2 
+--select * from  app.sch_control_runlog where control_code in 
+(
+	select b.CONTROL_CODE 
+	from    
+	BASS1.MON_ALL_INTERFACE a
+	, app.sch_control_task b 
+	where a.INTERFACE_CODE = substr(control_code , 11,5)
+		and a.TYPE = 'm'
+		and b.control_code like '%MONTH%'
+		and upload_time = '每月15日前'
+)
+and  flag = 0     update  app.sch_control_runlog 
+set flag = -2 
+where control_code in 
+(
+		select control_code from app.sch_control_runlog 
+		where control_code in 
+		(
+				select distinct control_code from   app.sch_control_before 
+				where  before_control_code in 
+				   (
+						select b.CONTROL_CODE from    
+						BASS1.MON_ALL_INTERFACE a
+						, app.sch_control_task b 
+							where a.INTERFACE_CODE = substr(control_code , 11,5)
+							and a.TYPE = 'm'
+							and b.control_code like '%MONTH%'
+							and upload_time = '每月15日前'
+						)
+				and control_code like '%CHECK%'
+				and  control_code in (select control_code from app.sch_control_task where cc_flag = 1)
+		)
+		and flag = 0
+		and date(endtime) < current date
+		and month(endtime)  = month(current timestamp)
+)select count(*) from bass1.g_i_06021_month
+where channel_id not in
+(select distinct channel_id from bass1.g_s_22062_month where time_id =201104)
+  and time_id =201104
+  and channel_status='1'      
+select count(*) from bass1.g_i_06021_month
+where channel_id not in
+(select distinct channel_id from bass1.G_S_22062_MONTH_TEST where time_id =201103)
+  and time_id =201103
+  and channel_status='1'
+select count(*) from bass1.g_i_06021_month
+where channel_id not in
+(select distinct channel_id from bass1. g_s_22063_month_test where time_id =201103)
+  and time_id =201103
+  and channel_type in ('2','3')
+  and channel_status='1'      select * from BASS1.G_I_06021_MONTH  where time_id = 201104      select count(distinct channel_id) from bass1.g_i_06021_month
+where time_id =201104
+  and channel_status='1'
+  and channel_type='1'
+  and (longitude='0' or longitude='' or latitude='0' or latitude='')
+select count(*) from bass1.g_i_06021_month
+where channel_id not in
+(select distinct channel_id from bass1.g_s_22062_month where time_id =201104)
+  and time_id =201104
+  and channel_status='1'        select * from  app.sch_control_before where control_code = 'BASS1_G_S_22062_MONTH.tcl'      select * from bass1.g_i_06021_month                              select count(*) from bass1.g_i_06021_month
+                        where channel_id not in
+                        (select distinct channel_id from bass1.g_s_22062_month where time_id =201103 )
+                          and time_id =201103
+                          and channel_status='1'select count(0) from    bass1.g_s_22062_monthwhere time_id = 201104                                                    select * from    bass1.g_s_22062_month        where time_id = 201104                                  select count(*) from bass1.g_i_06021_month
+where channel_id not in
+(select distinct channel_id from bass1. g_s_22063_month where time_id =201103)
+  and time_id =201103
+  and channel_type in ('2','3')
+  and channel_status='1'          update  app.sch_control_runlog 
+set flag = -2 --select * from   app.sch_control_runlog 
+where control_code in 
+(
+		select control_code from app.sch_control_runlog 
+		where control_code in 
+						(
+						select distinct control_code from   app.sch_control_before 
+						where  before_control_code in 
+							 (
+							    select b.CONTROL_CODE from    
+							    BASS1.MON_ALL_INTERFACE a
+							    , app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)
+							    and a.TYPE = 'm'
+							    and b.control_code like '%MONTH%'
+							    and upload_time = '每月15日前'
+						    )
+						    and control_code like 'BASS1%EXP%'
+						)
+		and flag = 0
+		and date(endtime) <= current date 
+		and month(endtime)  = month(current timestamp)
+)
+and control_code not in ('BASS1_EXP_G_S_05001_MONTH','BASS1_EXP_G_S_05002_MONTH')
+

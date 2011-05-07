@@ -5,6 +5,8 @@
 #r2 : 各个时间点接口上传监控、上传提醒。如未处理指定小时内10分钟提醒一次。
 #r3 : 接口文件导出监控（3-6点每10分钟扫描一次，有异常即触发告警）
 #r4 : 增加监控：凌晨4：00若接口导出为0，告警。
+#r5 :	2011-05-06 19:13:37调整统计顺序：先wc -l 统计文件数,再查数据库exp程序完成数。 
+#r6 :	2011-05-06 19:13:40只检查verf file,不检查dat file
 ##############################################################
 
 yesterday()
@@ -424,32 +426,35 @@ do
 									and flag = 0 with ur 
 					"
 					DB2_SQLCOMM="db2 \"${sql_str}\""	
-					exp_cnt=`DB2_SQL_EXEC|grep 'xxxxx'|awk '{print $2}'`			
 					today=`date '+%Y%m%d'`
 					deal_date=`yesterday ${today}`
 					exp_dir="/bassapp/backapp/data/bass1/export/export_${deal_date}"
-					#sleep to wait file move to exp_dir					
-					sleep 5
-					dat_file_cnt=`ls -lrt ${exp_dir}/*.dat | wc -l|awk '{print $1}'`
-					echo "dat_file_cnt数据文件数 :${dat_file_cnt}"				
+					#dat_file_cnt=`ls -lrt ${exp_dir}/*.dat | wc -l|awk '{print $1}'`
+					#echo "dat_file_cnt数据文件数 :${dat_file_cnt}"									
+				  verf_file_cnt=`ls -lrt ${exp_dir}/*.verf | wc -l|awk '{print $1}'`					
+				  echo "verf_file_cnt 校验文件数 :${verf_file_cnt}"													
+					exp_cnt=`DB2_SQL_EXEC|grep 'xxxxx'|awk '{print $2}'`			
 				#4：00检查导出非0	
 				echo s1
 				if [ ${alert_time} = "04" ];then
-						if [ ${dat_file_cnt} -eq  0 ];then
-								MESSAGE_CONTENT="数据文件数：${dat_file_cnt},导出延迟,请核查！"
+						#if [ ${dat_file_cnt} -eq  0 ];then
+						#		MESSAGE_CONTENT="数据文件数：${dat_file_cnt},导出延迟,请核查！"
+						#		echo ${MESSAGE_CONTENT}
+						#		sendalarmsms "${MESSAGE_CONTENT}"
+						#fi								
+						if [ ${verf_file_cnt} -eq  0 ];then
+								MESSAGE_CONTENT="数据文件数：${verf_file_cnt},导出延迟,请核查！"
 								echo ${MESSAGE_CONTENT}
 								sendalarmsms "${MESSAGE_CONTENT}"
 						fi
 				fi
-				echo s2
-				if [ ${dat_file_cnt} -ne  ${exp_cnt} ];then
-					MESSAGE_CONTENT="数据文件数：${dat_file_cnt}不等于 ${exp_cnt},请先处理！"
-					echo ${MESSAGE_CONTENT}
-					sendalarmsms "${MESSAGE_CONTENT}"
-				fi
+				#echo s2
+				#if [ ${dat_file_cnt} -ne  ${exp_cnt} ];then
+				#	MESSAGE_CONTENT="数据文件数：${dat_file_cnt}不等于 ${exp_cnt},请先处理！"
+				#	echo ${MESSAGE_CONTENT}
+				#	sendalarmsms "${MESSAGE_CONTENT}"
+				#fi
 				echo s3							
-				verf_file_cnt=`ls -lrt ${exp_dir}/*.verf | wc -l|awk '{print $1}'`
-				echo "verf_file_cnt 校验文件数 :${verf_file_cnt}"								
 				if [ ${verf_file_cnt} -ne  ${exp_cnt}  ];then 
 					MESSAGE_CONTENT="校验文件数:${verf_file_cnt}不等于${exp_cnt},请先处理！"
 					echo ${MESSAGE_CONTENT}

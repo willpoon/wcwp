@@ -37,7 +37,7 @@ select * from   G_I_06021_MONTH
 where time_id = 201104
 
 **/
-
+/**
 检查gprs收入情况。
 
 select count(0)
@@ -60,3 +60,8 @@ from  bass1.g_s_03004_month
 where time_id = 201104
 and ACCT_ITEM_ID in ('0626','0627')
 784986
+**/
+
+/**
+once : 积分数据修复？？有没有总部类？
+**/
