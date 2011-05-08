@@ -14,6 +14,22 @@ and flag = -1
 and control_code like 'BASS1%'
 order by alarmtime desc 
 
+
+select 
+         time_id,
+         case when rule_code='R159_1' then '新增客户数'
+              when rule_code='R159_2' then '客户到达数'
+              when rule_code='R159_3' then '上网本客户数'
+              when rule_code='R159_4' then '离网客户数'
+         end,
+         target1,
+         target2,
+         target3
+from bass1.g_rule_check
+where 
+    rule_code in ('R159_1','R159_2','R159_3','R159_4')
+    and time_id=int(replace(char(current date - 1 days),'-',''))
+
 select * from app.sch_control_task where control_code in 
 (select control_code from   app.sch_control_runlog where flag = 1 )
 and cc_flag = 1

@@ -5869,7 +5869,7 @@ select * from app.SCH_CONTROL_RUNLOG
 where 
 		control_code like '%Dwd_enterprise_manager%'
 or  control_code like
-
+=
 
 校验文件：
 ?	接口数据文件名称|?	数据日期|?	文件的生成日期|?	文件的大小（字节数）|?	文件中包含的记录数
