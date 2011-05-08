@@ -12361,3 +12361,17 @@ where control_code in
 )
 and control_code not in ('BASS1_EXP_G_S_05001_MONTH','BASS1_EXP_G_S_05002_MONTH')
 
+select count(0) from    bass2.dw_product_201004select tabname from syscat.tables where tabname like '%ADVISE%' select 'xxxxx', count(0) from   app.sch_control_runlog  a 
+									where a.control_code like 'BASS1%EXP%DAY%' 
+									and date(a.begintime) =  date(current date) 
+									and flag = 0 with ur CREATE FUNCTION bass1.get_before(p_control_code varchar(128))
+RETURNS
+TABLE (control_code varchar(128),before_control_code varchar(128))
+RETURN
+select control_code,before_control_code from app.sch_control_before where control_code = p_control_codeCREATE FUNCTION bass1.get_after(p_before_control_code varchar(128))
+RETURNS
+TABLE (control_code varchar(128),before_control_code varchar(128))
+RETURN
+select control_code,before_control_code from app.sch_control_before where before_control_code = p_before_control_codeselect * from  table( bass1.get_before('BASS1_G_I_03007_MONTH.tcl')) a 
+select * from  table( bass1.get_after('BASS1_G_I_03007_MONTH.tcl')) a 
+
