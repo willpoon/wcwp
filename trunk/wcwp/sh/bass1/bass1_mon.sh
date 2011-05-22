@@ -423,17 +423,17 @@ do
 					sql_str="select 'xxxxx', count(0) from   app.sch_control_runlog  a \
 									where a.control_code like 'BASS1%EXP%DAY%' \
 									and date(a.begintime) =  date(current date) \
-									and flag = 0 with ur 
+									and flag = 0 with ur
 					"
-					DB2_SQLCOMM="db2 \"${sql_str}\""	
+					DB2_SQLCOMM="db2 \"${sql_str}\""
 					today=`date '+%Y%m%d'`
 					deal_date=`yesterday ${today}`
 					exp_dir="/bassapp/backapp/data/bass1/export/export_${deal_date}"
 					#dat_file_cnt=`ls -lrt ${exp_dir}/*.dat | wc -l|awk '{print $1}'`
-					#echo "dat_file_cnt数据文件数 :${dat_file_cnt}"									
-				  verf_file_cnt=`ls -lrt ${exp_dir}/*.verf | wc -l|awk '{print $1}'`					
-				  echo "verf_file_cnt 校验文件数 :${verf_file_cnt}"													
-					exp_cnt=`DB2_SQL_EXEC|grep 'xxxxx'|awk '{print $2}'`			
+					#echo "dat_file_cnt数据文件数 :${dat_file_cnt}"
+				  verf_file_cnt=`ls -lrt ${exp_dir}/*.verf | wc -l|awk '{print $1}'`
+				  echo "verf_file_cnt 校验文件数 :${verf_file_cnt}"
+					exp_cnt=`DB2_SQL_EXEC|grep 'xxxxx'|awk '{print $2}'`
 				#4：00检查导出非0	
 				echo s1
 				if [ ${alert_time} = "04" ];then
@@ -471,6 +471,7 @@ do
 ################################################################
 ##月数据监控                                                    
 ################################################################
+
 sleep 600
 done
 
