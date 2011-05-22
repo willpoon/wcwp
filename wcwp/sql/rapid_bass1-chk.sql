@@ -1,39 +1,20 @@
-select 1 from bass2.dual
-
-/**
-select * from  app.sch_control_alarm 
-where alarmtime >=  timestamp('20110322'||'000000') 
---and flag = -1
-and control_code like 'BASS1%'
-order by alarmtime desc 
-**/
-
+---------------------------------------------------------------------------------
 select * from  app.sch_control_alarm 
 where alarmtime >=  current timestamp - 1 days
 and flag = -1
 and control_code like 'BASS1%'
 order by alarmtime desc 
+---------------------------------------------------------------------------------
+select * from   table( bass1.chk_same() ) a order by 2---------------------------------------------------------------------------------select * from   table( bass1.chk_wave() ) a order by 2---------------------------------------------------------------------------------
+
 
-
-select 
-         time_id,
-         case when rule_code='R159_1' then '新增客户数'
-              when rule_code='R159_2' then '客户到达数'
-              when rule_code='R159_3' then '上网本客户数'
-              when rule_code='R159_4' then '离网客户数'
-         end,
-         target1,
-         target2,
-         target3
-from bass1.g_rule_check
-where 
-    rule_code in ('R159_1','R159_2','R159_3','R159_4')
-    and time_id=int(replace(char(current date - 1 days),'-',''))
+---------------------------------------------------------------------------------
 
 select * from app.sch_control_task where control_code in 
 (select control_code from   app.sch_control_runlog where flag = 1 )
 and cc_flag = 1
 
+---------------------------------------------------------------------------------
 
 
 /*********日**************************************************************************************/
@@ -46,6 +27,7 @@ where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err
 select  * from APP.G_FILE_REPORT
 where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err_code<>'00'
 
+---------------------------------------------------------------------------------
 
 
 
@@ -71,6 +53,7 @@ where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err
 
 
 --record 接口记录集返回检查(正常情况为56条记录) record
+---------------------------------------------------------------------------------
 
 select * from app.g_runlog 
 where time_id=int(replace(char(current date - 1 days),'-',''))
@@ -82,6 +65,7 @@ and return_flag=1
 select * from app.g_runlog 
 where time_id=int(replace(char(current date - 1 days),'-',''))
 and return_flag=0
+---------------------------------------------------------------------------------
 
 
 --求未导出接口 (通过上一天与本日比较)
@@ -307,10 +291,26 @@ select * from
 bass1.g_s_22012_day 
 where time_id=int(replace(char(current date - 1 days),'-',''))
 
-20110428	20110428	2498      	1627916     	24422098    	440081      	4011595     	144       	293951      
+20110517	20110517	2888      	1671364     	23709586    	469322      	3798066     	77        	280936      
+
+20110519	20110519	2306      	1675939     	22918403    	501612      	3834942     	68        	257121      
+
+20110520	20110520	2330      	1678173     	23580986    	476230      	3903368     	80        	284164      
+  
  
+  
+  --调整脚本，''里更新一定的值就是
+--离网客户数
+update bass1.g_s_22012_day set m_off_users='82' 
+where time_id=int(replace(char(current date - 1 days),'-',''))
+
+
  select * from  bass1.G_RULE_CHECK where rule_code = 'C1' and time_id > 20110101
  order by 1 desc 
+ 20110509	C1	2053251.00000	2472205.00000	-0.16947	0.00000
+
+ 20110508	C1	2472205.00000	2140554.00000	0.15494	0.00000
+
 20110503	C1	1981494.00000	1819931.00000	0.08877	0.00000
 
 20110502	C1	1819931.00000	2861998.00000	-0.36410	0.00000 20110501	C1	2861998.00000	3083030.00000	-0.07169	0.00000
@@ -318,12 +318,6 @@ where time_id=int(replace(char(current date - 1 days),'-',''))
 20110429	C1	2551002.00000	2155029.00000	0.18374	0.00000
 20110428	C1	2155029.00000	1990225.00000	0.08281	0.00000
 20110427	C1	1990225.00000	1987809.00000	0.00122	0.00000
-
-  
-  --调整脚本，''里更新一定的值就是
---离网客户数
-update bass1.g_s_22012_day set m_off_users='134' 
-where time_id=int(replace(char(current date - 1 days),'-',''))
 
 
 /**
@@ -433,12 +427,4 @@ AND date(a.begintime) =  date(current date)
 AND FLAG = 0
                       
                                                                 
-                                                                
-                                                                
-select count(*) from bass1.g_i_06021_month
-where channel_id not in
-(select distinct channel_id from bass1. g_s_22063_month where time_id =201104)
-  and time_id =201104
-  and channel_type in ('2','3')
-  and channel_status='1'
-                                                                
+              

@@ -45,6 +45,28 @@ ls -alrt  *03007*dat *21010*dat *21013*dat *21014*dat *21015*dat *05001*dat \
 ls -lart *22049*dat *22050*dat *22052*dat *22055*dat *22056*dat *22061*dat \
 *22062*dat *22063*dat *22064*dat *22065*dat  
 
+--D:\pzw\prj\wcwp\inc\all_shell_functions.ksh
+
+insert into bass1.g_s_05001_month
+select * from  bass1.T_GS05001M where time_id = 201104
+
+
+insert into bass1.g_s_05002_month
+select * from  bass1.T_GS05002M where time_id = 201104
+
+select time_id,sum(bigint(STLMNT_FEE))*1.00/sum(bigint(PAY_STLMNT_FEE)) 
+from   bass1.g_s_05001_month 
+group by  time_id 
+order by 1 desc 
+
+select time_id,sum(bigint(STLMNT_FEE))*1.00/sum(bigint(PAY_STLMNT_FEE)) 
+from   bass1.g_s_05002_month 
+group by time_id 
+order by 1 desc 
+
+
+
+
 
 
 	select b.CONTROL_CODE 
