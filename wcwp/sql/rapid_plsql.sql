@@ -774,3 +774,66 @@ select * from
  
 
       
+      
+
+
+--重跑当日所有校验
+select * from 
+app.sch_control_runlog a
+where control_code like 'BASS1_INT%'
+AND date(a.begintime) =  date(current date)
+AND FLAG = 0
+
+update  app.sch_control_runlog a
+set flag = -2 
+where control_code like 'BASS1_INT_CHECK%'
+AND date(a.begintime) =  date(current date)
+AND FLAG = 0
+                      
+                                                                
+
+
+ SELECT * FROM   market.cm_group_customer_ext@dbl_ggdb
+where source = 2
+
+
+
+SELECT count(0) FROM   market.cm_group_customer_ext@dbl_ggdb 
+ SELECT count(0) FROM  market.cm_individual_info_ext@dbl_ggdb  --成员表
+ SELECT count(0) FROM  market.GROUP_RELATION@dbl_ggdb  与集团客户视图关系表
+ 
+ 
+ SELECT * FROM  market.GROUP_RELATION 
+集团客户清单关系表
+SELECT * FROM   market.cm_group_customer_ext@dbl_ggdb WHERE group_cust_id='XZ0309698'  清单表
+ SELECT * FROM  market.cm_individual_info_ext@dbl_ggdb  --成员表
+ SELECT * FROM  market.GROUP_RELATION@dbl_ggdb  与集团客户视图关系表
+ 
+ select count(0),count(distinct group_cust_id ) from   market.cm_group_customer_ext@dbl_ggdb
+
+
+ SELECT a.group_cust_id,c.group_cust_id FROM market.cm_group_customer@dbl_ggdb a,market.GROUP_RELATION@dbl_ggdb b,market.cm_group_customer_ext@dbl_ggdb c
+ WHERE a.group_cust_id=b.zw_group_id
+ AND b.qd_group_id=c.group_cust_id
+ AND a.group_cust_id='89203001148435'
+ 
+ 
+ 
+  SELECT  count(0),count(distinct a.group_cust_id ) , count(distinct c.group_cust_id )
+  FROM market.cm_group_customer@dbl_ggdb a,market.GROUP_RELATION@dbl_ggdb b,market.cm_group_customer_ext@dbl_ggdb c
+ WHERE a.group_cust_id=b.zw_group_id
+ AND b.qd_group_id=c.group_cust_id
+ 
+ 
+
+select count(0),count(distinct group_cust_id ) from   market.cm_group_customer_ext@dbl_ggdb
+
+20024	20024
+
+
+SELECT count(0),count(distinct  zw_group_id),count(distinct qd_group_id ) FROM  market.GROUP_RELATION@dbl_ggdb       
+386	346	383
+
+
+
+ 

@@ -37,8 +37,13 @@ set BASE_BILL_DURATION = char(bigint(BASE_BILL_DURATION)-5) with ur
 $ cd /bassapp/backapp/bin/bass1_lst
 $ ./bass1_lst.sh yyyy-mm (自然月)
 
-**/
+select time_id,count(0) from bass1.g_user_lst
+group by time_id 
+order by 1 desc 
 
+
+**/
+检查
 
 
 

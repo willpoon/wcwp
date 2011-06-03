@@ -1,3 +1,4 @@
+#!/usr/bin/ksh
 ##############################################################
 #author : panzhiwei
 #功能：一经日常监控
@@ -97,13 +98,7 @@ sendalarmsms(){
 
 #求当日文件级返回数
 fn_d_file_lvl_ret_cnt(){
-	sql_str=" select  'xxxxx',count(0)\
-						from \
-						( \
-						select  a.* ,row_number()over(partition by  substr(filename,18,5) order by deal_time desc ) rn \
-						from APP.G_FILE_REPORT a \
-						where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err_code='00' \
-						) t where rn = 1 with ur
+	sql_str=" select dummy,cnt from table(bass1.get_flret_cnt()) a
 					 "
 	DB2_SQLCOMM="db2 \"${sql_str}\""
 	filelvl_ret_cnt=`DB2_SQL_EXEC|grep 'xxxxx'|awk '{print $2}'`	
@@ -118,18 +113,7 @@ fn_d_file_lvl_ret_cnt(){
 
 #求当日文件级返回数 (9点接口)
 fn_d9_file_lvl_ret_cnt(){
-	sql_str=" select  'xxxxx',count(0)\
-						from \
-						( \
-						select  a.* ,row_number()over(partition by  substr(filename,18,5) order by deal_time desc ) rn \
-						from APP.G_FILE_REPORT a \
-						where substr(filename,9,8) = replace(char(current date - 1 days),'-','') \
-						and err_code='00' \
-						and substr(filename,18,5) \
-						in (  select INTERFACE_CODE from   BASS1.MON_ALL_INTERFACE \
-								   where upload_time = '每日9点前' \
-								) \
-						) t where rn = 1 with ur 
+	sql_str=" select dummy,cnt from table(bass1.fn_dn_flret_cnt(9)) a
 					 "
 	DB2_SQLCOMM="db2 \"${sql_str}\""
 	filelvl_ret_cnt=`DB2_SQL_EXEC|grep 'xxxxx'|awk '{print $2}'`	
@@ -144,18 +128,7 @@ fn_d9_file_lvl_ret_cnt(){
 
 #求当日文件级返回数 (11点接口)
 fn_d11_file_lvl_ret_cnt(){
-	sql_str=" select  'xxxxx',count(0)\
-						from \
-						( \
-						select  a.* ,row_number()over(partition by  substr(filename,18,5) order by deal_time desc ) rn \
-						from APP.G_FILE_REPORT a \
-						where substr(filename,9,8) = replace(char(current date - 1 days),'-','') \
-						and err_code='00' \
-						and substr(filename,18,5) \
-						in (  select INTERFACE_CODE from   BASS1.MON_ALL_INTERFACE \
-								   where upload_time = '每日11点前' \
-								) \
-						) t where rn = 1 with ur 
+	sql_str=" select dummy,cnt from table(bass1.fn_dn_flret_cnt(11)) a
 					 "
 	DB2_SQLCOMM="db2 \"${sql_str}\""
 	#echo ${DB2_SQLCOMM}
@@ -172,18 +145,7 @@ fn_d11_file_lvl_ret_cnt(){
 
 #求当日文件级返回数 (13点接口)
 fn_d13_file_lvl_ret_cnt(){
-	sql_str=" select  'xxxxx',count(0)\
-						from \
-						( \
-						select  a.* ,row_number()over(partition by  substr(filename,18,5) order by deal_time desc ) rn \
-						from APP.G_FILE_REPORT a \
-						where substr(filename,9,8) = replace(char(current date - 1 days),'-','') \
-						and err_code='00' \
-						and substr(filename,18,5) \
-						in (  select INTERFACE_CODE from   BASS1.MON_ALL_INTERFACE \
-								   where upload_time = '每日13点前' \
-								) \
-						) t where rn = 1 with ur 
+	sql_str=" select dummy,cnt from table(bass1.fn_dn_flret_cnt(13)) a
 					 "
 	DB2_SQLCOMM="db2 \"${sql_str}\""
 	filelvl_ret_cnt=`DB2_SQL_EXEC|grep 'xxxxx'|awk '{print $2}'`	
@@ -200,19 +162,7 @@ fn_d13_file_lvl_ret_cnt(){
 
 #求当日文件级返回数 (15点接口)
 fn_d15_file_lvl_ret_cnt(){
-	sql_str=" select  'xxxxx',count(0)\
-						from \
-						( \
-						select  a.* ,row_number()over(partition by  substr(filename,18,5) order by deal_time desc ) rn \
-						from APP.G_FILE_REPORT a \
-						where substr(filename,9,8) = replace(char(current date - 1 days),'-','') \
-						and err_code='00' \
-						and substr(filename,18,5) \
-						in (  select INTERFACE_CODE from   BASS1.MON_ALL_INTERFACE \
-								   where upload_time = '每日15点前' \
-								) \
-						) t where rn = 1 with ur 
-					 "
+	sql_str="select dummy,cnt from table(bass1.fn_dn_flret_cnt(15)) a"
 	DB2_SQLCOMM="db2 \"${sql_str}\""
 	filelvl_ret_cnt=`DB2_SQL_EXEC|grep 'xxxxx'|awk '{print $2}'`	
   if [ $? -ne 0 ];then 
@@ -266,24 +216,20 @@ getunixtime2(){
 ################################################################
 echo $$
 ##define global var
-d_at09_cnt=8
-d_at11_cnt=30
-d_at13_cnt=17
-d_at15_cnt=6
-d_all_cnt=61
-#
-m_on03_cnt=12
-m_on05_cnt=15
-m_on08_cnt=30
-m_on10_cnt=17
-m_on15_cnt=10
-m_all_cnt=84
 
+cfgfile=/bassapp/bihome/panzw/bass1_mon.cfg
+cat $cfgfile|grep -i d_at09_cnt | nawk -F'=' '{print $2}'|read d_at09_cnt
+cat $cfgfile|grep -i d_at11_cnt | nawk -F'=' '{print $2}'|read d_at11_cnt
+cat $cfgfile|grep -i d_at13_cnt | nawk -F'=' '{print $2}'|read d_at13_cnt
+cat $cfgfile|grep -i d_at15_cnt | nawk -F'=' '{print $2}'|read d_at15_cnt
+cat $cfgfile|grep -i d_all_cnt | nawk -F'=' '{print $2}' |read d_all_cnt
+cat $cfgfile|grep -i m_on03_cnt | nawk -F'=' '{print $2}'|read m_on03_cnt
+cat $cfgfile|grep -i m_on05_cnt | nawk -F'=' '{print $2}'|read m_on05_cnt
+cat $cfgfile|grep -i m_on08_cnt | nawk -F'=' '{print $2}'|read m_on08_cnt
+cat $cfgfile|grep -i m_on10_cnt | nawk -F'=' '{print $2}'|read m_on10_cnt
+cat $cfgfile|grep -i m_on15_cnt | nawk -F'=' '{print $2}'|read m_on15_cnt
+cat $cfgfile|grep -i m_all_cnt | nawk -F'=' '{print $2}' |read m_all_cnt
 
-
-
-
-##
 
 start_run_time=`getunixtime2`
 while [ true ]
@@ -305,6 +251,7 @@ do
 			#一次性初始化g_d_recordlvl_sent_flag,防止重复置0,将后面修改为1的状态覆盖了。
 			if [ $diffs -lt 60 ];then 
 			g_d_recordlvl_sent_flag=0
+			all_export_done_flag=0
 			fi
 			#g_d_recordlvl_sent_flag：
 			#如果记录级全部返回，应为1
@@ -314,11 +261,15 @@ do
 			#假设在09点全部返回，那么在当日09-次日07这段时间，g_d_recordlvl_sent_flag=1.
 			#在07-09期间，g_d_recordlvl_sent_flag = 0，处于等待发送状态。
 			#07点g_d_recordlvl_sent_flag清零
-			alert_time=`date +%H`
+			alert_time=`date +%H`		
 			if [ ${alert_time} = "07" -a ${g_d_recordlvl_sent_flag} -eq 1 ];then 			
 				g_d_recordlvl_sent_flag=0
 			fi
-			echo ${g_d_recordlvl_sent_flag}
+			#echo ${g_d_recordlvl_sent_flag}
+			#set 0 everyday at 04:00
+			if [ ${alert_time} = "04" -a ${all_export_done_flag} -eq 1 ];then 			
+				all_export_done_flag=0
+			fi
 #1.日常通知类：每天一条，根据记录级返回时间，不定时触发。(但应在传日数据之后，即08：00后)
 			#1.1日数据：监控记录级返回，当全部返回时触发。
 			#echo 1.1
@@ -378,7 +329,7 @@ do
 				v_d_filelvl_ret_cnt=$?
 				echo ${v_d_filelvl_ret_cnt}
 				if [ ${v_d_filelvl_ret_cnt} -ne ${d_at11_cnt} ]	;then 
-					MESSAGE_CONTENT="9点前接口文件级返回不等于${d_at11_cnt}个，请在11点前处理，确认是否已上传!"
+					MESSAGE_CONTENT="11点前接口文件级返回不等于${d_at11_cnt}个，请在11点前处理，确认是否已上传!"
 					sendalarmsms "${MESSAGE_CONTENT}"
 				fi
 			fi
@@ -462,6 +413,20 @@ do
 				fi
 		 fi
 
+##2.0 提示上传日数据返回情况
+##全部导出完成后触发
+		today=`date '+%Y%m%d'`
+		deal_date=`yesterday ${today}`
+		exp_dir="/bassapp/backapp/data/bass1/export/export_${deal_date}"
+		verf_file_cnt=`ls -lrt ${exp_dir}/*.verf | wc -l|awk '{print $1}'`
+	
+	if [ ${verf_file_cnt} -eq ${d_all_cnt} -a all_export_done_flag -eq 0 ]	;then 
+		MESSAGE_CONTENT="今日接口全部生成!"
+		sendalarmsms "${MESSAGE_CONTENT}"
+		#将发送标记置为已发送！
+		all_export_done_flag=1					
+	fi
+			
 
 ################################################################
 ##表空间监控
