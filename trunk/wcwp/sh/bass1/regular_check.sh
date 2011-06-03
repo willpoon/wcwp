@@ -307,7 +307,7 @@ interfaceat9(){
 #0.var define
 today=`date '+%Y%m%d'`
 deal_date=`yesterday ${today}`
-DAY_INTERFACE_CNT=61
+DAY_INTERFACE_CNT=60
 dat_file_cnt=
 verf_file_cnt=
 file_rpt_cnt=

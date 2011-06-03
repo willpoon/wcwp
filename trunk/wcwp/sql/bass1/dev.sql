@@ -147,3 +147,40 @@ where
     rule_code in ('R159_1','R159_2','R159_3','R159_4')
     and time_id=int(replace(char(current date - 1 days),'-',''))
 
+---------------------------------------------------------------------------------------------
+
+CREATE FUNCTION bass1.get_flret_cnt()
+RETURNS 
+TABLE ( dummy varchar(8),cnt    integer )
+RETURN
+select  'xxxxx' dummy,count(0) cnt from ( select  a.* ,row_number()over(partition by  substr(filename,18,5) 							order by deal_time desc ) rn 
+from APP.G_FILE_REPORT a 
+where substr(filename,9,8) = replace(char(current date - 1 days),'-','') 
+and err_code='00' 
+) t where rn = 1 
+
+select * from table(bass1.get_flret_cnt()) a;
+---------------------------------------------------------------------------------------------
+
+
+
+CREATE FUNCTION bass1.fn_dn_flret_cnt(p_deadline int)
+RETURNS 
+TABLE ( dummy varchar(8),cnt    integer )
+RETURN
+select  'xxxxx',count(0)
+						from 
+						( 
+						select  a.* ,row_number()over(partition by  substr(filename,18,5) order by deal_time desc ) rn 
+						from APP.G_FILE_REPORT a 
+						where substr(filename,9,8) = replace(char(current date - 1 days),'-','') 
+						and err_code='00' 
+						and substr(filename,18,5) 
+						in (  select INTERFACE_CODE from   BASS1.MON_ALL_INTERFACE 
+								   where deadline = p_deadline and sts = 1 
+								) 
+						) t where rn = 1 
+
+
+select * from table(bass1.fn_dn_flret_cnt()) a;
+

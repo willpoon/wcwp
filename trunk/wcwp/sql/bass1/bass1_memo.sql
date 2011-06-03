@@ -1,4 +1,7 @@
 http://www.zto.cn/CheckB.aspx?bill_ID=680102655698&hname=hvalue
+
+368814168964
+
 chenyang@xz.cmcc
 chenyang198677
 
@@ -33,6 +36,10 @@ D2008ABCDE
 帐号:08916813360
 密码:147258
 
+wyslmt
+
+asiainfo12345
+
 #export命令将使系统在创建每一个新的shell时定义这个变量的一个拷贝。这个过程称之为变量输出。
 open 
 http://172.16.5.71:4321/svn/%e9%a1%b9%e7%9b%ae%e7%bb%84%e5%9f%b9%e8%ae%ad%e8%b5%84%e6%96%99/%e9%a1%b9%e7%9b%ae%e7%bb%84%e8%b5%84%e6%96%99/%e5%ad%a6%e4%b9%a0%e8%b5%84%e6%96%99/
@@ -61,6 +68,9 @@ select * from etl_task_log
 where	task_id	in	('I03013')	
 
  
+    nohup /bassapp/bihome/panzw/bass1_mon.sh >> bass1_mon.sh.out 2>&1 &
+
+
 	set ip_num ('17950','17951')
 	
 移动话段
@@ -6559,7 +6569,8 @@ ls -lart *22049*verf *22050*verf *22052*verf *22055*verf *22056*verf *22061*verf
 
 
 
-ls -lrt *01002*dat *01004*dat *02004*dat *02008*dat *02011*dat *02053*dat *06031*dat *06032*dat|awk '{print $9,$8,$5}'|sort
+ls -lrt *01002*dat *01004*dat *02004*dat *02008*dat *02011*dat *02053*dat *06031*dat *06032*dat \
+|awk '{print $9,$8,$5}'|sort
 
 
 
@@ -7055,3 +7066,174 @@ vgop增值业务综合运营平台
 
 2011年4月21日
  
+
+Diagnostic Notes:
+Invalid MASK generates an error, that is when (DEST & MASK) != DEST.
+Example> route ADD 157.0.0.0 MASK 155.0.0.0 157.55.80.1 IF 1
+The route addition failed: The specified mask parameter is invalid.
+(Destination & Mask) != Destination. 
+
+
+
+
+潘志伟 09:34:31
+    89157333894595      帮忙查查当前主套餐
+
+李林峰 09:38:09
+  select offer_id from so.ins_prod_view where product_instance_id = 89157333894595 and sysdate between valid_date and expire_date;
+
+李林峰 09:38:13
+  select * from product.up_product_item@dbl_ggdb where product_item_id = 111089110011;
+李林峰 09:39:15
+  select * from so.ins_off_ins_prod_view where product_instance_id = 89157333894595 and sysdate between valid_date and expire_date;
+
+
+
+
+'
+  select count(0) from   G_I_21020_MONTH
+where
+COMP_BRAND_ID = '021000' 
+and time_id = 201104
+ where days(date('2011-04-30'))-
+ days(date(substr(COMP_LAST_DATE,1,4)||'-'||substr(COMP_LAST_DATE,5,2)||'-'||substr(COMP_LAST_DATE,7,2)))=90
+ 
+ 
+91002	DIM_TACNUM_DEVID
+91003	DIM_CONTROL_INFO
+91004	DIM_DEVICE_INFO
+91005	DIM_DEVICE_PROFILE
+91006	DIM_PROPERTY_INFO
+91007	DIM_PROPERTY_VALUE_RANGE
+
+bass1.td_check_01 TD终端用户 -> 去重后： bass1.td_check_ls_02
+
+
+bass1.td_check_02 T网但非TD终端用户
+
+
+bass1.td_check_03
+
+bass1.td_check_03
+
+
+
+ 交谈中请勿轻信汇款、中奖信息、陌生电话，勿使用外挂软件。
+
+ 青峰  18:08:34
+Y 移动QQ聊天业务
+W PIM-号簿管家
+S 客户端
+Q 12580IVR
+L WEB
+J SP
+I 短信营业厅(MMS)
+H 中央音乐平台
+e 客服
+D 12530.IVR
+c CMMB客户端
+b 营业前台（受理）
+B 网上营业厅
+9 自助终端缴费
+6 WAP营业厅
+5 USSD
+4 短信营业厅
+
+哪些是电子渠道呢？ 
+回复爪爪 17:36:47 
+我把
+'Q','L','I','e','D','B','6','4'
+
+归为电子渠道了 
+
+青峰  18:11:54
+				select
+				 COALESCE(BASS1.FN_GET_ALL_DIM('BASS_STD1_0054',SUBSTR(h.REGION_CODE,2,3)),'13100'),
+				sum(case when b.offer_type=2 then 1 else 0 end),
+				0,0,0,
+				sum(case when b.offer_type<>2 then 1 else 0 end),
+				0,0,0,0,0
+				  from bass2.dw_product_ord_cust_$op_month a,
+				       bass2.dw_product_ord_offer_dm_$op_month b,
+				       bass2.dim_prod_up_product_item d,
+				       bass2.dim_pub_channel e,
+				       bass2.dim_sys_org_role_type f,
+				       bass2.dim_cfg_static_data g,
+				       bass2.dw_channel_info_$op_month h
+				 where a.customer_order_id = b.customer_order_id
+				   and b.offer_id = d.product_item_id
+				   and a.org_id = e.channel_id
+				   and a.channel_type = g.code_value
+				   and g.code_type = '911000'
+				   and e.channeltype_id = f.org_role_type_id
+				   and a.org_id = h.channel_id
+				   and h.channel_type_class in (90105,90102)
+				   and a.channel_type in ('Q','L','I','e','D','B','6','4')
+				 group by  COALESCE(BASS1.FN_GET_ALL_DIM('BASS_STD1_0054',SUBSTR(h.REGION_CODE,2,3)),'13100')     
+
+
+db2 'get snapshot for application agentid 2516'
+
+db2inst1
+nfjd@BASSDB
+
+db2 "force application(2516)"
+
+$ db2 "force application(2516)"
+DB20000I  The FORCE APPLICATION command completed successfully.
+DB21024I  This command is asynchronous and may not be effective immediately.
+
+
+Dynamic SQL statement text:
+SELECT       COUNT(*)      FROM       (SELECT         A.TIME_ID,         A.USER_ID,         A.USERTYPE_ID,         A.SIM_CODE       FROM BASS1.G_A_02004_DAY  A,              BASS1.check_temp_02004_last B          WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID AND A.BRAND_ID='1'          )T,        (SELECT         A.TIME_ID,         A.USER_ID,         A.USERTYPE_ID        FROM BASS1.G_A_02008_DAY A,               BASS1.check_temp_02008_last B       WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID       ) M      WHERE T.USER_ID = M.USER_ID         AND T.TIME_ID <= INT(20110531)         AND M.TIME_ID <= INT(20110531)         AND T.USERTYPE_ID <> '3'         AND M.USERTYPE_ID NOT IN ('2010','2020','2030','9000')
+
+  Subsection number                                  = 0
+  Subsection database partition number               = 0
+  Subsection status                                  = Waiting to receive on tablequeue
+  Node for which waiting on tablequeue               = Any node
+  Tablequeue ID on which agent is waiting            = 1
+  Execution elapsed time (seconds)                   = 8680
+  Total user CPU time (sec.ms)                       = 0.004070
+  Total system CPU time (sec.ms)                     = 0.000000
+  Current number of tablequeue buffers overflowed    = 0
+  Total number of tablequeue buffers overflowed      = 0
+  Maximum number of tablequeue buffers overflowed    = 0
+  Rows received on tablequeues                       = 0
+  Rows sent on tablequeues                           = 0
+  Rows read                                          = 0
+  Rows written                                       = 0
+  Number of agents working on subsection             = 1
+
+    Agent process/thread ID                       = 16765
+    
+#------------------------内部函数部分--------------------------#        
+#  get_row 返回 SQL的行徝
+proc get_row {MySQL} {
+
+        global env
+
+        global conn
+
+        global handle
+
+        set handle [aidb_open $conn]
+        set sql_buff $MySQL
+        puts $sql_buff
+        puts "----------------------------------------------------------------------------------- "
+        if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+                WriteTrace"$errmsg" 2005
+                aidb_close $handle
+                puts $errmsg
+                exit -1
+        }
+        set p_row [aidb_fetch $handle]
+        aidb_commit $conn
+        aidb_close $handle
+        return $p_row
+}
+
+   set p_row [get_row $sqlbuf]
+   set RESULT_VAL1 [lindex $p_row 0]
+         set RESULT_VAL2 [lindex $p_row 1]
+         set RESULT_VAL3 [lindex $p_row 2]
+             
