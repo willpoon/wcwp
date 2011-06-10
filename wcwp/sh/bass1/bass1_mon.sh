@@ -8,6 +8,7 @@
 #r4 : 增加监控：凌晨4：00若接口导出为0，告警。
 #r5 :	2011-05-06 19:13:37调整统计顺序：先wc -l 统计文件数,再查数据库exp程序完成数。 
 #r6 :	2011-05-06 19:13:40只检查verf file,不检查dat file
+#r6 :	make read cfgfile inside the while loop
 ##############################################################
 
 yesterday()
@@ -217,6 +218,19 @@ getunixtime2(){
 echo $$
 ##define global var
 
+
+start_run_time=`getunixtime2`
+while [ true ]
+do
+	#设置退出条件
+	if [ -f ./stop_bass1_mon ];then 
+	echo "$0 normal exit"
+	echo $$
+	rm ./stop_bass1_mon
+	exit
+	fi
+
+
 cfgfile=/bassapp/bihome/panzw/bass1_mon.cfg
 cat $cfgfile|grep -i d_at09_cnt | nawk -F'=' '{print $2}'|read d_at09_cnt
 cat $cfgfile|grep -i d_at11_cnt | nawk -F'=' '{print $2}'|read d_at11_cnt
@@ -230,17 +244,7 @@ cat $cfgfile|grep -i m_on10_cnt | nawk -F'=' '{print $2}'|read m_on10_cnt
 cat $cfgfile|grep -i m_on15_cnt | nawk -F'=' '{print $2}'|read m_on15_cnt
 cat $cfgfile|grep -i m_all_cnt | nawk -F'=' '{print $2}' |read m_all_cnt
 
-
-start_run_time=`getunixtime2`
-while [ true ]
-do
-	#设置退出条件
-	if [ -f ./stop_bass1_mon ];then 
-	echo "$0 normal exit"
-	echo $$
-	rm ./stop_bass1_mon
-	exit
-	fi
+	
 	#日志时间
 	echo `date +%Y%m%d%H%M%S`	
 	#对部分提醒类短信，一天只发一次，故要发送一次后，要设置标志位，标记短信已发送1。在每天06：00重置为未发送0.
