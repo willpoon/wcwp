@@ -57,9 +57,8 @@ CREATE FUNCTION "BASS1"."FN_GET_ALL_DIM_EX"
   END;
 
 ---------------------------------------------------------------------------------------------
-
 drop FUNCTION bass1.chk_wave
-CREATE FUNCTION bass1.chk_wave()
+CREATE FUNCTION bass1.chk_wave(p_time_id integer)
 RETURNS
 TABLE ( time_id int
         ,seq int
@@ -67,6 +66,13 @@ TABLE ( time_id int
         ,wave_rate decimal(8,4)
         ,if_ok VARCHAR(8)
       )
+BEGIN ATOMIC      
+     DECLARE v_time_id int default 0;
+if p_time_id = 0 then
+set v_time_id=int(replace(char(current date - 1 days),'-',''));
+else 
+set v_time_id= p_time_id;
+end if;      
 RETURN
 select 
 time_id
@@ -112,18 +118,19 @@ else '0' end if_ok
 from 
 bass1.g_rule_check a 
 where rule_code like 'R161_%'
-and time_id = int(replace(char(current date - 1 days),'-',''))
+and time_id =v_time_id;
+end            
 
 ---------------------------------------------------------------------------------------------
 
-select * from   table( bass1.chk_wave() ) a
+select * from   table( bass1.chk_wave(0/YYYYMMDD) ) a
 order by 1
 
 ---------------------------------------------------------------------------------------------
 
 
 drop FUNCTION bass1.chk_same
-CREATE FUNCTION bass1.chk_same()
+CREATE FUNCTION bass1.chk_same(p_time_id integer)
 RETURNS
 TABLE ( time_id int
         ,rule_name varchar(128)
@@ -131,6 +138,13 @@ TABLE ( time_id int
         ,bass1_val decimal(18,5)
         ,wave_rate_percent decimal(18,5)
       )
+BEGIN ATOMIC      
+     DECLARE v_time_id int default 0;
+if p_time_id = 0 then
+set v_time_id=int(replace(char(current date - 1 days),'-',''));
+else 
+set v_time_id= p_time_id;
+end if;
 RETURN
 select 
          time_id,
@@ -145,7 +159,9 @@ select
 from bass1.g_rule_check
 where 
     rule_code in ('R159_1','R159_2','R159_3','R159_4')
-    and time_id=int(replace(char(current date - 1 days),'-',''))
+    and time_id= v_time_id;
+END
+                         
 
 ---------------------------------------------------------------------------------------------
 
