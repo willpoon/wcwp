@@ -150,7 +150,7 @@ where control_code in
 				and  control_code in (select control_code from app.sch_control_task where cc_flag = 1)
 		)
 		and flag = 0
-		and date(endtime) < current date
+		and date(endtime) <= current date
 		and month(endtime)  = month(current timestamp)
 )
 

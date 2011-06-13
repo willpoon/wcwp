@@ -70,6 +70,7 @@ where	task_id	in	('I03013')
  
     nohup /bassapp/bihome/panzw/bass1_mon.sh >> bass1_mon.sh.out 2>&1 &
 
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 01005 201105 >> /bassapp/bihome/panzw/bass1_mon_one.sh.out 2>&1 &
 
 	set ip_num ('17950','17951')
 	
@@ -7237,3 +7238,114 @@ proc get_row {MySQL} {
          set RESULT_VAL2 [lindex $p_row 1]
          set RESULT_VAL3 [lindex $p_row 2]
              
+
+		and end_dt>ADD_MONTHS(CAST($Tx_Date||'01' AS DATE FORMAT 'YYYYMMDD'),1)-1	
+
+
+
+
+
+len_val="1 9,267 280"
+WORK_PATH=/bassapp/bihome/panzw/tmp
+datafilename=13100_77778_201003.txt
+table_name=bass1.G_A_01005_MONTH_MID2
+DB2_SQLCOMM="db2 \"load client from ${WORK_PATH}/${datafilename} of asc \\
+\n
+modified by timestampformat=\\\"YYYYMMDDHHMMSS\\\" dateformat=\\\"YYYYMMDD\\\" \\
+\n
+timeformat=\\\"HHMMSS\\\" \\
+\n
+method L (${len_val}) \\
+\n
+messages ${WORK_PATH}/${table_name}.msg \\
+\n
+replace into ${table_name} nonrecoverable\""
+
+echo ${DB2_SQLCOMM}|sed -e 's/ $//g'
+
+             
+while read rule 
+do 
+grep -i $rule *.tcl >> /dev/null
+ret=$?
+if [ $ret -eq 0 ];then 
+echo $rule $ret
+else 
+echo $rule -1
+fi
+done<<!             
+
+
+规范开发注意事项
+1.配调度：先before , 后 task 
+2.app.g_unit_info 表命要小写
+3.前置：代码的前置和导出的前置
+4.task配置模板要注意：1.改日期粒度，2.该名称，3.export程序 要加“导出”区别，4.
+
+
+select * from   bass2.DIM_E_BUSI_KIND
+
+
+
+         select a.user_id,a.channel_type,a.busi_kind,a.busi_type,value(sum(a.flow),0)
+         from (select user_id,channel_type,busi_kind,busi_type,
+                  sum(flow) as flow
+               from bass2.dw_chl_e_10086_user_dm_201105
+               group by user_id,channel_type,busi_kind,busi_type
+               union all
+               select user_id,channel_type,busi_kind,busi_type,
+                  sum(case when busi_kind=3 then up_flow+down_flow end) as flow
+               from bass2.dw_chl_e_sms_user_dm_201105
+               group by user_id,channel_type,busi_kind,busi_type
+               union all
+               select user_id,channel_type,busi_kind,busi_type,
+                  sum(case when busi_kind=3 then flow end) as flow
+               from bass2.dw_chl_e_touch_user_dm_201105
+               group by user_id,channel_type,busi_kind,busi_type
+               union all
+               select user_id,channel_type,busi_kind,busi_type,
+                  sum(case when busi_kind=3 then flow end) as flow
+               from bass2.dw_chl_e_ussd_user_dm_201105
+               group by user_id,channel_type,busi_kind,busi_type
+               union all
+               select user_id,channel_type,busi_kind,busi_type,
+                  sum(case when busi_kind=3 then flow end) as flow
+               from bass2.dw_chl_e_wap_user_dm_201105
+               group by user_id,channel_type,busi_kind,busi_type
+               union all
+               select user_id,channel_type,busi_kind,busi_type,
+                  sum(case when busi_kind=3 then flow end) as flow
+               from bass2.dw_chl_e_web_user_dm_201105
+               group by user_id,channel_type,busi_kind,busi_type
+              )a
+          group by a.user_id,a.channel_type,a.busi_kind,a.busi_type
+          
+          
+-rwxr-xr-x+  1 bass2    appdb        149 2010   2月  2 Dw_chl_e_10086_user_dm.sh
+-rwxr-xr-x+  1 bass2    appdb       2679 2010   2月  2 Dw_chl_e_all_dm.sh
+-rw-r--r--+  1 bass2    appdb       5868 2010   6月 26 Dw_chl_e_webterm_ms.tcl
+-rw-r--r--+  1 bass2    appdb      15950  4月 29日 21:34 Dw_chl_e_10086_user_dm.tcl
+-rw-r--r--+  1 bass2    appdb      16064  4月 29日 21:34 Dw_chl_e_all_user_mt.tcl
+-rw-r--r--+  1 bass2    appdb      14857  4月 29日 21:34 Dw_chl_e_sms_user_dm.tcl
+-rw-r--r--+  1 bass2    appdb      10736  4月 29日 21:34 Dw_chl_e_touch_user_dm.tcl
+-rw-r--r--+  1 bass2    appdb       7736  4月 29日 21:34 Dw_chl_e_ussd_user_dm.tcl
+-rw-r--r--+  1 bass2    appdb       8809  4月 29日 21:34 Dw_chl_e_wap_user_dm.tcl
+-rw-r--r--+  1 bass2    appdb      12241  4月 29日 21:34 Dw_chl_e_web_user_dm.tcl
+
+     #echl_type:
+     #1.热线
+     #2.网站
+     #3.短信
+     #4.实体渠道--自有渠道
+     #7.实体渠道--社会渠道
+     #5.WAP
+     #6.自助终端
+
+电子渠道缴费总 $ more st_echannel_report_mm.tcl
+
+
+#程序名称: stat_zd_mm350_2011.tcl
+#程序功能: 电子渠道统计表
+
+
+               

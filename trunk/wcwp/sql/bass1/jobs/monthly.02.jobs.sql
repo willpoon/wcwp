@@ -172,17 +172,21 @@ select * from g_i_02053_month
                 with ur
                 
 
+USER_ID	CHG_VIP_TIME	ROW_ID	USER_ID	CREATE_DATE	ROW_ID
+89460000740915      	20110320	1	89460000740915      	20110321	1
+89160000265019      	20100901	1	89160000265019      	20100917	1
+
 
 update BASS1.G_I_02005_MONTH
 set CHG_VIP_TIME = '20100917'
 where user_id = '89160000265019'
-and time_id = 201104
+and time_id = 201105
 
 
 update BASS1.G_I_02005_MONTH
 set CHG_VIP_TIME = '20110321'
 where user_id = '89460000740915'
-and time_id = 201104
+and time_id = 201105
 
 
 
