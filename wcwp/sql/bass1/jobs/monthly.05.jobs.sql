@@ -1,6 +1,12 @@
 特别关注：
-05001,05002 入库
+05001,05002 入库 getxlsdata
+
 22039
+select * from   G_S_22039_MONTH
+order by 2 desc ,3
+
+依赖重入网数据。
+
 
 出月报
 
