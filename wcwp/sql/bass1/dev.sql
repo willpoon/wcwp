@@ -62,7 +62,9 @@ CREATE FUNCTION bass1.chk_wave(p_time_id integer)
 RETURNS
 TABLE ( time_id int
         ,seq int
+        ,rule_code varchar(10)
         ,rule_name varchar(128)
+        ,threshold decimal(10,4)
         ,wave_rate decimal(8,4)
         ,if_ok VARCHAR(8)
       )
@@ -77,6 +79,7 @@ RETURN
 select 
 time_id
 ,int(substr(rule_code,6)) seq
+,rule_code
 ,case 
     when rule_code = 'R161_1' then '新增客户数'
     when rule_code = 'R161_2' then '客户到达数'
@@ -95,6 +98,24 @@ time_id
     when rule_code = 'R161_15' then '使用TD网络的客户在T网上计费时长'
     when rule_code = 'R161_16' then '使用TD网络的客户在T网上的数据流量'
     when rule_code = 'R161_17' then '离网客户数' else '0' end rule_name 
+,case 
+    when rule_code = 'R161_1' then 15
+    when rule_code = 'R161_2' then 2
+    when rule_code = 'R161_3' then 100
+    when rule_code = 'R161_4' then 5
+    when rule_code = 'R161_5' then 5
+    when rule_code = 'R161_6' then 5
+    when rule_code = 'R161_7' then 5
+    when rule_code = 'R161_8' then 5
+    when rule_code = 'R161_9' then 5
+    when rule_code = 'R161_10' then 5
+    when rule_code = 'R161_11' then 2
+    when rule_code = 'R161_12' then 2
+    when rule_code = 'R161_13' then 8
+    when rule_code = 'R161_14' then 8
+    when rule_code = 'R161_15' then 20
+    when rule_code = 'R161_16' then 20
+    when rule_code = 'R161_17' then 70 else 0 end threshold 
     , target3*100 wave_rate
     ,case 
     when rule_code = 'R161_1' and abs(target3*100) > 15 then '超标'
@@ -133,7 +154,9 @@ drop FUNCTION bass1.chk_same
 CREATE FUNCTION bass1.chk_same(p_time_id integer)
 RETURNS
 TABLE ( time_id int
+        ,rule_code varchar(10)
         ,rule_name varchar(128)
+        ,threshold decimal(10,4)
         ,bass2_val decimal(18,5)
         ,bass1_val decimal(18,5)
         ,wave_rate_percent decimal(18,5)
@@ -148,11 +171,17 @@ end if;
 RETURN
 select 
          time_id,
+         rule_code,
          case when rule_code='R159_1' then '新增客户数'
               when rule_code='R159_2' then '客户到达数'
               when rule_code='R159_3' then '上网本客户数'
               when rule_code='R159_4' then '离网客户数'
          end rule_name,
+         case when rule_code='R159_1' then 1
+              when rule_code='R159_2' then 1
+              when rule_code='R159_3' then 5
+              when rule_code='R159_4' then 1
+         end threshold,         
          target1,
          target2,
          target3*100
