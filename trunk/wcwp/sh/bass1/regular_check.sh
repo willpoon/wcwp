@@ -307,7 +307,9 @@ interfaceat9(){
 #0.var define
 today=`date '+%Y%m%d'`
 deal_date=`yesterday ${today}`
-DAY_INTERFACE_CNT=60
+#DAY_INTERFACE_CNT=60
+cfgfile=/bassapp/bihome/panzw/bass1_mon.cfg
+cat $cfgfile|grep -i d_all_cnt | nawk -F'=' '{print $2}' |read DAY_INTERFACE_CNT
 dat_file_cnt=
 verf_file_cnt=
 file_rpt_cnt=
