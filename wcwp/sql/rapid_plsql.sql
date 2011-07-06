@@ -10,13 +10,29 @@ commit;
 select * from 
 xzjf.DR_GPRS_L_20110121@dbl_jfdb
 
+select * from    kf.Kf_Sms_Cmd_Receive_201104
+where cmd_id =405003
+ and sts=4 
+ 
 
-select * from   kf.Kf_Sms_Cmd_Receive_201104
+
+select  substr(serv_code,1,8) , count(0) from   kf.Kf_Sms_Cmd_Receive_201105
+where serv_code like '10086%'
+group by substr(serv_code,1,8) 
+order by 2 desc 
+
+
+
+
 
 select sts,count(0) from kf.Kf_Sms_Cmd_Receive_201104 a
 group by sts
 
 and sts=4 and deal_result=0
+
+select count(0) from    kf.Kf_Sms_Cmd_Receive_201105 where cmd_id =405003 and sts=4 and deal_result=0
+and to_char (create_date,'yyyymmdd') = '20110529'
+
 
 
 select count(0) from kf.Kf_Sms_Cmd_Receive_201104 where cmd_id =405003 and sts=4 and deal_result=0
@@ -49,7 +65,7 @@ select count(*) from kf.Kf_Sms_Cmd_Receive_201104 where cmd_id =405003 and sts=4
              MW_ZYFIRST20_NAME      收费争议投诉量居前20的业务名称,
              CREATE_DATE            统计的数据时间
         from KF.THREE_ITEM_STAT
-        --and to_char(CREATE_DATE,'yyyymmdd')<'20110332' 
+        where to_char(CREATE_DATE,'yyyymm')= '201105' 
         order by CREATE_DATE asc;
 
 
@@ -62,7 +78,27 @@ commit;
 autocommit on
 
 
-
+ select      
+             to_char(a.CREATE_DATE,'yyyymmdd') op_time,
+             TYCX_QUERY             查询量,
+             TYCX_TUIDING           退订量,
+             TYCX_TUIDING_FAIL      退订失败量,
+             --TYCX_TUIDING_AVG       人均单次退订业务的数量,
+             --TYCX_FIRST20_BUSI_NAME 退定量居前20的业务名称,
+             TYCX_TOUSU_LIANG       投诉量
+             --KOUFEI_TIXING          扣费提醒发送量,
+             --KOUFEI_DXHFL           短信回复量,
+             --KOUFEI_REXWH           热线外呼量,
+             --KOUFEI_TUIDINGL        业务成功退订量,
+             --KOUFEI_TDFIRST20_NAME  退订量居前20的业务名称,
+             --KOUFEI_TOUSU_LIAN      投诉量,
+             --MW_SHOULILIANG         受理量,
+             --MW_TUIFEI              退费金额,
+             --MW_ZYFIRST20_NAME      收费争议投诉量居前20的业务名称,
+             --CREATE_DATE            统计的数据时间
+             --, b.tuiding_cnt
+        from KF.THREE_ITEM_STAT a
+        where to_char(CREATE_DATE,'yyyymmdd')>= '20110501' 
 
 --crmdb
 select * from kf.KF_SMS_DYNAMIC_PARA_201104;
@@ -222,6 +258,38 @@ from (select distinct ext4 from  so.his_dsmp_sms_send_message ) a
 join ngcp.pm_sp_operator_code@dbl_jfdb  b on a.ext4 =b.operator_code 
 
 
+ so.his_dsmp_sms_send_message
+
+
+
+
+                         select 
+                               *
+                                from bass2.DW_HIS_DSMP_SMS_SEND_MESSAGE_201105  a 
+                                where  RSP_SEQ LIKE '10086901%'
+                                and char(date(CREATE_DATE)) like  '2011-05%' 
+                                and ext1 = '600902'
+                                
+                                
+                                and ext4 is not null 
+                                and ext4 = '30820002' 
+                         with ur 
+                         
+
+select * from      so.his_dsmp_sms_send_message a
+where      ext1 = '600902' 
+and    to_char(a.CREATE_DATE,'yyyymm') = '201105'           
+
+
+select count(0) from      so.his_dsmp_sms_send_message a
+where   to_char(a.CREATE_DATE,'yyyymm') = '201105'       
+and message like '%不回复%'
+
+
+select * from      so.his_dsmp_sms_send_message a
+where   to_char(a.CREATE_DATE,'yyyymm') = '201105'       
+and message like '%不回复%'
+and rownum < 100
 
 
 select sm.*,rowid from so.his_dsmp_sms_send_message sm where  RSP_SEQ LIKE '%10086901%'
@@ -243,8 +311,20 @@ where a.PHONE_ID = b.BILL_ID and a.SERV_CODE = RSP_SEQ
  2708	2591
 
 
-select *  from so.his_dsmp_sms_send_message  a where  RSP_SEQ LIKE '%10086901%' and  to_char(a.CREATE_DATE,'yyyymm') = '201103' 
+select count(0)  from so.his_dsmp_sms_send_message  a where    to_char(a.CREATE_DATE,'yyyymmdd') = '20110531' 
+and  ext4 is not null 
+RSP_SEQ LIKE '%10086901%' and
+
+
 and ext4 = '600902002002975051'
+
+600902	600902002003965174	12	0
+
+
+select * from    so.his_dsmp_sms_send_message 
+where  trim(confirm_code) = trim(return_message) 
+trim(confirm_code) <>'是'
+
 
 
 
@@ -322,7 +402,9 @@ select *
 from (select *  from so.his_dsmp_sms_send_message  a where  RSP_SEQ LIKE '%10086901%' and  to_char(a.CREATE_DATE,'yyyymm') = '201104'  ) a
         where a.BILL_ID = '15889084736' and RSP_SEQ = '100869010132'
         
+        select *  from so.his_dsmp_sms_send_message where rownum < 10
         
+        select * from   kf.Kf_Sms_Cmd_Receive_201104
         
 
 13618900740 100869012672	3
@@ -582,7 +664,9 @@ WHERE opt_code='4158' AND state=0
 
 
 select * from   ams.scrd_info@lnk_zwdb
-select table_name from all_tables@lnk_zwdb where table_name like '%SCRD%'
+select * from all_tables where table_name like '%CHANNEL_PAY%'
+select * from   channel.CHANNEL_PAYMENT_DTL
+
 
 select  item_id ,count(0) from   ams.SCRD_ORD_INFO@lnk_zwdb
 group by item_id
@@ -796,8 +880,12 @@ AND FLAG = 0
  SELECT * FROM   market.cm_group_customer_ext@dbl_ggdb
 where source = 2
 
+ SELECT * FROM  market.GROUP_RELATION@dbl_ggdb 
 
+SELECT count(0),count(distinct group_cust_id) FROM   market.cm_group_customer_ext@dbl_ggdb 
 
+ SELECT * FROM  market.cm_individual_info_ext@dbl_ggdb 
+ 
 SELECT count(0) FROM   market.cm_group_customer_ext@dbl_ggdb 
  SELECT count(0) FROM  market.cm_individual_info_ext@dbl_ggdb  --成员表
  SELECT count(0) FROM  market.GROUP_RELATION@dbl_ggdb  与集团客户视图关系表
@@ -805,9 +893,9 @@ SELECT count(0) FROM   market.cm_group_customer_ext@dbl_ggdb
  
  SELECT * FROM  market.GROUP_RELATION 
 集团客户清单关系表
-SELECT * FROM   market.cm_group_customer_ext@dbl_ggdb WHERE group_cust_id='XZ0309698'  清单表
+SELECT * FROM   market.cm_group_customer_ext@dbl_ggdb WHERE group_cust_id='XZ0309698'  --清单表
  SELECT * FROM  market.cm_individual_info_ext@dbl_ggdb  --成员表
- SELECT * FROM  market.GROUP_RELATION@dbl_ggdb  与集团客户视图关系表
+ SELECT * FROM  market.GROUP_RELATION@dbl_ggdb  --与集团客户视图关系表
  
  select count(0),count(distinct group_cust_id ) from   market.cm_group_customer_ext@dbl_ggdb
 
@@ -836,4 +924,676 @@ SELECT count(0),count(distinct  zw_group_id),count(distinct qd_group_id ) FROM  
 
 
 
+ select * from  G_S_22083_MONTH
  
+ 
+ 
+ 
+   select * from kf.net_intf_detail_log@lnk_crmdb where to_char(active_date,'yyyymm')='201105';
+   
+   
+   
+    
+ SELECT * FROM base.cfg_operationWHERE opt_code
+in 
+(
+'_BUSI1'
+,'_BUSI4'
+,'_BUSI5'
+,'_PAUSE'
+,'_YDBHK'
+,'APNXZ'
+,'AT_ALL'
+,'BBSCY'
+,'BFWG'
+,'BLKBY_3'
+,'BUSI_2'
+,'BUSI_6'
+,'BUSI_7'
+,'BUSI_8'
+,'CHANGE'
+,'CM1109'
+,'CMNETYX'
+,'CMNEWGMM'
+,'CMNEYGZF'
+,'CMNEYXXH'
+,'CWTJCY'
+,'CWTSCY'
+,'CWTXZ'
+,'D_QIUT'
+,'DGZZ'
+,'DGZZ1'
+,'EW_BAT'
+,'EWSALE'
+,'GACT1'
+,'GBG1'
+,'GBG2'
+,'GBGE'
+,'GBGF'
+,'GBGJT'
+,'GCPP'
+,'GCX101'
+,'GCX102'
+,'GCX107'
+,'GCX110'
+,'GCX114'
+,'GCX202'
+,'GCX204'
+,'GCX205'
+,'GCX206'
+,'GCX212'
+,'GCX246'
+,'GCX248'
+,'GCX7'
+,'GCX8'
+,'GCZJ'
+,'GJH1'
+,'GKG1'
+,'GKG2'
+,'GKG5'
+,'GKG6'
+,'GQT2'
+,'GQTE'
+,'GRW1'
+,'GRW3'
+,'GRW42'
+,'GTF3'
+,'GVN4'
+,'GVN5'
+,'GXH1'
+,'GZL1'
+,'GZL2'
+,'GZL7'
+,'HLWZXXZ'
+,'HLWZXZX'
+,'IT_BAT'
+,'JT6324'
+,'JT6345'
+,'JT6346'
+,'JT6347'
+,'JT6348'
+,'JT6372'
+,'JT6373'
+,'JTHB'
+,'JTL6384'
+,'JTWZJ'
+,'LAST7'
+,'LJBUSI46'
+,'MPAYCZ'
+,'MPAYKT'
+,'PASSWD'
+,'PTCHANGE'
+,'QSPALL'
+,'QXTBZF'
+,'QXTJCY'
+,'QXTSCY'
+,'QXTWSCY'
+,'QXTXZ'
+,'QXTZX'
+,'QYJZBZF'
+,'QYJZXZ'
+,'QYJZZX'
+,'RESENT'
+,'RESTOR'
+,'SPLIT'
+,'TICH_F'
+,'TICH_Z'
+,'USER_PAS'
+,'USER_RES'
+,'USI134'
+,'USI138'
+,'USI160'
+,'USI163'
+,'USI164'
+,'USI165'
+,'USI167'
+,'USI171'
+,'USI175'
+,'USI179'
+,'USI186'
+,'USI196'
+,'USI394'
+,'USI451'
+,'USI452'
+,'USI453'
+,'USI457'
+,'USI501'
+,'USI_11'
+,'USI_13'
+,'USI_14'
+,'USI_15'
+,'USI_16'
+,'WPOSJCY'
+,'WPOSSCY'
+,'XXTGCY'
+,'XXTJCY'
+,'XXTSCY')
+
+ SELECT count(0) FROM base.cfg_operation
+
+select * from  bass2.dw_channel_rule_mm 
+
+
+
+
+
+select * from   G_S_22068_MONTH
+
+
+
+select '2011-06-06',
+		       count(distinct product_instance_id),
+		       count(distinct case when a.valid_type=1 then product_instance_id  end),
+		       count(distinct product_instance_id)-count(distinct case when a.valid_type=1 then product_instance_id  end)
+		from bass2.dw_product_ins_off_ins_prod_ds a,
+		     bass2.dim_qqt_offer_id b
+		where a.offer_id=b.offer_id
+		  and b.index=1
+		  and date(a.create_date)='2011-06-06'
+		  and date(a.expire_date)>'2011-06-06'
+
+
+
+
+
+select '2011-06-06',
+            count(distinct case when  offer_id in (111090001348,111090001331) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001349,111090001332) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001350,111090001333) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001334,111090001351) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001335,111090001352) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001336,111090001353) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001337,111090001354) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001338,111090001355) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001339,111090001356) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001340,111090001357) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001341,111090001358) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001342,111090001359) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001343,111090001360) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001344,111090001361) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001345,111090001362) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001363) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001364) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001365) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001366) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001367) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001368) then  product_instance_id end)
+			 from (
+			 select product_instance_id,offer_id,create_date,expire_date,valid_date,row_number() over(partition by product_instance_id ,offer_id order by expire_date desc,valid_date desc) row_id
+         from bass2.dw_product_ins_off_ins_prod_ds
+            ) a
+			where date(create_date)='2011-06-06'
+			  and date(expire_date)>'2011-06-06'
+			  and row_id=1
+
+
+
+
+select distinct product_instance_id
+		from bass2.dw_product_ins_off_ins_prod_ds a,
+		     bass2.dim_qqt_offer_id b
+		where a.offer_id=b.offer_id
+		  and b.index=1
+		  and date(a.create_date)='2011-06-06'
+		  and date(a.expire_date)>'2011-06-06'
+except
+select  distinct product_instance_id
+			 from (
+			 select product_instance_id,offer_id,create_date,expire_date,valid_date,row_number() over(partition by product_instance_id order by expire_date desc,valid_date desc) row_id
+         from bass2.dw_product_ins_off_ins_prod_ds
+            ) a,bass2.dim_qqt_offer_id b
+			where date(create_date)='2011-06-06'
+			  and date(expire_date)>'2011-06-06'
+			  and row_id=1 and b.index=1
+			 and a.offer_id=b.offer_id
+
+
+select * from    bass2.dw_product_ins_off_ins_prod_ds where product_instance_id = '89160000969350'
+select * from   bass2.DIM_PROD_UP_PRODUCT_ITEM where product_item_id 
+in 
+
+
+
+select tabname from syscat.tables where tabname like '%DIM%PRODUCT%ITEM%'   
+
+
+select * from   bass2.dim_qqt_offer_id
+where offer_id = 111090004095
+
+
+
+111090002601	90002601	来电提醒3元包月促销	OFFER_PLAN	1	2009-11-10 13:56:37.000000	2006-12-19 0:00:00.000000	2099-12-31 23:59:59.000000	[NULL]	[NULL]	Y	1	[NULL]
+111090004095	90004095	普通GGPRS按M计费产品	OFFER_PLAN	1	2010-03-11 11:17:11.000000	2010-01-01 0:00:00.000000	2099-12-31 23:59:59.000000	[NULL]	[NULL]	Y	1	[NULL]
+
+
+
+
+
+
+
+
+select             count(distinct case when  a.offer_id in (111090001348,111090001331) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001349,111090001332) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001350,111090001333) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001334,111090001351) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001335,111090001352) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001336,111090001353) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001337,111090001354) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001338,111090001355) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001339,111090001356) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001340,111090001357) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001341,111090001358) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001342,111090001359) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001343,111090001360) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001344,111090001361) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001345,111090001362) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001363) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001364) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001365) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001366) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001367) then  a.product_instance_id end),            count(distinct case when  a.offer_id in (111090001368) then  a.product_instance_id end)			 from (			 select product_instance_id,offer_id,create_date,expire_date,valid_date,row_number() over(partition by product_instance_id,offer_id order by expire_date desc,valid_date desc) row_id         from bass2.dw_product_ins_off_ins_prod_ds            ) a,bass2.dim_qqt_offer_id b			where a.offer_id=b.offer_id			  and b.index=1			  and date(a.create_date)='2011-06-06'			  and date(a.expire_date)>='2011-06-06'			  and a.row_id=1
+
+
+              
+              
+
+
+select '2011-06-06',
+            count(distinct case when  offer_id in (111090001348,111090001331) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001349,111090001332) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001350,111090001333) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001334,111090001351) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001335,111090001352) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001336,111090001353) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001337,111090001354) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001338,111090001355) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001339,111090001356) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001340,111090001357) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001341,111090001358) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001342,111090001359) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001343,111090001360) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001344,111090001361) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001345,111090001362) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001363) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001364) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001365) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001366) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001367) then  product_instance_id end),
+            count(distinct case when  offer_id in (111090001368) then  product_instance_id end)
+			 from (
+			 select product_instance_id,offer_id,create_date,expire_date,valid_date
+			 ,row_number() over(partition by product_instance_id order by create_date desc) row_id
+         from bass2.dw_product_ins_off_ins_prod_ds
+            ) a
+            ,bass2.dim_qqt_offer_id b
+			where date(create_date)='2011-06-06'
+			  and date(expire_date)>'2011-06-06'
+			  and row_id=1
+			  and b.index = 1
+				and a.offer_id=b.offer_id
+              
+              
+
+
+select '2011-06-06',
+            count(distinct case when  a.offer_id in (111090001348,111090001331) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001349,111090001332) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001350,111090001333) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001334,111090001351) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001335,111090001352) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001336,111090001353) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001337,111090001354) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001338,111090001355) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001339,111090001356) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001340,111090001357) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001341,111090001358) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001342,111090001359) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001343,111090001360) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001344,111090001361) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001345,111090001362) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001363) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001364) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001365) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001366) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001367) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001368) then  a.product_instance_id end)
+			 from (
+			 select product_instance_id,offer_id,create_date,expire_date,valid_date
+			 ,row_number() over(partition by product_instance_id order by create_date desc) row_id
+         from bass2.dw_product_ins_off_ins_prod_ds
+            ) a
+            ,bass2.dim_qqt_offer_id b
+			where date(create_date)='2011-06-06'
+			  and date(expire_date)>'2011-06-06'
+			  and row_id=1
+			  and b.index = 1
+				and a.offer_id=b.offer_id
+
+
+ select * from               
+(              
+select *
+			 from (
+			 select product_instance_id,offer_id,create_date,expire_date,valid_date
+			 ,row_number() over(partition by product_instance_id order by create_date desc) row_id
+         from bass2.dw_product_ins_off_ins_prod_ds
+         where date(create_date)='2011-06-06'
+			  and date(expire_date)>'2011-06-06'
+            ) a
+            where row_id=1
+            ) a
+            ,bass2.dim_qqt_offer_id b
+			  where  b.index = 1
+				and a.offer_id=b.offer_id
+
+              
+              
+
+select '2011-06-06'
+		       ,count(distinct product_instance_id)
+		       ,count(distinct a.offer_id)
+		       ,count(distinct product_instance_id||char(a.offer_id))		       
+		       ,count(distinct case when a.valid_type=1 then product_instance_id  end)
+		       ,count(distinct product_instance_id)-count(distinct case when a.valid_type=1 then product_instance_id  end)
+		from bass2.dw_product_ins_off_ins_prod_ds a,
+		     bass2.dim_qqt_offer_id b
+		where a.offer_id=b.offer_id
+		  and b.index=1
+		  and date(a.create_date)='2011-06-06'
+		  and date(a.expire_date)>'2011-06-06'
+
+
+
+2	4
+389	393
+
+select '2011-06-06',
+            count(distinct case when  a.offer_id in (111090001348,111090001331) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001349,111090001332) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001350,111090001333) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001334,111090001351) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001335,111090001352) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001336,111090001353) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001337,111090001354) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001338,111090001355) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001339,111090001356) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001340,111090001357) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001341,111090001358) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001342,111090001359) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001343,111090001360) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001344,111090001361) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001345,111090001362) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001363) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001364) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001365) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001366) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001367) then  a.product_instance_id end),
+            count(distinct case when  a.offer_id in (111090001368) then  a.product_instance_id end)
+			 from (
+			 select product_instance_id,a.offer_id,create_date,expire_date,valid_date
+			 ,row_number() over(partition by product_instance_id order by create_date desc) row_id
+         from bass2.dw_product_ins_off_ins_prod_ds a,bass2.dim_qqt_offer_id b
+		where a.offer_id=b.offer_id
+		  and b.index=1
+		  and date(a.create_date)='2011-06-06'
+		  and date(a.expire_date)>'2011-06-06'
+            ) a
+			where row_id=1
+
+
+
+select * from   G_S_22062_MONTH
+where time_id = 201105
+
+
+select count(0) from    G_S_22062_MONTH where time_id = 201105
+              
+              
+select * from   bass2.dw_product_ord_offer_dm_201106
+
+
+
+                               select
+                                 a.org_id,
+                                 case when a.channel_type='9' then '2' else '1' end accept_type
+                                       ,0
+                                       ,0
+                                       ,0
+                                       ,0
+                                       ,0                        
+                                 ,count(*)
+                                       ,0
+                                       ,0
+                                       ,0
+                                       ,0
+                                       ,0
+                                       ,0                       
+                                  from bass2.dw_product_ord_cust_dm_201105 a,
+                                       bass2.dw_product_ord_offer_dm_201105 b,
+                                       bass2.dim_prod_up_product_item d,
+                                       bass2.dim_pub_channel e,
+                                       bass2.dim_sys_org_role_type f,
+                                       bass2.dim_cfg_static_data g,
+                                       bass2.Dim_channel_info h
+                                 where a.customer_order_id = b.customer_order_id
+                                   --and date(a.CREATE_DATE) = '2011-05-31'
+                                   and date(b.CREATE_DATE) = '2011-05-31'
+                                   and b.offer_id = d.product_item_id
+                                   and a.org_id = e.channel_id
+                                   and a.channel_type = g.code_value
+                                   and g.code_type = '911000'
+                                   and b.offer_type=2
+                                   and e.channeltype_id = f.org_role_type_id
+                                   and a.org_id = h.channel_id
+                                   and h.channel_type_class in (90105,90102)
+                                   and a.channel_type in ('b','9','5')
+                                 group by  a.org_id,
+                                         case when a.channel_type='9' then '2' else '1' end
+
+
+select * from   BASS2.dw_acct_payment_dm_201106
+
+
+select * from base.cfg_static_data where code_type='911000';  
+
+
+select * from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb
+where expr_id = 90000012);
+
+
+
+
+select sum (num), t from (
+select count(*) num, to_char(valid_date,'yyyymmdd')  t from so.i_user_order_0891 where order_sts =2 and valid_date >= to_date ('2011-05-01 00:00:00','YYYY-MM-DD hh24:mi:ss') 
+and (remark not like '%temp_expire_jsj_prod_llf%' or remark is null) and (msisdn, sp_code, operator_code) in (select user_number, sp_code, operator_code from (
+  select * from so.i_ismp_alarm_his_0891 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) 
+  )) group by to_char(valid_date,'yyyymmdd') union all
+select count(*) num, to_char(valid_date,'yyyymmdd')  t from so.i_user_order_0892 where order_sts =2 and valid_date >= to_date ('2011-05-01 00:00:00','YYYY-MM-DD hh24:mi:ss') 
+and (remark not like '%temp_expire_jsj_prod_llf%' or remark is null) and (msisdn, sp_code, operator_code) in (select user_number, sp_code, operator_code from (
+  select * from so.i_ismp_alarm_his_0892 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) 
+  )) group by to_char(valid_date,'yyyymmdd') union all
+select count(*) num, to_char(valid_date,'yyyymmdd')  t from so.i_user_order_0893 where order_sts =2 and valid_date >= to_date ('2011-05-01 00:00:00','YYYY-MM-DD hh24:mi:ss') 
+and (remark not like '%temp_expire_jsj_prod_llf%' or remark is null) and (msisdn, sp_code, operator_code) in (select user_number, sp_code, operator_code from (
+  select * from so.i_ismp_alarm_his_0893 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) 
+  )) group by to_char(valid_date,'yyyymmdd') union all
+select count(*) num, to_char(valid_date,'yyyymmdd')  t from so.i_user_order_0894 where order_sts =2 and valid_date >= to_date ('2011-05-01 00:00:00','YYYY-MM-DD hh24:mi:ss') 
+and (remark not like '%temp_expire_jsj_prod_llf%' or remark is null) and (msisdn, sp_code, operator_code) in (select user_number, sp_code, operator_code from (
+  select * from so.i_ismp_alarm_his_0894 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) 
+  )) group by to_char(valid_date,'yyyymmdd') union all
+select count(*) num, to_char(valid_date,'yyyymmdd')  t from so.i_user_order_0895 where order_sts =2 and valid_date >= to_date ('2011-05-01 00:00:00','YYYY-MM-DD hh24:mi:ss') 
+and (remark not like '%temp_expire_jsj_prod_llf%' or remark is null) and (msisdn, sp_code, operator_code) in (select user_number, sp_code, operator_code from (
+  select * from so.i_ismp_alarm_his_0895 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) 
+  )) group by to_char(valid_date,'yyyymmdd') union all
+select count(*) num, to_char(valid_date,'yyyymmdd')  t from so.i_user_order_0896 where order_sts =2 and valid_date >= to_date ('2011-05-01 00:00:00','YYYY-MM-DD hh24:mi:ss') 
+and (remark not like '%temp_expire_jsj_prod_llf%' or remark is null) and (msisdn, sp_code, operator_code) in (select user_number, sp_code, operator_code from (
+  select * from so.i_ismp_alarm_his_0896 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) 
+  )) group by to_char(valid_date,'yyyymmdd') union all
+select count(*) num, to_char(valid_date,'yyyymmdd')  t from so.i_user_order_0897 where order_sts =2 and valid_date >= to_date ('2011-05-01 00:00:00','YYYY-MM-DD hh24:mi:ss') 
+and (remark not like '%temp_expire_jsj_prod_llf%' or remark is null) and (msisdn, sp_code, operator_code) in (select user_number, sp_code, operator_code from (
+  select * from so.i_ismp_alarm_his_0897 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) 
+  )) group by to_char(valid_date,'yyyymmdd') ) group by t;
+
+
+select * from so.i_user_order_0891 where order_sts =2 and valid_date >= to_date ('2011-05-01 00:00:00','YYYY-MM-DD hh24:mi:ss') 
+and (msisdn, sp_code, operator_code) in (select user_number, sp_code, operator_code from (
+  select * from so.i_ismp_alarm_his_0891 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0892 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0893 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0894 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0895 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0896 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0897 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501'
+  ));
+  
+
+
+select count(*), to_char(create_time,'yyyymmdd') from (
+  select * from so.i_ismp_alarm_his_0891 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0892 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0893 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0894 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0895 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0896 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0897 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501'
+  )group by to_char(create_time,'yyyymmdd');
+
+
+select count(*), to_char(create_time,'yyyymmdd') from (
+  select * from so.i_ismp_alarm_his_0891 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) union all
+  select * from so.i_ismp_alarm_his_0892 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) union all
+  select * from so.i_ismp_alarm_his_0893 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) union all
+  select * from so.i_ismp_alarm_his_0894 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) union all
+  select * from so.i_ismp_alarm_his_0895 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) union all
+  select * from so.i_ismp_alarm_his_0896 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) union all
+  select * from so.i_ismp_alarm_his_0897 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) 
+  ) group by to_char(create_time,'yyyymmdd');
+                                         
+                                         
+                                         
+select count(*), to_char(create_time,'yyyymmdd') from (
+  select * from so.i_ismp_alarm_his_0891 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0892 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0893 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0894 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0895 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0896 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0897 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501'
+  )group by to_char(create_time,'yyyymmdd');
+                                         
+                                         
+                                         
+                                         
+select * from so.i_user_order_0891 where order_sts =2 and valid_date >= to_date ('2011-05-01 00:00:00','YYYY-MM-DD hh24:mi:ss') 
+and (msisdn, sp_code, operator_code) in (select user_number, sp_code, operator_code from (
+  select * from so.i_ismp_alarm_his_0891 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0892 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0893 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0894 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0895 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0896 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' union all
+  select * from so.i_ismp_alarm_his_0897 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501'
+  ));
+  
+ 
+
+  select * from so.i_ismp_alarm_his_0891 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) 
+                                         
+                                         
+                                         
+                                         
+select sum (num), t from (
+select count(*) num, to_char(valid_date,'yyyymmdd')  t from so.i_user_order_0891 where order_sts =2 and valid_date >= to_date ('2011-05-01 00:00:00','YYYY-MM-DD hh24:mi:ss') 
+and (remark not like '%temp_expire_jsj_prod_llf%' or remark is null) and (msisdn, sp_code, operator_code) in (select user_number, sp_code, operator_code from (
+  select * from so.i_ismp_alarm_his_0891 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) 
+  )) group by to_char(valid_date,'yyyymmdd') 
+union all
+select count(*) num, to_char(valid_date,'yyyymmdd')  t from so.i_user_order_0892 where order_sts =2 and valid_date >= to_date ('2011-05-01 00:00:00','YYYY-MM-DD hh24:mi:ss') 
+and (remark not like '%temp_expire_jsj_prod_llf%' or remark is null) and (msisdn, sp_code, operator_code) in (select user_number, sp_code, operator_code from (
+  select * from so.i_ismp_alarm_his_0892 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) 
+  )) group by to_char(valid_date,'yyyymmdd') 
+union all
+select count(*) num, to_char(valid_date,'yyyymmdd')  t from so.i_user_order_0893 where order_sts =2 and valid_date >= to_date ('2011-05-01 00:00:00','YYYY-MM-DD hh24:mi:ss') 
+and (remark not like '%temp_expire_jsj_prod_llf%' or remark is null) and (msisdn, sp_code, operator_code) in (select user_number, sp_code, operator_code from (
+  select * from so.i_ismp_alarm_his_0893 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) 
+  )) group by to_char(valid_date,'yyyymmdd') 
+union all
+select count(*) num, to_char(valid_date,'yyyymmdd')  t from so.i_user_order_0894 where order_sts =2 and valid_date >= to_date ('2011-05-01 00:00:00','YYYY-MM-DD hh24:mi:ss') 
+and (remark not like '%temp_expire_jsj_prod_llf%' or remark is null) and (msisdn, sp_code, operator_code) in (select user_number, sp_code, operator_code from (
+  select * from so.i_ismp_alarm_his_0894 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) 
+  )) group by to_char(valid_date,'yyyymmdd') 
+union all
+select count(*) num, to_char(valid_date,'yyyymmdd')  t from so.i_user_order_0895 where order_sts =2 and valid_date >= to_date ('2011-05-01 00:00:00','YYYY-MM-DD hh24:mi:ss') 
+and (remark not like '%temp_expire_jsj_prod_llf%' or remark is null) and (msisdn, sp_code, operator_code) in (select user_number, sp_code, operator_code from (
+  select * from so.i_ismp_alarm_his_0895 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) 
+  )) group by to_char(valid_date,'yyyymmdd') 
+union all
+select count(*) num, to_char(valid_date,'yyyymmdd')  t from so.i_user_order_0896 where order_sts =2 and valid_date >= to_date ('2011-05-01 00:00:00','YYYY-MM-DD hh24:mi:ss') 
+and (remark not like '%temp_expire_jsj_prod_llf%' or remark is null) and (msisdn, sp_code, operator_code) in (select user_number, sp_code, operator_code from (
+  select * from so.i_ismp_alarm_his_0896 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) 
+  )) group by to_char(valid_date,'yyyymmdd') 
+union all
+select count(*) num, to_char(valid_date,'yyyymmdd')  t from so.i_user_order_0897 where order_sts =2 and valid_date >= to_date ('2011-05-01 00:00:00','YYYY-MM-DD hh24:mi:ss') 
+and (remark not like '%temp_expire_jsj_prod_llf%' or remark is null) and (msisdn, sp_code, operator_code) in (select user_number, sp_code, operator_code from (
+  select * from so.i_ismp_alarm_his_0897 where bill_flag =3 and to_char(create_time,'yyyymmdd') >= '20110501'
+  and sp_code in (select sp_code from ngcp.pm_sp_info@dbl_jfdb where sp_type in (select serv_type from ngcp.pm_serv_type_vs_expr@dbl_jfdb where expr_id = 90000010)) 
+  )) group by to_char(valid_date,'yyyymmdd') ) group by t;
+ 
+
+
+
+
+
+select * from so.i_user_order_0891 where order_sts =2 and valid_date >= to_date ('2011-05-01 00:00:00','YYYY-MM-DD hh24:mi:ss') 
+and (msisdn, sp_code, operator_code) in (select user_number, sp_code, operator_code from (
+  select * from so.i_ismp_alarm_his_0891 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' 
+union all
+  select * from so.i_ismp_alarm_his_0892 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' 
+union all
+  select * from so.i_ismp_alarm_his_0893 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' 
+union all
+  select * from so.i_ismp_alarm_his_0894 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' 
+union all
+  select * from so.i_ismp_alarm_his_0895 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' 
+union all
+  select * from so.i_ismp_alarm_his_0896 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501' 
+union all
+  select * from so.i_ismp_alarm_his_0897 where bill_flag =2 and to_char(create_time,'yyyymmdd') >= '20110501'
+  ));
+
+
+select * from   so.i_user_order_0891 where operator_code = '-UMGDCZKJ'
+
+select * from   kf.TONGYI_TUIDING where sp_code =  '12530'
+
+
+
+
+
+select * from   so.i_ismp_alarm_his_0891 where operator_code = '600902002002084961' and rownum < 10
+
+select * from   so.i_ismp_alarm_his_0891 where operator_code = '600902002002084961' and rownum < 10
+
+
+select * from   product.UP_PRODUCT_ITEM@dbl_ggdb where rownum < 1 
+select * from   NGCP.PM_PLANS@dbl_ggdb where rownum<1
+
+
+
+
+  select * from xzjf.dr_kj_20110601@dbl_jfdb where  oper_code = '600902002002084961';
+  
+  
+
+select * from product.up_product_item@dbl_ggdb where supplier_id = '931067' and extend_id2 in('+MAILMF','+MAILBZ','+MAILVIP');select * from so.ins_off_ins_prod_0891 where offer_id in(113090003319,113090003320,113090003321) and expire_date > sysdate;
+
+
+select * from res.RES_SALE_ORDER@dbl_ggdbwhere CHANNEL_ID=96000072 and order_status=1  
+
+select ceil(80/6) from dual
+--14
+
+
+
+

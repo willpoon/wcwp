@@ -13,6 +13,12 @@ huyi9062
 
 http://218.206.191.162/Index.aspx
 
+交流网站：
+chinamobile\cs891
+abcd@1234
+
+ailknfjdbass99##%%
+
 竞争对手新增基数较小，波动正常。
 
 业务实际波动。 
@@ -7348,4 +7354,105 @@ select * from   bass2.DIM_E_BUSI_KIND
 #程序功能: 电子渠道统计表
 
 
-               
+
+title 2. Start Beini
+kernel (hd0,0)/Boot/bzImage quiet tinycore tce=sda1
+initrd (hd0,0)/Boot/tinycore.gz
+
+
+
+$ ints  G_S_22041_MONTH.tcl
+20110620163113
+#######################
+
+
+数据集市load操作示例：
+load client from ${WORK_PATH}/${filename} of del modified by coldel$ fastparse anyorder \
+warningcount 1000 messages /dev/null replace into ${table_name} NONRECOVERABLE;
+
+
+a.state in ('1','4','6','8','M','7','C','9')
+
+,0-历史
+,1-在用
+,M-报暂停(申请停)
+,2-欠费停
+,4-挂失停
+,6-超信用度停双向
+,7-紧急停机
+,8-信息停机(超信用度停主叫)
+,9-有效期到期停
+,A-冷冻期销号
+,C-欠费预销号
+,D-申请销号
+,E-欠费销号
+,F-六合彩停机(HN)
+,G-公话停机
+,H-开户保留期
+,I-长通卡回呼业务停机(HN)
+,J-保号期
+,K-有效期停主叫。
+
+nohup sh load_imei.sh > load_imei.201106.out 2>&1 &
+
+zto 618159082802 pan
+zto 618158726217 wang
+
+
+13651174750 李琦
+
+
+对于透明消费月接口调查的相关说明
+各个省公司：
+    对于透明消费月接口调查中部份省份对 点播类“订购用户数” 指标口径存在疑问，请在原调查中附此说明。
+    经与市场部沟通确认，22083和22086接口中 点播类“订购用户数”口径包含退订的客户，包月类“订购用户数”指月末某包月业务的正常订购关系数，二者口径不同，请仔细研读接口规范。
+   请各省公司阅读回复一句话，确保看过此说明。
+
+联系人：刘正强
+联系电话：010-66006490
+
+
+filename=cdr_mms_dtl_201106.dat
+filename_nosuf=`echo $filename | nawk -F"." '{print $1}'`
+
+filename_tmpl=`echo $filename_nosuf \
+| nawk -F"_" '{
+if(length($NF) == 6){ print  toupper(substr($0,0,length($0)-length($NF))"yyyymm") }
+else{ print  toupper(substr($0,0,length($0)-length($NF))"yyyymmdd") }
+
+}'`
+echo $filename_tmpl
+
+
+
+
+filename=cdr_mms_dtl_201106.dat
+filename_nosuf=`echo $filename | nawk -F"." '{print $1}'`
+filename_tmpl=`echo $filename_nosuf | \
+nawk -F"_" '{ \
+		if(length($NF) == 6) \
+			{ print  toupper(substr($0,0,length($0)-length($NF))"yyyymm")} \
+		else \
+			{ print  toupper(substr($0,0,length($0)-length($NF))"yyyymmdd")} \
+}'
+`
+echo $filename_tmpl
+
+
+
+影响到部分以 BASS1_G_A_02004_DAY.tcl  接口为前置的后续调度程序的生成。
+
+
+
+SQL3116W  The field value in row "F7-12057" and column "1" is missing, but the 
+target column is not nullable.
+
+SQL3185W  The previous error occurred while processing data from row 
+"F7-12057" of the input file.
+
+
+
+db2 "load client from /bassdb2/etl/L/boss/M1104220110600000000.AVL.l of del \
+modified by coldel$ timestampformat=\"YYYYMMDDHHMMSS\" fastparse anyorder warningcount 1000 messages /bassdb2/etl/L/boss/msg/M1104220110600000000.msg \
+replace into ODS_PM_SP_OPERATOR_CODE_201106"
+

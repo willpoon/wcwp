@@ -811,4 +811,65 @@ exec db2 terminate > /dev/null
 	#set LastMonthFirstDay [get_single $sql_buff]
 	#puts $LastMonthFirstDay
 	
-		 
+
+
+#################################################################
+# 函数名称: createtb
+# 功能描述: 建表
+# 输入参数: table_template part_key space_tb space_ind data_time -> 模板表 分区键盘(格式："a,b,c") 表空间 索引空间 数据日期
+# 输出参数: 无
+# 返回值:   0成功；-1失败
+#example: createtb INT_02004_02008_YYYYMM "OP_TIME,USER_ID" TBS_APP_BASS1 TBS_INDEX 201108
+#################################################################
+proc createtb {table_template part_key space_tb space_ind data_time} {
+        #获得带数据日期的表$real_tabname
+        if { [ string length $data_time ] == 8  } {
+                set len_str [ string length $table_template ]
+                set str_range [ expr $len_str - 8 -1 ]
+                set tabname_nodt [ string range $table_template 0 $str_range ]
+                set real_tabname [ string range $table_template 0 $str_range ]$data_time
+        } elseif { [ string length $data_time ] == 6  } { 
+        
+                        set len_str [ string length $table_template ]
+                        set str_range [ expr $len_str - 6 -1 ]
+                        set tabname_nodt [ string range $table_template 0 $str_range ]
+                        set real_tabname [ string range $table_template 0 $str_range ]$data_time
+                } else {
+                        puts "invalid data_time!"
+                }
+        #判断表是否已创建
+        set sql_buff "
+                select count(0) from syscat.tables where tabname = '$real_tabname'
+        "
+        set RESULT_VAL [get_single $sql_buff]
+        #create
+        if { $RESULT_VAL <= 0 } {
+                #the create statement
+                set sql_buff "
+                CREATE TABLE ${real_tabname} LIKE ${table_template} 
+                DISTRIBUTE BY HASH(${part_key})  IN ${space_tb} INDEX IN ${space_ind} 
+                "
+                exec_sql $sql_buff
+                #runstat
+                aidb_runstats bass1.${real_tabname}  3
+                
+                puts "send msg..."
+                set sqlbuf "insert into APP.SMS_SEND_INFO(MESSAGE_CONTENT,MOBILE_NUM) 
+                                select '${real_tabname} created!',phone_id 
+                                from BASS2.ETL_SEND_MESSAGE where MODULE='BASS1'"
+                exec_sql $sqlbuf
+                puts "send complete!"
+                return 0
+        } else {
+                puts "send msg..."
+                set sqlbuf "insert into APP.SMS_SEND_INFO(MESSAGE_CONTENT,MOBILE_NUM) 
+                                select '${real_tabname} already exists!',phone_id 
+                                from BASS2.ETL_SEND_MESSAGE where MODULE='BASS1'"
+                exec_sql $sqlbuf
+                puts "send complete!"
+                return 1
+        }
+
+}
+
+#createtb INT_02004_02008_YYYYMM "OP_TIME,USER_ID" TBS_APP_BASS1 TBS_INDEX 201108

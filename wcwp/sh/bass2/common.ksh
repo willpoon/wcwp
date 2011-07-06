@@ -256,10 +256,11 @@ rm /bassapp/bihome/panzw/tmp/.tmp2$$
 splfile(){
 #function:split large file
 #author:panzhiwei
-#run:splfile [filename] [linecount]
+#run:splfile [filename_nosuf] [linecount]
 #example:splfile s_13100_201102_21003_00_001 7500000
 if [ $# -ne 2 ];then 
 echo splfile [filename] [linecount]
+echo example:splfile s_13100_201102_21003_00_001 7500000
 return 2
 fi
 #接口文件名作为参数(不带后缀)
@@ -295,3 +296,49 @@ ls -lrt $file_name_*dat
 echo ...all  complete!
 }
 
+
+
+getlist(){
+if [ $# -ne 1 ];then
+echo $0 yyyymm
+return
+fi
+data_time=$1
+data_path="/bassapp/backapp/data/bass1/export/export_${data_time}"
+echo >/bassapp/bihome/panzw/tmp/export_cmp_${data_time}.txt
+echo >/bassapp/bihome/panzw/tmp/getlist_log.txt
+while read line
+do
+unit_code=`echo  "$line"|nawk -F"_" '{print $4}'`
+grep $unit_code /bassapp/bihome/panzw/tmp/export_cmp_${data_time}.txt >/dev/null 2>&1
+ret=$?
+if [ $ret -eq 0 ];then
+echo "`date` $unit_code already in the list!" >>/bassapp/bihome/panzw/tmp/getlist_log.txt
+else 
+echo $line|awk 'BEGIN{FS="_";OFS="_"}{print $4" "$4,$3,$1,$6}'  >>/bassapp/bihome/panzw/tmp/export_cmp_${data_time}.txt
+fi
+done<<!
+`ls -lt ${data_path}/*.dat|awk '{print $9,$5}' |nawk -F"/" '{print $NF}'|sort`
+!
+
+cat /bassapp/bihome/panzw/tmp/export_cmp_${data_time}.txt|sort 
+cat /bassapp/bihome/panzw/tmp/getlist_log.txt
+rm /bassapp/bihome/panzw/tmp/export_cmp_${data_time}.txt
+}
+
+
+cms(){
+if [ $# -ne 2 ];then
+echo $0 this_data_month pre_data_month
+return
+fi
+this_data_month=$1
+pre_data_month=$2
+join_file1=/bassapp/bihome/panzw/tmp/j1.txt
+join_file2=/bassapp/bihome/panzw/tmp/j2.txt
+getlist ${this_data_month} |grep dat>${join_file1}
+getlist ${pre_data_month}  |grep dat>${join_file2}
+join -a 1 -o 1.2 1.3 2.3 ${join_file1} ${join_file2} |\
+awk '{printf "%-30s%-20s%-20s\n", $1,$2,$3}'
+return 0
+}

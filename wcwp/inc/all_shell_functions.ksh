@@ -427,7 +427,17 @@ crtab_ex(){
 ##!/usr/bin/ksh
 getxlsdata(){
 				if [ $# -ne 2 ];then
-				echo getxlsdata [inputfile] [yyyymm]
+				echo "getxlsdata [inputfile] [yyyymm]															"
+				echo "step1:copy 28*p (实际 1-28,a-p) data,to ue,-》csv           "
+				echo "step2:format data 0.000,save as voice_yyyymm.csv            "
+				echo "step3:upload to unix /bassapp/bihome/panzw/tmp              "
+				echo "step4:run the following program!                            "
+				echo "step5:re-paste -d "," to excel (do some checksum)           "
+				echo "step6:load data into tmp-table                              "
+				echo "step7:insert data into g_s_05001_month/g_s_05002_month      "
+				echo "voice                                                       "
+				echo "r1 change dir to /bassapp/bihome/panzw/tmp                  "
+				echo "r2 from 去话时长 to 应收金额								                "
 				return 2
 				fi
 				inputfile=$1
