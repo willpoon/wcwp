@@ -14,14 +14,16 @@ CREATE FUNCTION bass1.get_before(p_control_code varchar(128))
 RETURNS
 TABLE (control_code varchar(128),before_control_code varchar(128))
 RETURN
-select control_code,before_control_code from app.sch_control_before where control_code = p_control_code
+select control_code,before_control_code from app.sch_control_before 
+where  locate(upper(p_control_code),upper(control_code)) > 0
 ---------------------------------------------------------------------------------------------
 
 CREATE FUNCTION bass1.get_after(p_before_control_code varchar(128))
 RETURNS
 TABLE (control_code varchar(128),before_control_code varchar(128))
 RETURN
-select control_code,before_control_code from app.sch_control_before where before_control_code = p_before_control_code
+select control_code,before_control_code from app.sch_control_before 
+where  locate(upper(p_before_control_code),upper(before_control_code)) > 0
 ---------------------------------------------------------------------------------------------
 
 select * from  table( bass1.get_task('BASS1_G_I_03007_MONTH.tcl')) a 

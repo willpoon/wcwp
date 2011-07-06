@@ -132,17 +132,17 @@ BASS1_G_S_05002_MONTH.tcl
 !!!!!!!检查  02053
 
 --每月都有两条这样的数据。最好能够从boss层面解决了。
-
+--已在代码层解决！
 
 
 select * from g_i_02053_month
-  where time_id = 201104
+  where time_id = 201106
  and 
  VALID_DATE> EXPIRE_DATE
  
  update  g_i_02053_month 
  set EXPIRE_DATE = VALID_DATE
- where time_id = 201104
+ where time_id = 201106
  and 
  VALID_DATE> EXPIRE_DATE
  
@@ -155,7 +155,7 @@ select * from g_i_02053_month
                 (select * from 
                 (
                 select user_id,chg_vip_time,row_number()over(partition by user_id order by time_id desc) row_id from BASS1.G_I_02005_MONTH
-                where time_id=201104
+                where time_id=201106
                 ) k
                 where k.row_id =1) a
                 left outer join 
@@ -164,7 +164,7 @@ select * from g_i_02053_month
                 (
                 select user_id,create_date,row_number()over(partition by user_id order by time_id desc) row_id 
                 from BASS1.G_A_02004_DAY
-                where time_id<=20110431
+                where time_id<=20110630
                 ) k
                 where k.row_id=1) b
                 on a.user_id=b.user_id
@@ -180,7 +180,7 @@ USER_ID	CHG_VIP_TIME	ROW_ID	USER_ID	CREATE_DATE	ROW_ID
 update BASS1.G_I_02005_MONTH
 set CHG_VIP_TIME = '20100917'
 where user_id = '89160000265019'
-and time_id = 201105
+and time_id = 201106
 
 
 update BASS1.G_I_02005_MONTH
@@ -193,18 +193,37 @@ and time_id = 201105
 ls -1  \
 *02018*dat *02019*dat *02020*dat *02021*dat
 
-put i_13100_201104_02018_01_001.dat
-put i_13100_201104_02019_00_001.dat
-put i_13100_201104_02020_00_001.dat
-put i_13100_201104_02021_00_001.dat
+put i_13100_201106_02018_01_001.dat
+put i_13100_201106_02019_00_001.dat
+put i_13100_201106_02020_00_001.dat
+put i_13100_201106_02021_00_001.dat
 
 ls -1  \
 *02018*verf *02019*verf *02020*verf *02021*verf
 
 
-put i_13100_201104_02018_01.verf
-put i_13100_201104_02019_00.verf
-put i_13100_201104_02020_00.verf
-put i_13100_201104_02021_00.verf
+put i_13100_201106_02018_01.verf
+put i_13100_201106_02019_00.verf
+put i_13100_201106_02020_00.verf
+put i_13100_201106_02021_00.verf
 
 
+01005 -1
+02005 0
+02014 -1
+02015 -1
+02016 -1
+02018 -1
+02019 0
+02020 -1
+02021 0
+02047 0
+06002 -1
+06021 0
+06022 0
+06023 0
+22009 -1
+22101 -1
+22103 -1
+22105 -1
+22106 -1

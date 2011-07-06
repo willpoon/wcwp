@@ -24,7 +24,7 @@ CREATE TABLE BASS1.G_A_02059_DAY_down20110321
 **/
 
 len_val="2 21,22 41,42 45,46 46,47 54,55 55"
-WORK_PATH=/bassapp/bass2/panzw2/data
+WORK_PATH=/bassapp/bihome/panzw/tmp
 datafilename=13100_02059_20110320.txt
 table_name=bass1.G_A_02059_DAY_down20110321
 DB2_SQLCOMM="db2 \"load client from ${WORK_PATH}/${datafilename} of asc \\
@@ -35,7 +35,7 @@ timeformat=\\\"HHMMSS\\\" \\
 \n
 method L (${len_val}) \\
 \n
-messages /bassapp/bass2/panzw2/msg/${table_name}.msg \\
+messages ${WORK_PATH}/${table_name}.msg \\
 \n
 replace into ${table_name} nonrecoverable\""
 

@@ -1,5 +1,5 @@
 ---------------处理91005接口数据问题------------------------------
-RENAME TABLE BASS2.DIM_TERM_TAC TO DIM_TERM_TAC_20110527BAK;
+RENAME TABLE BASS2.DIM_TERM_TAC TO DIM_TERM_TAC_20110628BAK;
 CREATE TABLE BASS2.DIM_TERM_TAC
  (ID             INTEGER,
   TAC_NUM        VARCHAR(15),
@@ -47,7 +47,7 @@ ALTER TABLE BASS2.DIM_TERM_TAC_MID
 
 len_val="1 8,9 23,24 33,34 83,84 93,94 293,294 294,295 295"
 WORK_PATH=/bassapp/bihome/panzw/tmp
-datafilename=i_30000_201105_91005_001.dat
+datafilename=i_30000_201106_91005_001.dat
 table_name=bass2.DIM_TERM_TAC_MID
 DB2_SQLCOMM="db2 \"load client from ${WORK_PATH}/${datafilename} of asc \\
 \n
@@ -65,13 +65,12 @@ echo ${DB2_SQLCOMM}|sed -e 's/ $//g'
 
 db2 connect to bassdb user bass2 using bass2
 
-db2 "load client from /bassapp/bihome/panzw/tmp/i_30000_201105_91005_001.dat of asc \
+db2 "load client from /bassapp/bihome/panzw/tmp/i_30000_201106_91005_001.dat of asc \
  modified by timestampformat=\"YYYYMMDDHHMMSS\" dateformat=\"YYYYMMDD\" \
  timeformat=\"HHMMSS\" \
  method L (1 8,9 23,24 33,34 83,84 93,94 293,294 294,295 295) \
  messages ./bass2.DIM_TERM_TAC_MID.msg \
  replace into bass2.DIM_TERM_TAC_MID nonrecoverable"
- 
  
 delete from BASS2.DIM_TERM_TAC 
 insert into BASS2.DIM_TERM_TAC
@@ -86,10 +85,15 @@ TERM_MODEL,
 TERMPROD_ID,
 TERMPROD_NAME,
 NET_TYPE,
-TERM_TYPE from BASS2.DIM_TERM_TAC_20110527BAK
+TERM_TYPE from BASS2.DIM_TERM_TAC_20110628BAK
 where net_type <>'2';
-commit;
-select tac_nuM,count(*) from BASS2.DIM_TERM_TAC_20110527BAK
+
+
+select tac_nuM,count(*) from BASS2.DIM_TERM_TAC
+group by tac_nuM
+having count(*)>1
+
+select tac_nuM,count(*) from BASS2.DIM_TERM_TAC_20110628BAK
 group by tac_nuM
 having count(*)>1
 0
