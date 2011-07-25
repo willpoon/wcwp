@@ -323,7 +323,7 @@ where time_id=int(replace(char(current date - 1 days),'-',''))
 
   --调整脚本，''里更新一定的值就是
 --离网客户数
-update bass1.g_s_22012_day set m_off_users='77' 
+update bass1.g_s_22012_day set m_off_users='113' 
 where time_id=int(replace(char(current date - 1 days),'-',''))
 
  select * from  bass1.G_RULE_CHECK where rule_code = 'C1' order by 1 desc 
@@ -588,7 +588,7 @@ select time_id,count(0) from bass1.g_user_lst
 group by time_id 
 order by 1 desc 
                         
-select * from  table( bass1.get_task('BASS1_INT_COMMON_ROUTINE_MONTH')) a 
+select * from  table( bass1.get_task('')) a 
                         
                         INT_02004_02008_YYYYMM.tcl
 
@@ -774,7 +774,7 @@ group by op_time
 
 select * from bass2.Dw_enterprise_industry_apply fetch first 10 rows only  
 
-select * from  table( bass1.get_after('03004')) a 
+select * from  table( bass1.get_after('22061')) a 
 
 
 BASS1_G_S_03013_MONTH.tcl	BASS2_Dw_enterprise_industry_apply.tcl
@@ -2544,3 +2544,421 @@ values (35770 - 49)*1.00/1312839
                 
 
 select * from    bass1.G_RULE_CHECK where rule_code = 'L4'                
+
+select * from   G_S_22061_MONTH
+where time_id = 201103
+
+
+
+select count(user_id) 
+                    from bass2.dw_product_20110711
+                   where usertype_id in (1,2,9) 
+                     and day_off_mark = 1 
+                     and userstatus_id not in (1,2,3,6,8)
+                     and test_mark<>1
+
+
+
+        declare global temporary table session.int_check_user_status
+                                (
+                           user_id        CHARACTER(15),
+                           product_no     CHARACTER(15),
+                           test_flag      CHARACTER(1),
+                           sim_code       CHARACTER(15),
+                           usertype_id    CHARACTER(4),
+                           create_date    CHARACTER(15),
+                           time_id        int
+                                )                            
+                                partitioning key           
+                                 (
+                                   user_id    
+                                 ) using hashing           
+                                with replace on commit preserve rows not logged in tbs_user_temp
+
+       insert into session.int_check_user_status (
+                                                                 user_id    
+                                                                ,product_no 
+                                                                ,test_flag  
+                                                                ,sim_code   
+                                                                ,usertype_id  
+                                                                ,create_date
+                                                                ,time_id )
+                                        select e.user_id
+                                                                ,e.product_no  
+                                                                ,case when e.usertype_id in ('1','2') then '0' else '1' end  test_flag
+                                                                ,e.sim_code
+                                                                ,f.usertype_id  
+                                                                ,e.create_date  
+                                                                ,f.time_id       
+                                        from (select user_id,create_date,product_no,sim_code,usertype_id
+                                                                                        ,row_number() over(partition by user_id order by time_id desc ) row_id   
+                                              from bass1.g_a_02004_day
+                                              where time_id<=20110711 ) e
+                                        inner join ( select user_id,usertype_id,time_id,row_number() over(partition by user_id order by time_id desc ) row_id   
+                                                                       from bass1.g_a_02008_day
+                                                                       where time_id<=20110711 ) f on f.user_id=e.user_id
+                                        where e.row_id=1 and f.row_id=1
+
+select tabname from syscat.tables where tabname like '%02004%'                        
+
+
+select user_id from   session.int_check_user_status    
+                        where usertype_id IN ('2010','2020','2030','9000')
+                          and test_flag='0'
+                          and time_id=20110711     
+
+
+select user_id from   session.int_check_user_status    
+                        where usertype_id IN ('2010','2020','2030','9000')
+                          and test_flag='0'
+                          and time_id=20110711                       
+except
+select user_id 
+from bass2.dw_product_20110711  
+where usertype_id in (1,2,9) 
+ and day_off_mark = 1 
+ and userstatus_id not in (1,2,3,6,8)
+ and test_mark<>1
+
+
+USER_ID
+89660001100031 
+89660001100043 
+89660001099912 
+89660001099953 
+89660001099916 
+89660001099930 
+89660001100010 
+89660001099931 
+89660001100100 
+89660001100107 
+89660001100168 
+89660001099896 
+89660001099933 
+89660001099983 
+89660001100057 
+89660001099917 
+89660001100088 
+89660001100112 
+
+
+select * from   session.int_check_user_status  
+where user_id in 
+(
+ '89660001100112'
+,'89660001100088'
+)
+
+
+select * from   bass2.dw_product_20110711
+where user_id in 
+(
+ '89660001100112'
+,'89660001100088'
+)
+
+
+                           
+                           
+
+select count(0) from    bass2.dw_channel_info_201106 
+                           
+select count(0) from    bass2.dim_channel_info
+
+
+
+
+
+select count(user_id) 
+                    from bass2.dw_product_20110711
+                   where usertype_id in (1,2,9) 
+                     and day_off_mark = 1 
+                     and userstatus_id not in (1,2,3,6,8)
+                     and test_mark<>1
+
+
+select count(user_id) 
+                    from bass2.dw_product_20110712
+                   where usertype_id in (1,2,9) 
+                     and day_off_mark = 1 
+                     and userstatus_id not in (1,2,3,6,8)
+                     and test_mark<>1
+
+
+
+        declare global temporary table session.int_check_user_status
+                                (
+                           user_id        CHARACTER(15),
+                           product_no     CHARACTER(15),
+                           test_flag      CHARACTER(1),
+                           sim_code       CHARACTER(15),
+                           usertype_id    CHARACTER(4),
+                           create_date    CHARACTER(15),
+                           time_id        int
+                                )                            
+                                partitioning key           
+                                 (
+                                   user_id    
+                                 ) using hashing           
+                                with replace on commit preserve rows not logged in tbs_user_temp
+
+       insert into session.int_check_user_status (
+                                                                 user_id    
+                                                                ,product_no 
+                                                                ,test_flag  
+                                                                ,sim_code   
+                                                                ,usertype_id  
+                                                                ,create_date
+                                                                ,time_id )
+                                        select e.user_id
+                                                                ,e.product_no  
+                                                                ,case when e.usertype_id in ('1','2') then '0' else '1' end  test_flag
+                                                                ,e.sim_code
+                                                                ,f.usertype_id  
+                                                                ,e.create_date  
+                                                                ,f.time_id       
+                                        from (select user_id,create_date,product_no,sim_code,usertype_id
+                                                                                        ,row_number() over(partition by user_id order by time_id desc ) row_id   
+                                              from bass1.g_a_02004_day
+                                              where time_id<=20110712 ) e
+                                        inner join ( select user_id,usertype_id,time_id,row_number() over(partition by user_id order by time_id desc ) row_id   
+                                                                       from bass1.g_a_02008_day
+                                                                       where time_id<=20110712 ) f on f.user_id=e.user_id
+                                        where e.row_id=1 and f.row_id=1
+
+
+            select sum(bigint(m_off_users)) from bass1.g_s_22012_day where time_id=20110712
+
+                        select count(distinct user_id) from session.int_check_user_status
+                        where usertype_id IN ('2010','2020','2030','9000')
+                          and test_flag='0'
+                          and time_id=20110712
+
+
+
+select user_id from   session.int_check_user_status    
+                        where usertype_id IN ('2010','2020','2030','9000')
+                          and test_flag='0'
+                          and time_id=20110712                       
+except
+select user_id 
+from bass2.dw_product_20110712  
+where usertype_id in (1,2,9) 
+ and day_off_mark = 1 
+ and userstatus_id not in (1,2,3,6,8)
+ and test_mark<>1
+
+-- 测试机离网。二经把这批离网的测试机在离网当天，测试标志置为了0(非测试）。
+select user_id 
+from bass2.dw_product_20110712  
+where usertype_id in (1,2,9) 
+ and day_off_mark = 1 
+ and userstatus_id not in (1,2,3,6,8)
+ and test_mark<>1
+      except                
+select user_id from   session.int_check_user_status    
+                        where usertype_id IN ('2010','2020','2030','9000')
+                          and test_flag='0'
+                          and time_id=20110712                       
+
+select * from   session.int_check_user_status  
+where user_id in 
+(
+select user_id 
+from bass2.dw_product_20110712  
+where usertype_id in (1,2,9) 
+ and day_off_mark = 1 
+ and userstatus_id not in (1,2,3,6,8)
+ and test_mark<>1
+      except                
+select user_id from   session.int_check_user_status    
+                        where usertype_id IN ('2010','2020','2030','9000')
+                          and test_flag='0'
+                          and time_id=20110712 
+)
+
+
+select usertype_id,day_off_mark,userstatus_id,test_mark, a.* from   bass2.dw_product_20110711 a
+where user_id in 
+(
+select user_id 
+from bass2.dw_product_20110712  
+where usertype_id in (1,2,9) 
+ and day_off_mark = 1 
+ and userstatus_id not in (1,2,3,6,8)
+ and test_mark<>1
+      except                
+select user_id from   session.int_check_user_status    
+                        where usertype_id IN ('2010','2020','2030','9000')
+                          and test_flag='0'
+                          and time_id=20110712 
+)
+
+
+select * from g_a_02004_day  where user_id = '89557332762034'     
+
+
+
+select usertype_id,userstatus_id,test_mark, a.* from   bass2.dw_product_bass1_20110711 a
+where user_id in 
+(
+select user_id 
+from bass2.dw_product_20110712  
+where usertype_id in (1,2,9) 
+ and day_off_mark = 1 
+ and userstatus_id not in (1,2,3,6,8)
+ and test_mark<>1
+      except                
+select user_id from   session.int_check_user_status    
+                        where usertype_id IN ('2010','2020','2030','9000')
+                          and test_flag='0'
+                          and time_id=20110712 
+)
+
+
+
+select *    
+        from
+                bass2.ODS_PRODUCT_INS_PROD_20110712 a
+                ,bass2.ODS_PRODUCT_INS_PROD_RED_20110712 b
+        where
+                a.product_instance_id = b.product_instance_id 
+                --and a.notice_flag = 4
+                --and b.user_red_type = 2 
+                --and  a.valid_type = 1
+                and a.product_instance_id = '89557332762057'
+
+                
+89557332762057
+
+select * from   bass2.ODS_PRODUCT_INS_PROD_20110712
+where product_instance_id = '89557332762057'
+
+
+select * from   bass2.ODS_PRODUCT_INS_PROD_RED_20110711
+where product_instance_id = '89557332762057'
+
+select * from   bass1.INT_02004_02008_201107 where op_time = 20110712 
+and user_id = '89557332762057'
+
+
+select op_time , brand_flag,count(0) 
+--,  count(distinct op_time ) 
+from INT_02004_02008_201107 
+group by  op_time ,brand_flag
+order by 1 
+
+select * from   INT_02004_02008_201107
+
+
+select * from   session.int_02004_02008
+where user_id = '89557332762057'
+
+
+                       select
+                         user_id
+                         ,coalesce(bass1.fn_get_all_dim('BASS_STD1_0055',char(brand_id)),'2') as brand_id
+                         ,case
+                            when test_mark=1 then '3'
+                            when free_mark=1 then '2'
+                            else '1'
+                          end
+                       from 
+                         bass2.dw_product_bass1_20110712 
+                         where user_id = '89557332762057'
+
+
+declare global temporary table session.int_02004_02008
+                     (
+                      user_id     varchar(20) not null , 
+                      brand_id    varchar(1) not null ,
+                      usertype_id varchar(4) not null, 
+                      brand_flag int not null,
+                      usertype_flag int not null                                
+                      )
+                      partitioning key 
+                      (user_id)
+                      using hashing
+                     with replace on commit preserve rows not logged in tbs_user_temp
+建临时表结束
+Insert into session.int_02004_02008
+                   select
+                     user_id
+                     ,brand_id
+                     ,'0000'
+                     ,1
+                     ,0
+                   from
+                     (
+                       select
+                         user_id
+                         ,coalesce(bass1.fn_get_all_dim('BASS_STD1_0055',char(brand_id)),'2') as brand_id
+                         ,case
+                            when test_mark=1 then '3'
+                            when free_mark=1 then '2'
+                            else '1'
+                          end
+                       from 
+                         bass2.dw_product_bass1_20110712 
+                       where 
+                         userstatus_id in (1,2,3,6,8)
+                         and usertype_id in (1,2,9)
+                       except
+                       select a.user_id,a.brand_id,usertype_id from BASS1.g_a_02004_day a,
+                           (
+                             select max(time_id) as time_id,user_id from BASS1.g_a_02004_day 
+                             where time_id<20110712 
+                             group by user_id
+                            )b
+                            where a.user_id = b.user_id and a.time_id=b.time_id
+                     )aa
+插入02004结束
+Insert into session.int_02004_02008
+                    select
+                     user_id
+                     ,'0'
+                     ,usertype_id
+                     ,0
+                     ,1
+                     from
+                     (
+                       select
+                         user_id
+                         ,case 
+                            when userstatus_id=1 and stopstatus_id=0 then '1010'
+                            when userstatus_id=1 and stopstatus_id between 11 and 16 then '1031'
+                            when userstatus_id=1 and stopstatus_id in (28,29) then '1032'
+                            when userstatus_id=9 then '2030'
+                            when userstatus_id=1 and stopstatus_id not in (0,11,12,13,14,15,16,28,29) then '1039' 
+                            when userstatus_id in (3,6) then '1022'
+                            when userstatus_id in (2)   then '1021'
+                            when userstatus_id=4 then '2010'
+                            when userstatus_id=8 then '1040'
+                            when userstatus_id in (5,7) then '2020' 
+                            else '1039' 
+                           end as usertype_id
+                         from 
+                           bass2.dw_product_bass1_20110712 
+                         where 
+                           userstatus_id<>0
+                           and usertype_id in (1,2,9)
+                       except
+                        select a.user_id,a.usertype_id from BASS1.G_A_02008_DAY a,
+                           (select max(time_id) as time_id,user_id from BASS1.G_A_02008_DAY 
+                            where time_id<20110712 
+                            group by user_id
+                            )b
+                           where a.user_id = b.user_id and a.time_id=b.time_id
+                       )aa
+
+
+select USERTYPE_ID , count(0) 
+--,  count(distinct USERTYPE_ID ) 
+from BASS1.g_a_02004_day 
+group by  USERTYPE_ID 
+order by 1 
+
+
+
+
+select CHANNEL_ID,CHANNEL_TYPE_CLASS,CHANNEL_TYPE,CHANNEL_CHILD_TYPE from   bass2.dim_channel_info

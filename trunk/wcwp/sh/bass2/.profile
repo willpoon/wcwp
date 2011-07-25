@@ -1,33 +1,83 @@
-export PATH=$PATH:/bassapp/bass2/panzw2/bin
-base_dir=/bassapp/bass2/panzw2
-alias lt='ls -alrt'
-alias llog='$base_dir/ViewLoadLog_testdb.sh'
-alias conn='db2 terminate;db2 connect to bassdb'
-#alias term='db2 terminate'
-alias tf='tail -f nohup.out'
-alias gol='cd /bassapp/bass2/load/boss'
-alias goif='cd /bassapp/bass2/ifboss'
-alias vipr='vi /bassapp/bass2/panzw2/.profile'
-alias pzh='cd /bassapp/bass2/panzw2'
-#alias desc='db2 describe table '
-alias gocrm='cd /bassapp/bass2/ifboss/crm_interface/bin/config/CRM'
-alias gocfg='cd /bassapp/bass2/ifboss/crm_interface/bin/config/'
+#	This is the default standard profile provided to a user.
+#	They are expected to edit it to meet their own needs.
 
+MAIL=/usr/mail/${LOGNAME:?}
+
+# The following three lines have been added by UDB DB2.
+if [ -f /db2home/db2inst1/sqllib/db2profile ]; then
+    . /db2home/db2inst1/sqllib/db2profile
+fi
+
+stty erase '^H'
+
+# Config Tcl env
+DATABASE=DB2
+DB_USER=BASS1
+AIOMNIVISION=/bassapp/tcl/aiomnivision
+HOME=/bassapp/bass1
+PATH=$PATH:$AIOMNIVISION/aitools/bin:$HOME/tcl
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$AIOMNIVISION/aitools/lib
+AITOOLSPATH=$AIOMNIVISION/aitools
+BASS1TRACEDIR=$HOME/trace
+BASS1LOGDIR=$HOME/log
+BASS1FILEDIR=$HOME/data
+BASS1DIR=$HOME
+
+export DATABASE DB_USER AIOMNIVISION PATH LD_LIBRARY_PATH AITOOLSPATH BASS1FILEDIR BASS1DIR BASS1LOGDIR BASS1TRACEDIR
+
+#############################################
+#########  TOP  Software  ###################
+if [ -d /usr/local/bin ]
+then
+        PATH=${PATH}:/usr/local/bin
+fi
+#############################################
+
+LANG=zh_CN.GBK
+export LANG
+#let system prompt in english
+#LANG=C 
+#############################################
+alias l1='ls -1'
+alias ll='ls -l'
+alias lt='ls -lrt'
+alias pzh='cd /bassapp/bihome/panzw'
+alias cdrpt='cd /bassapp/backapp/data/bass1/report'
+alias cdexp='cd /bassapp/backapp/data/bass1/export'
+alias cdtcl='cd /bassapp/bass1/tcl'
+alias cdtcl2='cd /bassapp/bass2/tcl'
+alias runrpt='cd /bassapp/backapp/bin/bass1_report'
+alias runlog='cd /bassapp/bihome/panzw/tmp/tclrunlog'
 nowpts=`ps |awk '{print $2}' |grep pts|uniq`
 USER=`who |grep $nowpts|awk '{print $1}'`
 export USER
 echo $USER
 
 
-descf() { db2 describe table $1 | awk -F" " '{print $1}'
+
+ftp25(){
+HOME=/bassapp/bihome/panzw/config
+export HOME
+ftp -v 172.16.9.25
+HOME=/bassapp/bass1
+export HOME
 }
+
+ftp130(){
+HOME=/bassapp/bihome/panzw/config
+export HOME
+ftp -v 172.16.5.130
+HOME=/bassapp/bass1
+export HOME
+}
+
 
 ifconn(){
 db2 values 1 > /dev/null
 if [ $? -ne 0 ];then
 conn > /dev/null
 echo now connected
-else 
+else
 echo connected
 fi
 }
@@ -41,34 +91,102 @@ desc(){
 db2 describe table  $1
 }
 
-conn(){
-term 
-my_pass=`${base_dir}/decode  0312004131`
+conn2(){
+term
+#my_pass=`${base_dir}/decode  0312004131`
+my_pass=bass2
 db2 connect to BASSDB user bass2 using ${my_pass} > /dev/null
 }
 
-conn56(){
+conn1(){
 term
-my_pass=`${base_dir}/decode  0312004131`
-db2 connect to BASSDB56 user bass2 using ${my_pass} > /dev/null
+db2 connect to BASSDB user bass1 using bass1 > /dev/null
 }
+
+gb(){
+target_table=$1
+dimension_field=$2
+echo "\n"
+echo "select ${dimension_field} , count(0) \n--,  count(distinct ${dimension_field} ) \r
+from ${target_table} \r
+group by  ${dimension_field} \r
+order by 1 "
+echo "\n"
+}
+
+
+desf1(){
+ifconn
+desc $1|\
+awk -F" " '{if( NR >= 6 ) {printf "\t%s\n" ,","$1} else {printf "\t%s\n" ," "$1}}'|\
+sed -e '1,4d'|sed -e '$d'|sed -e '$d'|sed -e '$d'
+}
+
+
+yesterday()
+{
+	#usage:yesterday yyyymmdd
+        year=`echo "$1"|cut -c1-4`
+        month=`echo "$1"|cut -c5-6`
+        day=`echo "$1"|cut -c7-8`
+
+        month=`expr $month + 0`
+        day=`expr $day - 1`
+
+        if [ $day -eq 0 ]; then
+                month=`expr $month - 1`
+                if [ $month -eq 0 ]; then
+                        month=12
+                        day=31
+                        year=`expr $year - 1`
+                else
+                        case $month in
+                                1|3|5|7|8|10|12) day=31;;
+                                4|6|9|11) day=30;;
+                                2)
+                                        if [ `expr $year % 4` -eq 0 ]; then
+                                                if [ `expr $year % 400` -eq 0 ]; then
+                                                        day=29
+                                                elif [ `expr $year % 100` -eq 0 ]; then
+                                                        day=28
+                                                else
+                                                        day=29
+                                                fi
+                                        else
+                                                day=28
+                                        fi ;;
+                        esac
+                fi
+        fi
+
+        if [ $month -lt 10 ] ; then
+                month=`echo "0$month"`
+        fi
+
+        if [ $day -lt 10 ] ; then
+                day=`echo "0$day"`
+        fi
+        echo $year$month$day
+        return 1
+}
+
 
 desf(){
 ifconn
 desc $1|\
 awk -F" " '{printf "\t%-20s\t%-20s\n" ,$1,$3"("$4")"}'|\
-sed -e '1,4d'|sed -e '$d'|sed -e '$d'|sed -e '$d'   
+sed -e '1,4d'|sed -e '$d'|sed -e '$d'|sed -e '$d'
 }
 
 dest(){
 ifconn
 desc $1|\
-nawk -F" " '{ if( $3 ~ /CHAR/ ) 
+nawk -F" " '{ if( $3 ~ /CHAR/ )
 {
  printf "\t%-20s\t%-20s\n" ,","$1,$3"("$4")";
-} 
-else 
-if( $3 ~ /DECIMAL/ ) 
+}
+else
+if( $3 ~ /DECIMAL/ )
 {printf "\t%-20s\t%-20s\n" ,","$1,$3"("$4","$5")";}
 else
 { printf "\t%-20s\t%-20s\n" ,","$1,$3; } }'|\
@@ -83,175 +201,38 @@ sed -e '1,4d'|sed -e '$d'|sed -e '$d'|sed -e '$d'
 }
 
 
-if [ `echo $0` != "ksh" ] ; then 
-ksh
-fi
 
-if [ `echo $0` = "ksh" -o  `echo $0` = "bash"  ];then 
-set -o vi
-fi
+cds(){
+#alias of cdz2	
+#compare data size
+#run at /bassapp/bihome/panzw
+#no parameter needed
+today=`date '+%Y%m%d'`
+deal_date=`yesterday ${today}`
+prev_date=`yesterday ${deal_date}`
+prev_data_path=/bassapp/backapp/data/bass1/export/export_${prev_date}
+this_data_path=/bassapp/backapp/data/bass1/export/export_${deal_date}
+ls -lrt ${this_data_path}/*.dat  | \
+awk '{print $9,$5}'|\
+awk 'BEGIN{FS="/"}{print $8}' |\
+awk 'BEGIN{FS="_";OFS="_"}{print $4,$3,$1,$6}' |\
+sort > /bassapp/bihome/panzw/tmp/.tmp1$$
 
-#########
-#javaetl="java ETLMain 20101202 taskList_tmp_pzw.properties"
-
-
-gb(){
-target_table=$1
-dimension_field=$2
-echo "\n"
-echo "select ${dimension_field} , count(0) \n--,  count(distinct ${dimension_field} ) \r
-from ${target_table} \r
-group by  ${dimension_field} \r
-order by 1 "
-echo "\n"
+ls -lrt ${prev_data_path}/*.dat  | \
+awk '{print $9,$5}'|\
+awk 'BEGIN{FS="/"}{print $8}' |\
+awk 'BEGIN{FS="_";OFS="_"}{print $4,$3,$1,$6}' |\
+sort > /bassapp/bihome/panzw/tmp/.tmp2$$
+echo |nawk -v deal_date=${deal_date} -v prev_date=${prev_date} '{printf "%-30s%-20s%-20s\n", "filename","date:"deal_date,"date:"prev_date}'
+paste -d " " /bassapp/bihome/panzw/tmp/.tmp1$$ /bassapp/bihome/panzw/tmp/.tmp2$$ |\
+awk '{printf "%-30s%-20s%-20s\n", $1,$2,$4}'
+wc -l /bassapp/bihome/panzw/tmp/.tmp1$$
+wc -l /bassapp/bihome/panzw/tmp/.tmp2$$
+#
+rm /bassapp/bihome/panzw/tmp/.tmp1$$
+rm /bassapp/bihome/panzw/tmp/.tmp2$$
 }
 
-
-resset(){
-unset i
-unset res
-unset rs_set
-rs_set="puts \$f \"\$"
-i=0
-while [ $i -lt $1 ]
-do 
-if [ $i -lt 10 ];then 
-res="result0$i"
-else 
-res="result$i"
-fi
-echo "    set $res [lindex \$p_row $i]"
-rs_set=${rs_set}"{"${res}"}\\\$\$"
-i=`expr $i + 1`
-done 
-echo ${rs_set}"\""
-}
-
-
-#子字符串替换函数
-ReplaceAllSubStr()
-{
-	echo $1 > sed$$.temp
-	sReturnString=`sed 's/'$2'/'$3'/g' sed$$.temp`
-	rm sed$$.temp
-	echo $sReturnString
-	return 1
-}
-
-
-crtab(){
-#建表函数：
-#1.只需要提供模板表和日期，不需要指定表空间，默认为模板表得表空间
-#2.运行之前要先建立数据库连接
-tablename=""
-TABLE_NAME_TEMPLET=""
-TBSPACE=""
-INDEX_TBSPACE=""
-PARTITIONKEY=""
-TABLE_NAME_TEMPLET=$1
-DT=$2
-
-if [ $# -ne 2 ];then 
-echo run script like :
-echo crt.sh DWD_NG2_A02025_YYYYMMDD 20101231
-return -1
-fi
-
-#TABLE_NAME_TEMPLET=DWD_NG2_A02025_YYYYMMDD
-#DT=20101231
-
-LEN=`echo $DT|awk '{print length($1)}'`
-
-
-if [ $LEN -eq 8 ];then 
-tablename=`ReplaceAllSubStr $TABLE_NAME_TEMPLET 'YYYYMMDD' $DT`
-else 
- 	if [ $LEN -eq 6 ];then 
-	tablename=`ReplaceAllSubStr $TABLE_NAME_TEMPLET 'YYYYMM' $DT` 
-	else 
-	echo tablename not set!
-	return -1
-	fi
-fi
-
-TBTMPLET=""
-db2 "select 'xxxxx',tabname from syscat.tables \
-where tabschema = 'BASS2' and tabname = '${TABLE_NAME_TEMPLET}' "|\
-grep xxxxx|awk '{print $2}'|read TBTMPLET
-
-if [ -z $TBTMPLET ];then
-echo TBTMPLET not set!
-return -1
-fi
-
-TBSPACE=""
-db2 "select 'xxxxx',TBSPACE from syscat.tables \
-where tabschema = 'BASS2' and tabname = '${TABLE_NAME_TEMPLET}' "|\
-grep xxxxx|awk '{print $2}'|read TBSPACE
-
-if [ -z $TBSPACE ];then 
-echo TBSPACE not set!
-return -1 
-fi
-
-
-INDEX_TBSPACE=""
-db2 "select 'xxxxx',INDEX_TBSPACE from syscat.tables \
-where tabschema = 'BASS2' and tabname = '${TABLE_NAME_TEMPLET}' "|\
-grep xxxxx|awk '{print $2}'|read INDEX_TBSPACE
-
-if [ -z $INDEX_TBSPACE ];then 
-echo INDEX_TBSPACE not set!
-return -1
-fi
-
-
-PARTITIONKEY=""
-db2 "select 'xxxxx', case when partkeyseq = 1 then  colname  else ','||colname end colname from syscat.columns \
-where tabschema = 'BASS2' and tabname = '${TABLE_NAME_TEMPLET}' and partkeyseq >= 1 order by partkeyseq"|\
-grep xxxxx|awk '{print $2}'|awk 'BEGIN{a=""}{for (i = 1; i <= NF; i++) a=a$1}END {print a}'|read PARTITIONKEY
-
-
-if [ -z $PARTITIONKEY ];then 
-echo PARTITIONKEY not set!
-return -1
-fi
-
-sql="create table ${tablename} like ${TABLE_NAME_TEMPLET} in ${TBSPACE} index in ${INDEX_TBSPACE} partitioning key ( ${PARTITIONKEY} ) using hashing not logged initially "
-echo $sql
-#db2 $sql
-}
-
-
-netrc(){
-machine 172.16.9.25
-login bass2
-password bass2
-machine 172.16.5.44
-login bass2
-password bass2
-
-machine 172.16.5.130
-login bass
-password 3jysjbx
-}
-
-
-ftp44(){
-HOME=${base_dir}
-export HOME
-ftp -v 172.16.5.44
-HOME=/bassapp/bass1
-export HOME
-}
-
-ftp130(){
-HOME=${base_dir}
-export HOME
-ftp -v 172.16.5.130
-HOME=/bassapp/bass1
-export HOME
-}
 
 ints(){
 date +%Y%m%d%H%M%S
@@ -259,6 +240,7 @@ logfile="/bassapp/bihome/panzw/tmp/tclrunlog/$1.`date +%Y%m%d%H%M%S`"
 time int -s $1 |tee $logfile
 date +%Y%m%d%H%M%S
 }
+
 
 looktb(){
 if [ $# -ne 2 ];then 
@@ -273,3 +255,179 @@ panzw)  USER=bass1;export USER;PWD=bass1;;
 esac
 db2look -d bassdb -e -i $USER -w $PWD -z $1 -t $2
 }
+
+
+d_at09_cnt=8
+d_at11_cnt=32
+d_at13_cnt=15
+d_at15_cnt=6
+d_all_cnt=61
+#
+m_on03_cnt=8
+m_on05_cnt=19
+m_on08_cnt=30
+m_on10_cnt=17
+m_on15_cnt=10
+m_all_cnt=84
+
+getlist(){
+if [ $# -ne 1 ];then
+echo $0 yyyymm
+return
+fi
+data_time=$1
+data_path="/bassapp/backapp/data/bass1/export/export_${data_time}"
+echo >/bassapp/bihome/panzw/tmp/export_cmp_${data_time}.txt
+echo >/bassapp/bihome/panzw/tmp/getlist_log.txt
+while read line
+do
+unit_code=`echo  "$line"|nawk -F"_" '{print $4}'`
+grep $unit_code /bassapp/bihome/panzw/tmp/export_cmp_${data_time}.txt >/dev/null 2>&1
+ret=$?
+if [ $ret -eq 0 ];then
+echo "`date` $unit_code already in the list!" >>/bassapp/bihome/panzw/tmp/getlist_log.txt
+else 
+echo $line|awk 'BEGIN{FS="_";OFS="_"}{print $4" "$4,$3,$1,$6}'  >>/bassapp/bihome/panzw/tmp/export_cmp_${data_time}.txt
+fi
+done<<!
+`ls -lt ${data_path}/*.dat|awk '{print $9,$5}' |nawk -F"/" '{print $NF}'|sort`
+!
+
+cat /bassapp/bihome/panzw/tmp/export_cmp_${data_time}.txt|sort 
+cat /bassapp/bihome/panzw/tmp/getlist_log.txt
+rm /bassapp/bihome/panzw/tmp/export_cmp_${data_time}.txt
+}
+
+
+cms(){
+if [ $# -ne 2 ];then
+echo $0 this_data_month pre_data_month
+return
+fi
+this_data_month=$1
+pre_data_month=$2
+join_file1=/bassapp/bihome/panzw/tmp/j1.txt
+join_file2=/bassapp/bihome/panzw/tmp/j2.txt
+getlist ${this_data_month} |grep dat>${join_file1}
+getlist ${pre_data_month}  |grep dat>${join_file2}
+join -a 1 -o 1.2 1.3 2.3 ${join_file1} ${join_file2} |\
+awk '{printf "%-30s%-20s%-20s\n", $1,$2,$3}'
+return 0
+}
+
+
+
+splfile(){
+#function:split large file
+#author:panzhiwei
+#run:splfile [filename_nosuf] [linecount]
+#example:splfile s_13100_201102_21003_00_001 7500000
+if [ $# -ne 2 ];then 
+echo splfile [filename] [linecount]
+echo example:splfile s_13100_201102_21003_00_001 7500000
+return 2
+fi
+#接口文件名作为参数(不带后缀)
+filename=$1
+linecount=$2
+#去掉最后的顺序号
+file_name_=`echo ${filename} |awk '{print substr($1,1,length($1)-1)}'`
+#backup
+if [ -f ${filename}.dat ];then 
+echo ...backup ${filename}.dat to ${filename}.bak...
+mv ${filename}.dat ${filename}.bak
+else
+echo no such file : ${filename}.dat
+return 2
+fi
+#分割
+echo ...spliting...
+split -$linecount ${filename}.bak
+echo ...split complete!
+seq_no=1
+#rename 
+for split_unit in `ls xa*`
+	do
+	echo ...rename $split_unit to $file_name_$seq_no.dat
+	mv $split_unit $file_name_$seq_no.dat
+	seq_no=`expr $seq_no + 1`
+	if [ $seq_no -gt 9 ];then
+		echo ...is the file that large? check it!
+		return 2
+	fi
+done
+ls -lrt $file_name_*dat
+echo ...all  complete!
+}
+
+
+getxlsdata(){
+				if [ $# -ne 2 ];then
+				echo "getxlsdata [inputfile] [yyyymm]															"
+				echo "step1:copy 28*p (实际 1-28,a-p) data,to ue,-》csv           "
+				echo "step2:format data 0.000,save as voice_yyyymm.csv            "
+				echo "step3:upload to unix /bassapp/bihome/panzw/tmp              "
+				echo "step4:run the following program!                            "
+				echo "step5:re-paste -d "," to excel (do some checksum)           "
+				echo "step6:load data into tmp-table                              "
+				echo "step7:insert data into g_s_05001_month/g_s_05002_month      "
+				echo "voice                                                       "
+				echo "r1 change dir to /bassapp/bihome/panzw/tmp                  "
+				echo "r2 from 去话时长 to 应收金额								                "
+				return 2
+				fi
+				inputfile=$1
+				data_mon=$2
+				tmp_voice_outputfile=fmt_voice_${data_mon}.tmp
+				tmp_sms_outputfile=fmt_sms_${data_mon}.tmp
+				voice_outputfile=load_voice_${data_mon}.txt
+				sms_outputfile=load_sms_${data_mon}.txt
+				#step1:copy 28*p (实际 1-28,a-p) data,to ue,->csv
+				#step2:format data 0.000,save as voice_yyyymm.csv
+				#step3:upload to unix /bassapp/bihome/panzw/tmp
+				#step4:run the following program!
+				#step5:re-paste -d "," to excel (do some checksum)
+				#step6:load data into tmp-table
+				#step7:insert data into g_s_05001_month/g_s_05002_month
+				#voice
+				#r1 change dir to /bassapp/bihome/panzw/tmp
+				#r2 from 去话时长 to 应收金额				
+				nawk 'BEGIN{FS=",";OFS=","}{printf "%s,%s,%15d,%15d\n", $1,$2,$4*1000,$3*1000}'  $inputfile >$tmp_voice_outputfile
+				nawk 'BEGIN{FS=",";OFS=","}{printf "%s,%s,%15d,%15d\n", $5,$6,$8*1000,$7*1000}'  $inputfile >>$tmp_voice_outputfile
+				nawk 'BEGIN{FS=",";OFS=","}{printf "%s,%s,%15d,%15d\n", $9,$10,$12*1000,$11*1000}'  $inputfile >>$tmp_voice_outputfile
+				nawk -v v_mon=${data_mon} 'BEGIN{FS="\t";OFS=","}{print v_mon,v_mon,$3,$4,$5,$6,$7}' dim.txt > dim_voice.tmp
+				paste -d "," dim_voice.tmp $tmp_voice_outputfile > $voice_outputfile
+				#sms
+				nawk 'BEGIN{FS=",";OFS=","}{if($14 != 0){printf "%s,%s,%15d,%15d\n", $14,$13,$16*1000,$15*1000}}'  $inputfile >$tmp_sms_outputfile
+				nawk -v v_mon=${data_mon} 'BEGIN{FS="\t";OFS=","}{print v_mon,v_mon,$3,$4,$5,$6}' dim_sms.txt > dim_sms.tmp
+				paste -d "," dim_sms.tmp $tmp_sms_outputfile > $sms_outputfile
+				#rm tmp files
+				rm *.tmp
+				#print result
+				cat $voice_outputfile
+				echo " \n"
+				echo " \n"
+				echo " \n"
+				echo " \n"
+				echo " \n"
+				cat $sms_outputfile
+				grep ",,,"  $sms_outputfile>/dev/null
+				if [ $? -eq 0 ];then 
+				echo "generate data file with errors!"
+				return 1
+				fi
+				db2 terminate
+				db2 connect to BASSDB user bass2 using bass2
+				echo db2 "delete from bass1.T_GS05001M where time_id = ${data_mon}"
+				db2 "delete from bass1.T_GS05001M where time_id = ${data_mon}"
+				echo db2 "load client from /bassapp/bihome/panzw/tmp/$voice_outputfile of del  insert into  bass1.T_GS05001M"
+				db2 "load client from /bassapp/bihome/panzw/tmp/$voice_outputfile of del  insert into  bass1.T_GS05001M"
+				echo db2 "delete from bass1.T_GS05002M where time_id = ${data_mon}"
+				db2 "delete from bass1.T_GS05002M where time_id = ${data_mon}"
+				echo db2 "load client from /bassapp/bihome/panzw/tmp/$sms_outputfile of del  insert into  bass1.T_GS05002M"
+				db2 "load client from /bassapp/bihome/panzw/tmp/$sms_outputfile of del  insert into  bass1.T_GS05002M"
+				db2 connect reset
+				db2 terminate
+}
+
+

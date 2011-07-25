@@ -15,6 +15,8 @@ where cmd_id =405003
  and sts=4 
  
 
+select * from product.up_field_type@dbl_ggdb where file_type_id = 22;
+
 
 select  substr(serv_code,1,8) , count(0) from   kf.Kf_Sms_Cmd_Receive_201105
 where serv_code like '10086%'
@@ -22,6 +24,7 @@ group by substr(serv_code,1,8)
 order by 2 desc 
 
 
+select 1 from dual
 
 
 
@@ -875,6 +878,9 @@ AND date(a.begintime) =  date(current date)
 AND FLAG = 0
                       
                                                                 
+select count(0) from     market.cm_group_customer_ext@dbl_ggdb
+select count(0) from     market.GROUP_RELATION@dbl_ggdb 
+select count(0) from    market.cm_individual_info_ext@dbl_ggdb 
 
 
  SELECT * FROM   market.cm_group_customer_ext@dbl_ggdb
@@ -1597,3 +1603,13 @@ select ceil(80/6) from dual
 
 
 
+
+
+select * from   bass2.dw_ent_group_relation_20110721
+
+
+select * from   Ods.ent_group_relation_yyyymmdd
+
+select * from   bass2.ods_ent_group_relation_20110721
+
+select tabname from syscat.tables where lower(tabname) like '%ent_group_relation%'   

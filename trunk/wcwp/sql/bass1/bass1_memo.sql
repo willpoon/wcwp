@@ -19,6 +19,10 @@ abcd@1234
 
 ailknfjdbass99##%%
 
+tp-link-lsw/1398998981
+
+
+
 竞争对手新增基数较小，波动正常。
 
 业务实际波动。 
@@ -7456,3 +7460,58 @@ db2 "load client from /bassdb2/etl/L/boss/M1104220110600000000.AVL.l of del \
 modified by coldel$ timestampformat=\"YYYYMMDDHHMMSS\" fastparse anyorder warningcount 1000 messages /bassdb2/etl/L/boss/msg/M1104220110600000000.msg \
 replace into ODS_PM_SP_OPERATOR_CODE_201106"
 
+02004 , 02008 
+
+02004 算增量： 离网比测试优先。
+
+当日离网：二经不算日离网；一经算。
+
+
+2.	系统数据质量(KPI)，验证测试数据质量环境的真实性，比对KPI在省经计算结果与省经上报一经数据是否一致；
+
+3.	数据平衡性，选取与重点一经指标源表出处相同的省经指标，进行KPI波动、指标平衡性检查。
+
+4.	数据关联性，选取与重点一经指标源表出处相同的省经指标，进行指标关联性检查。
+
+
+
+--/mmc/mmca1/.system/QTDownLoad/usbnet/in.telnetd: error while loading shared libraries: libwrap.so.0: cannot open shared object file: No such file or directory
+
+
+遗失对主机的连接。
+
+C:\Users\Administrator>
+
+
+
+
+svn checkout https://poonzref.googlecode.com/svn/trunk/ poonzref
+
+svn checkout http://wcwp.googlecode.com/svn/trunk/ wcwp-read-only
+
+
+svn checkout https://wcwp.googlecode.com/svn/trunk/ .wcwp --username PanWalter@gmail.com
+
+
+
+
+
+
+--递归取前置
+--get before
+WITH n(control_code, before_control_code) AS 
+          (SELECT control_code, before_control_code 
+             FROM app.sch_control_before
+             WHERE control_code = 'BASS1_EXP_G_S_04004_DAY'
+           UNION ALL
+           SELECT b.control_code,b.before_control_code 
+             FROM app.sch_control_before as b, n
+             WHERE b.control_code = n.before_control_code
+             )
+SELECT distinct n.* FROM n
+,app.sch_control_task c
+where n.control_code = c.control_code
+and c.control_code like 'BASS1%'
+--and c.deal_time = 1
+--and n.before_control_code  not like '%INT_CHECK%' 
+--and c.control_code not like 'OLAP_%'
