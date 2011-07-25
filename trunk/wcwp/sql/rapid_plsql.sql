@@ -1613,3 +1613,7 @@ select * from   Ods.ent_group_relation_yyyymmdd
 select * from   bass2.ods_ent_group_relation_20110721
 
 select tabname from syscat.tables where lower(tabname) like '%ent_group_relation%'   
+
+select * from    channel.channel_info @dbl_ggdb
+                                                   
+                                     
