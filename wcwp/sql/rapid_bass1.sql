@@ -48136,4 +48136,73 @@ select * from   bass2.ods_ent_group_relation_20110721
 
 select tabname from syscat.tables where lower(tabname) like '%ent_group_relation%'   
 
+select * from   G_I_02014_MONTH
 
+select * from G_S_22049_MONTH fetch first 10 rows only  
+
+select * from BASS2.ODS_CHANNEL_INFO_20110324 b
+
+
+select * from BASS2.ODS_CHANNEL_INFO_20110724 fetch first 10 rows only  
+
+
+DROP TABLE G_S_02024_DAY ;
+
+ALTER TABLE BASS1.G_S_22068_MONTH LOCKSIZE ROW APPEND OFF NOT VOLATILE;
+  
+
+select * from   G_S_02024_DAY
+
+DROP TABLE BASS1.G_S_02024_DAY ;
+
+
+delete from  app.sch_control_map where PROGRAM_NAME = 'G_S_22058_MONTH.tcl';
+
+select * from   app.sch_control_map where PROGRAM_NAME = 'G_S_22058_MONTH.tcl';
+
+select * from   app.sch_control_map 
+
+
+insert into app.sch_control_map values (2,'G_S_22066_DAY.tcl','BASS1_G_S_22066_DAY.tcl')
+
+
+delete from  app.sch_control_map where PROGRAM_NAME = 'G_S_02024_DAY.tcl';	
+insert into app.sch_control_map values (2,'G_S_02024_DAY.tcl' , 'BASS1_G_S_02024_DAY.tcl') ;
+
+
+select * from   app.sch_control_map where PROGRAM_NAME like '%EXP%'
+
+select * from   app.sch_control_map where control_code like '%EXP%'
+
+select * from   bass1.int_program_data 
+
+
+
+
+delete from  bass1.int_program_data where PROGRAM_NAME = 'G_S_02024_DAY.tcl';
+
+insert into bass1.int_program_data select distinct SEQUENCE_ID,PROGRAM_TYPE , 'G_S_02024_DAY.tcl' , 'G_S_02024_DAY.BASS1' , 'G_S_02024_DAY_e' , 'G_S_02024_DAY_f' 
+from bass1.int_program_data 
+where PROGRAM_NAME = 'G_S_22204_MONTH.tcl';
+
+
+select * from   app.g_unit_info where unit_code = '22048';
+
+delete from  app.g_unit_info where unit_code = '22048';
+
+
+select * from   app.g_unit_info
+
+
+select * from  app.sch_control_task where control_code in ( 'BASS1_G_S_02024_DAY.tcl','BASS1_EXP_G_S_02024_DAY');
+
+
+delete from  app.sch_control_task where control_code in ( 'BASS1_G_S_02024_DAY.tcl','BASS1_EXP_G_S_02024_DAY');
+
+
+select * from   app.sch_control_task
+where control_code like 'BASS1%'
+
+
+insert into app.sch_control_task values('BASS1_G_I_02032_MONTH.tcl' , 1 , 2 , 'int -s G_I_02032_MONTH.tcl' ,10000,-1,'xxxxxxxxxxx' , 'app' , 'BASS1' , 1 , '/bassapp/bass1/tcl/');
+\
