@@ -200,10 +200,8 @@ awk -F" " '{if( NR >= 6 ) {printf "\t%s\n" ,","$1} else {printf "\t%s\n" ," "$1}
 sed -e '1,4d'|sed -e '$d'|sed -e '$d'|sed -e '$d'
 }
 
-
-
 cds(){
-#alias of cdz2	
+#alias of cdz2
 #compare data size
 #run at /bassapp/bihome/panzw
 #no parameter needed
@@ -223,16 +221,27 @@ awk '{print $9,$5}'|\
 awk 'BEGIN{FS="/"}{print $8}' |\
 awk 'BEGIN{FS="_";OFS="_"}{print $4,$3,$1,$6}' |\
 sort > /bassapp/bihome/panzw/tmp/.tmp2$$
-echo |nawk -v deal_date=${deal_date} -v prev_date=${prev_date} '{printf "%-30s%-20s%-20s\n", "filename","date:"deal_date,"date:"prev_date}'
+echo |nawk -v deal_date=${deal_date} -v prev_date=${prev_date} '{printf "%-30s%-20s%-20s%-10s\n" \
+,"filename","date:"deal_date,"date:"prev_date,"WAVE"}'
+
 paste -d " " /bassapp/bihome/panzw/tmp/.tmp1$$ /bassapp/bihome/panzw/tmp/.tmp2$$ |\
-awk '{printf "%-30s%-20s%-20s\n", $1,$2,$4}'
+awk '{
+	if( int($4) > 0 && int($2) > 0 ) printf "%-30s%-20s%-20s% -10.2f%%\n", $1,$2,$4,(int($2)-int($4))*1.00/int($4)*100
+	else 
+	if ( int($4) == 0 && int($4) == 0 ) printf "%-30s%-20s%-20s% -10dBOTH0\n", $1,$2,$4,(int($2)-int($4))
+	else
+	if ( int($4) == 0 ) printf "%-30s%-20s%-20s% -10dPREV0\n", $1,$2,$4,(int($2)-int($4))
+	else 
+	if ( int($2) == 0 ) printf "%-30s%-20s%-20s% -10dTHIS0\n", $1,$2,$4,(int($2)-int($4))
+	else printf "%-30s%-20s%-20s% -10.2f%%\n", $1,$2,$4,(int($2)-int($4))*1.00/int($4)*100
+	
+}'
 wc -l /bassapp/bihome/panzw/tmp/.tmp1$$
 wc -l /bassapp/bihome/panzw/tmp/.tmp2$$
 #
 rm /bassapp/bihome/panzw/tmp/.tmp1$$
 rm /bassapp/bihome/panzw/tmp/.tmp2$$
 }
-
 
 ints(){
 date +%Y%m%d%H%M%S
