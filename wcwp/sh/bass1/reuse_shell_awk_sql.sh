@@ -253,7 +253,7 @@ else
 
 nawk -F"_" -v q="'" '{
 if ( length($3) == 6 ) {
-	print "insert into bass1.int_program_data select distinct SEQUENCE_ID,PROGRAM_TYPE\n" \
+	print "insert into bass1.int_program_data select distinct SEQUENCE_ID,PROGRAM_TYPE" \
 	" , " \
 	q \
 	toupper("G_"$1"_"$4"_MONTH")".tcl" \
@@ -270,13 +270,13 @@ if ( length($3) == 6 ) {
 	q \
 	toupper("G_"$1"_"$4"_MONTH")"_f" \
 	q \
-" \nfrom bass1.int_program_data where PROGRAM_NAME = " q "G_S_22204_MONTH.tcl" q ";"
+" from bass1.int_program_data where PROGRAM_NAME = " q "G_S_22204_MONTH.tcl" q ";"
 }
 else 
 	if ( length($3) == 8 ) 
 	{
 	
-	print "insert into bass1.int_program_data select distinct SEQUENCE_ID,PROGRAM_TYPE\n" \
+	print "insert into bass1.int_program_data select distinct SEQUENCE_ID,PROGRAM_TYPE" \
 	" , " \
 	q \
 	toupper("G_"$1"_"$4"_DAY")".tcl" \
@@ -293,7 +293,7 @@ else
 	q \
 	toupper("G_"$1"_"$4"_DAY")"_f" \
 	q \
-" \nfrom bass1.int_program_data where PROGRAM_NAME = " q "G_S_22204_MONTH.tcl" q ";"
+" from bass1.int_program_data where PROGRAM_NAME = " q "G_S_22204_MONTH.tcl" q ";"
 
 }
 	else { print "error file_name format!! check it!!\n" }
