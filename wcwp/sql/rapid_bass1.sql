@@ -409,6 +409,8 @@ and time_id = 201107
 select * from syscat.tables where tabname like '%22012%'
 
 select * from G_S_22012_DAY
+order by time_id desc 
+
 
 select count(0) from APP.SMS_SEND_INFO
 
@@ -6749,7 +6751,7 @@ group by user_id
  20110521	C1	1996432.00000	2174540.00000	-0.08191	0.00000
 
  
- select * from  app.sch_control_task where control_code = 'BASS1_G_I_02005_MONTH.tcl'
+ select * from  app.sch_control_task where control_code = 'BASS1_G_I___MONTH.tcl'
  
  
  select * from  app.sch_control_alarm 
@@ -25203,7 +25205,7 @@ RETURN
 select control_code,before_control_code from app.sch_control_before where before_control_code = p_before_control_code
 
 
-select * from  table( bass1.get_before('BASS1_EXP_G_S_21003_MONTH')) a 
+select * from  table( bass1.get_before('22204')) a 
 select * from  table( bass1.get_before('BASS1_G_S_22082_DAY.tcl')) a 
 
 select * from  bass1.T_GS05001M where time_id = 201103
@@ -26066,7 +26068,7 @@ select count(0) from    G_A_02053_DAY where time_id = 20110511
 
 134048
 
-select * from mon_all_interface where interface_code like '%22303%'
+select * from mon_all_interface where interface_code like '%2240%'
 select * from   app.sch_control_before where control_code like '%02053%'
 
 select * from   app.sch_control_task where control_code like '%radius_order_ds%'
@@ -29317,9 +29319,9 @@ and bigint(BILL_CUST_NUMS) >  bigint(USE_CUST_NUMS)
  G_A_02064_DAY
  
  
- select  from  G_S_03017_MONTH
+ select * from  G_S_03017_MONTH
  where ENT_BUSI_ID = '1520'
- 
+ and time_id = 201106
  select * from  G_S_03018_MONTH
   where ENT_BUSI_ID = '1520'
 
@@ -29328,14 +29330,15 @@ and bigint(BILL_CUST_NUMS) >  bigint(USE_CUST_NUMS)
 select sum(income)*1.00/100
 from (
 select sum(bigint(income)) income from   g_s_03017_month
-where time_id = 201104
+where time_id = 201106
 and ent_busi_id = '1520'
+and MANAGE_MOD = '3'
 union all 
 select sum(bigint(income)) income from   g_s_03018_month
-where time_id = 201104
+where time_id = 201106
 and ent_busi_id = '1520'
+and MANAGE_MOD = '3'
 ) t
-                
                 
                 
 02054 
@@ -29350,7 +29353,8 @@ db2 RUNSTATS ON table  BASS1.G_I_02049_MONTH	with distribution and detailed inde
 
 
 select count(0) from   bass1.g_a_02054_day where ENTERPRISE_BUSI_TYPE = '1520'
-and time_id = 201104
+and time_id/100 = 201106
+
 
 
 select count(0) from   bass1.g_a_02064_day where ENTERPRISE_BUSI_TYPE = '1520'
@@ -34416,7 +34420,7 @@ order by 1
 
 
 select * from   app.sch_control_runlog_his
-where control_code like '%BASS1_EXP_G_I_02020_MONTH%'
+where control_code like '%INT_CHECK_L34_MONTH%'
 and date(endtime) = '2011-03-02'
 select
         (select count(distinct user_id) cnt from bass1.g_i_02023_day a where time_id/100 = 201105)                     
@@ -37155,6 +37159,7 @@ and return_flag=1
 
 select * from    app.g_unit_info
 
+select * from   G_S_22086_MONTH
 
 
 delete from bass1.int_program_data where PROGRAM_NAME = 'G_S_22086_MONTH.tcl'
@@ -46138,3 +46143,1997 @@ where control_code in
 ,'BASS1_G_I_03007_MONTH.tcl'
 )
 and flag = 0
+
+
+select  * from APP.G_FILE_REPORT
+
+
+select count(0),count(distinct filename) from APP.G_FILE_REPORT
+where  err_code='00'
+and substr(filename,9,8)  between '20110601' and '20110630'
+ 
+ 
+ select * from APP.G_FILE_REPORT
+where  err_code='00'
+and substr(filename,9,8)  between '20110601' and '20110630'
+
+63*30
+
+
+select * from   g_a_01004_day where time_id = 20110706
+
+
+
+select IMP_ACCEPTTYPE , count(0) ,sum(bigint(CNT))
+--,  count(distinct IMP_ACCEPTTYPE ) 
+from G_S_22064_MONTH 
+group by  IMP_ACCEPTTYPE 
+order by 1 
+
+
+select time_id , count(0) 
+--,  count(distinct time_id ) 
+from G_S_22064_MONTH 
+group by  time_id 
+order by 1 
+
+
+
+
+select time_id, IMP_ACCEPTTYPE , count(0) ,sum(bigint(CNT))
+--,  count(distinct IMP_ACCEPTTYPE ) 
+from G_S_22064_MONTH 
+where IMP_ACCEPTTYPE in ('22','11','28','17')
+group by time_id, IMP_ACCEPTTYPE 
+order by 1 ,2
+
+
+
+select * from   bass2.DW_MOBILEPAY_HISTORY_DM_201105
+
+select tabname from syscat.tables where tabname like '%MOBILEPAY%'   
+
+select * from   bass2.DWD_MOBILEPAY_OPEN_20110707
+
+
+
+select * from   BASS2.dw_acct_payment_dm_201106
+
+
+select * from   bass2.Dim_acct_paytype
+where paytype_name like '%手机支付%'
+
+
+
+                                select count(distinct user_id),
+                                                sum(amount)
+                                              
+                                  from BASS2.dw_acct_payment_dm_201106 b,BASS2.Dim_acct_paytype c
+                                where b.opt_code=c.paytype_id
+                                   and
+                                   (  c.paytype_name like '%手机支付%'
+                                   )
+                                   and b.state='0'
+                                   and c.sts=1
+                                group by COALESCE(BASS1.FN_GET_ALL_DIM('BASS_STD1_0054',b.region_id),'13101')
+                                
+                                
+                                
+select tabname from syscat.tables where tabname like '%FEETYPE%'                                   
+
+
+TABNAME
+MAP_FEETYPE_ACCOUNT_ITEM
+
+DIM_CUST_VALUE_FEETYPE
+DIM_FEETYPE_ITEM
+DIM_FEETYPE_ITEM_TMP
+DIM_FEETYPE_ITEM_VIEW
+DIM_ITEM_FEETYPE_RELA
+DIM_KPI_FEETYPE
+MAP_ACCT_ITEM_FEETYPE
+MAP_KPI_FEETYPE
+
+
+
+select * from   bass2.DIM_FEETYPE_ITEM
+where feetype_id = 637
+
+
+select item_id from   bass2.DIM_ACCT_ITEM_FEETYPE
+where feetype_id = 717
+
+
+
+select * from   bass2.DIM_KPI_FEETYPE
+
+select * from   bass2.MAP_KPI_FEETYPE
+
+select * from   bass2.dim_acct_item 
+where item_id in (
+select item_id from   bass2.DIM_ACCT_ITEM_FEETYPE
+where feetype_id = 717
+)
+
+select tabname from syscat.tables where tabname like '%BUSI%TYPE%'   
+
+select * from   bass2.DIM_BUSI_TYPE where busi_type_name like '%手机阅读%'
+
+
+select tabname from syscat.tables where tabname like '%PAYMENT_DM%'
+
+
+select count(distinct a.user_id),sum(a.fact_fee)
+     from bass2.DW_ACCT_SHOULD_DTL_201106    a,
+    bass2.dw_product_201106 b
+where a.user_id = b.user_id 
+and feetype_id in (717)
+and b.userstatus_Id in (1,2,3,6,8) 
+and b.test_mark<>1 and
+b.usertype_Id in (1,2,9)
+with ur 
+                          
+
+select tabname from syscat.tables where tabname like '%DW_PRODUCT_____'   
+
+46997	228337.53
+values 228337.53/46997
+
+
+                          group by b.city_id,c.kpi_brand_id
+                          
+                          
+                          
+    select count(distinct a.user_id),
+                    sum(amount)
+      from BASS2.dw_acct_payment_dm_201106 b,BASS2.Dim_acct_paytype c
+      ,bass2.dw_product_201106 a
+    where  a.user_id = b.user_id
+    and a.test_mark<>1
+    and  a.userstatus_Id in (1,2,3,6,8) 
+    and a.usertype_Id in (1,2,9)
+    and b.opt_code=c.paytype_id
+       and
+       (  c.paytype_name like '%手机支付%'
+       )
+       and b.state='0'
+       and c.sts=1
+
+
+
+    select count(distinct a.user_id),
+                    sum(amount)
+      from BASS2.dw_acct_payment_dm_201105 b,BASS2.Dim_acct_paytype c
+      ,bass2.dw_product_201105 a
+    where  a.user_id = b.user_id
+    and a.test_mark<>1
+    and  a.userstatus_Id in (1,2,3,6,8) 
+    and a.usertype_Id in (1,2,9)
+    and b.opt_code=c.paytype_id
+       and
+       (  c.paytype_name like '%手机支付%'
+       )
+       and b.state='0'
+       and c.sts=1
+
+
+无线音乐
+
+
+                          select count(distinct a.user_id) as kpi_value
+                         from bass2.dw_product_sprom_201105 a ,
+                              bass2.dw_product_201105 b
+                        where a.sprom_id in (50001403) and a.user_id=b.user_id
+                              and b.usertype_id in (1,2,9)
+                              and a.active_mark = 1
+                                        and date(a.valid_date) < '2011-06-01'
+                              and date(a.expire_date) >= '2011-06-01'
+
+
+                          select count(distinct a.user_id),
+                                 sum( a.fact_fee)
+                          from bass2.dw_acct_should_dtl_201105 a,bass2.dw_product_201105 d
+                          where a.user_id = d.user_id 
+                          and d.test_mark = 0
+                          and feetype_id=637
+
+
+328678	1634870.00
+
+values        1634870.00/ 328678	
+
+
+select count(distinct b.USER_ID),sum(b.FACT_FEE)
+ from bass2.dw_acct_shoulditem_201105 b,bass2.dw_product_201105 a
+               	   where item_id in (80000721,80000720,80000625,80000514,80000515)
+                   and a.user_id = b.user_id
+    and a.test_mark<>1
+    and  a.userstatus_Id in (1,2,3,6,8) 
+    and a.usertype_Id in (1,2,9)
+    
+2711	16224.00
+
+values          16224.00/   2711
+
+1	2
+2627	15720.00
+
+
+select count(distinct b.USER_ID),sum(b.FACT_FEE)
+ from bass2.dw_acct_shoulditem_201105 b,bass2.dw_product_201105 a
+               	   where item_id in (80000721,80000720,80000625,80000514,80000515)
+                   and a.user_id = b.user_id
+
+                   
+select * from   g_s_03017_month
+
+
+
+
+select sum(income)*1.00/100
+from (
+select sum(bigint(income)) income from   g_s_03017_month
+where time_id = 201105
+and manage_mod = '1'
+union all 
+select sum(bigint(income)) income from   g_s_03018_month
+where time_id = 201105
+and manage_mod = '1'
+) t
+
+                                     
+
+
+
+
+select sum(income)*1.00/100
+from (
+select sum(bigint(income)) income from   g_s_03017_month
+where time_id = 201106
+and manage_mod = '1'
+and  exists (select 1 from (select distinct value(b.NEW_ENTERPRISE_ID,a.enterprise_id) enterprise_id 
+from bass1.G_A_01004_DAY a 
+LEFT JOIN BASS2.TRANS_ENTERPRISE_ID_20100625 B on  A.enterprise_id = B.ENTERPRISE_ID  
+where a.time_id/100 <= 201106
+) t 
+)
+union all 
+select sum(bigint(income)) income from   g_s_03018_month
+where time_id = 201106
+and manage_mod = '1'
+and  exists (select 1 from (select distinct value(b.NEW_ENTERPRISE_ID,a.enterprise_id) enterprise_id 
+from bass1.G_A_01004_DAY a 
+LEFT JOIN BASS2.TRANS_ENTERPRISE_ID_20100625 B on  A.enterprise_id = B.ENTERPRISE_ID  
+where a.time_id/100 <= 201106
+) t 
+)
+) t
+
+
+                                     
+
+select user_id
+from 
+(
+select t.*,row_number()over(partition by user_id order by time_id ) rn 
+from 
+(
+select * from g_a_02059_day a
+where TIME_ID < 20110701
+) t
+) t2
+where rn = 1 
+
+
+                                     
+select count(0) from   BASS1.int_02004_02008_month_stage a ,
+(select user_id
+from 
+(
+select t.*,row_number()over(partition by user_id order by time_id ) rn 
+from 
+(
+select * from g_a_02059_day a
+where TIME_ID < 20110701 and length(trim(user_id)) = 14
+) t
+) t2
+where rn = 1 
+) b 
+where a.user_id = b.user_id
+and  a.usertype_id  IN ('2010','2020','2030','9000')
+
+321900
+
+select * from   BASS1.int_02004_02008_month_stage a
+
+select count(0),count(distinct user_id) from     BASS1.int_02004_02008_month_stage a
+where a.usertype_id  IN ('2010','2020','2030','9000')
+and test_flag = '0'
+and time_id/100 = 201106
+
+63198
+
+63199
+60743.00	61041.00
+
+西藏	R127	|(本月离网用户数 / 上月离网用户数 - 1) x 100%| ≤ 20%	60743.00	61041.00
+
+
+
+
+						select t.*,row_number()over(partition by user_id order by time_id desc ) rn 
+						from 
+						(
+						select * from G_A_02059_DAY
+						where 
+						 time_id <= 20110630
+						and length(trim(user_id)) = 14
+						) t
+
+
+G_I_02049_MONTH
+
+select TIME_ID , count(0) 
+--,  count(distinct TIME_ID ) 
+from BASS1.int_02004_02008_month_stage 
+group by  TIME_ID 
+order by 1 
+
+                                     
+select TIME_ID , count(0) 
+--,  count(distinct TIME_ID ) 
+from G_I_02049_MONTH 
+group by  TIME_ID 
+order by 1 
+
+                                     
+                               
+select count(0) from   BASS1.int_02004_02008_month_stage a ,
+G_I_02049_MONTH b 
+where a.user_id = b.user_id
+and b.time_id = 201106
+and  a.usertype_id  IN ('2010','2020','2030','9000')
+
+
+select * from   G_I_02049_MONTH
+
+201106	458948
+201105	452450
+
+except
+select user_id from G_I_02049_MONTH where time_id = 201106
+
+select * from   G_I_02049_MONTH
+
+
+select count(0) from    
+(
+select user_id,enterprise_id from G_I_02049_MONTH where time_id = 201105
+)a , BASS1.int_02004_02008_month_stage b 
+where a.user_id = b.USER_ID
+and  b.usertype_id  IN ('2010','2020','2030','9000')
+and b.TIME_ID / 100 = 201106
+and b.TEST_FLAG = '0'
+and  exists (select 1 from (select distinct value(b.NEW_ENTERPRISE_ID,a.enterprise_id) enterprise_id 
+from bass1.G_A_01004_DAY a 
+LEFT JOIN BASS2.TRANS_ENTERPRISE_ID_20100625 B on  A.enterprise_id = B.ENTERPRISE_ID  
+where a.time_id/100 <= 201106
+) t 
+)
+
+
+10415
+
+
+12071
+
+select * from    BASS1.int_02004_02008_month_stage 
+
+and  exists (select 1 from (select distinct value(b.NEW_ENTERPRISE_ID,a.enterprise_id) enterprise_id 
+from bass1.G_A_01004_DAY a 
+LEFT JOIN BASS2.TRANS_ENTERPRISE_ID_20100625 B on  A.enterprise_id = B.ENTERPRISE_ID  
+where a.time_id/100 <= 201106
+) t 
+)
+
+
+
+
+alter table bass1.int_02004_02008_month_stage activate not logged initially with empty table
+
+insert into bass1.int_02004_02008_month_stage (
+     user_id    
+    ,product_no 
+    ,test_flag  
+    ,sim_code   
+    ,usertype_id  
+    ,create_date
+    ,brand_id
+    ,time_id )
+select e.user_id
+    ,e.product_no  
+    ,case when e.usertype_id in ('1','2') then '0' else '1' end  test_flag
+    ,e.sim_code
+    ,f.usertype_id  
+    ,e.create_date  
+    ,e.brand_id
+    ,f.time_id       
+from (select user_id,create_date,product_no,brand_id,sim_code,usertype_id
+                ,row_number() over(partition by user_id order by time_id desc ) row_id   
+from bass1.g_a_02004_day
+where time_id/100 <= 201104 ) e
+inner join ( select user_id,usertype_id,time_id,row_number() over(partition by user_id order by time_id desc ) row_id   
+           from bass1.g_a_02008_day
+           where  time_id/100 <= 201104 ) f on f.user_id=e.user_id
+where e.row_id=1 and f.row_id=1
+
+
+
+
+select count(0) from    
+(
+select user_id,enterprise_id from G_I_02049_MONTH where time_id = 201103
+)a , BASS1.int_02004_02008_month_stage b 
+where a.user_id = b.USER_ID
+and  b.usertype_id  IN ('2010','2020','2030','9000')
+and b.TIME_ID / 100 = 201104
+and b.TEST_FLAG = '0'
+and  exists (select 1 from (select distinct value(b.NEW_ENTERPRISE_ID,a.enterprise_id) enterprise_id 
+from bass1.G_A_01004_DAY a 
+LEFT JOIN BASS2.TRANS_ENTERPRISE_ID_20100625 B on  A.enterprise_id = B.ENTERPRISE_ID  
+where a.time_id/100 <= 201104
+) t 
+)
+
+
+select * from  app.sch_control_alarm 
+where alarmtime >=  current timestamp - 1 days
+and flag = -1
+and control_code like 'BASS1%'
+order by alarmtime desc 
+
+
+
+select * from   mon_all_interface
+where interface_code 
+in
+(
+ '06001'
+,'06002'
+,'02031'
+,'02032'
+,'02033'
+,'02034'
+,'02035'
+,'22401'
+,'22402'
+,'22403'
+,'22404'
+,'22405'
+,'22406'
+)
+
+
+select sum(income)*1.00/100
+from (
+select sum(bigint(income)) income from   g_s_03017_month
+where time_id = 201106
+and ent_busi_id = '1520'
+and MANAGE_MOD = '3'
+union all 
+select sum(bigint(income)) income from   g_s_03018_month
+where time_id = 201106
+and ent_busi_id = '1520'
+and MANAGE_MOD = '3'
+) t
+
+
+                
+
+
+select * from   BASS1.G_RULE_CHECK where time_id=201106 and rule_code in ('R216') 
+
+
+select TIME_ID,ENTERPRISE_ID,ENTERPRISE_BUSI_TYPE, MANAGE_MODE from   G_A_02054_DAY
+
+
+
+select ENTERPRISE_ID
+                from 
+                (
+                select t.*,row_number()over(partition by ENTERPRISE_ID order by time_id desc) rn 
+                from (
+                select *
+                from g_a_02054_day where 
+                 time_id/100 <= 201106 and ENTERPRISE_BUSI_TYPE = '1520'
+                 and MANAGE_MODE = '3'
+                ) t 
+                ) t2 where rn = 1 and STATUS_ID ='1'
+                
+union 
+select ENTERPRISE_ID
+                from 
+                (
+                select t.*,row_number()over(partition by ENTERPRISE_ID order by time_id desc) rn 
+                from (
+                select *
+                from g_a_02064_day where 
+                 time_id/100 <= 201106 and ENTERPRISE_BUSI_TYPE = '1520'
+                 and MANAGE_MODE = '3'
+                ) t 
+                ) t2 where rn = 1 and STATUS_ID ='1'
+                
+                           
+ select * from  bass2.dwd_enterprise_msg_20110630
+ where ENTERPRISE_ID in (
+                                                   
+select ENTERPRISE_ID
+                from 
+                (
+                select t.*,row_number()over(partition by ENTERPRISE_ID order by time_id desc) rn 
+                from (
+                select *
+                from g_a_02064_day where 
+                 time_id/100 <= 201106 and ENTERPRISE_BUSI_TYPE = '1520'
+                 and MANAGE_MODE = '3'
+                ) t 
+                ) t2 where rn = 1 and STATUS_ID ='1'
+)                                                        
+
+
+
+
+select sum(income)*1.00/100
+from (
+select ENTERPRISE_ID, sum(bigint(income)) income from   g_s_03017_month
+where time_id = 201106
+and ent_busi_id = '1520'
+and MANAGE_MOD = '3'
+group by ENTERPRISE_ID having  sum(bigint(income))  > 0
+union all 
+select  USER_ID, sum(bigint(income)) income from   g_s_03018_month
+where time_id = 201106
+and ent_busi_id = '1520'
+and MANAGE_MOD = '3'
+group by USER_ID having  sum(bigint(income))  > 0
+) t
+
+
+
+
+89157334336511      
+
+select * from   bass2.dw_product_20110630
+where user_id = '89157334336511'
+CUST_ID
+89160000721406
+
+select * from   bass2.dw_cust_20110630
+where cust_id = '89160000721406'
+CUST_ID	CUST_NAME
+89160000721406	亚信测试
+
+
+
+ENTERPRISE_ID
+89301560001331      
+89100000000749      
+89102999394670      
+89201560000657      
+89103001480744      
+89103001632461      
+89402999049599      
+89103001458113      
+
+
+ select group_name from  bass2.dwd_enterprise_msg_20110630
+ where ENTERPRISE_ID in (                                                   
+select ENTERPRISE_ID
+                from 
+                (
+                select t.*,row_number()over(partition by ENTERPRISE_ID order by time_id desc) rn 
+                from (
+                select *
+                from g_a_02064_day where 
+                 time_id/100 <= 201106 and ENTERPRISE_BUSI_TYPE = '1520'
+                 and MANAGE_MODE = '3'
+                ) t 
+                ) t2 where rn = 1 and STATUS_ID ='1'
+)                                                        
+
+
+except
+select group_name from      bass2.dwd_enterprise_msg_20110630
+where enterprise_id
+in(
+ '89301560001331'
+,'89100000000749'
+,'89102999394670'
+,'89201560000657'
+,'89103001480744'
+,'89103001632461'
+,'89402999049599'
+,'89103001458113'
+)
+
+
+select * from   BASS1.G_RULE_CHECK where time_id=201106 and rule_code in ('R207') 
+
+
+                                select count(0)
+                                from 
+                                (
+                                                select t.*,row_number()over(partition by user_id order by time_id desc ) rn 
+                                                from 
+                                                (
+                                                select * from G_A_02060_DAY
+                                                where 
+                                                                 ENTERPRISE_BUSI_TYPE  in ('1230')                                              
+                                                and time_id <= 20110630
+                                                and MANAGE_MODE = '3'   
+                                                ) t
+                                ) t2
+                                where rn = 1 and STATUS_ID ='1'
+                                
+                                
+
+
+                        select count(0) cnt 
+                        from 
+                        (
+                        select t.*,row_number()over(partition by ENTERPRISE_ID order by time_id desc) rn 
+                        from (
+                        select *
+                        from g_a_02054_day where  time_id <= 20110630
+                                        and ENTERPRISE_BUSI_TYPE in ('1230')
+                                        and MANAGE_MODE = '3'   
+                        ) t 
+                        ) t2 where rn = 1 and STATUS_ID ='1'
+
+
+blackberry
+                               select count(0)
+                                from 
+                                (
+                                                select t.*,row_number()over(partition by user_id order by time_id desc ) rn 
+                                                from 
+                                                (
+                                                select * from G_A_02060_DAY
+                                                where 
+                                                                 ENTERPRISE_BUSI_TYPE  in ('1230')                                              
+                                                and time_id <= 20110703
+                                                and MANAGE_MODE = '3'   
+                                                ) t
+                                ) t2
+                                where rn = 1 and STATUS_ID ='1'
+
+                                
+
+
+select sum(income)*1.00/100
+from (
+select sum(bigint(income)) income from   g_s_03017_month
+where time_id = 201106
+and ent_busi_id = '1230'
+union all 
+select sum(bigint(income)) income from   g_s_03018_month
+where time_id = 201106
+and ent_busi_id = '1230'
+) t
+
+
+select * from   g_s_03017_month
+where time_id = 201106
+and ent_busi_id = '1230'
+
+select * from   g_s_03018_month
+where time_id = 201106
+and ent_busi_id = '1230'
+
+                                
+                                
+                               select *
+                                from 
+                                (
+                                                select t.*,row_number()over(partition by user_id order by time_id desc ) rn 
+                                                from 
+                                                (
+                                                select * from G_A_02060_DAY
+                                                where 
+                                                                 ENTERPRISE_BUSI_TYPE  in ('1230')                                              
+                                                and time_id <= 20110630
+                                                and MANAGE_MODE = '3'   
+                                                ) t
+                                ) t2
+                                where rn = 1 and STATUS_ID ='1'
+
+                                
+                                
+ENTERPRISE_ID	USER_ID
+89103000799409      	89157333415151      
+89103000799409      	89157334086019      
+89103000799409      	89157334204492      
+
+
+select group_name from      bass2.dwd_enterprise_msg_20110630
+where ENTERPRISE_ID = '89103000799409'
+
+                                
+select * from   bass2.dw_cust_20110630 a 
+, bass2.dw_product_20110630 b where 
+a.cust_id = b.cust_id
+and b.user_id 
+in (
+'89157333415151'
+,'89157334086019'
+,'89157334204492'
+)
+
+
+80000180 
+80000184 
+80000598 
+80000599 
+82000111 
+
+
+
+
+select count(distinct b.USER_ID),sum(b.FACT_FEE)
+ from bass2.dw_acct_shoulditem_201105 b,bass2.dw_product_201105 a
+               	   where item_id in (80000721,80000720,80000625,80000514,80000515)
+                   and a.user_id = b.user_id
+
+
+select * from   bass2.dim_acct_item
+where item_id in (
+80000180,80000184,80000598,80000599,80000599,82000111
+)
+ITEM_ID	ITEM_NAME
+80000180	BlackBerry功能费
+80000184	BlackBerry通信费
+80000598	BlackBerry集团客户扩展业务功能费
+80000599	BlackBerry集团客户扩展业务通信费
+82000111	Black Berry虚科目
+
+
+select count(distinct b.USER_ID),sum(b.FACT_FEE)
+ from bass2.dw_acct_shoulditem_201105 b,bass2.dw_product_201105 a
+               	   where item_id in (
+80000180,80000184,80000598,80000599,80000599,82000111
+)
+                   and a.user_id = b.user_id
+
+1	2
+29	9984.35
+
+select b.*,c.*,a.test_mark from    bass2.dw_acct_shoulditem_201105 b,bass2.dw_product_201105 a
+, bass2.dim_acct_item c
+               	   where b.item_id in (
+80000180,80000184,80000598,80000599,80000599,82000111
+)
+                   and a.user_id = b.user_id
+                   and b.ITEM_ID = c.ITEM_ID
+
+
+
+select * from    bass1.map_feetype_account_item
+where lower(feetype_name) like '%black%'
+
+
+
+select
+a.ENTERPRISE_ID,
+'1040' ent_busi_id,
+'3',
+'024',
+sum(d.fact_fee*100)
+from bass2.dw_enterprise_member_mid_201106 a,
+bass2.dw_enterprise_msg_201106 b,
+bass2.dw_wireless_phone_201106 c ,
+bass2.dw_product_201106 d
+where a.enterprise_id = b.enterprise_id
+and a.dummy_mark = 0
+and a.user_id=c.user_id
+and c.user_id=d.user_id
+and c.user_flag=2
+and b.enterprise_id not in ('89100000000682','89100000000659','89100000000656','89100000000651')
+group by a.ENTERPRISE_ID
+
+
+
+select
+count(0)
+from
+(
+select
+a.enterprise_id as enterprise_id
+,coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0108',char(a.service_id)),'4002') as ent_busi_id
+,case
+        when upper(b.config_value)='MAS' then '1'
+        when upper(b.config_value)='ADC' then '2'
+        else '3'
+end as manage_mod
+,case when a.item_id=80000618 then '105'
+when a.item_id=80000619 then '120'
+else  '090' 
+end  as account_item
+,sum(a.unipay_fee)*100 as income
+from  session.t_dw_enterprise_unipay a
+left join (select * from bass2.dim_service_config where config_id=1000027)  b on a.service_id = b.service_id
+left join (select * from bass1.all_dim_lkp_160 where bass1_tbid='BASS_STD1_0108') c on a.service_id = c.xzbas_value
+where a.enterprise_id not in ('89102999670396','89103000041929')
+and a.service_id  in ('966') and a.enterprise_id is not null
+group by
+a.
+,coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0108',char(a.service_id)),'4002')
+,case
+        when upper(b.config_value)='MAS' then '1'
+        when upper(b.config_value)='ADC' then '2'
+        else '3'
+end
+,case when a.item_id=80000618 then '105'
+when a.item_id=80000619 then '120'
+else  '090' 
+end
+)t
+
+
+
+select count(0) from    bass1.G_S_03017_MONTH where time_id=201106                                                                  
+16804
+
+declare global temporary table session.tmp03017
+                (
+                  enterprise_id         char(20)   not null,
+            ent_busi_id                 char(4)    not null,
+            manage_mod                          char(1)    not null,
+            account_item          varchar(3) not null,
+            income                bigint
+            )
+            partitioning key (ENTERPRISE_ID) using hashing
+            with replace on commit preserve rows not logged in tbs_user_temp
+
+
+declare global temporary table session.t_dw_enterprise_unipay
+                        ( ENTERPRISE_ID  VARCHAR(20),
+                          ACCT_ID        VARCHAR(20),
+                          ITEM_ID        INTEGER,
+                          SPECIAL_MARK   SMALLINT,
+                          SERVICE_ID     VARCHAR(20),
+                          UNIPAY_FEE     DECIMAL(9, 2),
+                          NON_UNIPAY_FEE DECIMAL(9, 2) )
+            partitioning key (ENTERPRISE_ID) using hashing
+            with replace on commit preserve rows not logged in tbs_user_temp
+ insert into session.t_dw_enterprise_unipay
+                    ( enterprise_id ,
+                        acct_id,
+                        ITEM_ID,
+                        special_mark,
+                        service_id ,
+                        unipay_fee,
+                        non_unipay_fee)
+                         select case
+                                        when b.enterprise_id is not null then b.enterprise_id
+                                        when c.enterprise_id is not null then c.enterprise_id
+                                        when d.enterprise_id is not null then d.enterprise_id
+                           else '' end as enterprise_id,
+                      a.acct_id,
+                      a.item_id,
+                      case when c.level_def_mode=1 then 1 when c.enterprise_id=d.enterprise_id and c.level_def_mode=1 then 1 else 0 end as special_mark,
+                      '966'    ,
+                    sum(case when b.acct_id is not null then a.fact_fee else 0 end) as unipay_fee,
+                    sum(case when b.acct_id is null then a.fact_fee else 0 end) as non_unipay_fee
+               from (select cust_id,acct_id,item_id,sum(fact_fee) as fact_fee
+                   from bass2.dw_acct_shoulditem_201106
+                   where item_id in (80000618,80000619)
+                   group by cust_id,acct_id,item_id) a left join bass2.dw_enterprise_account_his_201106 b on a.acct_id=b.acct_id
+                                                    left join bass2.dw_enterprise_msg_201106 c on a.cust_id=c.cust_id
+                                                    left join bass2.dw_enterprise_member_his_201106 d on a.cust_id=d.cust_id
+               group by case
+                                when b.enterprise_id is not null then b.enterprise_id
+                                when c.enterprise_id is not null then c.enterprise_id
+                                when d.enterprise_id is not null then d.enterprise_id
+                             else '' end,
+                        a.acct_id,
+                        a.item_id,
+                        case when c.level_def_mode=1 then 1 when c.enterprise_id=d.enterprise_id and c.level_def_mode=1 then 1 else 0 end
+
+
+
+insert into session.tmp03017
+                  select
+                  enterprise_id,
+                  ent_busi_id,
+                  manage_mod,
+                  account_item,
+                  income
+                  from
+                  (
+                   select
+                      c.enterprise_id
+                      ,'1000' as ent_busi_id
+                      ,'3'    as manage_mod
+                      ,e.account_item_id  as account_item
+                      ,sum(a.fact_fee)*100 as income
+                   from
+                      bass2.dw_acct_shoulditem_201106 a,
+                      bass2.dw_enterprise_account_201106 b,
+                      bass2.dw_enterprise_member_mid_201106 c,
+                      bass2.dim_feetype_item d,
+                      bass1.map_feetype_account_item e
+                   where c.free_mark =0
+                     and c.test_mark = 0
+                     and a.user_id = c.user_id
+                     and a.acct_id = b.acct_id
+                     and a.item_id = d.item_id
+                     and d.feetype_id = e.feetype_id
+                     and b.rec_status = 1
+                     and a.item_id not in (80000027,80000032,80000033,80000101)
+                   group by
+                      c.enterprise_id,e.account_item_id
+                   )aa                        
+
+
+insert into session.tmp03017
+                  select
+                    enterprise_id,
+                    ent_busi_id,
+                    manage_mod,
+                    account_item,
+                    income
+                  from
+                  (
+                   select
+                     a.enterprise_id
+                     ,'4002' as ent_busi_id
+                     ,'3' as manage_mod
+                     ,'101' as account_item
+                     ,sum(b.pay_fee)*100 as income
+                   from
+                     bass2.dw_enterprise_msg_201106 a,
+                     bass2.dw_enterprise_oneoff_pay_201106 b
+                   where
+                     a.enterprise_id = b.enterprise_id
+                   group by
+                     a.enterprise_id
+                  )t                   
+
+
+insert into session.tmp03017
+                  select
+                    enterprise_id,
+                    ent_busi_id,
+                    manage_mod,
+                    account_item,
+                    income
+                  from
+                  (
+                   select
+                     a.enterprise_id as enterprise_id
+                     ,coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0108',char(a.service_id)),'4002') as ent_busi_id
+                     ,case
+                                                                                                when C.BASS1_VALUE='1520' then '3'
+                                                                                                when upper(b.config_value)='MAS' then '1'
+                                                                                                when upper(b.config_value)='ADC' then '2'
+                                                                                                else '3'
+                                                                                        end as manage_mod
+                     ,coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0109',char(a.service_id)),'090') as account_item
+                     ,sum(a.unipay_fee)*100 as income
+                   from  bass2.dw_enterprise_unipay_201106 a
+                   left join (select * from bass2.dim_service_config where config_id=1000027)  b on a.service_id = b.service_id
+                                           left join (select * from bass1.all_dim_lkp_160 where bass1_tbid='BASS_STD1_0108') c on a.service_id = c.xzbas_value
+                   where a.test_mark = 0
+                     and a.service_id not in ('936','966','926') and a.enterprise_id is not null
+                      and coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0108',char(a.service_id)),'4002')  = '1230'
+                   group by
+                     a.enterprise_id
+                     ,coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0108',char(a.service_id)),'4002')
+                     ,case
+                                                                                                when C.BASS1_VALUE='1520' then '3'                     
+                                                                                                when upper(b.config_value)='MAS' then '1'
+                                                                                                when upper(b.config_value)='ADC' then '2'
+                                                                                                else '3'
+                                                                                        end
+                     ,coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0109',char(a.service_id)),'090')
+                  )t
+
+                  
+
+insert into session.tmp03017
+                  select
+                    enterprise_id,
+                    ent_busi_id,
+                    manage_mod,
+                    account_item,
+                    income
+                  from
+                  (
+                   select
+                     a.enterprise_id as enterprise_id
+                     ,coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0108',char(a.service_id)),'4002') as ent_busi_id
+                     ,case
+                                                                                                when C.BASS1_VALUE='1520' then '3'
+                                                                                                when upper(b.config_value)='MAS' then '1'
+                                                                                                when upper(b.config_value)='ADC' then '2'
+                                                                                                else '3'
+                                                                                        end as manage_mod
+                     ,case when a.item_id=80000618 then '105'
+                                         when a.item_id=80000619 then '120'
+                                         else  '090' 
+                        end  as account_item
+                     ,sum(a.unipay_fee)*100 as income
+                   from  session.t_dw_enterprise_unipay a
+                   left join (select * from bass2.dim_service_config where config_id=1000027)  b on a.service_id = b.service_id
+                                           left join (select * from bass1.all_dim_lkp_160 where bass1_tbid='BASS_STD1_0108') c on a.service_id = c.xzbas_value
+                   where a.enterprise_id not in ('89102999670396','89103000041929')
+                     and a.service_id  in ('966') and a.enterprise_id is not null
+                     and coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0108',char(a.service_id)),'4002')  = '1230'
+                   group by
+                     a.enterprise_id
+                     ,coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0108',char(a.service_id)),'4002')
+                     ,case
+                                                                                                when C.BASS1_VALUE='1520' then '3'
+                                                                                                when upper(b.config_value)='MAS' then '1'
+                                                                                                when upper(b.config_value)='ADC' then '2'
+                                                                                                else '3'
+                                                                                        end
+                     ,case when a.item_id=80000618 then '105'
+                                         when a.item_id=80000619 then '120'
+                                         else  '090' 
+                      end
+                  )t
+
+
+
+insert into session.tmp03017
+                  select
+                    case when b.enterprise_id is null then c.enterprise_id else b.enterprise_id end,
+                    '1290' as ent_busi_id,
+                    '1'    as manage_mod,
+                    '060'  as account_item,
+                    sum(a.unipay_fee*100) as fact_fee
+            from bass2.DW_ENTERPRISE_UNIPAY_201106 a
+                                                           left outer join
+                 bass2.DW_ENTERPRISE_MSG_201106 b on a.ENTERPRISE_ID=b.ENTERPRISE_ID
+                                                           left join
+                                                           bass2.dw_enterprise_account_his_201106 c on a.acct_id=c.acct_id
+           where a.enterprise_id not in ('891910006274','891950005002') and
+                 a.service_id in ('936') and a.TEST_MARK = 0 and
+                 case when b.enterprise_id is null then c.enterprise_id else b.enterprise_id end is not null
+        group by case when b.enterprise_id is null then c.enterprise_id else b.enterprise_id end
+集团统付收入
+insert into session.tmp03017
+                    select
+                    c.enterprise_id,
+                    '1360' as ent_busi_id,
+                    '3'    as manage_mod,
+                    '010'  as account_item,
+                    sum(bigint(b.fee*100)) as income
+               from bass2.dw_enterprise_industry_apply b
+               left outer join (select distinct enterprise_id,user_id
+                                                    from bass2.dw_enterprise_membersub_201106 ) c
+                                      on b.user_id = c.user_id
+              where  b.op_time = '2011-06-01' and b.apptype_id in (5) and b.user_id is not null and b.enterprise_id is not null
+            group by c.enterprise_id 
+
+
+
+insert into session.tmp03017
+                  select
+                    case when b.enterprise_id is null then c.enterprise_id else b.enterprise_id end,
+                    '1290' as ent_busi_id,
+                    '1'    as manage_mod,
+                    '060'  as account_item,
+                    sum(a.unipay_fee*100) as fact_fee
+            from bass2.DW_ENTERPRISE_UNIPAY_201106 a
+                                                           left outer join
+                 bass2.DW_ENTERPRISE_MSG_201106 b on a.ENTERPRISE_ID=b.ENTERPRISE_ID
+                                                           left join
+                                                           bass2.dw_enterprise_account_his_201106 c on a.acct_id=c.acct_id
+           where a.enterprise_id not in ('891910006274','891950005002') and
+                 a.service_id in ('936') and a.TEST_MARK = 0 and
+                 case when b.enterprise_id is null then c.enterprise_id else b.enterprise_id end is not null
+        group by case when b.enterprise_id is null then c.enterprise_id else b.enterprise_id end
+
+                  
+
+
+insert into session.tmp03017
+                    select
+                    c.enterprise_id,
+                    '1360' as ent_busi_id,
+                    '3'    as manage_mod,
+                    '010'  as account_item,
+                    sum(bigint(b.fee*100)) as income
+               from bass2.dw_enterprise_industry_apply b
+               left outer join (select distinct enterprise_id,user_id
+                                                    from bass2.dw_enterprise_membersub_201106 ) c
+                                      on b.user_id = c.user_id
+              where  b.op_time = '2011-06-01' and b.apptype_id in (5) and b.user_id is not null and b.enterprise_id is not null
+            group by c.enterprise_id 
+
+
+insert into session.tmp03017
+                 select
+                                                                          a.ENTERPRISE_ID,
+                                                                          '1040' ent_busi_id,
+                                                                          '3',
+                                                                          '024',
+                                                                          sum(d.fact_fee*100)
+                                                                        from bass2.dw_enterprise_member_mid_201106 a,
+                                                                             bass2.dw_enterprise_msg_201106 b,
+                                                                             bass2.dw_wireless_phone_201106 c ,
+                                                                             bass2.dw_product_201106 d
+                                                                        where a.enterprise_id = b.enterprise_id
+                                                                          and a.dummy_mark = 0
+                                                                          and a.user_id=c.user_id
+                                                                          and c.user_id=d.user_id
+                                                                          and c.user_flag=2
+                                                                          and b.enterprise_id not in ('89100000000682','89100000000659','89100000000656','89100000000651')
+                                                                        group by a.ENTERPRISE_ID
+
+
+select * from   session.tmp03017
+where ent_busi_id = '1230'                                                                        
+
+select * from    bass2.dw_enterprise_unipay_201106
+
+bass2.dw_enterprise_unipay_201106
+
+
+
+
+
+
+select
+enterprise_id,
+ent_busi_id,
+manage_mod,
+account_item,
+income
+from
+(
+select
+a.enterprise_id as enterprise_id
+,coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0108',char(a.service_id)),'4002') as ent_busi_id
+,case
+            when C.BASS1_VALUE='1520' then '3'
+            when upper(b.config_value)='MAS' then '1'
+            when upper(b.config_value)='ADC' then '2'
+            else '3'
+    end as manage_mod
+,coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0109',char(a.service_id)),'090') as account_item
+,sum(a.unipay_fee)*100 as income
+from  bass2.dw_enterprise_new_unipay_201106 a
+left join (select * from bass2.dim_service_config where config_id=1000027)  b on char(a.service_id) = b.service_id
+left join (select * from bass1.all_dim_lkp_160 where bass1_tbid='BASS_STD1_0108') c on char(a.service_id) = c.xzbas_value
+where a.test_mark = 0
+and char(a.service_id) not in ('936','966','926') and a.enterprise_id is not null
+and coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0108',char(a.service_id)),'4002')  = '1230'
+group by
+a.enterprise_id
+,coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0108',char(a.service_id)),'4002')
+,case
+            when C.BASS1_VALUE='1520' then '3'                     
+            when upper(b.config_value)='MAS' then '1'
+            when upper(b.config_value)='ADC' then '2'
+            else '3'
+    end
+,coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0109',char(a.service_id)),'090')
+)t
+
+
+select a.*    
+from  bass2.dw_enterprise_new_unipay_201106 a
+left join (select * from bass2.dim_service_config where config_id=1000027)  b on char(a.service_id) = b.service_id
+left join (select * from bass1.all_dim_lkp_160 where bass1_tbid='BASS_STD1_0108') c on char(a.service_id) = c.xzbas_value
+where a.test_mark = 0
+and char(a.service_id) not in ('936','966','926') and a.enterprise_id is not null
+and coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0108',char(a.service_id)),'4002')  = '1230'
+
+select count(0) from    G_S_03018_MONTH where time_id = 201106
+1
+165522
+
+
+
+select a.*
+                  from bass2.dw_enterprise_unipay_201106 a,
+                       (select acct_id,min(user_id) as user_id from  bass2.dw_product_201106 where userstatus_id<>0 and usertype_id in (1,2,9) group by acct_id) b,
+                       (select * from bass2.dim_service_config where config_id=1000027)  c,
+                                               (select * from bass1.all_dim_lkp_160 where bass1_tbid='BASS_STD1_0108') d
+                 where a.acct_id = b.acct_id 
+                   and char(a.service_id) =c.service_id
+                   and char(a.service_id) = d.xzbas_value
+                   and a.test_mark = 0 
+                   and char(a.service_id) <> '926'
+                   and coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0108',char(a.service_id)),'4002')  = '1230'
+                 
+                 
+
+select a.*
+                  from bass2.dw_enterprise_new_unipay_201106 a,
+                       (select acct_id,min(user_id) as user_id from  bass2.dw_product_201106 where userstatus_id<>0 and usertype_id in (1,2,9) group by acct_id) b,
+                       (select * from bass2.dim_service_config where config_id=1000027)  c,
+                                               (select * from bass1.all_dim_lkp_160 where bass1_tbid='BASS_STD1_0108') d
+                 where a.acct_id = b.acct_id 
+                   and char(a.service_id) =c.service_id
+                   and char(a.service_id) = d.xzbas_value
+                   and a.test_mark = 0 
+                   and char(a.service_id) <> '926'
+                   and coalesce(bass1.fn_get_all_dim_160('BASS_STD1_0108',char(a.service_id)),'4002')  = '1230'
+                 select * from bass2.dim_service_config where config_id=1000027 and service_id = 912
+
+
+             select
+                  '1033' as kpi_id,
+                  case when b.enterprise_id is null then a.city_id||'99xxxxxxx'
+                         else b.enterprise_id end ,
+                  sum(a.unipay_fee) as current_month_value
+         from bass2.dw_enterprise_new_unipay_201106 a
+         left outer join bass2.dw_enterprise_msg_201106 b
+         on a.enterprise_id = b.enterprise_id
+         where a.test_mark = 0
+               and char(a.service_id) = '912001'
+               and b.enterprise_id not in ('89103000041929')
+               and (b.level_def_mode <> 1 or b.level_def_mode is  null)
+         group by
+               case when b.enterprise_id is null then a.city_id||'99xxxxxxx'
+               else b.enterprise_id end 
+
+select * from         bass2.dw_enterprise_new_unipay_201106 a where   char(a.service_id) = '912001'
+
+
+        set sqlbuf "
+                    insert into session.t_kpi_values_1
+                           select 2983 as kpi_id,aa.city_id,count(distinct aa.user_id) as kpi_value,aa.brand_id
+                           from (select b.user_id,b.city_id,c.kpi_brand_id as brand_id
+                                 from dw_product_ins_off_ins_prod_$pot_month a,dw_product_$pot_month b,map_kpi_brand c
+                                 where a.product_instance_id = b.user_id and b.crm_brand_id3 = c.crm_brand_id3
+                                       and a.offer_id in (select product_item_id from dim_prod_up_product_item
+                                                          where name like '%Black%erry%' and item_type = 'OFFER_PLAN' and del_flag =
+ '1')
+                                       and date(a.valid_date) < '$v_nextmonth'
+                                       and date(a.expire_date) >= '$v_nextmonth'
+                                       and b.usertype_id in (1,2,9) and b.userstatus_id in (1,2,3,6,8) and b.test_mark <> 1
+                                ) aa
+                           group by aa.city_id,aa.brand_id"
+                           
+                           
+        set sqlbuf "
+                    insert into session.t_kpi_values_1
+                           select 2982 as kpi_id,b.city_id,count(distinct a.user_id) as kpi_value,c.kpi_brand_id as brand_id
+                           from (select user_id
+                                 from dw_acct_shoulditem_$pot_month
+                                 where item_id in (80000180,80000184,80000598,80000599)
+                                 group by user_id
+                                 having sum(fact_fee) >0) a,
+                                dw_product_$pot_month b,
+                                map_kpi_brand c
+                          where a.user_id = b.user_id and b.crm_brand_id3 = c.crm_brand_id3
+                                                                    and b.userstatus_Id in (1,2,3,6,8) and b.test_mark<>1 and b.user
+type_Id in (1,2,9)
+                          group by b.city_id,c.kpi_brand_id"
+                           
+
+select * from   bass2.Dim_enterprise_product
+
+
+
+in
+(
+ 'R001'
+,'R002'
+,'R003'
+,'R004'
+,'R006'
+,'R007'
+,'R008'
+,'R009'
+,'R011'
+,'R016'
+,'R019'
+,'R020'
+,'R021'
+,'R022'
+,'R023'
+,'R024'
+,'R025'
+,'R026'
+,'R027'
+,'R030'
+,'R031'
+,'R037'
+,'R038'
+,'R039'
+,'R040'
+,'R054'
+,'R055'
+,'R056'
+,'R060'
+,'R061'
+,'R062'
+,'R088'
+,'R089'
+,'R090'
+,'R091'
+,'R092'
+,'R094'
+,'R095'
+,'R096'
+,'R097'
+,'R107'
+,'R108'
+,'R109'
+,'R111'
+,'R112'
+,'R113'
+,'R114'
+,'R115'
+,'R116'
+,'R127'
+,'R130'
+,'R133'
+,'R134'
+,'R135'
+,'R136'
+,'R137'
+,'R138'
+,'R139'
+,'R140'
+,'R141'
+,'R142'
+,'R143'
+,'R144'
+,'R145'
+,'R146'
+,'R159'
+,'R160'
+,'R161'
+,'R162'
+,'R163'
+,'R164'
+,'R165'
+,'R166'
+,'R167'
+,'R168'
+,'R169'
+,'R170'
+,'R171'
+,'R172'
+,'R173'
+,'R174'
+,'R177'
+,'R178'
+,'R179'
+,'R180'
+,'R181'
+,'R182'
+,'R183'
+,'R184'
+,'R185'
+,'R186'
+,'R187'
+,'R188'
+,'R189'
+,'R190'
+,'R191'
+,'R192'
+,'R193'
+,'R194'
+,'R196'
+,'R198'
+,'R200'
+,'R203'
+,'R204'
+,'R205'
+,'R207'
+,'R208'
+,'R210'
+,'R212'
+,'R214'
+,'R216'
+,'R221'
+,'R222'
+,'R223'
+,'R224'
+,'R225'
+,'R226'
+,'R227'
+,'R228'
+,'R229'
+,'R230'
+,'R231'
+,'R232'
+,'R233'
+,'R234'
+,'R235'
+,'R237'
+,'R238'
+,'R239'
+,'R240'
+,'R241'
+,'R242'
+,'R243'
+,'R246'
+,'R247'
+,'R250'
+,'R251'
+,'R252'
+,'R253'
+,'R254'
+,'R260'
+,'R261'
+)
+
+
+
+select r from 
+table (
+select 'R001' r from bass2.dual union all
+select 'R002' r from bass2.dual union all
+select 'R003' r from bass2.dual union all
+select 'R004' r from bass2.dual union all
+select 'R006' r from bass2.dual union all
+select 'R007' r from bass2.dual union all
+select 'R008' r from bass2.dual union all
+select 'R009' r from bass2.dual union all
+select 'R011' r from bass2.dual union all
+select 'R016' r from bass2.dual union all
+select 'R019' r from bass2.dual union all
+select 'R020' r from bass2.dual union all
+select 'R021' r from bass2.dual union all
+select 'R022' r from bass2.dual union all
+select 'R023' r from bass2.dual union all
+select 'R024' r from bass2.dual union all
+select 'R025' r from bass2.dual union all
+select 'R026' r from bass2.dual union all
+select 'R027' r from bass2.dual union all
+select 'R030' r from bass2.dual union all
+select 'R031' r from bass2.dual union all
+select 'R037' r from bass2.dual union all
+select 'R038' r from bass2.dual union all
+select 'R039' r from bass2.dual union all
+select 'R040' r from bass2.dual union all
+select 'R054' r from bass2.dual union all
+select 'R055' r from bass2.dual union all
+select 'R056' r from bass2.dual union all
+select 'R060' r from bass2.dual union all
+select 'R061' r from bass2.dual union all
+select 'R062' r from bass2.dual union all
+select 'R088' r from bass2.dual union all
+select 'R089' r from bass2.dual union all
+select 'R090' r from bass2.dual union all
+select 'R091' r from bass2.dual union all
+select 'R092' r from bass2.dual union all
+select 'R094' r from bass2.dual union all
+select 'R095' r from bass2.dual union all
+select 'R096' r from bass2.dual union all
+select 'R097' r from bass2.dual union all
+select 'R107' r from bass2.dual union all
+select 'R108' r from bass2.dual union all
+select 'R109' r from bass2.dual union all
+select 'R111' r from bass2.dual union all
+select 'R112' r from bass2.dual union all
+select 'R113' r from bass2.dual union all
+select 'R114' r from bass2.dual union all
+select 'R115' r from bass2.dual union all
+select 'R116' r from bass2.dual union all
+select 'R127' r from bass2.dual union all
+select 'R130' r from bass2.dual union all
+select 'R133' r from bass2.dual union all
+select 'R134' r from bass2.dual union all
+select 'R135' r from bass2.dual union all
+select 'R136' r from bass2.dual union all
+select 'R137' r from bass2.dual union all
+select 'R138' r from bass2.dual union all
+select 'R139' r from bass2.dual union all
+select 'R140' r from bass2.dual union all
+select 'R141' r from bass2.dual union all
+select 'R142' r from bass2.dual union all
+select 'R143' r from bass2.dual union all
+select 'R144' r from bass2.dual union all
+select 'R145' r from bass2.dual union all
+select 'R146' r from bass2.dual union all
+select 'R159' r from bass2.dual union all
+select 'R160' r from bass2.dual union all
+select 'R161' r from bass2.dual union all
+select 'R162' r from bass2.dual union all
+select 'R163' r from bass2.dual union all
+select 'R164' r from bass2.dual union all
+select 'R165' r from bass2.dual union all
+select 'R166' r from bass2.dual union all
+select 'R167' r from bass2.dual union all
+select 'R168' r from bass2.dual union all
+select 'R169' r from bass2.dual union all
+select 'R170' r from bass2.dual union all
+select 'R171' r from bass2.dual union all
+select 'R172' r from bass2.dual union all
+select 'R173' r from bass2.dual union all
+select 'R174' r from bass2.dual union all
+select 'R177' r from bass2.dual union all
+select 'R178' r from bass2.dual union all
+select 'R179' r from bass2.dual union all
+select 'R180' r from bass2.dual union all
+select 'R181' r from bass2.dual union all
+select 'R182' r from bass2.dual union all
+select 'R183' r from bass2.dual union all
+select 'R184' r from bass2.dual union all
+select 'R185' r from bass2.dual union all
+select 'R186' r from bass2.dual union all
+select 'R187' r from bass2.dual union all
+select 'R188' r from bass2.dual union all
+select 'R189' r from bass2.dual union all
+select 'R190' r from bass2.dual union all
+select 'R191' r from bass2.dual union all
+select 'R192' r from bass2.dual union all
+select 'R193' r from bass2.dual union all
+select 'R194' r from bass2.dual union all
+select 'R196' r from bass2.dual union all
+select 'R198' r from bass2.dual union all
+select 'R200' r from bass2.dual union all
+select 'R203' r from bass2.dual union all
+select 'R204' r from bass2.dual union all
+select 'R205' r from bass2.dual union all
+select 'R207' r from bass2.dual union all
+select 'R208' r from bass2.dual union all
+select 'R210' r from bass2.dual union all
+select 'R212' r from bass2.dual union all
+select 'R214' r from bass2.dual union all
+select 'R216' r from bass2.dual union all
+select 'R221' r from bass2.dual union all
+select 'R222' r from bass2.dual union all
+select 'R223' r from bass2.dual union all
+select 'R224' r from bass2.dual union all
+select 'R225' r from bass2.dual union all
+select 'R226' r from bass2.dual union all
+select 'R227' r from bass2.dual union all
+select 'R228' r from bass2.dual union all
+select 'R229' r from bass2.dual union all
+select 'R230' r from bass2.dual union all
+select 'R231' r from bass2.dual union all
+select 'R232' r from bass2.dual union all
+select 'R233' r from bass2.dual union all
+select 'R234' r from bass2.dual union all
+select 'R235' r from bass2.dual union all
+select 'R237' r from bass2.dual union all
+select 'R238' r from bass2.dual union all
+select 'R239' r from bass2.dual union all
+select 'R240' r from bass2.dual union all
+select 'R241' r from bass2.dual union all
+select 'R242' r from bass2.dual union all
+select 'R243' r from bass2.dual union all
+select 'R246' r from bass2.dual union all
+select 'R247' r from bass2.dual union all
+select 'R250' r from bass2.dual union all
+select 'R251' r from bass2.dual union all
+select 'R252' r from bass2.dual union all
+select 'R253' r from bass2.dual union all
+select 'R254' r from bass2.dual union all
+select 'R260' r from bass2.dual union all
+select 'R261' r from bass2.dual ) a
+except
+select rule_code from bass1.g_rule_check where char(time_id) like '201106%'
+and 
+
+select sum(bigint(M_OFF_USERS)) from G_S_22012_DAY
+where time_id / 100 = 201105
+63211
+
+60747
+
+西藏	R127	|(本月离网用户数 / 上月离网用户数 - 1) x 100%| ≤ 20%	60743.00	61041.00
+
+
+
+select sum(income)*1.00/100
+from (
+select ENTERPRISE_ID, sum(bigint(income)) income from   g_s_03017_month
+where time_id = 201106
+and ent_busi_id = '1520'
+and MANAGE_MOD = '3'
+group by ENTERPRISE_ID having  sum(bigint(income))  > 0
+) a
+
+
+
+
+select b.*, lower( '/bassapp/backapp/bin/bass1_export/bass1_export '||substr(a.control_code,11,13)||' '||char(current date - 1 days) ) exp_cmdfrom   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE bwhere a.control_code like 'BASS1%EXP%DAY%'and date(a.begintime) =  date(current date)and substr(a.control_code,15,5) = b.interface_code 
+
+
+
+
+
+select b.*
+,a.CONTROL_CODE
+from   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE b
+where a.control_code like 'BASS1%EXP%MONTH%'
+and substr(a.control_code,15,5) = b.interface_code 
+AND B.INTERFACE_CODE in
+(
+ '02004'
+,'02008'
+,'02047'
+,'02052'
+,'03004'
+,'03005'
+,'03012'
+,'04002'
+,'04004'
+,'04005'
+,'04014'
+,'04017'
+,'04018'
+,'21001'
+,'21003'
+,'21004'
+,'21006'
+,'21007'
+,'21009'
+,'22038'
+,'22073'
+,'22201'
+,'22202'
+,'22203'
+)
+
+
+
+
+
+
+
+select distinct  b.*
+,a.CONTROL_CODE
+from   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE b
+where a.control_code like 'BASS1%EXP%DAY%'
+and date(a.begintime) =  date(current date)
+and substr(a.control_code,15,5) = b.interface_code 
+AND B.INTERFACE_CODE in
+(
+ '02004'
+,'02008'
+,'02047'
+,'02052'
+,'03004'
+,'03005'
+,'03012'
+,'04002'
+,'04004'
+,'04005'
+,'04014'
+,'04017'
+,'04018'
+,'21001'
+,'21003'
+,'21004'
+,'21006'
+,'21007'
+,'21009'
+,'22038'
+,'22073'
+,'22201'
+,'22202'
+,'22203'
+)
+union 
+
+
+select distinct b.*
+,a.CONTROL_CODE
+from   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE b
+where a.control_code like 'BASS1%EXP%MONTH%'
+and substr(a.control_code,15,5) = b.interface_code 
+AND B.INTERFACE_CODE in
+(
+ '02004'
+,'02008'
+,'02047'
+,'02052'
+,'03004'
+,'03005'
+,'03012'
+,'04002'
+,'04004'
+,'04005'
+,'04014'
+,'04017'
+,'04018'
+,'21001'
+,'21003'
+,'21004'
+,'21006'
+,'21007'
+,'21009'
+,'22038'
+,'22073'
+,'22201'
+,'22202'
+,'22203'
+)
+
+
+select * from    bass2.dw_product_mobilefunc_201106
+select * from  bass2.dw_product_mobilefunc_201106 fetch first 10 rows only  
+
+select * from bass1.g_rule_check where char(time_id) like '201106%'
+and rule_code between 'R177' AND 'R300'
+ORDER BY 1,2
+
+
+
+
+select * from bass1.g_rule_check where char(time_id) like '201106%'
+and rule_code between 'R223' AND 'R228'
+ORDER BY 1,2
+
+
+
+select * from    bass1.td_check_ls_02
+
+
+select count(0) ,count(distinct product_no) from    bass1.td_check_ls_02
+
+
+
+select CYCLE_ID, bigint(TD_TERM_CUST) from   G_S_22204_MONTH
+where time_id = 201106
+and CYCLE_ID = '1'
+
+
+
+select  bigint(TD_CUST_DUR) from   G_S_22204_MONTH
+where time_id = 201106
+and CYCLE_ID = '3'
+
+
+
+		select 
+		   sum(bigint(a.base_bill_duration))
+		 from bass1.g_s_21003_month_tmp a,
+		 		(
+		select product_no from bass1.td_check_ls_02
+		union 
+		select product_no from bass1.td_check_03
+		union 
+		select product_no from bass1.td_check_04
+		union
+		select product_no from bass1.td_check_05
+		)  b
+		where a.product_no=b.product_no
+	
+    
+    values (48030824*1.000/47971554 - 1)*100
+
+    48030824
+    47971554
+    
+    
+
+select * from    
+
+
+
+table(
+select path||'/'||name,b.name,b.code
+from 
+table(
+select '01一经接口/01服务主题' path,'用户' name ,'02004' code from bass2.dual union all
+select '01一经接口/01服务主题' path,'用户状态' name ,'02008' code from bass2.dual union all
+select '01一经接口/01服务主题' path,'用户使用终端通话情况' name ,'02047' code from bass2.dual union all
+select '01一经接口/01服务主题' path,'用户区域归属' name ,'02052' code from bass2.dual union all
+select '01一经接口/02帐务主题' path,'明细帐单' name ,'03004' code from bass2.dual union all
+select '01一经接口/02帐务主题' path,'综合帐单' name ,'03005' code from bass2.dual union all
+select '01一经接口/02帐务主题' path,'智能网用户明细收入' name ,'03012' code from bass2.dual union all
+select '01一经接口/03服务使用' path,'GPRS话单' name ,'04002' code from bass2.dual union all
+select '01一经接口/03服务使用' path,'彩信话单' name ,'04004' code from bass2.dual union all
+select '01一经接口/03服务使用' path,'梦网短信话单' name ,'04005' code from bass2.dual union all
+select '01一经接口/03服务使用' path,'语音杂志短信话单' name ,'04014' code from bass2.dual union all
+select '01一经接口/03服务使用' path,'TD普通语音业务话单' name ,'04017' code from bass2.dual union all
+select '01一经接口/03服务使用' path,'上网本GPRS话单' name ,'04018' code from bass2.dual union all
+select '01一经接口/04详单汇总数据' path,'GSM_TD普通语音业务日使用' name ,'21001' code from bass2.dual union all
+select '01一经接口/04详单汇总数据' path,'GSM_TD普通语音业务月使用' name ,'21003' code from bass2.dual union all
+select '01一经接口/04详单汇总数据' path,'智能网语音业务日使用' name ,'21004' code from bass2.dual union all
+select '01一经接口/04详单汇总数据' path,'智能网语音业务月使用' name ,'21006' code from bass2.dual union all
+select '01一经接口/04详单汇总数据' path,'普通短信业务日使用' name ,'21007' code from bass2.dual union all
+select '01一经接口/04详单汇总数据' path,'智能网VPMN业务使用' name ,'21009' code from bass2.dual union all
+select '01一经接口/05其它数据' path,'各品牌用户日KPI' name ,'22038' code from bass2.dual union all
+select '01一经接口/05其它数据' path,'竞争对手日KPI' name ,'22073' code from bass2.dual union all
+select '01一经接口/06TD汇总数据' path,'使用TD网络的客户日汇总' name ,'22201' code from bass2.dual union all
+select '01一经接口/06TD汇总数据' path,'使用TD网络的客户通话情况日汇总' name ,'22202' code from bass2.dual union all
+select '01一经接口/06TD汇总数据' path,'使用TD网络的客户数据流量日汇总' name ,'22203' code from bass2.dual ) b
+) b
+
+
+select time_id,M_BILL_MMS from G_S_22012_DAY
+where time_id > 20110716
+order by time_id desc 
+
+
+
+
+select time_id,count(0) 
+from G_S_04004_DAY 
+where time_id between 20110716 and 20110721
+and bigint(CALL_FEE)+bigint(INFO_FEE) > 0
+group by time_id 
+order by 1 desc 
+
+
+fetch first 10 rows only  
+
+select sum(cnts) from 
+            (
+             select sum(counts) cnts from bass2.dw_newbusi_mms_$timestamp a,bass2.dw_product_$timestamp b 
+							where  a.user_id  = b.user_id
+							  and b.usertype_id in (1,2,9)
+							  and b.test_mark <>1 
+							  and b.userstatus_id not in (4,5,7,9)
+							  and a.mm_type=0
+							  and a.app_type in (0)
+							  and a.send_status in (0,1,2,3)
+						union all
+						select sum(counts) cnts from bass2.dw_newbusi_mms_$timestamp a,bass2.dw_product_$timestamp b 
+							where  a.user_id  = b.user_id
+							  and b.usertype_id in (1,2,9)
+							  and b.test_mark <>1 
+							  and b.userstatus_id not in (4,5,7,9)
+							  and a.app_type in (1,2,3,4)
+						) as aa
+
+select count(0)
+from 
+table (select * from   G_S_04004_DAY where time_id = 20110720 ) a 
+where a.MM_BILL_TYPE = '00'
+and a.applcn_type in ('0')
+and a.MM_SEND_STATUS in ('00','01','02','03')
+46314
+
+a.app_type in (1,2,3,4)
+
+select count(0)
+from 
+table (select * from   G_S_04004_DAY where time_id = 20110720 ) a 
+where a.applcn_type in ('01','02','03','04')
+
+
+select * from   BASS1.ALL_DIM_LKP 
+where bass1_tbid = 'BASS_STD2_0037'
+
+
+select * from   bass2.dim_channel_info
+
+select * from bass2.DIM_BBOSS_BASE_TYPE 
+where code_type in (90105,90102) 
+
+
+select a.code_type lvl1,a.code_id lvl2 ,a.CODE_NAME lvl2_name,b.code_id lvl3,b.code_name lvl3_name
+from 
+ table (
+select a.code_type,a.code_id,a.code_name from bass2.DIM_BBOSS_BASE_TYPE  a
+where code_type in (90105,90102) 
+) a
+left join 
+ table (
+select a.code_type,a.code_id,a.code_name from bass2.DIM_BBOSS_BASE_TYPE  a
+) b on a.code_id = b.code_type
+
+
+
+
+select * from   bass2.DIM_TERM_TAC_MID
+
+
+
+drop table BASS2.DIM_TERM_TAC_MID
+CREATE TABLE BASS2.DIM_TERM_TAC_MID
+ (ID             INTEGER,
+  TAC_NUM        VARCHAR(15),
+  TERM_ID        VARCHAR(10),
+  TERM_MODEL     VARCHAR(50),
+  TERMPROD_ID    VARCHAR(10),
+  TERMPROD_NAME  VARCHAR(200),
+  NET_TYPE       CHARACTER(1),
+  TERM_TYPE      CHARACTER(1)
+ )
+  DATA CAPTURE NONE
+ IN TBS_DIM
+  PARTITIONING KEY
+   (ID
+   ) USING HASHING;
+ALTER TABLE BASS2.DIM_TERM_TAC_MID
+  LOCKSIZE ROW
+  APPEND OFF
+  NOT VOLATILE;
+  
+
+select * from    BASS2.DIM_TERM_TAC_MID
+  
+  
+  
+select a.code_type lvl1,a.code_id lvl2 ,a.CODE_NAME lvl2_name,b.code_id lvl3,b.code_name lvl3_name
+from 
+ table (
+select a.code_type,a.code_id,a.code_name from bass2.DIM_BBOSS_BASE_TYPE  a
+where code_type in (90105,90102) 
+) a
+left join 
+ table (
+select a.code_type,a.code_id,a.code_name from bass2.DIM_BBOSS_BASE_TYPE  a
+) b on a.code_id = b.code_type
+
+
+
+
+select a.channel_id,a.channel_name,b.*
+from bass2.dim_channel_info a ,
+table(
+select a.code_type lvl1
+,case when a.code_type = 90102 then '社会代办渠道' else '实体(自有)渠道' end lvl1_name
+,a.code_id lvl2 ,a.CODE_NAME lvl2_name,b.code_id lvl3,b.code_name lvl3_name
+from 
+ table (
+select a.code_type,a.code_id,a.code_name from bass2.DIM_BBOSS_BASE_TYPE  a
+where code_type in (90105,90102) 
+) a
+left join 
+ table (
+select a.code_type,a.code_id,a.code_name from bass2.DIM_BBOSS_BASE_TYPE  a
+) b on a.code_id = b.code_type
+) b 
+where 
+ CHANNEL_TYPE_CLASS = lvl1
+and CHANNEL_TYPE = lvl2
+and CHANNEL_CHILD_TYPE = lvl3
+
+select CHANNEL_ID,CHANNEL_TYPE_CLASS,CHANNEL_TYPE,CHANNEL_CHILD_TYPE from   bass2.dim_channel_info
+
+
+
+
+create table g_s_22204_month_down_20110721(
+subs_id 											char(20)  --用户标识 
+,td_infophone_flg             char(1)  --TD信息机客户标志 
+,td_mobile_flg                char(1)  --TD手机客户标志 
+,td_crd_flg                   char(1)  --TD数据卡客户标志 
+,td_book_flg                  char(1)  --TD上网本客户标志 
+,TD_trmnl_cust_flg            char(1)  --TD终端客户标志 
+,usdTD_ntwk_cust_flg          char(1)  --使用TD网络客户标志 
+,usd_voicTD_ntwk_cust_flg     char(1)  --使用语音TD网络客户标志 
+,usd_GPRSTD_ntwk_cust_flg     char(1)  --使用GPRSTD网络客户标志 
+,usd_ntbkTD_ntwk_cust_flg     char(1)  --使用上网本TD网络客户标志 
+) 
+ IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" NOT LOGGED INITIALLY ;
+db2 "load client from /bassapp/bihome/panzw/tmp/13100_TD_user_3mon.txt.bak of del modified by 
+coldel$  fastparse anyorder warningcount 1000  messages /bassapp/bihome/panzw/tmp/g_s_22204_month_down_20110721.msg replace into g_s_22204_month_down_20110721"
+
+
+
+
+select sum(bigint(TD_TRMNL_CUST_FLG)) from   g_s_22204_month_down_20110721
+
+64578
+
+g_s_22204_month_down_20110530
+
+select sum(bigint(TD_TRMNL_CUST_FLG)) from   g_s_22204_month_down_20110530
+
+47370
+
+
+
+
+select * from   bass2.dw_ent_group_relation_201106
+
+select * from   bass2.dw_ent_cm_group_customer_ext_20110721
+
+select * from   bass2.Dw_ent_cm_individual_info_ext_20110721
+
+select * from   Ods.ent_group_relation_yyyymmdd
+
+select * from   bass2.ods_ent_group_relation_20110721
+
+select tabname from syscat.tables where lower(tabname) like '%ent_group_relation%'   
+
+
