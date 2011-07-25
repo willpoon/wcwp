@@ -1,3 +1,6 @@
+##/bassapp/bihome/panzw/bin
+## bass1_new_cfg.sh
+
 cat <<!> new_interface.txt 
 s_XXXXX_yyyymmdd_02024_XX_XXX.dat
 s_XXXXX_yyyymmdd_02025_XX_XXX.dat
@@ -556,6 +559,3 @@ else
 }
 	else { print "error file_name format!! check it!!\n" }
 }' new_interface.txt 
-
-
-
