@@ -1,0 +1,25 @@
+1. 抓取接口信息 &  抓取中文信息
+bass1_新增接口信息汇总.xlsx
+
+by reuse_shell_awk_sql.sh 
+panzw/bin
+
+2. 建表
+
+3. tcl dev  表头info 
+by bass1_tcl_header.sh
+
+4. 确认口径 写 sql 
+
+5. 配调度
+
+by reuse_shell_awk_sql.sh 
+
+6. 出数 
+
+7. 核对
+
+8. 校验 if have!
+
+
+
