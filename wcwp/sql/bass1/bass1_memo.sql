@@ -1,5 +1,8 @@
 http://www.zto.cn/CheckB.aspx?bill_ID=680102655698&hname=hvalue
 
+13989007120/236543
+13989007120/vjwdoa
+
 368814168964
 
 chenyang@xz.cmcc
@@ -21,7 +24,7 @@ ailknfjdbass99##%%
 
 tp-link-lsw/1398998981
 
-
+市场部会议室/aaabbbccc
 
 竞争对手新增基数较小，波动正常。
 
@@ -81,6 +84,7 @@ where	task_id	in	('I03013')
     nohup /bassapp/bihome/panzw/bass1_mon.sh >> bass1_mon.sh.out 2>&1 &
 
 nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 01005 201105 >> /bassapp/bihome/panzw/bass1_mon_one.sh.out 2>&1 &
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 22081 201106 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
 
 	set ip_num ('17950','17951')
 	
@@ -7397,7 +7401,7 @@ a.state in ('1','4','6','8','M','7','C','9')
 ,J-保号期
 ,K-有效期停主叫。
 
-nohup sh load_imei.sh > load_imei.201106.out 2>&1 &
+nohup sh load_imei.sh > load_imei.201107.out 2>&1 &
 
 zto 618159082802 pan
 zto 618158726217 wang
@@ -7515,3 +7519,25 @@ and c.control_code like 'BASS1%'
 --and c.deal_time = 1
 --and n.before_control_code  not like '%INT_CHECK%' 
 --and c.control_code not like 'OLAP_%'
+
+
+--regexp
+2011-[0-9][0-9]-[0-9][0-9] -> $op_time
+_2011[0-9][0-9][0-9][0-9] -> _$timestamp
+
+
+ps -ef|grep -i bass1.*tcl |grep -v grep 
+ps -ef|grep -i bass1 |grep -v grep
+
+
+32CZ4T7WG8254/34PQVN
+
+
+db2 "load client from /bassdb2/etl/L/boss/M1104220110700000000.tmp of del \
+ modified by coldel$ timestampformat=\"YYYYMMDDHHMMSS\" \
+ fastparse anyorder warningcount 1000 \
+ messages /bassdb2/etl/L/boss/msg/M1104220110700000000.msg \
+ replace into ODS_PM_SP_OPERATOR_CODE_201107"
+
+
+http://www.jiayuan.com/msg/dosend_ok.php?zhuanti=0&send_ok=1&fxly=none&to=48917184&info=1

@@ -1,4 +1,5 @@
-cat<<!>interfaces.txt
+file=interface_list.txt
+cat<<!>$file
 G_S_02024_DAY.tcl	"全球通基础资费套餐用户成功办理量"	"上报当前日所有成功办理的全球通基础资费套餐的订购关系"
 G_S_02025_DAY.tcl	"全球通专属叠加资费套餐用户成功办理量"	"上报当日所有成功办理的全球通全网统一专属叠加资费套餐的订购关系"
 G_S_04019_DAY.tcl	"国际长途语音话单"	"记录批价后的国际长途语音，包括直拨国际长途、国际IP、12593业务话单，不包括国际漫游语音。"
@@ -16,19 +17,20 @@ coarse=`echo $tcl|nawk -F"_" '{ print $4 }'|nawk -F"." '{print $1}'`
 author=panzw
 echo >$tcl 
 echo "######################################################################################################		"   >> $tcl						>> $tcl
-echo "#接口名称：实体渠道业务办理信息                                                                           "           >> $tcl
+echo "#接口名称: $name                                                               "           >> $tcl
 echo "#接口编码：$unitcode                                                                                          "           >> $tcl
-echo "#接口说明：记录实体渠道业务办理信息，涉及自营厅、委托经营厅或社会代理网点                                 "           >> $tcl
+echo "#接口说明：$memo"           >> $tcl
 echo "#程序名称: $tcl                                                                            "           >> $tcl
-echo "#功能描述: 生成$unitcode的数据                                                                                "           >> $tcl
-echo "#运行粒度: $coarse                                                                                            "           >> $tcl
-echo "#源    表：1.                                                                                            "           >> $tcl
-echo "#输入参数: void                                                                                               "       >> $tcl
-echo "#输出参数: 返回值:0 成功;-1 失败                                                                          "           >> $tcl
-echo "#编 写 人：$author                                                                              "                       >> $tcl
-echo "#编写时间：`date +%Y%m%d`                                                                                      "      >> $tcl
-echo "#问题记录：                                                                                               "           >> $tcl
-echo "#修改历史: $author `date +%Y%m%d`	newly added      "                                                                            >> $tcl
+echo "#功能描述: 生成$unitcode的数据"           >> $tcl
+echo "#运行粒度: $coarse"           >> $tcl
+echo "#源    表：1."           >> $tcl
+echo "#输入参数: void"       >> $tcl
+echo "#输出参数: 返回值:0 成功;-1 失败"           >> $tcl
+echo "#编 写 人：$author"                       >> $tcl
+echo "#编写时间：`date +%Y%m%d`"      >> $tcl
+echo "#问题记录："           >> $tcl
+echo "#修改历史: 1. $author `date +%Y%m%d`	1.7.4 newly added"                                                                            >> $tcl
 echo "#######################################################################################################   "           >> $tcl
-done< interfaces.txt
+done<$file
+
 
