@@ -45,7 +45,7 @@ order by 1 desc
 **/
 ¼ì²é
 
-
+./bass1_lst.sh 2011-08
 
 /**
 

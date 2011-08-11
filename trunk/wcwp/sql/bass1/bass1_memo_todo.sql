@@ -417,3 +417,18 @@ and time_id/100 = 201106
 --TD 提供量收的中间表。
 
 --对比结果：本地比集团只多了8个用户
+
+--imei load
+--400 核查 新统付表
+
+
+
+
+--02004 增量 计算  ： 不 把 sim_code 的变化 纳入 增量 计算口径。
+--只用  a.user_id,a.brand_id,usertype_id 来 辨别增量 
+
+集团客户接口 -- 移动400 测试 剔除
+
+
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_02024_DAY 2011-07-31 &
+

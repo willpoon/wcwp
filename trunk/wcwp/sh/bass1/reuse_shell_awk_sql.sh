@@ -1,32 +1,14 @@
 ##/bassapp/bihome/panzw/bin
 ## bass1_new_cfg.sh
-
+##包含$2,将\t 替换成 "_"
 cat <<!> new_interface.txt 
-s_XXXXX_yyyymmdd_02024_XX_XXX.dat
-s_XXXXX_yyyymmdd_02025_XX_XXX.dat
-s_XXXXX_yyyymmdd_04019_XX_XXX.dat
-s_XXXXX_yyyymm_22048_XX_XXX.dat
-s_XXXXX_yyyymm_22057_XX_XXX.dat
-s_XXXXX_yyyymm_22058_XX_XXX.dat
-s_XXXXX_yyyymm_22059_XX_XXX.dat
-s_XXXXX_yyyymm_22060_XX_XXX.dat
-i_XXXXX_yyyymm_06001_XX_XXX.dat
-i_XXXXX_yyyymm_06002_XX_XXX.dat
-i_XXXXX_yyyymm_02031_XX_XXX.dat
-i_XXXXX_yyyymm_02032_XX_XXX.dat
-i_XXXXX_yyyymm_02033_XX_XXX.dat
-i_XXXXX_yyyymm_02034_XX_XXX.dat
-i_XXXXX_yyyymm_02035_XX_XXX.dat
-s_XXXXX_yyyymm_22401_XX_XXX.dat
-s_XXXXX_yyyymm_22402_XX_XXX.dat
-s_XXXXX_yyyymm_22403_XX_XXX.dat
-s_XXXXX_yyyymm_22404_XX_XXX.dat
-i_XXXXX_yyyymm_22405_XX_XXX.dat
-i_XXXXX_yyyymm_22406_XX_XXX.dat
+s_XXXXX_yyyymm_22057_XX_XXX.dat_疑似养卡渠道名单
+s_XXXXX_yyyymm_22058_XX_XXX.dat_已确认养卡渠道名单
+s_XXXXX_yyyymm_22059_XX_XXX.dat_疑似窜卡渠道名单
+s_XXXXX_yyyymm_22060_XX_XXX.dat_已确认窜卡渠道名单
 !
 
-
-
+echo "\n\n"
 ## print A/I/S  , UNIT_CODE  , COARSE 
 nawk -F"_" '{
 if ( length($3) == 6 ) {
@@ -41,6 +23,7 @@ else
 }' new_interface.txt 
 
 
+echo "\n\n"
 
 ##  print table_name from interface _file_name
 nawk -F"_" '{
@@ -54,6 +37,8 @@ else
 	}
 	else { print "error file_name format!! check it!!\n" }
 }' new_interface.txt 
+
+echo "\n\n"
 
 ##  print tcl file name  from interface _file_name
 
@@ -71,6 +56,7 @@ else
 }' new_interface.txt 
 
 
+echo "\n\n"
 
 ##  print control_code  from interface _file_name
 
@@ -88,6 +74,7 @@ else
 }' new_interface.txt 
 
 
+echo "\n\n"
 
 ##  print EXP control_code  from interface _file_name
 
@@ -105,6 +92,7 @@ else
 }' new_interface.txt 
 
 
+echo "\n\n"
 
 ##  print drop   from interface _file_name
 
@@ -120,6 +108,7 @@ else
 	else { print "error file_name format!! check it!!\n" }
 }' new_interface.txt 
 
+echo "\n\n"
 
 ##ALTER TABLE  LOCKSIZE ROW APPEND OFF NOT VOLATILE;
 
@@ -138,6 +127,7 @@ else
 
 
 
+echo "\n\n"
 
 ###app.sch_control_map
 
@@ -153,6 +143,7 @@ else
 	else { print "error file_name format!! check it!!\n" }
 }' new_interface.txt 
 
+echo "\n\n"
 
 
 nawk -F"_" -v q="'" '{
@@ -189,6 +180,7 @@ else
 
 
 
+echo "\n\n"
 
 ###app.sch_control_map EXP
 
@@ -205,6 +197,7 @@ else
 }' new_interface.txt 
 
 
+echo "\n\n"
 
 nawk -F"_" -v q="'" '{
 if ( length($3) == 6 ) {
@@ -235,6 +228,7 @@ else
 }' new_interface.txt 
 
 
+echo "\n\n"
 
 
 ## bass1.int_program_data 
@@ -252,6 +246,7 @@ else
 }' new_interface.txt 
 
 
+echo "\n\n"
 
 
 nawk -F"_" -v q="'" '{
@@ -305,19 +300,22 @@ else
 
 ## app.g_unit_info
 
+echo "\n\n"
 
 nawk -F"_" -v q="'" '{
 	print "delete from  app.g_unit_info where unit_code = " q $4 q ";"
 }' new_interface.txt 
 
 
+echo "\n\n"
 
 
 nawk -F"_" -v q="'" '{
 if ( length($3) == 6 ) {
 	print "insert into app.g_unit_info values (" \
 	q $4 q \
-	" , " 0 \
+	" , " 1 \
+	" , "  q $7 q \
 	" , "  q "bass1."tolower("G_"$1"_"$4"_MONTH") q \
 	" , "  1 \
 	" , "  0 \
@@ -330,6 +328,7 @@ else
 	print "insert into app.g_unit_info values (" \
 	q $4 q \
 	" , " 0 \
+	" , "  q $7 q \
 	" , "  q "bass1."tolower("G_"$1"_"$4"_DAY") q \
 	" , "  1 \
 	" , "  0 \
@@ -342,7 +341,8 @@ else
 
 
 ###app.sch_control_before
- 
+ echo "\n\n"
+
 
 nawk -F"_" -v q="'" '{
 if ( length($3) == 6 ) {
@@ -366,6 +366,7 @@ else
 
 
 ###app.sch_control_before exp
+echo "\n\n"
 
 
 nawk -F"_" -v q="'" '{
@@ -389,6 +390,7 @@ else
 }' new_interface.txt 
 
 ###delete from app.sch_control_task 
+echo "\n\n"
 
 nawk -F"_" -v q="'" '{
 if ( length($3) == 6 ) {
@@ -404,6 +406,7 @@ else
 
 
 ###insert into app.sch_control_task  tcl
+echo "\n\n"
 
 nawk -F"_" -v q="'" '{
 if ( length($3) == 8 ) {
@@ -421,7 +424,7 @@ if ( length($3) == 8 ) {
 	q \
 	" ,10000,-1," \
 	q \
-	"xxxxxxxxxxx" \
+	$7 \
 	q \
 	" , " \
 	q \
@@ -457,7 +460,7 @@ else
 	q \
 	" ,-1,-1," \
 	q \
-	"xxxxxxxxxxx" \
+	$7 \
 	q \
 	" , " \
 	q \
@@ -480,6 +483,7 @@ else
 }' new_interface.txt 
 
 
+echo "\n\n"
 
 
 ###insert into app.sch_control_task  exp
@@ -498,11 +502,11 @@ if ( length($3) == 8 ) {
 	2  \
 	" , " \
 	q \
-	"bass1_export "tolower("G_"$1"_"$4"_DAY")" YESTERDAY()" \
+	"bass1_export bass1."tolower("G_"$1"_"$4"_DAY")" YESTERDAY()" \
 	q \
 	" ,10000,-1," \
 	q \
-	"EXPORT_of xxxxxxxxxxx" \
+	"EXPORT_of "$7 \
 	q \
 	" , " \
 	q \
@@ -534,11 +538,11 @@ else
 	2  \
 	" , " \
 	q \
-	"bass1_export "tolower("G_"$1"_"$4"_MONTH")" LASTMONTH()" \
+	"bass1_export bass1."tolower("G_"$1"_"$4"_MONTH")" LASTMONTH()" \
 	q \
 	" ,-1,-1," \
 	q \
-	"EXPORT_of xxxxxxxxxxx" \
+	"EXPORT_of "$7 \
 	q \
 	" , " \
 	q \

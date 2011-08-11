@@ -214,7 +214,24 @@ select  to_char(CREATE_DATE,'yyyymmdd') op_time,count(0)
  
    select * from ngcp.pm_sp_operator_code@dbl_jfdb 
    where rownum < 100
+      select * from ngcp.pm_sp_operator_code@dbl_jfdb a
+   where a.OPERATOR_CODE = '-HYJSZDXDY'
+
+ select distinct operator_code,sp_code,bill_flag,sp_type,OPERATOR_NAME from ngcp.pm_sp_operator_code where operator_code is not null
+ 
+ select operator_code,sp_code,bill_flag,sp_type,OPERATOR_NAME
+ from (select operator_code,sp_code,bill_flag,sp_type,OPERATOR_NAME
+ ,row_number()over(partition by operator_code,sp_code,bill_flag  order  by expire_date desc,valid_date desc ) rn 
+ from ngcp.pm_sp_operator_code @dbl_jfdb a
+ where operator_code is not null and a.OPERATOR_CODE = 'KSCF'
+ and  to_char(a.expire_date,'yyyymm') > '201106'
+ ) t where t.rn = 1
+ 
+       select * from ngcp.pm_sp_operator_code@dbl_jfdb a
+   where a.OPERATOR_CODE = 'KSCF'
+   and to_char(a.expire_date,'yyyymm') > '201106'
    
+ KSCF
  
    select * from ngcp.pm_sp_operator_code@dbl_jfdb where sp_type
 select * from ngcp.pm_serv_type_vs_expr@dbl_jfdb serv_type
@@ -1616,4 +1633,11 @@ select tabname from syscat.tables where lower(tabname) like '%ent_group_relation
 
 select * from    channel.channel_info @dbl_ggdb
                                                    
+                                     
+
+select  from   so.ord_busi_oth_f_0891_1107
+
+
+                                     
+select ORDER_BUSI_INFO_ID,BUSIOPER_ORDER_ID,replace(replace(replace(INFO_ID,chr(10)),chr(13)),'$'),INFO_NAME,REGION_ID,EXT_1,EXT_2,EXT_3,EXT_4,EXT_5,replace(replace(replace(EXT_6,chr(10)),chr(13)),'$'),DONE_CODE,OP_ID,ORG_ID,to_char(DONE_DATE,'YYYYMMDDHH24MISS'),to_char(VALID_DATE,'YYYYMMDDHH24MISS'),to_char(EXPIRE_DATE,'YYYYMMDDHH24MISS'),to_char(CREATE_DATE,'YYYYMMDDHH24MISS'),NOTES,ORDER_STATE from SO.ORD_BUSI_OTH_F_0891_1107 where to_char(CREATE_DATE) = '20110729'
                                      

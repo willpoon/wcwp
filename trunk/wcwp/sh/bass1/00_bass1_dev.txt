@@ -11,7 +11,7 @@ by bass1_tcl_header.sh
 
 4. 确认口径 写 sql 
 
-5. 配调度
+5. 配调度 设定依赖
 
 by reuse_shell_awk_sql.sh 
 
@@ -23,3 +23,7 @@ by reuse_shell_awk_sql.sh
 
 
 
+# FAQ 
+
+1. ALTER COLUMN 后 要 reorg 
+2.
