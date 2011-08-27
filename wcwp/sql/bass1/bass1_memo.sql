@@ -1,5 +1,7 @@
-http://www.zto.cn/CheckB.aspx?bill_ID=680102655698&hname=hvalue
+BB : 79707927
 
+http://www.zto.cn/CheckB.aspx?bill_ID=680102655698&hname=hvalue
+wlan:13549011432/353892
 13989007120/236543
 13989007120/vjwdoa
 
@@ -7401,13 +7403,13 @@ a.state in ('1','4','6','8','M','7','C','9')
 ,J-保号期
 ,K-有效期停主叫。
 
-nohup sh load_imei.sh > load_imei.201107.out 2>&1 &
+nohup sh load_imei.sh > load_imei.201108.out 2>&1 &
 
 zto 618159082802 pan
 zto 618158726217 wang
 
 
-13651174750 李琦
+13651174750 李琦集团
 
 
 对于透明消费月接口调查的相关说明
@@ -7522,8 +7524,8 @@ and c.control_code like 'BASS1%'
 
 
 --regexp
-2011-[0-9][0-9]-[0-9][0-9] -> $op_time
-_2011[0-9][0-9][0-9][0-9] -> _$timestamp
+201[0-1]-[0-9][0-9]-[0-9][0-9] -> $op_time
+201[0-1][0-9][0-9][0-9][0-9] -> _$timestamp
 
 
 ps -ef|grep -i bass1.*tcl |grep -v grep 
@@ -7541,3 +7543,141 @@ db2 "load client from /bassdb2/etl/L/boss/M1104220110700000000.tmp of del \
 
 
 http://www.jiayuan.com/msg/dosend_ok.php?zhuanti=0&send_ok=1&fxly=none&to=48917184&info=1
+
+
+1. cpu 内存检测不到
+2.前摄像头不行
+3.热感应不行
+4.关机有问题
+5.开机慢 差不多两分钟
+6.软件崩溃：i联系 CPU检测工具,设置->通话设置->sim 卡应用程序
+7.wlan 无法连上
+8.gmail 无法使用
+
+
+
+
+1.产品广告上说不是高仿机，山寨机，但根据系统显示和软件检测，发过来的货是用MTK芯片做的高仿机。硬件（cpu、内存）参数与广告严重不符。
+2.其它原因：软件程序经常异常终止。无法正常使用。
+
+1.产品广告上说不是高仿机，山寨机，但根据系统显示和软件检测，发过来的货是用MTK芯片做的高仿机。硬件（cpu、内存）参数与广告严重不符。
+2.其它原因：软件程序经常异常终止。无法正常使用。系统运行慢，实际性能与标称硬件所应达到的性能不符。
+
+
+1.产品广告上说不是高仿机，山寨机，但根据系统显示和软件检测，发过来的货是用MTK芯片做的高仿机。硬件（cpu、内存）参数与广告严重不符。
+2.其它原因：软件程序经常异常终止。无法正常使用。系统运行慢，实际性能与标称硬件所应达到的性能不符。很多软件无法安装或正常执行。尤其是一些检测软件一运行就崩溃，怀疑机子有故意躲避检测之嫌。如果是正品，如此现象。
+
+
+
+
+1.产品广告上说不是高仿机，山寨机，但根据系统显示和软件检测，发过来的货是用MTK芯片做的高仿机。硬件（cpu、内存）参数与广告严重不符。
+检测出来的芯片型号速度经查只有200~400多mhz.绝没有广告上的：“【CPU】采用美国处理器，1024MHz+208MHz 的CPU，图片处理更强劲  搭载了最新的安卓2.3.9系统系统内存512MB+576MB” 说的那么多！
+2.其它原因：软件程序经常异常终止。无法正常使用。系统运行慢，实际性能与标称硬件所应达到的性能不符。很多软件无法安装或正常执行。尤其是一些检测软件一运行就崩溃，怀疑机子有故意躲避检测之嫌。如果是正品，如此现象。
+另外，我咨询过淘宝，没有什么什么退货签收后24小时内发出的说法.别忽悠我。
+如卖家能诚恳承认质量问题并承担来回运费，还可赢态度分。否则只能走淘宝维权的程序了。
+
+E:\taobao_申诉\108_0813\IMG_0525.JPG
+E:\taobao_申诉\108_0813\IMG_0526.JPG
+E:\taobao_申诉\108_0813\IMG_0512.JPG
+
+http://www.arm.com/zh/products/processors/classic/arm9/arm926.php
+
+E:\taobao_申诉\108_0813\新建文件夹
+
+
+79707927
+
+
+
+02004-02008  异常情况：
+1.转品牌后的号码，之前的用户id 一经要算离网。否则不能通过校验。
+这样将导致与二经离网用户数不一致。
+
+2. 为什么有些user_id 直接从用户表移除？
+select * from    bass2.dw_product_20110818 where product_no =  '14789001631'
+& 转品牌的
+
+
+
+
+
+java ETLMain    20110706  taskList_tmp_pzw.properties && \
+java ETLMain    20110707  taskList_tmp_pzw.properties && \
+java ETLMain    20110708  taskList_tmp_pzw.properties && \
+java ETLMain    20110709  taskList_tmp_pzw.properties && \
+java ETLMain    20110710  taskList_tmp_pzw.properties && \
+java ETLMain    20110711  taskList_tmp_pzw.properties && \
+java ETLMain    20110712  taskList_tmp_pzw.properties && \
+java ETLMain    20110713  taskList_tmp_pzw.properties && \
+java ETLMain    20110714  taskList_tmp_pzw.properties && \
+java ETLMain    20110715  taskList_tmp_pzw.properties && \
+java ETLMain    20110716  taskList_tmp_pzw.properties && \
+java ETLMain    20110717  taskList_tmp_pzw.properties && \
+java ETLMain    20110718  taskList_tmp_pzw.properties && \
+java ETLMain    20110719  taskList_tmp_pzw.properties && \
+java ETLMain    20110710  taskList_tmp_pzw.properties && \
+java ETLMain    20110721  taskList_tmp_pzw.properties && \
+java ETLMain    20110722  taskList_tmp_pzw.properties && \
+java ETLMain    20110723  taskList_tmp_pzw.properties && \
+java ETLMain    20110724  taskList_tmp_pzw.properties && \
+java ETLMain    20110725  taskList_tmp_pzw.properties && \
+java ETLMain    20110726  taskList_tmp_pzw.properties && \
+java ETLMain    20110727  taskList_tmp_pzw.properties && \
+java ETLMain    20110728  taskList_tmp_pzw.properties
+
+
+
+
+广东省深圳市宝安区民治大道沙元埔村92栋301 贺海英收 15014089331 回寄地址。
+
+
+find /bassapp/backapp/data/bass1/export -name "*22091*" -atime 0 -exec cp {} . \;
+
+
+
+如果是这么放的： /path/to/data/*.dat /path/to/data/*.verf cd /path/to/data/ tar -cvf 02024_xxxxx.tar *02024* tar -cvf 02025_xxxxx.tar *02025* gzip 02024_xxxxx.tar  gzip 02025_xxxxx.tar 
+
+
+
+ 西藏-潘志伟 (899535438) 10:45:18 
+
+如果是这么放的： /path/to/data/*.dat /path/to/data/*.verf cd /path/to/data/ tar -cvf 02024_xxxxx.tar *02024* tar -cvf 02025_xxxxx.tar *02025* gzip 02024_xxxxx.tar  gzip 02025_xxxxx.tar 
+
+
+find /bassapp/backapp/data/bass1/export -name "*22091*" -atime 0 -exec cp {} . \;
+
+find /bassapp/backapp/data/bass1/export -name "*22066*" -atime 0 -exec ls -l {} . \;
+
+
+
+find /bassapp/backapp/data/bass1/export -name "*22066*" -atime 0 -exec cp {} . \;
+
+
+
+find /bassapp/backapp/data/bass1/export -name "*22066*" -atime 0 -exec cp {} . \;
+
+
+09:05
+10:55	
+贡嘎机场
+双流国际机场
+四川航空3U8696
+机型：330经济舱
+￥1500全价/Y
+所有价格退改签
+
+
+12:00
+14:10	
+双流国际机场
+新白云国际机场
+中国国航CA4317
+机型：321经济舱
+￥5904.5折/V
+所有价格退改签
+
+
+
+物业地址：中山东升镇坦背新市场对面
+
+动态：茵华花园现推出33幢、13幢90—144㎡，认筹3千减两万的特大优惠！御峰楼王组团，超级震撼价3888元/㎡起，现正火热认筹中！购房均可获得各种名牌家电，更有机会赢金条

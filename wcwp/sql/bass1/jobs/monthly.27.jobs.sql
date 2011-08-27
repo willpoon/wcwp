@@ -1,8 +1,8 @@
 #替换：
-#1.DIM_TERM_TAC_20110730BAK
-#2.i_30000_201107_91005_001
+#1.DIM_TERM_TAC_20110827BAK
+#2.i_30000_201108_91005_001
 ---------------处理91005接口数据问题------------------------------
-RENAME TABLE BASS2.DIM_TERM_TAC TO DIM_TERM_TAC_20110730BAK;
+RENAME TABLE BASS2.DIM_TERM_TAC TO DIM_TERM_TAC_20110827BAK;
 CREATE TABLE BASS2.DIM_TERM_TAC
  (ID             INTEGER,
   TAC_NUM        VARCHAR(15),
@@ -24,7 +24,7 @@ ALTER TABLE BASS2.DIM_TERM_TAC
   NOT VOLATILE;
 
 
-
+/**
 drop table BASS2.DIM_TERM_TAC_MID
 CREATE TABLE BASS2.DIM_TERM_TAC_MID
  (ID             INTEGER,
@@ -45,13 +45,15 @@ ALTER TABLE BASS2.DIM_TERM_TAC_MID
   LOCKSIZE ROW
   APPEND OFF
   NOT VOLATILE;
-  
+**/
+ALTER TABLE BASS2.DIM_TERM_TAC_MID ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE
+
 --201107 529
   
 
 len_val="1 8,9 23,24 33,34 83,84 93,94 293,294 294,295 295"
 WORK_PATH=/bassapp/bihome/panzw/tmp
-datafilename=i_30000_201107_91005_001.dat
+datafilename=i_30000_201108_91005_001.dat
 table_name=bass2.DIM_TERM_TAC_MID
 DB2_SQLCOMM="db2 \"load client from ${WORK_PATH}/${datafilename} of asc \\
 \n
@@ -69,13 +71,12 @@ echo ${DB2_SQLCOMM}|sed -e 's/ $//g'
 
 db2 connect to bassdb user bass2 using bass2
 
- db2 "load client from /bassapp/bihome/panzw/tmp/i_30000_201107_91005_001.dat of asc \
+db2 "load client from /bassapp/bihome/panzw/tmp/i_30000_201108_91005_001.dat of asc \
  modified by timestampformat=\"YYYYMMDDHHMMSS\" dateformat=\"YYYYMMDD\" \
  timeformat=\"HHMMSS\" \
  method L (1 8,9 23,24 33,34 83,84 93,94 293,294 294,295 295) \
  messages ./bass2.DIM_TERM_TAC_MID.msg \
  replace into bass2.DIM_TERM_TAC_MID nonrecoverable"
- 
  
 delete from BASS2.DIM_TERM_TAC 
 insert into BASS2.DIM_TERM_TAC
@@ -90,7 +91,7 @@ TERM_MODEL,
 TERMPROD_ID,
 TERMPROD_NAME,
 NET_TYPE,
-TERM_TYPE from BASS2.DIM_TERM_TAC_20110730BAK
+TERM_TYPE from BASS2.DIM_TERM_TAC_20110827BAK
 where net_type <>'2';
 
 
@@ -98,7 +99,7 @@ select tac_nuM,count(*) from BASS2.DIM_TERM_TAC
 group by tac_nuM
 having count(*)>1
 
-select tac_nuM,count(*) from BASS2.DIM_TERM_TAC_20110730BAK
+select tac_nuM,count(*) from BASS2.DIM_TERM_TAC_20110827BAK
 group by tac_nuM
 having count(*)>1
 0
@@ -115,7 +116,8 @@ commit;
 
 **/
 
-drop table BASS2.DIM_TERM_TAC_MID
+--drop table BASS2.DIM_TERM_TAC_MID
+
 db2 RUNSTATS ON table BASS2.DIM_TERM_TAC      with distribution and detailed indexes all  
 
 
