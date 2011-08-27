@@ -430,5 +430,47 @@ and time_id/100 = 201106
 集团客户接口 -- 移动400 测试 剔除
 
 
-/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_02024_DAY 2011-07-31 &
+--/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_02024_DAY 2011-07-31 &
+
+
+--关于核查一经电子渠道业务办理数据质量的通知
+
+--1. 由于数据质量考核规则中将增加与往期数据比对稽核要求，如不按期对问题数据进行更新，将会影响一经数据质量考核成绩。
+如何校验？ 1-7 ？ 2-8？
+ 江勇  010-66006688-2323
+
+
+
+--2. 22065 22066 22067 
+重传 怎么重传？
+只要涉及的接口都可以申请重传？
+
+1月差距比较大，想重传怎么重传？
+
+--3. 22066 字段修改过。
+
+
+select * from dw_PRODUCT_ORD_SRVPKG_dm_201009 a,dw_PRODUCT_ORD_CUST_dm_201009 b
+where a.op_time='2010-09-21' and a.CUSTOMER_ORDER_ID=b.CUSTOMER_ORDER_ID
+   and a.servicepkg_id in (select PRODUCT_ITEM_ID from DIM_PROD_UP_PRODUCT_ITEM where name like '%两城一家%' and item_type='SERVICE_PRICE')
+   and b.business_id in (191000000007,191000000008);
+   
+
+
+
+--1.  修正 02008 取数代码
+--and not ( userstatus_id = 4 and 
+
+--2.  修复 已经上报的02008 , 在02004 中加入！！
+
+
+
+22066 17，18，19日数据   7.1 - 8.19 
+
+
+1. 22067 201107 是否需要重传？
+
+1. wap 登录 业务办理 
+
+### 22091 inc 部分可以不重跑 ！！
 
