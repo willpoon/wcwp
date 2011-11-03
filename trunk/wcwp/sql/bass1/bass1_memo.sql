@@ -4,8 +4,25 @@ http://www.zto.cn/CheckB.aspx?bill_ID=680102655698&hname=hvalue
 wlan:13549011432/353892
 13989007120/236543
 13989007120/vjwdoa
-
+13923688640/101516
 368814168964
+wlan:
+13989007120/867459
+13989007120/598674
+
+yingji_asiainfo
+gmcc@4889
+
+发短信冲QB
+50
+10665999
+就是编写短信，短信内容就是 50，其他的都不要，然后发给 10665999这个号码就行啦。。
+
+
+发送短信编辑短信SG发送到10663355
+注：手机开通会员收到的短信业务名称为"幸福时光"
+
+
 
 chenyang@xz.cmcc
 chenyang198677
@@ -7194,8 +7211,10 @@ db2 'get snapshot for application agentid 2516'
 db2inst1
 nfjd@BASSDB
 
-db2 "force application(2516)"
+$ ./tablelock1.sh DIM_GSM_HLR_INFO
 
+db2 "force application(2516)"
+db2 "force application(1224)"
 $ db2 "force application(2516)"
 DB20000I  The FORCE APPLICATION command completed successfully.
 DB21024I  This command is asynchronous and may not be effective immediately.
@@ -7403,7 +7422,7 @@ a.state in ('1','4','6','8','M','7','C','9')
 ,J-保号期
 ,K-有效期停主叫。
 
-nohup sh load_imei.sh > load_imei.201108.out 2>&1 &
+nohup sh load_imei.sh > load_imei.201110.out 2>&1 &
 
 zto 618159082802 pan
 zto 618158726217 wang
@@ -7681,3 +7700,84 @@ find /bassapp/backapp/data/bass1/export -name "*22066*" -atime 0 -exec cp {} . \
 物业地址：中山东升镇坦背新市场对面
 
 动态：茵华花园现推出33幢、13幢90—144㎡，认筹3千减两万的特大优惠！御峰楼王组团，超级震撼价3888元/㎡起，现正火热认筹中！购房均可获得各种名牌家电，更有机会赢金条
+
+
+变更SP业务失败！该客户13989007120已经订购过本SP服务,工单未竣工！(sp代码:999999,sp业务代码:90030001,客户订单号:10399365,服务包编码:123090030001) 
+
+
+人要比自己想象中厉害
+人能够承受比自己想象中更大的痛苦
+人的潜力是无限的
+
+
+1322458378
+
+我想,若能携手一辈子，一两年的差距就显得微不足道了
+
+http://profile.jiayuan.com/31722919?cnm=look&fxly=cp-bd-skgw
+安吉拉
+
+主要用来标示该程序是用来处理月数据还是日数据等
+后缀为ms，意为month single，即目标表为每月执行一次的单月表
+后缀为ds，意为day single，即目标表为每日执行一次的单日表
+后缀为dt，意为day to collect，即目标表为每日执行一次的日累积表
+后缀为mt，意为month to collect，即目标表为每月执行一次的月累积表
+后缀为mm，意为month multiple，即目标表为每月执行一次的多月表
+后缀为dm，意为day multiple，即目标表为每日执行一次的多日表
+
+
+
+
+
+
+
+
+
+
+检查 G_A_06035_DAY:
+
+                select CHANNEL_ID,count(0)  cnt
+                from bass1.G_A_06035_DAY
+                where time_id =20110930
+                group by CHANNEL_ID having count(0) > 1
+
+
+
+select time_id , count(0) 
+--,  count(distinct time_id ) 
+from G_A_06035_DAY 
+group by  time_id 
+order by 1 
+
+
+--通报问题
+
+--校验检查-9月数据
+
+--日接口修改后问题
+
+--日接口上线、上传
+
+--3个月接口
+
+--非空接口核查，确认
+
+
+在用户（02004）接口中，IMSI字段有很多空值，或不规则的数值，三期接口中数据根据IMSI号码关联不到品牌，导致分品牌报表不能正确分出品牌。
+
+经核查：在西藏02004接口中，IMSI字段值大多数为0,从而导致核查中所述问题。这是由于02004接口开发初期尚未获取到有效的IMSI数据源，所以没有对该字段作相应维护导致的。后续将对此问题修复，提升02004的IMSI数据质量。
+请集团审察。
+
+
+39115471
+http://profile.jiayuan.com/39115471
+
+
+
+平时我们要求函数的参数尽量不多于 4 个，如果函数的参数多于 4 个使用起来非
+常容易出错（包括每个参数的意义和顺序都容易弄错） 效率也会降低
+
+http://blog.sina.com.cn/s/blog_4dc3a8c80100qv6j.html
+
+ find . -size +500000000c -exec ls -alrth {} \;
+
