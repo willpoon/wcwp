@@ -1,4 +1,5 @@
 #!/usr/bin/ksh
+#/bassapp/bihome/panzw/bin/common.ksh
 
 
 load_sample() {
