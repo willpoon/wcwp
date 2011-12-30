@@ -6682,7 +6682,8 @@ route add -p 10.233.0.0 mask 255.255.0.0 10.233.20.158
 route add -p 10.10.0.0 mask 255.255.0.0 10.233.20.158
 route add -p 172.16.0.0 mask 255.255.0.0 10.233.20.158
 两用：
-route add 132.32.22.0 mask 255.255.255.0 10.233.20.113 
+route add -p 132.32.0.0 mask 255.255.0.0 10.233.20.158
+ 
 
 有线 无线 同时使用..2009-12-01 16:55 同时使用有线网上内网、无线网上外网
 
@@ -7780,4 +7781,9 @@ http://profile.jiayuan.com/39115471
 http://blog.sina.com.cn/s/blog_4dc3a8c80100qv6j.html
 
  find . -size +500000000c -exec ls -alrth {} \;
+
+
+
+C:\Documents and Settings\poon>route add -p 132.32.0.0 mask 255.255.0.0 10.233.20.158
+ok
 
