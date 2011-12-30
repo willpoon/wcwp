@@ -1,6 +1,40 @@
+yingji_asiainfo3
+cmcc@7779
+
+
+ksh -o vi
+. /bassapp/bihome/panzw/.profile
+. /bassapp/bihome/panzw/config/cds
+
+
+
+Command-line access
+If you plan to make changes, use this command to check out the code as yourself using HTTPS:
+
+# Project members authenticate over HTTPS to allow committing changes.
+svn checkout https://wcwp.googlecode.com/svn/trunk/ wcwp --username PanWalter@gmail.com
+Ed4SR3pu7Wg3
+
+When prompted, enter your generated googlecode.com password.
+Use this command to anonymously check out the latest project source code:
+
+# Non-members may check out a read-only working copy anonymously over HTTP.
+svn checkout http://wcwp.googlecode.com/svn/trunk/ wcwp-read-only
+
+
+PATH="D:\soft\svn-win32-1.7.2\bin";"%PATH%"
+
+
+安装完成，发现编辑文件中的中文显示为乱码，解决方案如下。调出SciTE的Global options file，作如下修改：
+code.page=936
+character.set=134
+LC_CTYPE=en_US.UTF-8
+output.code.page=936
+
 BB : 79707927
 
 http://www.zto.cn/CheckB.aspx?bill_ID=680102655698&hname=hvalue
+
 wlan:13549011432/353892
 13989007120/236543
 13989007120/vjwdoa
@@ -7786,4 +7820,109 @@ http://blog.sina.com.cn/s/blog_4dc3a8c80100qv6j.html
 
 C:\Documents and Settings\poon>route add -p 132.32.0.0 mask 255.255.0.0 10.233.20.158
 ok
+
+
+
+
+
+Windows IP Configuration
+
+
+
+        Host Name . . . . . . . . . . . . : ailk-4324ee7d6b
+
+        Primary Dns Suffix  . . . . . . . : 
+
+        Node Type . . . . . . . . . . . . : Unknown
+
+        IP Routing Enabled. . . . . . . . : No
+
+        WINS Proxy Enabled. . . . . . . . : No
+
+
+
+Ethernet adapter 本地连接:
+
+
+
+        Media State . . . . . . . . . . . : Media disconnected
+
+        Description . . . . . . . . . . . : Broadcom NetXtreme 57xx Gigabit Controller
+
+        Physical Address. . . . . . . . . : 00-15-C5-51-C2-8A
+
+
+
+Ethernet adapter 无线网络连接:
+
+
+
+        Connection-specific DNS Suffix  . : 
+
+        Description . . . . . . . . . . . : Intel(R) PRO/Wireless 3945ABG Network Connection
+
+        Physical Address. . . . . . . . . : 00-19-D2-00-4A-15
+
+        Dhcp Enabled. . . . . . . . . . . : Yes
+
+        Autoconfiguration Enabled . . . . : Yes
+
+        IP Address. . . . . . . . . . . . : 192.168.0.108
+
+        Subnet Mask . . . . . . . . . . . : 255.255.255.0
+
+        Default Gateway . . . . . . . . . : 192.168.0.1
+
+        DHCP Server . . . . . . . . . . . : 192.168.0.1
+
+        DNS Servers . . . . . . . . . . . : 202.98.224.69
+
+                                            192.168.0.1
+
+        Lease Obtained. . . . . . . . . . : 2011年12月30日 21:56:34
+
+        Lease Expires . . . . . . . . . . : 2012年1月6日 21:56:34
+
+
+
+Ethernet adapter {354932B5-B2D9-469A-85E0-19C27ABB2912}:
+
+
+
+        Media State . . . . . . . . . . . : Media disconnected
+
+        Description . . . . . . . . . . . : SecTap Adapter - 数据包计划程序微型端口
+
+        Physical Address. . . . . . . . . : 00-FF-35-49-32-B5
+
+
+
+
+===========================================================================
+Interface List
+0x1 ........................... MS TCP Loopback interface
+0x2 ...00 15 c5 51 c2 8a ...... Broadcom NetXtreme 57xx Gigabit Controller - 数据包计划程序微型端口
+0x3 ...00 19 d2 00 4a 15 ...... Intel(R) PRO/Wireless 3945ABG Network Connection - 数据包计划程序微型端口
+0x10005 ...00 ff 35 49 32 b5 ...... SecTap Adapter - 数据包计划程序微型端口
+===========================================================================
+===========================================================================
+Active Routes:
+Network Destination        Netmask          Gateway       Interface  Metric
+          0.0.0.0          0.0.0.0      192.168.0.1   192.168.0.108	  25
+        127.0.0.0        255.0.0.0        127.0.0.1       127.0.0.1	  1
+      192.168.0.0    255.255.255.0    192.168.0.108   192.168.0.108	  25
+    192.168.0.108  255.255.255.255        127.0.0.1       127.0.0.1	  25
+    192.168.0.255  255.255.255.255    192.168.0.108   192.168.0.108	  25
+        224.0.0.0        240.0.0.0    192.168.0.108   192.168.0.108	  25
+  255.255.255.255  255.255.255.255    192.168.0.108   192.168.0.108	  1
+  255.255.255.255  255.255.255.255    192.168.0.108               2	  1
+  255.255.255.255  255.255.255.255    192.168.0.108           10005	  1
+Default Gateway:       192.168.0.1
+===========================================================================
+Persistent Routes:
+  Network Address          Netmask  Gateway Address  Metric
+       10.233.0.0      255.255.0.0    10.233.20.158       1
+        10.10.0.0      255.255.0.0    10.233.20.158       1
+       172.16.0.0      255.255.0.0    10.233.20.158       1
+       132.32.0.0      255.255.0.0    10.233.20.158       1
 
