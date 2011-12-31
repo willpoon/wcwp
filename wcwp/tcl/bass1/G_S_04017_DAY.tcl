@@ -11,7 +11,7 @@
 #编 写 人：zhanght
 #编写时间：2009-04-25
 #问题记录：
-#修改历史: 
+#修改历史:  2011.12.26  value(OPP_NUMBER,' ') -> substr(value(OPP_NUMBER,' '),1,24)
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
 
@@ -86,7 +86,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                         ,IMSI
                         ,value(substr(MSRN,1,11),'')
                         ,value(IMEI,' ')
-                        ,value(OPP_NUMBER,' ') as OPPOSITE_NO
+                        ,substr(value(OPP_NUMBER,' '),1,24) as OPPOSITE_NO
                         ,value(A_NUMBER,'') as THIRD_NO
                         ,char(int(COALESCE(BASS1.FN_GET_ALL_DIM('BASS_STD1_0008',char(CITY_ID)),'891')))
                         ,char(int(COALESCE(BASS1.FN_GET_ALL_DIM('BASS_STD1_0008',char(ROAM_CITY_ID)),'891')))
@@ -155,8 +155,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                     char(MNS_TYPE),
                     value(char(VIDEO_TYPE),'0')     
                from  bass2.cdr_call_dtl_${timestamp} a
-               where length(OPP_NUMBER) <= 24
-                 and MNS_TYPE=1"
+               where  MNS_TYPE=1"
         puts $sql_buff
 	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
 		WriteTrace "$errmsg" 2020

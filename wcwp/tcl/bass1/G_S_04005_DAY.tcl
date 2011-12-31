@@ -22,7 +22,6 @@
 #      	  ,value(substr(char(input_time),1,4)||substr(char(input_time),6,2)||substr(char(input_time),9,2),$timestamp)
 #         ,value(substr(char(input_time),12,2)||substr(char(input_time),15,2)||substr(char(input_time),18,2),'002030')
 #     20090901 1.6.2规范去掉imei字段
-#    2011.12.12 panzw 报drtype_id 修改成 drtype_id not in (5103,1222,61102)
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
 

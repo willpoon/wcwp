@@ -24,7 +24,6 @@
 #						2011-05-18 11:51:24 panzhiwei 2.改用：					     Dw_product_ins_off_ins_prod_ds 出数；
 #						2011-05-18 19:45:56 panzhiwei 备注：不包括测试用户
 #						2011-05-27 10:10:49 panzhiwei 加入     and date(a.expire_date) > '$op_time'和rownumber()函数。剔除无效办理。
-#						2011-12-28 10:10:49 panzhiwei  关联用户表，剔除离网用户。
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
       

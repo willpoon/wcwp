@@ -7,7 +7,7 @@
 #编 写 人：zhanght
 #编写时间：2009-06-23
 #问题记录：
-#修改历史: 
+#修改历史: # 2011.12.26 修改错误的日期取值，格式错误
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
 
@@ -58,7 +58,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
         puts $last_month_last_day
 
 
-
+  #删除本期数据	set sql_buff "delete from BASS1.G_RULE_CHECK where time_id=$op_month	and rule_code in ('R130','R129','R128')"	exec_sql $sql_buff
 
 #########################################################################################
 #                                                                                       #
@@ -68,7 +68,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 ####  R130 增值业务收入                        ##########################################
    
-   set sqlbuf "select cast(cast(sum(case when bigint(acct_item_id)/100 in (5,6,7) then bigint(fee_receivable) else 0 end) as decimal(20,3))/cast( sum(bigint(fee_receivable)) as decimal(20,3)) as decimal(5,3))
+   set sqlbuf "select cast(cast(sum(case when bigint(acct_item_id)/100 in (5,6,7) then bigint(fee_receivable) else 0 end) as decimal(20,6))/cast( sum(bigint(fee_receivable)) as decimal(20,6)) as decimal(10,6))
                from G_S_03004_MONTH 
                where time_id = $op_month
                with ur"
@@ -77,18 +77,18 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                
    set RESULT_VAL1 [get_single $sqlbuf]
    
-   set RESULT_VAL1 [format "%.3f" [expr ${RESULT_VAL1} /1.00]]
+   set RESULT_VAL1 [format "%.4f" [expr ${RESULT_VAL1} /1.00]]
    
    puts $RESULT_VAL1
    
-   set sqlbuf "select cast(cast(sum(case when bigint(acct_item_id)/100 in (5,6,7) then bigint(fee_receivable) else 0 end) as decimal(20,3))/cast( sum(bigint(fee_receivable)) as decimal(20,3)) as decimal(5,3))
+   set sqlbuf "select cast(cast(sum(case when bigint(acct_item_id)/100 in (5,6,7) then bigint(fee_receivable) else 0 end) as decimal(20,6))/cast( sum(bigint(fee_receivable)) as decimal(20,6)) as decimal(10,6))
                from G_S_03004_MONTH 
                where time_id = $last_month
                with ur"
                 
    set RESULT_VAL2 [get_single $sqlbuf]
    
-   set RESULT_VAL2 [format "%.3f" [expr ${RESULT_VAL2} /1.00]]
+   set RESULT_VAL2 [format "%.4f" [expr ${RESULT_VAL2} /1.00]]
    
    puts $RESULT_VAL2
      
@@ -97,20 +97,20 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
   puts $RESULT_VAL1
   puts $RESULT_VAL2
-  set  RESULT_VAL3 [expr $RESULT_VAL1/$RESULT_VAL2 -1 ]
+  set  RESULT_VAL3 [format "%.4f" [expr $RESULT_VAL1*1.000/$RESULT_VAL2 -1 ]]
   puts  $RESULT_VAL3
-	if {$RESULT_VAL3>0.1 || $RESULT_VAL3<-0.1 } {
+	if {$RESULT_VAL3>0.2 || $RESULT_VAL3<-0.2 } {
 		set grade 2
-	        set alarmcontent "R130 校验不通过"
+	        set alarmcontent "R130 校验不通过:增值业务收入占比指标月变动率 > 20%"
 	        WriteAlarm $app_name $optime $grade ${alarmcontent}
 	} 
-	puts "增值业务收入占比指标月变动率 ≤ 10％"
+	puts "R130:增值业务收入占比指标月变动率 <= 20%  end"
 
 ####################################################################################
           
 ###  R129 全球通目标客户市场占有率   ###############################################
 
-   set sqlbuf "select cast(cast(sum(case when i.brand_id='1' then 1 else 0 end) as decimal(20,3))  /cast (sum(case when h.user_id is not null then 1 else 0 end) as decimal(20,3)) as decimal(5,3))  from
+   set sqlbuf "select cast(cast(sum(case when i.brand_id='1' then 1 else 0 end) as decimal(20,6))  /cast (sum(case when h.user_id is not null then 1 else 0 end) as decimal(20,6)) as decimal(10,6))  from
                (
                select user_id
                  from BASS1.G_S_03005_MONTH 
@@ -128,7 +128,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                (
                select USER_ID, BRAND_ID,row_number()over(partition by user_id order by time_id desc) row_id
                  from BASS1.G_A_02004_DAY 
-               where time_id<=$this_month_last_day 
+               where time_id<=$last_month_day 
                ) k
                where k.row_id=1
                ) a
@@ -139,7 +139,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                select f.user_id,f.usertype_id from
                (
                select user_id,usertype_id,row_number()over(partition by user_id order by time_id desc) row_id 
-               from BASS1.G_A_02008_DAY where time_id<=$this_month_last_day
+               from BASS1.G_A_02008_DAY where time_id<=$last_month_day
                ) f
                where f.row_id=1
                ) m
@@ -155,11 +155,11 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                
    set RESULT_VAL1 [get_single $sqlbuf]
    
-   set RESULT_VAL1 [format "%.3f" [expr ${RESULT_VAL1} /1.00]]
+   set RESULT_VAL1 [format "%.4f" [expr ${RESULT_VAL1} /1.00]]
    
    puts $RESULT_VAL1
    
-   set sqlbuf "select cast(cast(sum(case when i.brand_id='1' then 1 else 0 end) as decimal(20,3))  /cast (sum(case when h.user_id is not null then 1 else 0 end) as decimal(20,3)) as decimal(5,3))  from
+   set sqlbuf "select cast(cast(sum(case when i.brand_id='1' then 1 else 0 end) as decimal(20,6))  /cast (sum(case when h.user_id is not null then 1 else 0 end) as decimal(20,6)) as decimal(20,6))  from
                (
                select user_id
                  from BASS1.G_S_03005_MONTH 
@@ -202,7 +202,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                 
    set RESULT_VAL2 [get_single $sqlbuf]
    
-   set RESULT_VAL2 [format "%.3f" [expr ${RESULT_VAL2} /1.00]]
+   set RESULT_VAL2 [format "%.4f" [expr ${RESULT_VAL2} /1.00]]
    
    puts $RESULT_VAL2
      
@@ -211,7 +211,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
   puts $RESULT_VAL1
   puts $RESULT_VAL2
-  set  RESULT_VAL3 [expr $RESULT_VAL1-$RESULT_VAL2 ]
+  #set  RESULT_VAL3 [expr $RESULT_VAL1-$RESULT_VAL2 ]  set  RESULT_VAL3 [format "%.4f"  [expr $RESULT_VAL1-$RESULT_VAL2 ]]
   puts  $RESULT_VAL3
 	if {$RESULT_VAL3>0.1 || $RESULT_VAL3<-0.1 } {
 		set grade 2
@@ -264,7 +264,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                
    set RESULT_VAL1 [get_single $sqlbuf]
    
-   set RESULT_VAL1 [format "%.3f" [expr ${RESULT_VAL1} /1.00]]
+   set RESULT_VAL1 [format "%.4f" [expr ${RESULT_VAL1} /1.00]]
    
    puts $RESULT_VAL1
    
@@ -304,7 +304,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                 
    set RESULT_VAL2 [get_single $sqlbuf]
    
-   set RESULT_VAL2 [format "%.3f" [expr ${RESULT_VAL2} /1.00]]
+   set RESULT_VAL2 [format "%.4f" [expr ${RESULT_VAL2} /1.00]]
    
    puts $RESULT_VAL2
      
@@ -313,9 +313,9 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
   puts $RESULT_VAL1
   puts $RESULT_VAL2
-  set  RESULT_VAL3 [expr 1-$RESULT_VAL2/$RESULT_VAL1 ]
+#  set  RESULT_VAL3 [expr 1-$RESULT_VAL2/$RESULT_VAL1 ]set  RESULT_VAL3 [format "%.4f"  [expr 1-$RESULT_VAL2/$RESULT_VAL1 ]]
   puts  $RESULT_VAL3
-	if {$RESULT_VAL3>0.5 } {
+	if {$RESULT_VAL3>0.05 } {
 		set grade 2
 	        set alarmcontent "R128 校验不通过"
 	        WriteAlarm $app_name $optime $grade ${alarmcontent}

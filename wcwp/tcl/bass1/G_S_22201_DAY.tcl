@@ -19,6 +19,7 @@
 #          2010-01-13 当月累计使用TD网络的手机客户数 口径修改，通过核查集团的调查发现此问题,累计指标和当日指标口径一致
 #          2010-01-20 修改客户到达数据、在网客户数的口径 userstatus_id in (1,2,3,6,8)
 #          1.6.5规范 剔除 共模终端的专用号段147345—147349数据
+#          2011.12.27 由于  取 188 没有排除 2G数据卡，导致R111：bigint(TD_MOBILE_CUSTOMER_CNT)-bigint(TD_188_CNT)-bigint(TD_157_CNT)-bigint(TD_GSM_CNT)不通过；补剔数据卡。 LINE：88   and td_2gcard_mark=0
 #######################################################################################################
 
 
@@ -49,7 +50,7 @@ where (td_call_mark =1
   and usertype_id in (1,2,9)
   and test_mark=0
   
-),  
+),
 (  
 select value(char(count(distinct user_id)),'0') from bass2.dw_product_td_$timestamp
 where (td_call_mark =1
@@ -84,11 +85,12 @@ where (td_call_mark =1
   and userstatus_id in (1,2,3,6,8) 
   and usertype_id in (1,2,9)
   and td_3gcard_mark=0
+  and td_2gcard_mark=0
   and product_no like '188%'
   and test_mark=0
   and not ((td_3gbook_mark = 1 and td_gprs_mark=1) and td_call_mark = 0 and td_addon_mark = 0) 
   
- ),  
+ ) ,  
 ( 
 select value(char(count(distinct user_id)),'0') from bass2.dw_product_td_$timestamp
 where (td_call_mark =1
@@ -102,7 +104,7 @@ where (td_call_mark =1
   and test_mark=0
   and not ((td_3gbook_mark = 1 and td_gprs_mark=1) and td_call_mark = 0 and td_addon_mark = 0)  
   
-),  
+) ,  
 ( 
 select value(char(count(distinct user_id)),'0') from bass2.dw_product_td_$timestamp
 where (td_call_mark =1
@@ -118,7 +120,7 @@ where (td_call_mark =1
   and test_mark=0
   and not ((td_3gbook_mark = 1 and td_gprs_mark=1) and td_call_mark = 0 and td_addon_mark = 0)  
   
-),  
+) ,  
 ( 
 select value(char(count(distinct user_id)),'0') from bass2.dw_product_td_$timestamp
 where (((td_call_mark =1
@@ -238,7 +240,27 @@ where userstatus_id in (1,2,3,6,8)
   puts $sql_buff
   exec_sql $sql_buff
   
-
+	#	#R111：  自动调R111校验
+	#	set sql_buff "select bigint(TD_MOBILE_CUSTOMER_CNT)-bigint(TD_188_CNT)-bigint(TD_157_CNT)-bigint(TD_GSM_CNT)
+	#	from BASS1.G_S_22201_DAY
+	#	where time_id=$timestamp
+	#	with ur"
+	#	
+	#	#	set DEC_RESULT_VAL1 [format "%.3f" [expr ${DEC_RESULT_VAL1} /1.00]]
+	#	set DEC_RESULT_VAL1 [get_single $sql_buff]
+	#	puts $DEC_RESULT_VAL1
+	#	
+	#	
+	#	if {[format %.3f [expr ${DEC_RESULT_VAL1} ]]!=0 } {
+	#	set sql_buff "
+				#update BASS1.G_S_22201_DAY
+				#set TD_188_CNT =char( bigint(TD_188_CNT)+(${DEC_RESULT_VAL1} ))
+				#where time_id=$timestamp
+				#"
+	#	exec_sql $sql_buff
+	#	}
+	#	
+	
 	return 0
 }
 
