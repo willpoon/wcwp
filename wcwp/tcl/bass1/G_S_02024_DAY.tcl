@@ -13,6 +13,7 @@
 #编写时间：20110727
 #问题记录：
 #修改历史: 1. panzw 20110727	1.7.4 newly added
+#	2011-12-31 更新统一资费管理编码
 #######################################################################################################   
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
       set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
@@ -85,6 +86,13 @@ with ur
 
 	set sql_buff "	
 insert into bass1.G_S_02024_DAY
+select t.time_id
+,t.user_id
+,value(b.new_pkg_id ,t.BASE_PKG_ID) BASE_PKG_ID
+,t.CHANNEL_ID
+,t.REC_DT
+,t.VALID_DT
+from (
 select time_id
 	,a.user_id
 	, value(bass1.fn_get_all_dim_ex('BASS_STD1_0114',a.BASE_PKG_ID),a.BASE_PKG_ID) BASE_PKG_ID
@@ -98,6 +106,8 @@ where a.base_pkg_id not in (SELECT
 		FROM BASS1.ALL_DIM_LKP 
 		WHERE BASS1_TBID = 'BASS_STD1_0114'
 and BASS1_VALUE  not like '%QW%')
+) t 
+left join bass1.DIM_QW_QQT_PKGID  b on t.BASE_PKG_ID = b.old_pkg_id
 with ur
 "
 
@@ -129,7 +139,10 @@ with ur
 		     select distinct BASE_PKG_ID from bass1.G_S_02024_DAY
 		      where time_id =$timestamp
 		       except
-		  select distinct BASE_PROD_ID from G_I_02018_MONTH where time_id = $last_month
+		      select distinct value(b.new_pkg_id,BASE_PROD_ID) 
+			from G_I_02018_MONTH a 
+			left join bass1.DIM_QW_QQT_PKGID  b on a.BASE_PROD_ID = b.old_pkg_id
+			where time_id = $last_month
 	            ) as a
 	            "
 	chkzero2 $sql_buff "有套餐不在 02018 中"

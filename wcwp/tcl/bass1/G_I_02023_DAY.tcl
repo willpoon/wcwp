@@ -19,9 +19,9 @@
 #问题记录：1.
 #修改历史: 1. 1.7.2 规范
 #修改历史: 2. 这个业务5月1日才上线，5.1之前没有数。上线后跟踪5.2出数情况。
-#						2011-05-18 11:51:24 panzhiwei 原函数fn_get_all_dim有bug，不能返回大于10的字段值，改使用fn_get_all_dim_ex()　函数。
-#						2011-05-18 11:51:24 panzhiwei 联合02022校验user_id的合法性。
-
+#2011-05-18 11:51:24 panzhiwei 原函数fn_get_all_dim有bug，不能返回大于10的字段值，改使用fn_get_all_dim_ex()　函数。
+#2011-05-18 11:51:24 panzhiwei 联合02022校验user_id的合法性。
+#2011-12-31 更新统一资费管理编码
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
       
@@ -112,11 +112,13 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	select 
 			$timestamp as TIME_ID
 			,a.USER_ID
-			,a.ADD_PKG_ID
+			,c.old_pkg_id ADD_PKG_ID
 			,a.VALID_DT
 		from  bass1.G_I_02023_DAY_1 as a 
 		      ,bass2.dw_product_$timestamp as b
+		      ,bass1.DIM_QW_QQT_PKGID  c
 		    where a.user_id = b.user_id
+		    and a.add_pkg_id = c.old_pkg_id
 		    and b.usertype_id in (1,2,9) 
 		    and b.userstatus_id in (1,2,3,6,8)
 		    and b.test_mark<>1
