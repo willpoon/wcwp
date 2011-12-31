@@ -324,7 +324,7 @@ return 0
 
 
 
-proc ADJ_04008 { op_time optime_month } {
+proc ADJ_04008_R107 { op_time optime_month } {
 
 puts $op_time
 puts $optime_month
@@ -357,6 +357,40 @@ exec_sql $sql_buff
 
 }
 
+
+
+proc ADJ_04008_R108 { op_time optime_month } {
+
+puts $op_time
+puts $optime_month
+
+#当天 yyyymmdd
+set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
+set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
+puts $timestamp
+puts $op_month
+#当天 yyyy-mm-dd
+set optime $op_time
+set curr_month [string range $op_time 0 3][string range $op_time 5 6]
+set last_day [GetLastDay [string range $timestamp 0 7]]
+set this_month_last_day [string range $curr_month 0 5][GetThisMonthDays [string range $curr_month 0 5]01]
+
+puts $optime
+puts $curr_month
+
+puts $timestamp
+puts $this_month_last_day
+	
+if { $timestamp == $this_month_last_day } {
+
+set sql_buff "
+update (select * from  BASS1.G_S_04008_DAY  where time_id = ${timestamp} ) t 
+set BASE_BILL_DURATION = char(bigint(BASE_BILL_DURATION)-5)
+with ur
+"
+exec_sql $sql_buff
+
+}
 
 return 0  
 
