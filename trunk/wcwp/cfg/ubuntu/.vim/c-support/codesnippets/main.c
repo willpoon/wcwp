@@ -13,7 +13,7 @@
 	int
 main ( int argc, char *argv[] )
 {
-	printf ("\nProgram %s\n\n", argv[0] );
+	printf ("\nThis is a Test Program %s\n\n", argv[0] );
 
 	return EXIT_SUCCESS;
 }		/* ----------  end of function main  ---------- */
