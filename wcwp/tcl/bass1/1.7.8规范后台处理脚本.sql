@@ -60,4 +60,29 @@ T-2年已兑换积分值
  **/
  
  
+  G_S_04005_DAY.tcl
+  
+/**
+  518	22012 （日KPI）:
+修改字段“短信计费量”的字段名和属性描述
+增加字段“行业网关短信计费量”	1.7.8	2011-12-21	自数据日期20120101起生效
+ **/
  
+ 
+ G_S_22012_DAY.tcl
+ 
+ CREATE TABLE "BASS1   "."G_S_22012_DAY"  (
+                  "TIME_ID" INTEGER , 
+                  "BILL_DATE" CHAR(8) NOT NULL , 
+                  "M_NEW_USERS" CHAR(10) NOT NULL , 
+                  "M_DAO_USERS" CHAR(12) NOT NULL , 
+                  "M_BILL_DURATION" CHAR(12) NOT NULL , 
+                  "M_DATA_FLOWS" CHAR(12) NOT NULL , 
+                  "M_BILL_SMS" CHAR(12) NOT NULL , 
+                  "M_BILL_HANGYE_SMS" CHAR(12) NOT NULL , 
+                  "M_OFF_USERS" CHAR(10) NOT NULL , 
+                  "M_BILL_MMS" CHAR(12) NOT NULL )   
+                 DISTRIBUTE BY HASH("TIME_ID")   
+                   IN "TBS_APP_BASS1" ; 
+		   
+		   

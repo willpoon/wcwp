@@ -23,6 +23,7 @@
 #          20091022 1.6.3规范修改(去掉'当月收费用户数'指标等)
 #          20091123 修改上网本口径 a.apn_ni not in ('CMTDS') 为drtype_id not in (8307)
 #          20100120 修改数据卡也算新增客户数，剔除条件crm_brand_id2<>70 修改客户到达数据、在网客户数的口径 userstatus_id in (1,2,3,6,8)
+#          20111231 1.短信计费量（不含行业网关短信） 2.行业网关短信计费量
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
 
@@ -281,11 +282,6 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 						  and a.drtype_id<>61102 
 						  and substr(a.sp_code,1,12) is not null
 						  and a.svcitem_id in (300001,300002,300003,300004)
-					union all
-					select value(count(0),0) cnts from    G_S_04016_DAY 
-					where time_id = $timestamp 
-					and RECORD_TYPE in ('00','01','10','11')
-					and SEND_STATUS = '0'
 					union all		
 					 select value(sum(counts),0) cnts from bass2.dw_newbusi_sms_$timestamp  a,bass2.dw_product_$timestamp b 
 						where a.user_id=b.user_id
@@ -309,7 +305,26 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	aidb_close $handle
 	puts "短信计费量为:$M_BILL_SMS"
 
-
+#2011.12.31 行业网关短信计费量
+   set handle [aidb_open $conn]
+    set sql_buff "
+					select value(count(0),0) cnts from    G_S_04016_DAY 
+					where time_id = $timestamp 
+					and RECORD_TYPE in ('00','01','10','11')
+					and SEND_STATUS = '0'
+           "	               
+    puts $sql_buff
+    if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		WriteTrace $errmsg 1001
+		return -1
+	}
+	if [catch {set M_BILL_HANGYE_SMS [lindex [aidb_fetch $handle] 0]} errmsg ] {
+		WriteTrace $errmsg 1002
+		return -1
+	}
+	aidb_commit $conn
+	aidb_close $handle
+	puts "行业网关短信计费量为:$M_BILL_HANGYE_SMS"
 
 
 	#08:离网客户数
@@ -382,6 +397,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                 ,'$M_BILL_DURATION'
                 ,'$M_DATA_FLOWS'
                 ,'$M_BILL_SMS'
+                ,'$M_BILL_HANGYE_SMS'
                 ,'$M_OFF_USERS'
                 ,'$M_BILL_MMS'
 	             ) "
