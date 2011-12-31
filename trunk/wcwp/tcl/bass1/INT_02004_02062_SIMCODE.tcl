@@ -22,6 +22,7 @@ select e.user_id
     ,case when e.usertype_id in ('1','2') then '0' else '1' end  test_flag
     ,e.sim_code
     ,e.usertype_id  
+    ,f.usertype_id  
     ,e.create_date  
     ,e.brand_id
     ,f.time_id  
@@ -132,7 +133,7 @@ select b.user_id from
 ,bass1.g_a_02004_02062_simcode b 
 where a.user_id = b.user_id 
 )
-and ( a.usertype_id NOT IN ('2010','2020','2030','9000') )
+and ( a.USERSTATUS NOT IN ('2010','2020','2030','9000') )
 "
 exec_sql $sql_buff
 

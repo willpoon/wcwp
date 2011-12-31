@@ -71,7 +71,9 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                            ,value(substr(replace(replace(char(CDR_TIMES),'-',''),'.',''),1,14),' ')
                            ,value(RING_ID,' ')                        
                         from 
-                          bass2.DWD_MR_OPER_CDR_${timestamp}" 
+                          bass2.DWD_MR_OPER_CDR_${timestamp}
+where product_no is not null
+" 
   puts $sql_buff
   exec_sql $sql_buff
   #--------------------------------------------------------------------------------------------------------------
