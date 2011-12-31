@@ -77,6 +77,14 @@ where  a.state =1
 
 	set sql_buff "	
 insert into bass1.G_S_02025_DAY
+select 
+         t.TIME_ID
+        ,t.USER_ID
+        ,value(b.new_pkg_id ,t.ADD_PKG_ID) ADD_PKG_ID
+        ,t.CHANNEL_ID
+        ,t.REC_DT
+        ,t.VALID_DT
+from (
 select time_id
 	, a.user_id
 	, c.BASS1_VALUE ADD_PKG_ID
@@ -86,6 +94,9 @@ select time_id
 from bass1.G_S_02025_DAY_1 a 
 left join (select distinct channel_ID,organize_id from  bass2.dim_channel_info a where a.channel_type_class in (90105,90102) ) b on a.CHANNEL_ID = char(b.organize_id )
 left join (select XZBAS_VALUE,BASS1_VALUE from BASS1.ALL_DIM_LKP where BASS1_TBID = 'BASS_STD1_0115' ) c on a.ADD_PKG_ID = c.xzbas_value
+) t
+left join bass1.DIM_QW_QQT_PKGID  b on t.ADD_PKG_ID = b.old_pkg_id
+with ur
 "
 
 exec_sql $sql_buff

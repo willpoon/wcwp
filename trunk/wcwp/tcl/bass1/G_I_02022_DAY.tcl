@@ -52,7 +52,7 @@ from (
 	select 
 		$timestamp TIME_ID
 		,char(a.product_instance_id)  USER_ID
-		,bass1.fn_get_all_dim_ex('BASS_STD1_0114',char(a.offer_id)) BASE_PKG_ID
+		,e.NEW_PKG_ID BASE_PKG_ID
 		,replace(char(date(a.VALID_DATE)),'-','') VALID_DT
 		,row_number()over(partition by a.product_instance_id order by expire_date desc ,VALID_DATE desc ) rn 
 	from  bass2.Dw_product_ins_off_ins_prod_ds a
@@ -66,8 +66,10 @@ from (
 		    where usertype_id in (1,2,9) 
 		    and userstatus_id in (1,2,3,6,8)
 		    and test_mark<>1) d
+	,bass1.DIM_QW_QQT_PKGID e
 	where  char(a.offer_id) = c.offer_id 
 	  and char(a.product_instance_id)  = d.user_id
+	  and bass1.fn_get_all_dim_ex('BASS_STD1_0114',char(a.offer_id))  = e.OLD_PKG_ID	  
 	  and a.state =1
 	  and a.valid_type = 1
 	  and a.OP_TIME = '$op_time'	  
