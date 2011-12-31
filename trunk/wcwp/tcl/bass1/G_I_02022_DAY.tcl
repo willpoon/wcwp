@@ -19,11 +19,12 @@
 #编写时间：2011-04-26
 #问题记录：1.
 #修改历史: 1. 1.7.2 规范
-#					 这个业务5月1日才上线，5.1之前没有数。上线后跟踪5.2出数情况。
-#						2011-05-18 11:51:24 panzhiwei 1.加入：					      and XZBAS_COLNAME not like '套餐减半%' 条件；
-#						2011-05-18 11:51:24 panzhiwei 2.改用：					     Dw_product_ins_off_ins_prod_ds 出数；
-#						2011-05-18 19:45:56 panzhiwei 备注：不包括测试用户
-#						2011-05-27 10:10:49 panzhiwei 加入     and date(a.expire_date) > '$op_time'和rownumber()函数。剔除无效办理。
+# 这个业务5月1日才上线，5.1之前没有数。上线后跟踪5.2出数情况。
+#	2011-05-18 11:51:24 panzhiwei 1.加入：					      and XZBAS_COLNAME not like '套餐减半%' 条件；
+#	2011-05-18 11:51:24 panzhiwei 2.改用：					     Dw_product_ins_off_ins_prod_ds 出数；
+#	2011-05-18 19:45:56 panzhiwei 备注：不包括测试用户
+#	2011-05-27 10:10:49 panzhiwei 加入     and date(a.expire_date) > '$op_time'和rownumber()函数。剔除无效办理。
+#	2011-12-31 更新统一资费管理编码
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
       
