@@ -22,6 +22,12 @@
 #      	  ,value(substr(char(input_time),1,4)||substr(char(input_time),6,2)||substr(char(input_time),9,2),$timestamp)
 #         ,value(substr(char(input_time),12,2)||substr(char(input_time),15,2)||substr(char(input_time),18,2),'002030')
 #     20090901 1.6.2规范去掉imei字段
+#     20111231 1.7.8 包含用户发送到SP应用的梦网短信上行话单；各省内容计费的梦网短信包月费话单也在本接口中上传 
+			#DRTYPE_ID	DRTYPE_NAME
+			#1222	行业网关实现企信通企信通业务
+			#5103	全球通梦网短信(上行收费话单）
+			#61102	本省语音杂志信息费话单
+		#业务代码、服务代码暂时不处理
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
 
@@ -119,7 +125,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                      ,substr(char(process_time),12,2)||substr(char(process_time),15,2)||substr(char(process_time),18,2)
                    from 
                      bass2.cdr_ismg_dtl_$timestamp 
-                   where (drtype_id not in (5103,1222,61102) and process_time is not null and substr(sp_code,1,12) is not null
+                   where (drtype_id not in (61102) and process_time is not null and substr(sp_code,1,12) is not null
 				and svcitem_id in (300001,300002,300003,300004)
 			  ) 
 			 or substr(ser_code,1,5) in ('12590') 		    
