@@ -357,6 +357,10 @@ exec_sql $sql_buff
 
 }
 
+return 0  
+
+}
+
 
 
 proc ADJ_04008_R108 { op_time optime_month } {

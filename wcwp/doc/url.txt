@@ -1,2 +1,6 @@
 http://a9.g.akamai.net/f/101/21309/30m/rfa.download.akamai.com/21309/audio/CAN/CAN-2011-1230-1400.mp3
 svn://172.16.5.71/xzbi
+
+svn checkout https://poonzref.googlecode.com/svn/trunk/ poon --username pzw.notes@gmail.com
+http://code.google.com/p/poonzref/source/checkout
+zq3aW7vd3jd5
