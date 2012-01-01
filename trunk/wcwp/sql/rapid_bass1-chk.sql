@@ -682,7 +682,7 @@ select tabname from syscat.tables where tabname like '%ODS_PRODUCT_ORD_BUSI_OTHE
 select * from   app.sch_control_task where control_code like '%product%other%ds%.tcl'                
 select * from   app.sch_control_task where control_code like '%product%%tcl'                
 
-select * from  table( bass1.get_before('product_ord_busi_')) a 
+select * from  table( bass1.get_before('04008')) a 
 
 
 
@@ -1878,3 +1878,39 @@ delete
                
                
                 
+
+
+select count(0) from   bass2.dw_product_20111230
+
+
+
+
+select   substr(filename,18,5) 
+						from 
+						( 
+						select  a.* ,row_number()over(partition by  substr(filename,18,5) order by deal_time desc ) rn 
+						from APP.G_FILE_REPORT a 
+						where substr(filename,9,8) = replace(char(current date - 1 days),'-','') 
+						and err_code='00' 
+						and substr(filename,18,5) 
+						in (  select INTERFACE_CODE from   BASS1.MON_ALL_INTERFACE 
+								   where deadline = 9 and sts = 1 
+								) 
+						) t where rn = 1 
+
+
+
+select   substr(filename,18,5) 
+						from 
+						( 
+						select  a.* ,row_number()over(partition by  substr(filename,18,5) order by deal_time desc ) rn 
+						from APP.G_FILE_REPORT a 
+						where substr(filename,9,8) = replace(char(current date - 1 days),'-','') 
+						and err_code='00' 
+						and substr(filename,18,5) 
+						in (  select INTERFACE_CODE from   BASS1.MON_ALL_INTERFACE 
+								   where deadline = 9 and sts = 1 
+								) 
+						) t where rn = 1 
+                        
+                        
