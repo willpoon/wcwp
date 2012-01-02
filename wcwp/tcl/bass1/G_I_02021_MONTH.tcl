@@ -138,7 +138,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 				where time_id  = $this_month_last_day
 				) t where  t.rn = 1 
 				) c on  a.user_id=c.user_id and d.bass1_offer_id = c.ADD_PKG_ID
-		left join bass1.DIM_QW_QQT_PKGID e on  d.ADD_PKG_ID = e.old_pkg_id		
+		left join bass1.DIM_QW_QQT_PKGID e on  c.ADD_PKG_ID = e.old_pkg_id		
 with ur
 "
 

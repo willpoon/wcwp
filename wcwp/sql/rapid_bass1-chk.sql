@@ -2429,3 +2429,11 @@ and time_id in (20111231,20120101)
 TIME_ID	USER_ID	BASE_PKG_ID	CHANNEL_ID	REC_DT	VALID_DT
 20120101	89101110285299      	999914211030058001            	91000003                                	20120101	20120201
 
+
+
+select distinct  OVER_PROD_ID 
+from G_I_02019_MONTH where time_id = 201112
+
+select distinct  BASE_PROD_ID 
+from G_I_02018_MONTH where time_id = 201112
+
