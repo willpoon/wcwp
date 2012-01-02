@@ -306,7 +306,7 @@ set sql_buff "
 					      and bass1_value like 'QW_QQT_JC%'
 				      ) d on char(a.base_prod_id) = d.offer_id
 	left join bass1.DIM_QW_QQT_PKGID e on  d.bass1_offer_id = e.old_pkg_id
-	group by value(d.bass1_offer_id,char(a.base_prod_id)),
+	group by value(e.new_pkg_id,char(a.base_prod_id)),
 	         a.base_prod_name,
 	         value(c.base_prod_type,'900'),
 	         a.prod_status,
