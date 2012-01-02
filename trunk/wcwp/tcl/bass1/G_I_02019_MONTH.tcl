@@ -225,7 +225,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		  )
 		select 
 		   $op_month
-		  ,value(d.bass1_offer_id,char(a.base_prod_id))   over_prod_id
+		  ,value(e.new_pkg_id,char(a.base_prod_id))   over_prod_id
 		  ,a.base_prod_name over_prod_name
 		  ,case when b.cnt=1 then '1'
 		        when b.cnt=9 then '2'
@@ -250,12 +250,14 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		      ,prod_end_time
 		    from bass1.g_i_02019_month_2
 		    ) a
-		left join session.g_i_02019_month_tmp3 b on a.base_prod_id = b.base_prod_id
+	left join session.g_i_02019_month_tmp3 b on a.base_prod_id = b.base_prod_id
 	left join (select xzbas_value  as offer_id ,bass1_value bass1_offer_id
 							from  BASS1.ALL_DIM_LKP 
 							where BASS1_TBID = 'BASS_STD1_0115'
 					      and bass1_value like 'QW_QQT_DJ%'
 				      ) d on char(a.base_prod_id) = d.offer_id
+	left join bass1.DIM_QW_QQT_PKGID e on  d.bass1_offer_id = e.old_pkg_id
+	with ur
   "
 
 	exec_sql $sql_buff

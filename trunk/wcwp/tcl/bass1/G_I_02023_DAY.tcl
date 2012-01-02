@@ -112,7 +112,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	select 
 			$timestamp as TIME_ID
 			,a.USER_ID
-			,c.old_pkg_id ADD_PKG_ID
+			,c.new_pkg_id ADD_PKG_ID
 			,a.VALID_DT
 		from  bass1.G_I_02023_DAY_1 as a 
 		      ,bass2.dw_product_$timestamp as b

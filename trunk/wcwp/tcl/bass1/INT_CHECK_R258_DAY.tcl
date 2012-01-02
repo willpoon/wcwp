@@ -55,9 +55,13 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	where time_id = $timestamp and VALID_DT = '$timestamp'
 	) a
 	left join (
-	select  USER_ID,BASE_PKG_ID from 
-	G_S_02024_DAY
-	where time_id >= $last_month_first_day and time_id <= $timestamp 
+		select a.user_id,value(b.new_pkg_id,a.BASE_PKG_ID) BASE_PKG_ID 
+		from (
+			select  USER_ID,BASE_PKG_ID from 
+			G_S_02024_DAY a
+			where time_id >= $last_month_first_day and time_id <= $timestamp 
+		     ) a 
+		left join bass1.DIM_QW_QQT_PKGID b on a.BASE_PKG_ID = b.old_pkg_id
 	) b on a.USER_ID = b.USER_ID and a.BASE_PKG_ID= b.BASE_PKG_ID
 	with ur
         "
@@ -99,10 +103,14 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	where time_id = $timestamp and VALID_DT = '$timestamp'
 	) a
 	left join (
-	select  USER_ID,BASE_PKG_ID from 
-	G_S_02024_DAY
-	where  time_id <= $timestamp 
-	) b on a.USER_ID = b.USER_ID and a.BASE_PKG_ID= b.BASE_PKG_ID
+			select a.user_id,value(b.new_pkg_id,a.BASE_PKG_ID) BASE_PKG_ID 
+		from (
+			select  USER_ID,BASE_PKG_ID from 
+			G_S_02024_DAY a
+			where time_id <= $timestamp 
+		     ) a 
+		left join bass1.DIM_QW_QQT_PKGID b on a.BASE_PKG_ID = b.old_pkg_id
+		) b on a.USER_ID = b.USER_ID and a.BASE_PKG_ID= b.BASE_PKG_ID
 	with ur
         "
    set p_row [get_row $sql_buff]

@@ -122,25 +122,25 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		select 
 		     $op_month,
 		     a.user_id,
-		     value(c.ADD_PKG_ID,char(a.offer_id)),
+		     value(value(e.new_pkg_id,c.ADD_PKG_ID),char(a.offer_id)),
 		     value(c.VALID_DT,a.create_date) VALID_DT
 		from bass1.g_i_02021_month_temp2 a
-		     inner join bass1.g_i_02021_month_temp1 b	on  a.user_id=b.user_id
-		     	left join (select xzbas_value  as offer_id ,bass1_value bass1_offer_id
-							from  BASS1.ALL_DIM_LKP 
-							where BASS1_TBID = 'BASS_STD1_0115'
-					      and bass1_value like 'QW_QQT_DJ%'
-				      ) d 
-				      	on char(a.offer_id) = d.offer_id
-		     left join  (select user_id , ADD_PKG_ID,VALID_DT
-											from
-											(select a.*,row_number()over(partition by user_id,ADD_PKG_ID order by VALID_DT desc ) rn
-											from bass1.g_i_02023_day  a
-											where time_id  = $this_month_last_day
-											) t where  t.rn = 1 
-										) c	
-								on  a.user_id=c.user_id and d.bass1_offer_id = c.ADD_PKG_ID
-  "
+		inner join bass1.g_i_02021_month_temp1 b	on  a.user_id=b.user_id
+		left join (select xzbas_value  as offer_id ,bass1_value bass1_offer_id
+				from  BASS1.ALL_DIM_LKP 
+				where BASS1_TBID = 'BASS_STD1_0115'
+				and bass1_value like 'QW_QQT_DJ%'
+				) d on char(a.offer_id) = d.offer_id
+		left join  (select user_id , ADD_PKG_ID,VALID_DT
+				from
+				(select a.*,row_number()over(partition by user_id,ADD_PKG_ID order by VALID_DT desc ) rn
+				from bass1.g_i_02023_day  a
+				where time_id  = $this_month_last_day
+				) t where  t.rn = 1 
+				) c on  a.user_id=c.user_id and d.bass1_offer_id = c.ADD_PKG_ID
+		left join bass1.DIM_QW_QQT_PKGID e on  d.ADD_PKG_ID = e.old_pkg_id		
+with ur
+"
 
 	exec_sql $sql_buff
 
@@ -152,7 +152,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	set sql_buff "
     select 
         (select  count(distinct user_id||ADD_PKG_ID) cnt from bass1.g_i_02023_day a where time_id = $this_month_last_day )                     
-         - (select  count(distinct user_id||OVER_PROD_ID) cnt from bass1.g_i_02021_month a where time_id = $op_month and  OVER_PROD_ID like 'QW_QQT_DJ%')
+         - (select  count(distinct user_id||OVER_PROD_ID) cnt from bass1.g_i_02021_month a where time_id = $op_month and  OVER_PROD_ID like '99991222%')
          from bass2.dual
 	with ur 
 	"
@@ -167,10 +167,10 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	             select user_id from bass1.g_i_02021_month
 	              where time_id =$op_month
                except
-							 select user_id from bass2.dw_product_$op_month
-							 where usertype_id in (1,2,9) 
-							   and userstatus_id in (1,2,3,6,8)
-							   and test_mark<>1               
+			 select user_id from bass2.dw_product_$op_month
+			 where usertype_id in (1,2,9) 
+			   and userstatus_id in (1,2,3,6,8)
+			   and test_mark<>1               
 	            ) as a
 	            with ur
 	            "

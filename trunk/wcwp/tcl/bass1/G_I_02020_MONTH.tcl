@@ -84,7 +84,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	exec_sql $sql_buff
 
 	set sql_buff "
-	insert into bass1.g_i_02020_month_1 (
+insert into bass1.g_i_02020_month_1 (
      user_id    
     ,product_no 
     ,test_flag  
@@ -116,31 +116,32 @@ where e.row_id=1 and f.row_id=1
 	set sql_buff "
 insert into 	 bass1.g_i_02020_month
 		  (
-		   time_id
-	    ,user_id
+			time_id
+			,user_id
 			,base_prod_id
 			,prod_valid_date
 		  )
-select  $op_month
-				,b.user_id
-        ,value(d.BASE_PKG_ID,char(a.offer_id))
-        ,value(d.VALID_DT,replace(char(date(a.create_date)),'-','')) VALID_DT
- from bass2.dw_product_ins_prod_$op_month  a
- join bass2.dw_product_$op_month b on a.product_instance_id = b.user_id
- join BASS1.g_i_02020_month_1 c on  a.product_instance_id = c.USER_ID
- left join (select user_id , BASE_PKG_ID ,VALID_DT
-					from
-					(select a.*,row_number()over(partition by user_id order by VALID_DT desc ) rn
-					from bass1.g_i_02022_day  a
-					where time_id  = $this_month_last_day
-					) t where  t.rn = 1 
-				) d on a.product_instance_id = d.user_id
-where   a.valid_type = 1 
-and (b.userstatus_id  in (1,2,3,6,8) or b.MONTH_OFF_MARK = 1)
-and not exists 
-                                  (select 1 from  bass2.dw_product_test_phone_$op_month e 
-                                                        where a.product_instance_id     = e.user_id and  e.sts=1
-                                )
+		select  $op_month
+		,b.user_id
+		,value(value(e.new_pkg_id,d.BASE_PKG_ID),char(a.offer_id)) base_prod_id
+		,value(d.VALID_DT,replace(char(date(a.create_date)),'-','')) VALID_DT
+		from bass2.dw_product_ins_prod_$op_month  a
+		join bass2.dw_product_$op_month b on a.product_instance_id = b.user_id
+		join BASS1.g_i_02020_month_1 c on  a.product_instance_id = c.USER_ID
+		left join (select user_id , BASE_PKG_ID ,VALID_DT
+				from
+				(select a.*,row_number()over(partition by user_id order by VALID_DT desc ) rn
+				from bass1.g_i_02022_day  a
+				where time_id  = $this_month_last_day
+				) t where  t.rn = 1 
+			  ) d on a.product_instance_id = d.user_id
+		left join bass1.DIM_QW_QQT_PKGID e on  d.BASE_PKG_ID = e.old_pkg_id		
+		where   a.valid_type = 1 
+		and (b.userstatus_id  in (1,2,3,6,8) or b.MONTH_OFF_MARK = 1)
+		and not exists 
+			(select 1 from  bass2.dw_product_test_phone_$op_month e 
+				where a.product_instance_id     = e.user_id and  e.sts=1
+			)
 	"
 exec_sql $sql_buff
 
@@ -155,7 +156,7 @@ exec_sql $sql_buff
 	set sql_buff "
     select 
         (select count(distinct user_id) cnt from bass1.g_i_02022_day a where time_id = $this_month_last_day )
-         - (select count(0) cnt from bass1.g_i_02020_month a where time_id = $op_month and  BASE_PROD_ID like 'QW_QQT_JC%')
+         - (select count(0) cnt from bass1.g_i_02020_month a where time_id = $op_month and  BASE_PROD_ID like '9999142110%')
          from bass2.dual
 	with ur 
 	"
@@ -195,9 +196,9 @@ select count(*) from
 	             select user_id from bass1.g_i_02020_month
 	              where time_id =$op_month
                except
-							 select user_id from bass2.dw_product_$op_month
-							 where usertype_id in (1,2,9) 
-							   and test_mark<>1               
+		 select user_id from bass2.dw_product_$op_month
+		 where usertype_id in (1,2,9) 
+		   and test_mark<>1               
 	            ) as a
 	            "
 
@@ -260,13 +261,13 @@ select count(*) from
 	set sql_buff "
     select 
         (select count(0)
-        	from    bass1.g_i_02022_day
-				where time_id = $this_month_last_day  
+	from    bass1.g_i_02022_day
+			where time_id = $this_month_last_day  
 				)
          - (select count(0)
 	         from    bass1.g_i_02020_month 
-						where time_id = $op_month
-						and base_prod_id like '%QQT%')
+		where time_id = $op_month
+		and base_prod_id like '9999142110%')
          from bass2.dual
 	with ur 
 	"
