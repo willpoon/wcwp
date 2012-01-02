@@ -75039,3 +75039,14 @@ order by 1
 
 select * from bass1.g_s_04002_day_td
 where product_no = '13618963711'/
+
+g_s_04002_day
+g_s
+
+g_s_04002
+
+g_s_04002_day
+
+select
+control_code
+begintime

@@ -71,6 +71,9 @@ T-2年已兑换积分值
  
  G_S_22012_DAY.tcl
  
+ rename  bass1.G_S_22012_DAY to G_S_22012_DAY_20111231
+
+ 
  CREATE TABLE "BASS1   "."G_S_22012_DAY"  (
                   "TIME_ID" INTEGER , 
                   "BILL_DATE" CHAR(8) NOT NULL , 
@@ -85,7 +88,28 @@ T-2年已兑换积分值
                  DISTRIBUTE BY HASH("TIME_ID")   
                    IN "TBS_APP_BASS1" ; 
 		   
-		   
+
+
+
+
+
+insert into G_S_22012_DAY
+select 
+         TIME_ID
+        ,BILL_DATE
+        ,M_NEW_USERS
+        ,M_DAO_USERS
+        ,M_BILL_DURATION
+        ,M_DATA_FLOWS
+        ,M_BILL_SMS
+	,''
+        ,M_OFF_USERS
+        ,M_BILL_MMS
+from 	G_S_22012_DAY_20111231
+
+
+
+
 /**
 519	修改了以下接口中全球通全网统一资费套餐的“基础套餐标识”的编码，参见附件一维度指标说明中的BASS_STD1_0114【全球通全网统一资费基础套餐标识】：
 02018（基础资费套餐）

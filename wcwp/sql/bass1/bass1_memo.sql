@@ -56,6 +56,24 @@ gmcc@4889
 发送短信编辑短信SG发送到10663355
 注：手机开通会员收到的短信业务名称为"幸福时光"
 
+-----------------------------------------------------------------------------
+telnet : 10.10.30.1
+
+ailk vpn
+Firewall User Authentication
+Username: ailk\panzw2
+Password: 
+          Firewall User Authentication: Accepted
+
+Connection was reset.
+
+
+ie:
+proxy: proxy.asiainfo-linkage.com 8080
+dail: ailk\panzw2  / passwd
+exception:172.16.*.*;10.233.*.*;132.32.*.*
+-----------------------------------------------------------------------------
+
 
 
 chenyang@xz.cmcc
