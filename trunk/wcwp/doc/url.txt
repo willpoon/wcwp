@@ -4,3 +4,8 @@ svn://172.16.5.71/xzbi
 svn checkout https://poonzref.googlecode.com/svn/trunk/ poon --username pzw.notes@gmail.com
 http://code.google.com/p/poonzref/source/checkout
 zq3aW7vd3jd5
+
+color_picker£º
+http://www.intelliance.fr/jquery/color_picker/
+
+http://nongnu.askapache.com/c-prog-book/learning_gnu_c.html
