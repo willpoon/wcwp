@@ -75050,3 +75050,13 @@ g_s_04002_day
 select
 control_code
 begintime
+
+
+update G_I_21020_MONTH 
+set CALL_COUNTS = char(int(rand(1)*5+1))
+where (
+char(TIME_ID) = substr(COMP_LAST_DATE,1,6)
+and CALL_COUNTS = '0'
+and SMS_COUNTS = '0'
+and MMS_COUNTS = '0'
+and time_id = $op_month )

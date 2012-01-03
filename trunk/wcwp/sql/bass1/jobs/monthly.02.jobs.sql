@@ -153,6 +153,38 @@ select * from g_i_02053_month
 ！！！！！！check 
 --每月都有两条这样的数据。
 
+
+
+  select * from
+                (select * from 
+                (
+                select user_id,chg_vip_time,row_number()over(partition by user_id order by time_id desc) row_id from BASS1.G_I_02005_MONTH
+                where time_id=201112
+                ) k
+                where k.row_id =1) a
+                left outer join 
+                (
+                select * from
+                (
+                select user_id,create_date,row_number()over(partition by user_id order by time_id desc) row_id 
+                from BASS1.G_A_02004_DAY
+                where time_id<=20111231
+                ) k
+                where k.row_id=1) b
+                on a.user_id=b.user_id
+                where bigint(chg_vip_time)<bigint(create_date)
+                with ur
+                
+update BASS1.G_I_02005_MONTH
+set CHG_VIP_TIME = '20110629'
+where user_id = '89160001048760'
+and time_id = 201112
+
+USER_ID	CHG_VIP_TIME	ROW_ID	USER_ID	CREATE_DATE	ROW_ID
+89160001048760      	20110624	1	89160001048760      	20110629	1
+
+
+
   select * from
                 (select * from 
                 (

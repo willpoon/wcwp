@@ -149,7 +149,7 @@ exec_sql $sql_buff
 				with ur 
 		"
 
-	 chkzero2 $sql_buff "invalid COMP_PRODUCT_NO ! 1 "
+	 chkzero2 $sql_buff "invalid COMP_PRODUCT_NO ! 2 "
 
 
   #1.¼ì²échkpkunique
