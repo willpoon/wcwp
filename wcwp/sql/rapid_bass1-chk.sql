@@ -1932,16 +1932,54 @@ select   substr(filename,18,5)
 select count(*) from 
 	            (
 	             select user_id,count(*) cnt from bass1.g_a_02008_day
-	              where time_id =20120101
+	              where time_id =20120102
 	             group by user_id
 	             having count(*)>1
 	            ) as a
 
-                        
+USER_ID	CNT
+89560001672362      	3
 
+select * from                         bass1.g_a_02008_day
+where time_id = 20120102
+and user_id = '89560001672362'
+                        
+20120102	89560001672362      	2020
+20120102	89560001672362      	1031
+
+
+TIME_ID	USER_ID	USERTYPE_ID
+20120102	89560001672362      	2020
+20120102	89560001672362      	2020
+20120102	89560001672362      	1031
+
+
+delete from (
+select * from                         bass1.g_a_02008_day
+where time_id = 20120102
+and user_id = '89560001672362'
+) t
+where USER_ID = '89560001672362'
 
 89560001668643      	2
 
+
+select * from
+(
+select product_no,count(*) cnt from CHECK_0200402008_DAY_3
+group by product_no
+			   ) k where k.cnt>=2
+               with ur
+               
+PRODUCT_NO	CNT
+18289059112    	2
+
+select * from CHECK_0200402008_DAY_3
+where PRODUCT_NO = '18289059112'
+
+               
+select count(0) from CHECK_0200402008_DAY_3
+               
 
  select user_id,count(*) cnt from bass1.g_a_02008_day
 	              where time_id =20120101
@@ -2086,6 +2124,10 @@ where PRODUCT_NO = '18289059112'
 
 
 
+select * from bass2.dw_product_20120102
+where PRODUCT_NO = '18289059112'
+
+
 
 
 select count(user_id) 
@@ -2201,8 +2243,54 @@ and a.OFFER_ID = b.PRODUCT_ITEM_ID
 
 select * from  table( bass1.get_before('02004')) a 
 
-select * from  table( bass1.get_after('02023')) a 
+select control_code  from  table( bass1.get_after('02008')) a 
 where control_code like '%DAY%'
+
+
+BASS1_INT_CHECK_TD_DAY.tcl	BASS1_G_A_02008_DAY.tcl
+BASS1_INT_CHECK_INDEX_SAME_DAY.tcl	BASS1_G_A_02008_DAY.tcl
+BASS1_G_A_02004_DAY.tcl	BASS1_G_A_02008_DAY.tcl
+BASS1_INT_CHECK_Z345_DAY.tcl	BASS1_G_A_02008_DAY.tcl
+BASS1_INT_CHECK_GPRS_FLOW_DAY.tcl	BASS1_G_A_02008_DAY.tcl
+INT_CHECK_DATARULE_DAY.tcl	BASS1_G_A_02008_DAY.tcl
+BASS1_INT_CHECK_K0_7I2_5D0_6_TO_DAY.tcl	BASS1_G_A_02008_DAY.tcl
+BASS1_INT_CHECK_33TO40_DAY.tcl	BASS1_G_A_02008_DAY.tcl
+BASS1_INT_CHECK_63EO_TO_DAY.tcl	BASS1_G_A_02008_DAY.tcl
+BASS1_G_BUS_00000_DAY.tcl	BASS1_G_A_02008_DAY.tcl
+BASS1_INT_CHECK_E1_DAY.tcl	BASS1_G_A_02008_DAY.tcl
+
+update  app.sch_control_runlog
+set flag = -2
+where control_code in (
+select control_code  from  table( bass1.get_after('02004')) a 
+where control_code like '%INT%DAY%'
+)
+and flag = 0
+
+select control_code  from  table( bass1.get_after('02004')) a 
+where control_code like '%INT%DAY%'
+except
+select control_code  from  table( bass1.get_after('02008')) a 
+where control_code like '%INT%DAY%'
+
+
+select control_code  from  table( bass1.get_after('02004')) a 
+where control_code like '%INT%DAY%'
+except
+select control_code  from  table( bass1.get_after('02008')) a 
+where control_code like '%INT%DAY%'
+
+
+update  app.sch_control_runlog
+set flag = -2
+where control_code in (
+select control_code  from  table( bass1.get_after('02004')) a 
+where control_code like '%INT%DAY%'
+except
+select control_code  from  table( bass1.get_after('G_I_21020_MONTH')) a 
+where control_code like '%INT%DAY%'
+)
+and flag = 0
 
 
 
@@ -2370,7 +2458,9 @@ where  a.state =1
         where user_id = '89157333552187' -- test -> not test
         
         
-        
+      select * from G_S_22302_DAY
+where time_id = 20120102
+      
         
         select control_code  from  table( bass1.get_before('22302')) a 
 
@@ -2436,4 +2526,108 @@ from G_I_02019_MONTH where time_id = 201112
 
 select distinct  BASE_PROD_ID 
 from G_I_02018_MONTH where time_id = 201112
+
+
+select distinct  OVER_PROD_ID 
+from G_I_02021_MONTH where time_id = 201112
+
+select distinct  BASE_PROD_ID 
+from G_I_02020_MONTH where time_id = 201112
+
+
+
+
+
+select
+(
+select count(distinct user_id) from  bass1.g_a_02004_02008_stage  
+                        where USERSTATUS IN ('2010','2020','2030','9000')
+                          and test_flag='0'
+                          and time_id/100 = 201201
+                          ) MONTH_OFF
+,(
+select sum(bigint(TARGET2))
+from bass1.g_rule_check
+where 
+rule_code='R159_4'
+and time_id / 100  = 201201
+)  MONTH_ALL_DAY_OFF
+, ((
+select count(distinct user_id) from  bass1.g_a_02004_02008_stage  
+                        where USERSTATUS IN ('2010','2020','2030','9000')
+                          and test_flag='0'
+                          and time_id/100 = 201201
+                          ) *1.00/(
+select sum(bigint(TARGET2))
+from bass1.g_rule_check
+where 
+rule_code='R159_4'
+and time_id / 100  = 201201
+)-1)*100 PERCENT
+from bass2.dual
+
+select * from 
+
+
+select * from  app.sch_control_alarm 
+where  control_code like '%R230%.tcl%'
+order by alarmtime desc
+
+
+  select * from
+                (select * from 
+                (
+                select user_id,chg_vip_time,row_number()over(partition by user_id order by time_id desc) row_id from BASS1.G_I_02005_MONTH
+                where time_id=201112
+                ) k
+                where k.row_id =1) a
+                left outer join 
+                (
+                select * from
+                (
+                select user_id,create_date,row_number()over(partition by user_id order by time_id desc) row_id 
+                from BASS1.G_A_02004_DAY
+                where time_id<=20111231
+                ) k
+                where k.row_id=1) b
+                on a.user_id=b.user_id
+                where bigint(chg_vip_time)<bigint(create_date)
+                with ur
+                
+update BASS1.G_I_02005_MONTH
+set CHG_VIP_TIME = '20110629'
+where user_id = '89160001048760'
+and time_id = 201112
+
+USER_ID	CHG_VIP_TIME	ROW_ID	USER_ID	CREATE_DATE	ROW_ID
+89160001048760      	20110624	1	89160001048760      	20110629	1
+
+                
+delete from (                
+select * from   G_I_21020_MONTH
+				where COMP_BRAND_ID = '021000'
+				and time_id = 201112
+				and length(trim(COMP_PRODUCT_NO)) <> 11
+) t
+
+
+select count(0) from   G_I_21020_MONTH
+				where COMP_BRAND_ID = '031000'
+				and time_id = 201112
+				and length(trim(COMP_PRODUCT_NO)) <> 11
+				with ur 
+                
+                
+select * from                 
+
+
+update G_I_21020_MONTH 
+set CALL_COUNTS = char(int(rand(1)*5+1))
+where (
+char(TIME_ID) = substr(COMP_LAST_DATE,1,6)
+and CALL_COUNTS = '0'
+and SMS_COUNTS = '0'
+and MMS_COUNTS = '0'
+and time_id = 201112 )
+
 

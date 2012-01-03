@@ -117,15 +117,15 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		"
 		exec_sql $sql_buff
   
-
-#update G_I_21020_MONTH 
-#set CALL_COUNTS = char(int(rand(1)*5+1))
-#where (
-#char(TIME_ID) = substr(COMP_LAST_DATE,1,6)
-#and CALL_COUNTS = '0'
-#and SMS_COUNTS = '0'
-#and MMS_COUNTS = '0'
-#and time_id = $op_month )
+#R232 ADJ:
+#	update G_I_21020_MONTH 
+#	set CALL_COUNTS = char(int(rand(1)*5+1))
+#	where (
+#	char(TIME_ID) = substr(COMP_LAST_DATE,1,6)
+#	and CALL_COUNTS = '0'
+#	and SMS_COUNTS = '0'
+#	and MMS_COUNTS = '0'
+#	and time_id = $op_month )
 ###########################################################
 
 #R233			新增	月	05_竞争对手	号码汇总计算出的"联通移动离网用户数"和汇总接口中的联通移动离网客户数的偏差	号码汇总计算出的"联通移动离网用户数"和汇总接口中的联通移动离网客户数的偏差≤3％	0.05		
