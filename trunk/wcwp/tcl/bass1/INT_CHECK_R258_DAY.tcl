@@ -21,7 +21,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 				puts $curr_month
       #自然月 上月 01 日
       set last_month_first_day ${op_month}01
-      
+      set last_day [GetLastDay [string range $timestamp 0 7]]
         #程序名
         set app_name "INT_CHECK_R258_DAY.tcl"
 
@@ -132,6 +132,65 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                 WriteAlarm $app_name $op_time $grade ${alarmcontent}
                  }
 
+
+
+## 2011.11.14 根据集团口径修改，保留原校验，另起名为R258_2
+  set sqlbuf "delete from  BASS1.G_RULE_CHECK where time_id=$timestamp and rule_code in ('R258_3') "        
+
+
+	  exec_sql $sqlbuf
+
+   set RESULT_VAL1 0
+   set RESULT_VAL2 0
+   set RESULT_VAL3 0
+        set sql_buff "
+        select count(distinct a.user_id) VALID_CNT,count(distinct b.user_id ) REC_CNT
+        , count(distinct b.user_id )*1.00/count(distinct a.user_id) RATE
+        from 
+        (
+        select user_id,value(t.NEW_PKG_ID,a.BASE_PKG_ID) BASE_PKG_ID,VALID_DT from   
+        G_I_02022_DAY  a
+        left join bass1.DIM_QW_QQT_PKGID t on a.BASE_PKG_ID = t.old_pkg_id
+        where time_id = $timestamp
+	except 
+	select user_id,value(t.NEW_PKG_ID,a.BASE_PKG_ID) BASE_PKG_ID,VALID_DT from   
+        G_I_02022_DAY  a
+                left join bass1.DIM_QW_QQT_PKGID t on a.BASE_PKG_ID = t.old_pkg_id
+        where time_id = $last_day
+        ) a
+        left join (
+                        select a.user_id,value(b.new_pkg_id,a.BASE_PKG_ID) BASE_PKG_ID 
+                from (
+                        select  USER_ID,BASE_PKG_ID from 
+                        G_S_02024_DAY a
+                     ) a 
+                left join bass1.DIM_QW_QQT_PKGID b on a.BASE_PKG_ID = b.old_pkg_id
+                ) b on a.USER_ID = b.USER_ID and a.BASE_PKG_ID= b.BASE_PKG_ID
+        with ur
+        "
+   set p_row [get_row $sql_buff]
+   set RESULT_VAL1 [lindex $p_row 0]
+   set RESULT_VAL2 [lindex $p_row 1]
+   set RESULT_VAL3 [lindex $p_row 2]
+        #set RESULT_VAL [get_single $sql_buff]
+        #--将校验值插入校验结果表
+        set sql_buff "
+                INSERT INTO BASS1.G_RULE_CHECK VALUES ($timestamp,'R258_3',$RESULT_VAL1,$RESULT_VAL2,$RESULT_VAL3,0) 
+                "
+                exec_sql $sql_buff
+                
+        #检查合法性: 0 - 不正常； 大于0 - 正常
+        if {[format %.3f [expr ${RESULT_VAL3} ]] < 0.98 } {
+                set grade 2
+                set alarmcontent " R258_3 校验3不通过"
+                puts ${alarmcontent}            
+                WriteAlarm $app_name $op_time $grade ${alarmcontent}
+                 }
+
+
+
+
+	
 
 	return 0
 }
