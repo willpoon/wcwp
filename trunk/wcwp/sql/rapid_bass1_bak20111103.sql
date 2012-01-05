@@ -78731,3 +78731,110 @@ _INT_CHECK_SAMPLE_MONTH.tcl.out.r201201
 _INT_CHECK_TD_MONTH.tcl.out.r201201
 _INT_COMMON_ROUTINE_MONTH.tcl.out.r201201
 !
+
+
+
+
+ALTER TABLE g_s_03004_03005_R235_adj NOT LOGGED INITIALLY WITH EMPTY TABLE
+insert into g_s_03004_03005_R235_adj  
+select '201111'
+,a.user_id   
+, case when c.user_id is null then '0' else '1' end iffeezero  
+, case when d.user_id is null then '0' else '1' end if03004  
+from  (                  
+	select distinct user_id 
+	from BASS1.G_S_21003_MONTH_mobile   a                          
+	,int_02004_02008_month_stage b                  
+	where a.product_no = b.product_no                 
+	and  b.usertype_id NOT IN ('2010','2020','2030','9000')                 
+	and b.test_flag = '0' 
+	) a  --在网用户
+left join  (
+		select user_id                 
+		from g_s_03004_month                 
+		where time_id = 201111                 
+		and                   ( int(substr(ACCT_ITEM_ID,2))/100 in (1,2,3)                                 
+		or ACCT_ITEM_ID in ('0401','0403','0407')                  )                  
+		group by user_id                   
+		having sum(bigint(FEE_RECEIVABLE)) > 0 
+	    ) b  on  a.user_id = b.user_id  --有语音收入的用户
+left join (    select  user_id from  g_s_03004_month                   
+		where time_id = 201111                
+		and ( int(substr(ACCT_ITEM_ID,2))/100 in (1,2,3)                         
+		or ACCT_ITEM_ID in ('0401','0403','0407')
+		)                 
+		group by user_id  having sum(bigint(FEE_RECEIVABLE)) <= 0                              
+	    ) c on a.user_id = c.user_id --03004中语音费<=0的用户
+left join (select distinct  user_id from  g_s_03004_month                   
+		where time_id = 201111 
+	    ) d on a.user_id = d.user_id  --用户是否在03004中
+where b.user_id is  null
+
+
+
+BASS1   	G_S_03004_03005_R235_ADJ	BASS1   	T	N	[NULL]	[NULL]	[NULL]	[NULL]	2011-8-4 11:20:34.940782	2011-8-4 11:20:34.940782	[NULL]	4	710	11	-1	-1	-1	-1	TBS_APP_BASS1	TBS_INDEX	[NULL]	0	0	0	0	0	0	0	N	YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY	5	H	0	-1	N	 	[NULL]	R	 	N	                                	[NULL]	N	F	[NULL]	-1	N	999	-1	-1	-1	-1	[NULL]	1386	 	-1	2011-8-4 11:20:34.940782	0	 	BASS1   	[NULL]
+BASS1   	G_S_03004_MONTH_ADJ_BAK	BASS1   	T	N	[NULL]	[NULL]	[NULL]	[NULL]	2011-8-4 16:45:46.363043	2011-8-4 16:45:46.363043	[NULL]	6	718	11	-1	-1	-1	-1	TBS_APP_BASS1	[NULL]	[NULL]	0	0	0	0	0	0	0	N	YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY	5	H	0	-1	N	 	[NULL]	R	 	N	                                	[NULL]	N	F	[NULL]	-1	N	999	-1	-1	-1	-1	[NULL]	1386	 	-1	2011-8-4 16:45:46.363043	0	 	BASS1   	[NULL]
+BASS1   	G_S_03005_MONTH_ADJ_BAK	BASS1   	T	N	[NULL]	[NULL]	[NULL]	[NULL]	2011-8-4 16:46:35.874489	2011-8-4 16:46:35.874489	[NULL]	6	719	11	-1	-1	-1	-1	TBS_APP_BASS1	TBS_INDEX	[NULL]	0	0	0	0	0	0	0	N	YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY	5	H	0	-1	N	 	[NULL]	R	 	N	                                	[NULL]	N	F	[NULL]	-1	N	999	-1	-1	-1	-1	[NULL]	1386	 	-1	2011-8-4 16:46:35.874489	0	 	BASS1   	[NULL]
+
+
+ALTER TABLE G_S_03004_MONTH_ADJ_BAK NOT LOGGED INITIALLY WITH EMPTY TABLE
+ALTER TABLE  NOT LOGGED INITIALLY WITH EMPTY TABLE
+
+--抓取科目为0100的，费用为0的用户，作为调整的目标号码
+
+insert into G_S_03004_MONTH_ADJ_BAK  
+select a.* from G_S_03004_MONTH a
+	,g_s_03004_03005_R235_adj b  
+	where a.time_id = 201111 
+	and ITEM_ID = '0100' 
+	and a.user_id = b.user_id  
+	and b.IFFEEZERO = '1'
+
+
+insert into G_S_03005_MONTH_ADJ_BAK  
+select a.* from G_S_03005_MONTH a
+	,g_s_03004_03005_R235_adj b  
+	where a.time_id = 201111 
+	and ITEM_ID = '0100'
+	and a.user_id = b.user_id  
+	and b.IFFEEZERO = '1'
+	
+
+
+select count(0),count(distinct user_id),count(distinct user_id||ITEM_ID) from G_S_03004_MONTH_ADJ_BAK
+select count(0),count(distinct user_id),count(distinct user_id||ITEM_ID) from G_S_03005_MONTH_ADJ_BAK
+
+
+
+
+delete from (select * from G_S_03004_MONTH where time_id = 201112) a 
+where 
+
+
+--update  G_S_03004_month set ACCT_ITEM_ID = '0401' where time_id = 201110 and ACCT_ITEM_ID = '0400'
+
+
+
+UPDATE (select * from  g_i_06001_month where time_id = 201112 ) a 
+SET STUD_CNT = '5546'
+WHERE STUD_CNT = '5000'
+AND SCHOOL_ID = '89189400000001'
+
+
+
+
+
+
+
+select STMT_TEXT  from db2inst1.MONIT_sql
+ where 
+ upper(STMT_TEXT) like '%0300%'
+ and upper(STMT_TEXT) like '%DELETE%'
+ and upper(STMT_TEXT) NOT like '%||%'
+ --AND HOUR(SNAPSHOT_TIME) > 12
+order by snapshot_time
+
+
+
+ where not exists (select 1 from bass1.g_s_03004_month b  where a.user_id= b.USER_ID and b.time_id = 201104)
+
