@@ -1168,7 +1168,7 @@ and time_id = 201109 )
 
 
 
-select * from   bass1.g_rule_check where rule_code = 'R235'
+select * from   bass1.g_rule_check where rule_code LIKE 'R258%'
 ORDER BY 1 DESC 
 
 
@@ -2261,7 +2261,22 @@ where control_code like '%DAY%'
 
 
 select * from app.sch_control_before 
-where before_control_code like '%IMPORTSERV%'
+where before_control_code 
+in 
+(
+'BASS1_G_S_02007_MONTH.tcl'
+,'BASS1_G_S_03005_MONTH.tcl'
+,'BASS1_G_S_03017_MONTH.tcl'
+,'BASS1_G_I_03007_MONTH.tcl'
+,'BASS1_G_S_03004_MONTH.tcl'
+,'BASS1_G_S_22305_MONTH.tcl'
+,'BASS1_G_S_03015_MONTH.tcl'
+,'BASS1_G_S_22307_MONTH.tcl'
+,'BASS1_G_S_03019_MONTH.tcl'
+,'BASS1_G_I_02006_MONTH.tcl'
+,'BASS1_G_S_22039_MONTH.tcl'
+)
+
 
 select * from app.sch_control_task
 where control_code like '%IMPORTSERV%'
@@ -2275,9 +2290,6 @@ BASS1_INT_CHECK_IMPORTSERV_MONTH
 update app.sch_control_before 
 set control_code = 'BASS1_INT_CHECK_IMPORTSERV_MONTH.tcl'
 where control_code = 'BASS1_INT_CHECK_IMPORTSERV_MONTH'
-
-
-BASS1_EXP_G_S_03004_MONTH	BASS1_G_S_03004_MONTH.tcl
 
 insert into app.sch_control_before 
 values('BASS1_EXP_G_S_03004_MONTH','BASS1_INT_CHECK_IMPORTSERV_MONTH.tcl')
@@ -3560,3 +3572,273 @@ where channel_id not in
   and time_id =201112
   and channel_status='1'
 
+select * from app.sch_control_before
+where control_code 
+'TR1_L_11015',
+,'TR1_L_13006',
+,'TR1_L_11222',
+,'TR1_L_13007'
+
+
+
+
+WITH n(control_code, before_control_code) AS 
+          (SELECT control_code, before_control_code 
+             FROM app.sch_control_before
+             WHERE before_control_code = 'TR1_L_13007'
+           UNION ALL
+           SELECT b.control_code,b.before_control_code 
+             FROM app.sch_control_before as b, n
+             WHERE b.before_control_code = n.control_code)
+SELECT distinct c.control_code FROM n,app.sch_control_task c
+where n.control_code = c.control_code
+and c.deal_time = 2    
+AND c.control_code  like 'BASS2_%' 
+             
+             
+             
+
+select * from syscat.tables where tabname like '%G_S_0300%'                          
+
+TABNAME
+G_S_03004_03005_R235_ADJ
+G_S_03004_03005_R235_ADJ2
+G_S_03004_MONTH
+G_S_03004_MONTH_ADJ_BAK
+G_S_03004_MONTH_B20110429
+G_S_03004_MONTH_LS
+G_S_03004_MONTH_TD
+TMP_SMS_071025103004140
+
+
+TABNAME
+CHECK_02008_03005
+G_S_03004_03005_R235_ADJ
+G_S_03004_03005_R235_ADJ2
+G_S_03005_MONTH
+G_S_03005_MONTH_ADJ_BAK
+
+             
+
+select *from bass2.dw_product_20120104
+where user_id = '89560001672362'
+             
+select *from bass2.dw_product_bass1_20120104
+where user_id = '89560001672362'
+
+             
+             
+select * from bass2.dw_product_20120104
+where PRODUCT_NO = '18289059112'
+
+
+select * from bass2.dw_product_20120104
+where PRODUCT_NO = '13908902140'
+
+
+
+
+
+select distinct control_code from app.sch_control_before 
+where before_control_code 
+in 
+(
+'BASS1_G_S_02007_MONTH.tcl'
+,'BASS1_G_S_03005_MONTH.tcl'
+,'BASS1_G_S_03017_MONTH.tcl'
+,'BASS1_G_I_03007_MONTH.tcl'
+,'BASS1_G_S_03004_MONTH.tcl'
+,'BASS1_G_S_22305_MONTH.tcl'
+,'BASS1_G_S_03015_MONTH.tcl'
+,'BASS1_G_S_22307_MONTH.tcl'
+,'BASS1_G_S_03019_MONTH.tcl'
+,'BASS1_G_I_02006_MONTH.tcl'
+,'BASS1_G_S_22039_MONTH.tcl'
+)
+
+
+
+
+
+
+
+
+update (
+select * from app.sch_control_runlog
+where control_code 
+in (
+ 'BASS1_INT_CHECK_0200803005_MONTH.tcl'
+,'BASS1_INT_CHECK_B67_MONTH.tcl'
+,'BASS1_INT_CHECK_D9E234F2_651TO56_MONTH.tcl'
+,'BASS1_INT_CHECK_E5_MONTH.tcl'
+,'BASS1_INT_CHECK_F7_MONTH.tcl'
+,'BASS1_INT_CHECK_G047TO50_MONTH.tcl'
+,'BASS1_INT_CHECK_IMPORTSERV_MONTH.tcl'
+,'BASS1_INT_CHECK_L34_MONTH.tcl'
+,'BASS1_INT_CHECK_L5_MONTH.tcl'
+,'BASS1_INT_CHECK_R008_MONTH.tcl'
+,'BASS1_INT_CHECK_R028_MONTH.tcl'
+,'BASS1_INT_CHECK_R029_MONTH.tcl'
+,'BASS1_INT_CHECK_R030_MONTH.tcl'
+,'BASS1_INT_CHECK_R031_MONTH.tcl'
+,'BASS1_INT_CHECK_R032_MONTH.tcl'
+,'BASS1_INT_CHECK_R034_MONTH.tcl'
+,'BASS1_INT_CHECK_R036_MONTH.tcl'
+,'BASS1_INT_CHECK_R037toR039_MONTH.tcl'
+,'BASS1_INT_CHECK_R040_MONTH.tcl'
+,'BASS1_INT_CHECK_R192_MONTH.tcl'
+,'BASS1_INT_CHECK_R216_MONTH.tcl'
+,'BASS1_INT_CHECK_R235_MONTH.tcl'
+,'BASS1_INT_CHECK_TD_MONTH.tcl'
+,'BASS1_REPORT_KEY_INDEX_MONTH.tcl'
+)
+and date(begintime) >= '2012-01-01'
+and flag = 0
+) t
+set flag = -2
+where flag = 0
+
+
+
+
+
+select count(0) from (
+select a.stud_cnt
+,b.*
+from (select * from  g_i_06001_month where time_id = 201112 ) a 
+, (
+select school_id,count(0) cnt 
+from G_I_02031_MONTH
+where time_id = 201112
+group by school_id
+) b 
+where a.school_id = b.school_id
+and bigint(a.stud_cnt) < cnt
+) t
+
+
+STUD_CNT	SCHOOL_ID	CNT
+5000  	89189400000001      	5546
+
+UPDATE (select * from  g_i_06001_month where time_id = 201112 ) a 
+SET STUD_CNT = '5546'
+WHERE STUD_CNT = '5000'
+AND SCHOOL_ID = '89189400000001'
+
+
+select *from G_S_03004_MONTH_ADJ_BAK
+select *from G_S_03005_MONTH_ADJ_BAK
+G_S_03005_MONTH_ADJ_BAK
+
+
+select * from db2inst1.MONIT_sql where date(snapshot_time)='2011-12-03'order by agent_id,snapshot_time
+
+
+
+
+select STMT_TEXT  from db2inst1.MONIT_sql
+ where 
+ upper(STMT_TEXT) like '%0300%'
+ and upper(STMT_TEXT) like '%DELETE%'
+ and upper(STMT_TEXT) NOT like '%||%'
+ --AND HOUR(SNAPSHOT_TIME) > 12order by snapshot_time
+
+
+
+select * from bass2.stat_rep_content
+where op_time = '2011-12-01'
+and zb_code in ('CU3320','CU3321','CU3322','CU3323')
+with ur
+
+
+WITH n(control_code, before_control_code) AS 
+          (SELECT control_code, before_control_code 
+             FROM app.sch_control_before
+             WHERE before_control_code in ( 'BASS1_G_S_03004_MONTH.tcl' ,'BASS1_G_S_03004_MONTH.tcl')
+           UNION ALL
+           SELECT b.control_code,b.before_control_code 
+             FROM app.sch_control_before as b, n
+             WHERE b.before_control_code = n.control_code)
+SELECT distinct c.control_code FROM n,app.sch_control_task c
+where n.control_code = c.control_code
+and c.deal_time = 2    
+AND c.control_code  like 'BASS1_%' 
+             
+             
+             
+             
+             
+update 
+CONTROL_CODE in (
+ 'BASS1_REPORT_KEY_INDEX_MONTH.tcl'
+,'BASS1_INT_CHECK_TD_MONTH.tcl'
+,'BASS1_INT_CHECK_R235_MONTH.tcl'
+,'BASS1_INT_CHECK_R221_MONTH.tcl'
+,'BASS1_INT_CHECK_R036_MONTH.tcl'
+,'BASS1_INT_CHECK_R034_MONTH.tcl'
+,'BASS1_INT_CHECK_R031_MONTH.tcl'
+,'BASS1_INT_CHECK_L5_MONTH.tcl'
+,'BASS1_INT_CHECK_IMPORTSERV_MONTH.tcl'
+,'BASS1_INT_CHECK_E5_MONTH.tcl'
+,'BASS1_INT_CHECK_D9E234F2_651TO56_MONTH.tcl'
+,'BASS1_INT_CHECK_B67_MONTH.tcl'
+,'BASS1_G_S_22204_MONTH_TWO.tcl'
+,'BASS1_G_S_22204_MONTH_ONE.tcl'
+,'BASS1_G_S_22204_MONTH.tcl'
+,'BASS1_EXP_G_S_22204_MONTH'
+,'BASS1_EXP_G_S_21003_MONTH'
+,'BASS1_EXP_G_S_03012_MONTH'
+,'BASS1_EXP_G_S_03005_MONTH'
+,'BASS1_EXP_G_S_03004_MONTH'
+)
+             
+             
+             
+
+update (
+select * from app.sch_control_runlog
+where control_code 
+in (
+ 'BASS1_REPORT_KEY_INDEX_MONTH.tcl'
+,'BASS1_INT_CHECK_TD_MONTH.tcl'
+,'BASS1_INT_CHECK_R221_MONTH.tcl'
+,'BASS1_INT_CHECK_R036_MONTH.tcl'
+,'BASS1_INT_CHECK_R034_MONTH.tcl'
+,'BASS1_INT_CHECK_R031_MONTH.tcl'
+,'BASS1_INT_CHECK_L5_MONTH.tcl'
+,'BASS1_INT_CHECK_IMPORTSERV_MONTH.tcl'
+,'BASS1_INT_CHECK_E5_MONTH.tcl'
+,'BASS1_INT_CHECK_D9E234F2_651TO56_MONTH.tcl'
+,'BASS1_INT_CHECK_B67_MONTH.tcl'
+,'BASS1_G_S_22204_MONTH_TWO.tcl'
+,'BASS1_G_S_22204_MONTH_ONE.tcl'
+,'BASS1_G_S_22204_MONTH.tcl'
+,'BASS1_EXP_G_S_22204_MONTH'
+,'BASS1_EXP_G_S_21003_MONTH'
+,'BASS1_EXP_G_S_03012_MONTH'
+,'BASS1_EXP_G_S_03005_MONTH'
+,'BASS1_EXP_G_S_03004_MONTH'
+)
+and date(begintime) >= '2012-01-01'
+and flag = 0
+) t
+set flag = -2
+where flag = 0
+
+
+
+
+insert into app.sch_control_before values ( 'BASS1_INT_CHECK_R023R024_DAY.tcl','BASS1_G_A_02004_DAY.tcl'), ( 'BASS1_INT_CHECK_R023R024_DAY.tcl','BASS1_INT_CHECK_INDEX_SAME_DAY.tcl')delete from app.sch_control_before 
+where control_code = 'INT_CHECK_R023R024_DAY.tcl'
+
+
+SELECT * FROM app.sch_control_task 
+WHERE CONTROL_CODE LIKE 'BASS1%INT%DAY%'
+
+
+delete from app.sch_control_task where control_code in ('BASS1_INT_CHECK_R023R024_DAY.tcl');INSERT INTO app.sch_control_task VALUES(   'BASS1_INT_CHECK_R023R024_DAY.tcl',   1,   2,   'int -s INT_CHECK_R023R024_DAY.tcl',   10000,   - 1,   'R023-R024ะฃั้',   'app',   'BASS1',   1,   '/bassapp/bass1/tcl/'    );   
+   
+   SELECT *
+    from  BASS1.G_RULE_CHECK 
+ 	  				where time_id>=20111231 and rule_code in ('R023NEW','R024NEW') 
+                    
