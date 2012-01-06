@@ -39,7 +39,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 
 #R023	|(月新增用户/∑(日新增用户数）-1) x 100% | ≤ 3%	
-
+#|(月新增用户/∑(日新增用户数）-1) x 100% | ≤ 3%
 
    set RESULT_VAL1 0
    set RESULT_VAL2 0
@@ -85,7 +85,7 @@ from bass2.dual
                 exec_sql $sql_buff
 		
  # 校验值超标时告警	
-	if { $RESULT_VAL3 > 3.00||$RESULT_VAL3 < -3.00 } {
+	if { $RESULT_VAL3 > 1.00||$RESULT_VAL3 < -1.00 } {
 		set grade 2
 	  set alarmcontent "R023 校验不通过"
 	  WriteAlarm $app_name $op_time $grade ${alarmcontent}
@@ -93,7 +93,8 @@ from bass2.dual
 
       	
 
-#R024	|(月新增用户/∑(日新增用户数）-1) x 100% | ≤ 3%	
+ #|(月离网用户/∑(日离网用户数）-1) x 100% | ≤ 5%
+
 
 
    set RESULT_VAL1 0
@@ -142,6 +143,7 @@ from bass2.dual
                 exec_sql $sql_buff
 		
  # 校验值超标时告警	
+ #|(月离网用户/∑(日离网用户数）-1) x 100% | ≤ 5%
 	if { $RESULT_VAL3 > 3.00||$RESULT_VAL3 < -3.00 } {
 		set grade 2
 	  set alarmcontent "R024 校验不通过"
