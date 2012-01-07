@@ -81,7 +81,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			where rn = 1	and STATUS_ID = '1'
 			AND trim(A.enterprise_id) <> ''
 			and not exists (select 1 from (select distinct value(b.NEW_ENTERPRISE_ID,a.enterprise_id) enterprise_id from bass1.G_A_01004_DAY a 
-LEFT JOIN BASS2.TRANS_ENTERPRISE_ID_20100625 B on  A.enterprise_id = B.ENTERPRISE_ID  ) t where a.enterprise_id = t.enterprise_id )
+LEFT JOIN bass1.dim_trans_enterprise_id B on  A.enterprise_id = B.ENTERPRISE_ID  ) t where a.enterprise_id = t.enterprise_id )
 		with ur
 		"
   #获得结果值
