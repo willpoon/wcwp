@@ -4,19 +4,24 @@ where alarmtime >=  current timestamp - 1 days
 and flag = -1
 and control_code like 'BASS1%'
 order by alarmtime desc
-
+;
 select message_id, send_time,mobile_num,message_content from   APP.SMS_SEND_INFO
 where send_time is not null
 and mobile_num = '13989007120'
 and send_time >=  current timestamp - 1 days
 and date(send_time) = char(current date )
 order by send_time desc
-
+;
 
 select * from app.sch_control_alarm  where content like '%准确性指标56%'
 
 ---------------------------------------------------------------------------------
-select * from   table( bass1.chk_same(0) ) a order by 2---------------------------------------------------------------------------------select * from   table( bass1.chk_wave(0) ) a order by 2---------------------------------------------------------------------------------
+
+select * from   table( bass1.chk_same(0) ) a order by 2
+---------------------------------------------------------------------------------
+
+select * from   table( bass1.chk_wave(0) ) a order by 2
+---------------------------------------------------------------------------------
 TIME_ID	RULE_CODE	RULE_NAME	THRESHOLD	BASS2_VAL	BASS1_VAL	WAVE_RATE_PERCENT
 20111019	R159_1	新增客户数	1.0000	2547.00000	2549.00000	-0.07800
 20111019	R159_2	客户到达数	1.0000	1817505.00000	1817505.00000	0.00000
@@ -26,10 +31,14 @@ TIME_ID	RULE_CODE	RULE_NAME	THRESHOLD	BASS2_VAL	BASS1_VAL	WAVE_RATE_PERCENT
 
 
 ---------------------------------------------------------------------------------
-select * from app.sch_control_task where control_code in 
-(select control_code from   app.sch_control_runlog where flag = 1 )
+
+select * from app.sch_control_task where control_code in 
+(
+select control_code from   app.sch_control_runlog where flag = 1 
+)
 and cc_flag = 1
-
+
+
 ---------------------------------------------------------------------------------
 select * from table(bass1.fn_dn_flret_cnt(9)) a
 
@@ -64,7 +73,8 @@ where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err
 ) t where rn = 1
 
 ----------------------求未上传（文件级返回）接口！ (当日没返回文件级的接口)
-select * from   BASS1.MON_ALL_INTERFACE where interface_code 
+select * from   BASS1.MON_ALL_INTERFACE 
+where interface_code 
 not in (select substr(filename,18,5) from 
 APP.G_FILE_REPORT
 where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err_code='00'
@@ -339,7 +349,8 @@ where time_id=int(replace(char(current date - 1 days),'-',''))
  select * from  bass1.G_RULE_CHECK where rule_code = 'C1'
  order by 1 desc 
 
- select * from  bass1.G_RULE_CHECK where rule_code = 'C1' and time_id > 20110825
+ select * from  bass1.G_RULE_CHECK where rule_code = 'C1'
+ and time_id > 20110825
  order by 1 desc 
  
 20110618	C1	2049107.00000	2211895.00000	-0.07360	0.00000
@@ -360,7 +371,8 @@ where time_id=int(replace(char(current date - 1 days),'-',''))
 
 20110503	C1	1981494.00000	1819931.00000	0.08877	0.00000
 
-20110502	C1	1819931.00000	2861998.00000	-0.36410	0.00000 20110501	C1	2861998.00000	3083030.00000	-0.07169	0.00000
+20110502	C1	1819931.00000	2861998.00000	-0.36410	0.00000 
+20110501	C1	2861998.00000	3083030.00000	-0.07169	0.00000
 20110430	C1	3083030.00000	2551002.00000	0.20856	0.00000
 20110429	C1	2551002.00000	2155029.00000	0.18374	0.00000
 20110428	C1	2155029.00000	1990225.00000	0.08281	0.00000
@@ -383,14 +395,22 @@ select * from bass1.g_rule_check where rule_code in ('R107') order by time_id de
 select * from bass1.g_rule_check where rule_code in ('R108') order by time_id desc
 20110430	R108	544.84000	560.01000	-0.02709	0.05000
 
----R107update (select * from  BASS1.G_S_04008_DAY where time_id = 20110929  ) t set TOLL_CALL_FEE = char(bigint(TOLL_CALL_FEE)+400) with ur;
+---R107
+update (select * from  BASS1.G_S_04008_DAY where time_id = 20110929  ) t 
+set TOLL_CALL_FEE = char(bigint(TOLL_CALL_FEE)+400) with ur;
 109513 row(s) affected.
-update (select * from  BASS1.G_S_04008_DAY where time_id = 20110731  ) t set TOLL_CALL_FEE = char(bigint(TOLL_CALL_FEE)+10) with ur
+update (select * from  BASS1.G_S_04008_DAY where time_id = 20110731  ) t 
+set TOLL_CALL_FEE = char(bigint(TOLL_CALL_FEE)+10) with ur
 
 --97763 row(s) affected.
---100390 row(s) affected.
+
+--100390 row(s) affected.
 --97763 row(s) affected.
---201107 105138 row(s) affected.---R108update (select * from  BASS1.G_S_04008_DAY where time_id = 20110929  ) t set BASE_BILL_DURATION = char(bigint(BASE_BILL_DURATION)-5) with ur 20110828
+--201107 105138 row(s) affected.
+---R108
+update (select * from  BASS1.G_S_04008_DAY where time_id = 20110929  ) t 
+set BASE_BILL_DURATION = char(bigint(BASE_BILL_DURATION)-5) with ur 
+20110828
 112152 row(s) affected.
 
 
@@ -403,10 +423,21 @@ order by time_id desc
 
 --所有日接口代码：
 
-select b.CONTROL_CODE from    BASS1.MON_ALL_INTERFACE a, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)and a.TYPE = 'd'and b.control_code like '%DAY%'
+select b.CONTROL_CODE from    
+BASS1.MON_ALL_INTERFACE a
+, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)
+and a.TYPE = 'd'
+and b.control_code like '%DAY%'
 
 --所有月接口代码：
-select b.CONTROL_CODE from    BASS1.MON_ALL_INTERFACE a, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)and a.TYPE = 'm'and b.control_code like '%MONTH%'
+
+select b.CONTROL_CODE from    
+BASS1.MON_ALL_INTERFACE a
+, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)
+and a.TYPE = 'm'
+and b.control_code like '%MONTH%'
+
+
 
 
 		   
@@ -446,30 +477,77 @@ where TIME_ID/100 = int(substr(replace(char(current date - 2 month),'-',''),1,6)
 
 --生成重导日数据的命令
 
-select b.*, lower( '/bassapp/backapp/bin/bass1_export/bass1_export '||substr(a.control_code,11,13)||' '||char(current date - 1 days) ) exp_cmdfrom   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE bwhere a.control_code like 'BASS1%EXP%DAY%'and date(a.begintime) =  date(current date)and substr(a.control_code,15,5) = b.interface_code and b.type='d'
+select b.*
+, lower(
+ '/bassapp/backapp/bin/bass1_export/bass1_export '||substr(a.control_code,11,13)||' '||char(current date - 1 days) 
+) exp_cmd
+from   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE b
+where a.control_code like 'BASS1%EXP%DAY%'
+and date(a.begintime) =  date(current date)
+and substr(a.control_code,15,5) = b.interface_code 
+and b.type='d'
+
 --生成重导月数据的命令
 
-select b.*, lower( '/bassapp/backapp/bin/bass1_export/bass1_export '||substr(a.control_code,11,15)||' '||substr(char(current date - 1 month) ,1,7)) exp_cmdfrom   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE bwhere a.control_code like 'BASS1%EXP%MONTH%'and month(a.begintime) =  month(current date)and substr(a.control_code,15,5) = b.interface_code and b.type='m'
+select b.*
+, lower(
+ '/bassapp/backapp/bin/bass1_export/bass1_export '||substr(a.control_code,11,15)||' '||substr(char(current date - 1 month) ,1,7)
+) exp_cmd
+from   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE b
+where a.control_code like 'BASS1%EXP%MONTH%'
+and month(a.begintime) =  month(current date)
+and substr(a.control_code,15,5) = b.interface_code 
+and b.type='m'
 
 
 --单独put 某个接口:day
 
 
 
-select b.*, lower( 'put *'||b.interface_code||'*.dat ' ) put_dat, lower( 'put *'||b.interface_code||'*.verf ' ) put_verf
-from   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE bwhere a.control_code like 'BASS1%EXP%DAY%'and date(a.begintime) =  date(current date)and substr(a.control_code,15,5) = b.interface_code and b.type='d'
+select b.*
+, lower(
+ 'put *'||b.interface_code||'*.dat ' 
+) put_dat
+, lower(
+ 'put *'||b.interface_code||'*.verf ' 
+) put_verf
+from   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE b
+where a.control_code like 'BASS1%EXP%DAY%'
+and date(a.begintime) =  date(current date)
+and substr(a.control_code,15,5) = b.interface_code 
+and b.type='d'
+
 --单独put 某个接口:month
 
-select b.*, lower( 'put *'||b.interface_code||'*.dat ' ) put_dat, lower( 'put *'||b.interface_code||'*.verf ' ) put_verffrom   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE bwhere a.control_code like 'BASS1%EXP%MONTH%'and month(a.begintime) =  month(current date)and substr(a.control_code,15,5) = b.interface_code and b.type='m'
+select b.*
+, lower(
+ 'put *'||b.interface_code||'*.dat ' 
+) put_dat
+, lower(
+ 'put *'||b.interface_code||'*.verf ' 
+) put_verf
+from   app.sch_control_runlog  a ,bass1.MON_ALL_INTERFACE b
+where a.control_code like 'BASS1%EXP%MONTH%'
+and month(a.begintime) =  month(current date)
+and substr(a.control_code,15,5) = b.interface_code 
+and b.type='m'
 
 
 --接口号 -  表名 对应关系
 select * from table(
-select substr(control_code , 11,5) unit_code,substr(b.CONTROL_CODE,7,13) from    BASS1.MON_ALL_INTERFACE a, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)and a.TYPE = 'd'and b.control_code like '%DAY%'
+select substr(control_code , 11,5) unit_code,substr(b.CONTROL_CODE,7,13) from    
+BASS1.MON_ALL_INTERFACE a
+, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)
+and a.TYPE = 'd'
+and b.control_code like '%DAY%'
 ) t where unit_code = ''
 
 select * from table(
-select substr(control_code , 11,5) unit_code,substr(b.CONTROL_CODE,7,15),b.control_code from    BASS1.MON_ALL_INTERFACE a, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)and a.TYPE = 'm'and b.control_code like '%MONTH%'
+select substr(control_code , 11,5) unit_code,substr(b.CONTROL_CODE,7,15),b.control_code from    
+BASS1.MON_ALL_INTERFACE a
+, app.sch_control_task b where a.INTERFACE_CODE = substr(control_code , 11,5)
+and a.TYPE = 'm'
+and b.control_code like '%MONTH%'
 ) t where unit_code = ''
 
 
@@ -565,7 +643,8 @@ select count(0) from     bass2.STAT_ZD_VILLAGE_USERS_201107
                        
 
 select count(0) from     BASS1.G_S_04009_DAY
-select * from   BASS1.MON_ALL_INTERFACE  where interface_code = '06002'
+select * from   BASS1.MON_ALL_INTERFACE 
+ where interface_code = '06002'
  
                        
 
@@ -2745,9 +2824,10 @@ s
 select * from  table( bass1.get_before('G_S_22063_MONTH.tcl')) a 
 
 
-select * from   app.sch_control_runlog 
+select * from   app.sch_control_runlog 
 where control_code in 
-(select before_control_code from  table( bass1.get_before('G_S_22063_MONTH')) a )
+(select before_control_code from  table( bass1.get_before('G_S_22063_MONTH')) a )
+
 
 
         select count(distinct a.user_id) VALID_CNT,count(distinct b.user_id ) REC_CNT, count(distinct b.user_id )*1.00/count(distinct a.user_id) RATE
@@ -3792,7 +3872,8 @@ select *from G_S_03005_MONTH_ADJ_BAK
 G_S_03005_MONTH_ADJ_BAK
 
 
-select * from db2inst1.MONIT_sql where date(snapshot_time)='2011-12-03'order by agent_id,snapshot_time
+select * from db2inst1.MONIT_sql where date(snapshot_time)='2011-12-03'
+order by agent_id,snapshot_time
 
 
 
@@ -3802,7 +3883,9 @@ select STMT_TEXT  from db2inst1.MONIT_sql
  upper(STMT_TEXT) like '%0300%'
  and upper(STMT_TEXT) like '%DELETE%'
  and upper(STMT_TEXT) NOT like '%||%'
- --AND HOUR(SNAPSHOT_TIME) > 12order by snapshot_time
+ --AND HOUR(SNAPSHOT_TIME) > 12
+order by snapshot_time
+
 
 
 
@@ -3889,7 +3972,11 @@ where flag = 0
 
 
 
-insert into app.sch_control_before values ( 'BASS1_INT_CHECK_R023R024_DAY.tcl','BASS1_G_A_02004_DAY.tcl'), ( 'BASS1_INT_CHECK_R023R024_DAY.tcl','BASS1_INT_CHECK_INDEX_SAME_DAY.tcl')delete from app.sch_control_before 
+insert into app.sch_control_before 
+values ( 'BASS1_INT_CHECK_R023R024_DAY.tcl','BASS1_G_A_02004_DAY.tcl')
+, ( 'BASS1_INT_CHECK_R023R024_DAY.tcl','BASS1_INT_CHECK_INDEX_SAME_DAY.tcl')
+
+delete from app.sch_control_before 
 where control_code = 'INT_CHECK_R023R024_DAY.tcl'
 
 
@@ -3897,7 +3984,22 @@ SELECT * FROM app.sch_control_task
 WHERE CONTROL_CODE LIKE 'BASS1%INT%DAY%'
 
 
-delete from app.sch_control_task where control_code in ('BASS1_INT_CHECK_R023R024_DAY.tcl');INSERT INTO app.sch_control_task VALUES(   'BASS1_INT_CHECK_R023R024_DAY.tcl',   1,   2,   'int -s INT_CHECK_R023R024_DAY.tcl',   10000,   - 1,   'R023-R024校验',   'app',   'BASS1',   1,   '/bassapp/bass1/tcl/'    );   
+delete from app.sch_control_task where control_code in ('BASS1_INT_CHECK_R023R024_DAY.tcl');
+INSERT INTO app.sch_control_task 
+VALUES(
+   'BASS1_INT_CHECK_R023R024_DAY.tcl',
+   1,
+   2,
+   'int -s INT_CHECK_R023R024_DAY.tcl',
+   10000,
+   - 1,
+   'R023-R024校验',
+   'app',
+   'BASS1',
+   1,
+   '/bassapp/bass1/tcl/' 
+   );
+   
    
    SELECT *
     from  BASS1.G_RULE_CHECK 
@@ -4350,5 +4452,9 @@ LEFT JOIN BASS2.TRANS_ENTERPRISE_ID_20100625 B on  A.enterprise_id = B.ENTERPRIS
 			        where rn = 1
 ) o 
 with ur
-            
-            
+
+
+
+select * from syscat.tables where tabname like '%ENTERPRISE%';
+select tabschema,tabname from syscat.tables where tabname like '%ENTERPRISE%';
+

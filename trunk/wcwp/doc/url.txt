@@ -9,3 +9,27 @@ color_picker：
 http://www.intelliance.fr/jquery/color_picker/
 
 http://nongnu.askapache.com/c-prog-book/learning_gnu_c.html
+c:\bin\svn-win32-1.7.2\bin\svn.exe checkout https://wcwp.googlecode.com/svn/trunk/ wcwp --username panwalter@gmail.com
+
+dell driver:
+wlan:
+http://downloads.dell.com/network/R260738.exe
+Ed4SR3pu7Wg3
+
+服务编号: J3WKL2X     更改服务编号  
+系统类型: Latitude E6400 
+出厂日期: 2009/2/14 
+国家和地区: China 
+ 
+ 
+ 
+说明「戴尔服务协议说明」 服务提供商 开始日期 结束日期 所剩天数 
+标准电话技术支持 戴尔 2009/2/15 2014/2/15 772 
+下一工作日上门服务 戴尔 2010/2/15 2012/2/15 41 
+备件交换服务 戴尔 2010/2/15 2012/2/15 41 
+For Non Returnable HDD 戴尔 2009/2/15 2012/2/15 41 
+全面保护服务 戴尔 2009/2/15 2012/2/15 41 
+ 
+ 
+
+

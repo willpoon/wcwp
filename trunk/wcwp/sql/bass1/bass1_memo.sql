@@ -7947,5 +7947,44 @@ Persistent Routes:
  lt /bassapp/backapp/data/bass1/report/*20111228/*22038*   
  
  
- 
+ 'TRANS_ENTERPRISE_ID_20100625'
+
+
+
+db2 "export to ./TRANS_ENTERPRISE_ID_20100625.txt of del \
+MODIFIED BY nochardel coldel$  STRIPLZEROS decplusblank \
+select * from bass2.TRANS_ENTERPRISE_ID_20100625 
+"
+
+db2 connect reset
+
+ USER=bass2;export USER
+db2look -d bassdb -e -i bass2 -w bass2 -z bass2 -t TRANS_ENTERPRISE_ID_20100625
+
+
+
+
+CREATE TABLE "BASS1   "."DIM_TRANS_ENTERPRISE_ID"  (
+                  "ENTERPRISE_ID" VARCHAR(20) , 
+                  "NEW_ENTERPRISE_ID" VARCHAR(20) )   
+                 DISTRIBUTE BY HASH("ENTERPRISE_ID")   
+                   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" NOT LOGGED INITIALLY ; 
+
+
+
+db2 "load client from /bassapp/bass2/load/boss/I0301320101020000000.AVL of del 
+
+modified by coldel$ timestampformat=\"YYYYMMDDHHMMSS\" fastparse anyorder warningcount 1000 messages /bassapp/bass2/load/boss/messages/db2load.msg 
+
+replace into DWD_NG2_I03013_20101020"
+
+
+db2 "load client from /bassapp/bihome/panzw/tmp/ent.txt of del \
+modified by coldel$  \
+replace into bass1.DIM_TRANS_ENTERPRISE_ID nonrecoverable"
+
+db2 "select * from bass1.dim_trans_enterprise_id where enterprise_id is null with ur"
+
+db2 "delete from bass1.dim_trans_enterprise_id where enterprise_id is null with ur"
+
  

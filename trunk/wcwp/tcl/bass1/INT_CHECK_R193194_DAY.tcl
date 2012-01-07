@@ -42,8 +42,32 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		) a where a.rn = 1 
 		and RELA_STATE = '1'
 		and not exists (select 1 from (select distinct value(b.NEW_ENTERPRISE_ID,a.enterprise_id) enterprise_id from bass1.G_A_01004_DAY a 
-LEFT JOIN BASS2.TRANS_ENTERPRISE_ID_20100625 B on  A.enterprise_id = B.ENTERPRISE_ID  ) t where a.cust_id = t.enterprise_id )
+	LEFT JOIN bass1.dim_trans_enterprise_id B on  A.enterprise_id = B.ENTERPRISE_ID  ) t where a.cust_id = t.enterprise_id )
 	"
+#		set sql_buff "
+#		
+#	 select count(0) from  
+#	 (
+#		select enterprise_id from 
+#				(
+#				                select t.*
+#				                , row_number()over(partition by enterprise_id,cust_id order by time_id desc ) rn 
+#				                from 
+#				                G_A_01007_DAY  t
+#				  ) a
+#				where rn = 1	and RELA_STATE = '1'
+#	except 
+#		    select enterprise_id
+#		    from (select enterprise_id
+#						,row_number()over(partition by t.enterprise_id  order by time_id desc ) rn 
+#						from 
+#						G_A_01004_DAY  t
+#						where  length(trim(enterprise_id)) = 14
+#					) a
+#					where rn = 1
+#	) o 
+#	with ur
+#	"
 	#获得结果值
  	set RESULT_VAL [get_single $sql_buff]
  	
