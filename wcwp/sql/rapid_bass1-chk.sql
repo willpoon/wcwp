@@ -333,7 +333,7 @@ where time_id=int(replace(char(current date - 1 days),'-',''))
 
   --调整脚本，''里更新一定的值就是
 --离网客户数
-update bass1.g_s_22012_day set m_off_users='89' 
+update bass1.g_s_22012_day set m_off_users='208' 
 where time_id=int(replace(char(current date - 1 days),'-',''))
 
  select * from  bass1.G_RULE_CHECK where rule_code = 'C1'
@@ -4105,3 +4105,250 @@ and return_flag=1
 ) b on substr(a.filename,16,5) = b.unit_code 
 left join bass1.mon_all_interface c on substr(a.filename,16,5) = c.INTERFACE_CODE                                        
 
+
+
+select count(0) from 
+			(
+			                select t.*
+			                ,row_number()over(partition by t.enterprise_id order by time_id desc ) rn 
+			                from 
+			                G_A_02059_DAY  t
+											where time_id >= 20100626
+			  ) a
+			where rn = 1	and STATUS_ID = '1'
+			AND trim(A.enterprise_id) <> ''
+			and not exists (select 1 from (select distinct a.enterprise_id from bass1.G_A_01004_DAY a 
+ ) t where a.enterprise_id = t.enterprise_id )
+		with ur
+        
+        
+       
+        
+        
+	select length(trim(enterprise_id)),count(0)
+	from  bass1.G_A_01004_DAY
+	group by  length(trim(enterprise_id))
+	
+    
+    
+
+
+
+select count(0) from 
+			(
+			                select t.*
+			                ,row_number()over(partition by t.enterprise_id order by time_id desc ) rn 
+			                from 
+			                G_A_02059_DAY  t
+											where time_id = 20120106
+			  ) a
+			where rn = 1	and STATUS_ID = '1'
+			AND trim(A.enterprise_id) <> ''
+			and enterprise_id not in (select enterpri
+            
+            
+            not exists (select 1 from (select distinct value(b.NEW_ENTERPRISE_ID,a.enterprise_id) enterprise_id from bass1.G_A_01004_DAY a 
+LEFT JOIN BASS2.TRANS_ENTERPRISE_ID_20100625 B on  A.enterprise_id = B.ENTERPRISE_ID  ) t where a.enterprise_id = t.enterprise_id )
+		with ur
+        
+        
+        
+        			select count(0) from 
+			(
+			                select t.*
+			                ,row_number()over(partition by t.enterprise_id order by time_id desc ) rn 
+			                from 
+			                G_A_02060_DAY  t
+			  ) a
+			where rn = 1 and 	STATUS_ID = '1'
+			and not exists (select 1 from (select distinct a.enterprise_id enterprise_id from bass1.G_A_01004_DAY a 
+ ) t where a.enterprise_id = t.enterprise_id )
+		with ur
+        
+        
+        
+        
+        			select count(0) from 
+			(
+			                select t.*
+			                ,row_number()over(partition by t.enterprise_id order by time_id desc ) rn 
+			                from 
+			                G_A_02061_DAY  t
+											where time_id >= 20100624
+			  ) a
+			where rn = 1	and STATUS_ID = '1'
+			and not exists (select 1 from (select distinct a.enterprise_id enterprise_id from bass1.G_A_01004_DAY a 
+) t where a.enterprise_id = t.enterprise_id )
+		with ur		
+        
+        
+        
+        select count(0) from 
+			(
+			                select t.*
+			                ,row_number()over(partition by t.enterprise_id order by time_id desc ) rn 
+			                from 
+			                G_A_02062_DAY  t
+											where time_id >= 20100626
+			  ) a
+			where rn = 1	and STATUS_ID = '1'
+			and not exists (select 1 from (select distinct  enterprise_id from bass1.G_A_01004_DAY a 
+ ) t where a.enterprise_id = t.enterprise_id )
+
+
+
+select count(0) from 
+			(
+			                select t.*
+			                ,row_number()over(partition by t.enterprise_id ,ENTERPRISE_BUSI_TYPE order by time_id desc ) rn 
+			                from 
+			                G_A_02054_DAY  t
+			  ) a
+			where rn = 1	and STATUS_ID = '1'
+			and not exists (select 1 from (select distinct  enterprise_id from bass1.G_A_01004_DAY a 
+ ) t where a.enterprise_id = t.enterprise_id )
+		with ur
+        
+        
+        
+
+select count(0) from 
+			(
+			                select t.*
+			                ,row_number()over(partition by t.enterprise_id ,ENTERPRISE_BUSI_TYPE order by time_id desc ) rn 
+			                from 
+			                G_A_02055_DAY  t
+			  ) a
+			where rn = 1	and STATUS_ID = '1'
+			and not exists (select 1 from (select distinct  enterprise_id from bass1.G_A_01004_DAY a 
+ ) t where a.enterprise_id = t.enterprise_id )
+		with ur	
+
+        
+        
+
+select count(0) from 
+			(
+			                select t.*
+			                ,row_number()over(partition by t.enterprise_id ,ENTERPRISE_BUSI_TYPE order by time_id desc ) rn 
+			                from 
+			                G_A_02057_DAY  t
+			  ) a
+			where rn = 1	and STATUS_ID = '1'
+			and not exists (select 1 from (select distinct  enterprise_id from bass1.G_A_01004_DAY a 
+ ) t where a.enterprise_id = t.enterprise_id )
+		with ur		
+
+        
+        
+        
+        
+			select count(0) from 
+			(
+			                select t.*
+			                ,row_number()over(partition by t.enterprise_id ,ENTERPRISE_BUSI_TYPE order by time_id desc ) rn 
+			                from 
+			                G_A_02057_DAY  t
+			  ) a
+			where rn = 1	and STATUS_ID = '1'
+			and not exists (select 1 from (select distinct value(b.NEW_ENTERPRISE_ID,a.enterprise_id) enterprise_id from bass1.G_A_01004_DAY a 
+LEFT JOIN BASS2.TRANS_ENTERPRISE_ID_20100625 B on  A.enterprise_id = B.ENTERPRISE_ID  ) t where a.enterprise_id = t.enterprise_id )
+		with ur		
+        
+        
+        
+        
+        
+        select count(0) from 
+			(
+			                select t.*
+			                ,row_number()over(partition by t.enterprise_id ,ENTERPRISE_BUSI_TYPE order by time_id desc ) rn 
+			                from 
+			                G_A_02058_DAY  t
+			  ) a
+			where rn = 1	and STATUS_ID = '1'
+			and not exists (select 1 from (select distinct  enterprise_id from bass1.G_A_01004_DAY a 
+) t where a.enterprise_id = t.enterprise_id )
+		with ur
+        
+        
+        
+        
+        select count(0) from 
+			(
+			                select t.*
+			                ,row_number()over(partition by t.enterprise_id ,ENTERPRISE_BUSI_TYPE order by time_id desc ) rn 
+			                from 
+			                G_A_02064_DAY  t
+			  ) a
+			where rn = 1	and STATUS_ID = '1'
+			and not exists (select 1 from (select distinct  enterprise_id from bass1.G_A_01004_DAY a 
+ ) t where a.enterprise_id = t.enterprise_id )
+		with ur	
+        
+        
+        
+        
+        select count(0) from 
+		(select a.* , row_number()over(partition by enterprise_id,cust_id order by time_id desc ) rn 
+			from G_A_01007_DAY a 
+		) a where a.rn = 1 
+		and RELA_STATE = '1'
+		and not exists (select 1 from (select distinct  enterprise_id from bass1.G_A_01004_DAY a 
+ ) t where a.cust_id = t.enterprise_id )
+ 
+ 
+ 
+ select count(0) from G_I_02022_DAY
+ where time_id = 20120105
+ 
+ 
+ 
+ 
+ select count(0) from 
+			(
+			                select enterprise_id
+			                ,row_number()over(partition by t.enterprise_id ,ENTERPRISE_BUSI_TYPE order by time_id desc ) rn 
+			                from 
+			                G_A_02064_DAY  t
+			  ) a
+			where rn = 1	and STATUS_ID = '1'
+			except 
+ select enterprise_id
+ from (select enterprise_id
+			                ,row_number()over(partition by t.enterprise_id  order by time_id desc ) rn 
+			                from 
+			                G_A_01004_DAY  t
+			  ) a
+			where rn = 1
+            ) o with ur
+            
+            
+            
+        
+        
+        
+
+ select count(0) from  
+ (
+ select enterprise_id from 
+			(
+			                select t.*
+			                ,row_number()over(partition by t.enterprise_id ,ENTERPRISE_BUSI_TYPE order by time_id desc ) rn 
+			                from 
+			                G_A_02064_DAY  t
+			  ) a
+			where rn = 1	and STATUS_ID = '1'
+			except 
+            select enterprise_id
+            from (select enterprise_id
+			                ,row_number()over(partition by t.enterprise_id  order by time_id desc ) rn 
+			                from 
+			                G_A_01004_DAY  t
+                            where  length(trim(enterprise_id)) = 14
+			        ) a
+			        where rn = 1
+) o 
+with ur
+            
+            
