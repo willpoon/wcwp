@@ -5,6 +5,8 @@ and flag = -1
 and control_code like 'BASS1%'
 order by alarmtime desc
 ;
+---------------------------------------------------------------------------------
+
 select message_id, send_time,mobile_num,message_content from   APP.SMS_SEND_INFO
 where send_time is not null
 and mobile_num = '13989007120'
@@ -13,7 +15,6 @@ and date(send_time) = char(current date )
 order by send_time desc
 ;
 
-select * from app.sch_control_alarm  where content like '%准确性指标56%'
 
 ---------------------------------------------------------------------------------
 
@@ -21,13 +22,6 @@ select * from   table( bass1.chk_same(0) ) a order by 2
 ---------------------------------------------------------------------------------
 
 select * from   table( bass1.chk_wave(0) ) a order by 2
----------------------------------------------------------------------------------
-TIME_ID	RULE_CODE	RULE_NAME	THRESHOLD	BASS2_VAL	BASS1_VAL	WAVE_RATE_PERCENT
-20111019	R159_1	新增客户数	1.0000	2547.00000	2549.00000	-0.07800
-20111019	R159_2	客户到达数	1.0000	1817505.00000	1817505.00000	0.00000
-20111019	R159_3	上网本客户数	5.0000	125.00000	125.00000	0.00000
-20111019	R159_4	离网客户数	1.0000	3669.00000	3670.00000	-0.02700
-
 
 
 ---------------------------------------------------------------------------------
@@ -200,6 +194,22 @@ and return_flag=1
 ) b on substr(a.filename,16,5) = b.unit_code 
 left join bass1.mon_all_interface c on substr(a.filename,16,5) = c.INTERFACE_CODE 
 
+select * from app.g_runlog 
+where unit_code = '02016'
+
+select t.*
+    from 
+    (
+    select  a.* ,row_number()over(partition by  substr(filename,16,5) order by deal_time desc ) rn 
+    from APP.G_FILE_REPORT a
+    where substr(filename,9,6) = substr(replace(char(current date - 1 month),'-',''),1,6)
+    and err_code='00'
+    and length(filename)=length('s_13100_201002_03014_01_001.dat')
+    ) t where rn = 1
+   and substr(filename,16,5) = '02016'
+   
+   select * from bass1.mon_all_interface  where INTERFACE_CODE = '02016'
+   
 
 /**
 --查询未返回月接口 记录级
@@ -4491,3 +4501,21 @@ G_S_21003_STORE_DAY	862230	862245
 G_S_04005_DAY	590505	1203375
 
 G_S_21003_TO_DAY	1064010	3287520
+
+
+select * from  app.sch_control_alarm 
+WHERE control_code like 'BASS1%02016%'
+order by alarmtime desc
+;
+
+
+select count(0) from G_I_02016_MONTH where time_id = 201112
+
+
+update 
+(
+select * from app.g_runlog 
+where unit_code = '02016'
+and time_id = 201112
+) t
+set return_flag = 1
