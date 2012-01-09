@@ -4458,3 +4458,36 @@ with ur
 select * from syscat.tables where tabname like '%ENTERPRISE%';
 select tabschema,tabname from syscat.tables where tabname like '%ENTERPRISE%';
 
+
+
+select count(0) from G_S_03004_MONTH where time_id = 201112
+10370690
+ 10370690 s_13100_201112_03004_00_001.dat
+ 
+ 
+ 
+SELECT name,npages,fpages FROM SYSIBM.SYSTABLES 
+where tbspace='TBS_APP_BASS1'
+order by npages desc,fpages desc
+
+
+G_S_21003_TO_DAY	2280645	3008280
+
+G_S_21003_TO_DAY	2280645	3008280
+
+runstats on table BASS1.G_S_21003_TO_DAY with distribution;
+
+
+reorgchk current statistics on table BASS1.G_S_21003_TO_DAY;
+time reorg table BASS1.G_S_21003_TO_DAY
+
+runstats on table BASS1.G_S_21003_TO_DAY with distribution;
+reorgchk current statistics on table BASS1.G_S_21003_TO_DAY;
+
+INT_210012916_201112	2006580	2006580
+G_S_04004_DAY	1397250	1397250
+G_S_21003_TO_DAY	1064010	3287520
+G_S_21003_STORE_DAY	862230	862245
+G_S_04005_DAY	590505	1203375
+
+G_S_21003_TO_DAY	1064010	3287520
