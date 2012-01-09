@@ -1,0 +1,8 @@
+This file forces the FlashFXP install to run as a portable install. In function
+this is the same as running FlashFXP with the command line flag -portable.
+
+Just delete this file to be able to run FlashFXP in normal mode. Portable mode is
+designed to ignore registry entries and only use the FlashFXP data folders found
+within the same folder as the flashfxp.exe file. Normal mode will attempt to use
+the computers registry entries to locate the data files including license key and
+may also create new registry keys.
