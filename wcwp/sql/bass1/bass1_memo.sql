@@ -38,7 +38,7 @@ http://www.zto.cn/CheckB.aspx?bill_ID=680102655698&hname=hvalue
 wlan:13549011432/353892
 13989007120/236543
 13989007120/vjwdoa
-13923688640/101516
+13923688640/luQneE
 368814168964
 wlan:
 13989007120/867459
@@ -8128,5 +8128,39 @@ G_I_02005_MONTH
 G_S_22091_DAY
 !
 
+
+
+
+root=/bassapp/bass1/panzw2/bin
+prev_file=${root}/b
+this_file=${root}/a
+log_file=${root}/logfile
+
+if [ -f $log_file ];then 
+log_byte=`ls -trl $log_file |awk '{print $5}'`
+else
+echo "log file not exist"
+fi
+
+#判断b文件
+if [ ! -f $prev_file ];then
+		#判断a文件
+		if [ ! -f ${this_file} ];then
+			echo $log_byte > ${this_file}
+		else
+			mv ${this_file} ${prev_file}
+			echo $log_byte > ${this_file}
+		fi
+else
+		mv ${this_file} ${prev_file}
+		echo $log_byte > ${this_file}
+fi
+
+
+cat a |read this_val
+cat b |read prev_val
+
+echo $this_val 
+echo $prev_val
 
 
