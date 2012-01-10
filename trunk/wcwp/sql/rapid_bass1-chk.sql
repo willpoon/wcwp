@@ -353,7 +353,7 @@ where time_id=int(replace(char(current date - 1 days),'-',''))
 
   --调整脚本，''里更新一定的值就是
 --离网客户数
-update bass1.g_s_22012_day set m_off_users='208' 
+update bass1.g_s_22012_day set m_off_users='79' 
 where time_id=int(replace(char(current date - 1 days),'-',''))
 
  select * from  bass1.G_RULE_CHECK where rule_code = 'C1'
@@ -4519,3 +4519,76 @@ where unit_code = '02016'
 and time_id = 201112
 ) t
 set return_flag = 1
+
+
+select * from bass1.g_rule_check where rule_code in ('R173') and time_id / 100 = 201201 order by time_id desc
+select * from bass1.g_rule_check where rule_code in ('R174')  and time_id / 100 = 201201  order by time_id desc
+select * from bass1.g_rule_check where rule_code in ('R169')  and time_id / 100 = 201201  order by time_id desc
+select * from bass1.g_rule_check where rule_code in ('R170')  and time_id / 100 = 201201  order by time_id desc
+select * from bass1.g_rule_check where rule_code in ('R171')  and time_id / 100 = 201201  order by time_id desc
+select * from bass1.g_rule_check where rule_code in ('R172')  and time_id / 100 = 201201  order by time_id desc
+
+
+
+select 'export_js.sh程序执行异常，系统杀掉进程，稍后系统会自动启动，请注意观察!', phone_id from BASS2.ETL_SEND_MESSAGE where MODULE='LOAD' and phone_id in ('15089051890')
+
+select * from bass1.g_rule_check where rule_code in ('R174','R170','R173','R171','R172','R169')
+and time_id = 20120109 order by time_id desc
+
+
+
+select message_id, send_time,mobile_num,message_content from   APP.SMS_SEND_INFO
+where send_time is not null
+and mobile_num = '15089051890'
+and send_time >=  current timestamp - 1 days
+and date(send_time) = char(current date )
+order by send_time desc
+;
+
+select time_id , count(0) 
+--,  count(distinct time_id ) 
+from G_I_02027_MONTH 
+group by  time_id 
+order by 1 
+
+
+
+CREATE TABLE "BASS1   "."G_I_02026_MONTH_LOAD"  (
+                  "OLD_PKG_ID" VARCHAR(12) NOT NULL , 
+                  "NEW_PKG_ID" VARCHAR(18) NOT NULL , 
+                  "PKG_NAME" CHAR(128) NOT NULL )   
+                 DISTRIBUTE BY HASH("OLD_PKG_ID", "NEW_PKG_ID")   
+                   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" ; 
+
+
+
+
+select * from BASS1.G_I_02026_MONTH_LOAD
+
+select count(0),count(distinct user_id),count(distinct time_id) from G_S_02066_DAY
+where time_id / 100 = 201111
+
+1	2	   
+64	64	   
+		
+        
+ select * from bass2.dim_channel_info
+ where channel_id in (
+select channel_id from bass2.dw_PRODUCT_20120109
+WHERE USER_ID IN (
+select user_id from bass1.G_S_02066_DAY where time_id / 100 = 201111
+
+ )
+ )
+ 
+ 
+ select * from bass2.dw_product_plan_msg_201201 
+ 
+ 
+ select * from bass1.mon_all_interface 
+ where interface_code = '02066'
+ 
+ 
+ 
+select distinct time_id from G_S_02066_DAY
+where time_id / 100 = 201111
