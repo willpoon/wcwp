@@ -18,6 +18,55 @@ order by send_time desc
 
 ---------------------------------------------------------------------------------
 
+--
+select * from  app.sch_control_runlog
+where   control_code  like 'BASS1%'
+and flag = -1
+
+
+--置完成
+
+update (
+select * from  app.sch_control_alarm 
+where alarmtime >=  current timestamp - 1 days
+and flag = -1
+and control_code like 'BASS1%'
+)t 
+set flag = 1
+
+
+update 
+(
+select * from  app.sch_control_runlog
+where   control_code in (
+'BASS1_INT_CHECK_COMP_KPI_DAY.tcl'
+)
+and flag = -1 
+) t
+set  flag = 0
+
+
+--置重运
+update (
+select * from  app.sch_control_alarm 
+where alarmtime >=  current timestamp - 1 days
+and flag = -1
+and control_code like 'BASS1%'
+)t 
+set flag = 1
+
+update 
+(
+select * from  app.sch_control_runlog
+where   control_code in (
+'BASS1_INT_CHECK_COMP_KPI_DAY.tcl'
+)
+and flag = -1 
+) t
+set  flag = -2
+
+---------------------------------------------------------------------------------
+
 select * from   table( bass1.chk_same(0) ) a order by 2
 ---------------------------------------------------------------------------------
 
@@ -353,7 +402,7 @@ where time_id=int(replace(char(current date - 1 days),'-',''))
 
   --调整脚本，''里更新一定的值就是
 --离网客户数
-update bass1.g_s_22012_day set m_off_users='79' 
+update bass1.g_s_22012_day set m_off_users='82' 
 where time_id=int(replace(char(current date - 1 days),'-',''))
 
  select * from  bass1.G_RULE_CHECK where rule_code = 'C1'
@@ -667,7 +716,7 @@ order by 1
 
 select * from   bass2.dw_product_20110808 where product_no = '13989007120'
                        
-select tabname from syscat.tables where tabname like 'DIM%TERM%TAC%'                          
+select tabname from syscat.tables where tabname like '%INS_OFF_INS_PR%'                          
 
 select * from bass2.CDR_GPRS_LOCAL_20110701 fetch first 10 rows only  
 
@@ -772,7 +821,7 @@ select tabname from syscat.tables where tabname like '%ODS_PRODUCT_ORD_BUSI_OTHE
 select * from   app.sch_control_task where control_code like '%product%other%ds%.tcl'                
 select * from   app.sch_control_task where control_code like '%product%%tcl'                
 
-select * from  table( bass1.get_before('03005')) a 
+select * from  table( bass1.get_before('ins_off_ins')) a 
 
 
 
@@ -895,7 +944,7 @@ where item_id in (80000594,80000105,80000106,82000031,80000628)
 
 select * from   BASS1.ALL_DIM_LKP 
 
-where bass1_tbid = 'BASS_STD1_0074'
+where bass1_tbid = 'BASS_STD1_0114'
 
 dim_acct_item	WLAN基本费	80000106	帐目科目	BASS_STD1_0074	0716	无线局域网（WLAN）通信费
 dim_acct_item	WLAN包月费	80000105	帐目科目	BASS_STD1_0074	0715	无线局域网（WLAN）月使用费
@@ -2366,7 +2415,7 @@ and a.OFFER_ID = b.PRODUCT_ITEM_ID
 
 
 
-select * from  table( bass1.get_after('03007')) a 
+select * from  table( bass1.get_after('BASS1_INT_CHECK_A369B2C2_DAY')) a 
 
 select *  from  table( bass1.get_before('IMPORTSERV')) a 
 where control_code like '%DAY%'
@@ -4592,3 +4641,172 @@ select user_id from bass1.G_S_02066_DAY where time_id / 100 = 201111
  
 select distinct time_id from G_S_02066_DAY
 where time_id / 100 = 201111
+
+
+
+
+
+  
+
+
+order by alarmtime desc
+
+
+select type,deadline,count(0) cnt
+from bass1.mon_all_interface
+where sts=1
+group by type,deadline
+
+TYPE	DEADLINE	CNT	   
+d	9	8	   
+d	11	39	   
+d	13	24	   
+d	15	6	   
+m	3	8	   
+m	5	19	   
+m	8	36	   
+m	10	38	   
+m	15	4	   
+			
+
+select * from app.sch_control_runlog where control_code like  'BASS1%DAY%'
+
+select * from  table( bass1.get_after('BASS1_INT_CHECK_A369B2C2_DAY')) a 
+
+drop table G_I_02026_MONTH_test
+
+
+CREATE TABLE BASS1.G_I_02026_MONTH_test  (
+        pkg_desc               varchar(600)
+)   
+                 DISTRIBUTE BY HASH(pkg_desc)   
+                   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" NOT LOGGED INITIALLY ; 
+
+rename BASS1.G_I_02026_MONTH to G_I_02026_MONTH_old20120112;
+CREATE TABLE BASS1.G_I_02026_MONTH  (
+         time_id                integer      
+        ,pkg_id                 char(18) 
+        ,pkg_name               char(100)
+        ,pkg_desc               varchar(600)
+        ,pkg_sts                char(1) 
+        ,stop_dt                char(8)
+)   
+                 DISTRIBUTE BY HASH(time_id,pkg_id)   
+                   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" NOT LOGGED INITIALLY ; 
+
+rename bass1.G_I_02027_MONTH to G_I_02027_MONTH_old20120112;
+CREATE TABLE "BASS1   "."G_I_02027_MONTH"  (
+         time_id                integer       
+        ,user_id                char(20)  
+        ,pkg_id                 char(18)
+        ,eff_dt                 char(8)
+				  )   
+                 DISTRIBUTE BY HASH(user_id,pkg_id)   
+                   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" NOT LOGGED INITIALLY ; 
+
+select * from  app.g_unit_info where unit_code = '02026';
+select *  from  app.g_unit_info where unit_code = '02027';
+
+
+delete from  app.g_unit_info where unit_code = '02026';
+delete from  app.g_unit_info where unit_code = '02027';
+
+
+insert into app.g_unit_info values ('02026' , 1 , '资费套餐基本信息（资费统一编码）' , 'bass1.g_i_02026_month' , 1 , 0 , 0);
+insert into app.g_unit_info values ('02027' , 1 , '用户选择资费套餐（资费统一编码）' , 'bass1.g_i_02027_month' , 1 , 0 , 0);
+
+
+
+
+
+
+insert into app.sch_control_before values 
+ ('BASS1_G_I_02026_MONTH.tcl' , 'BASS2_Dw_product_ins_off_ins_prod_ms.tcl')
+;
+insert into app.sch_control_before values 
+ ('BASS1_G_I_02027_MONTH.tcl' , 'BASS1_G_I_02026_MONTH.tcl')
+,('BASS1_G_I_02027_MONTH.tcl' , 'BASS2_Dw_product_ins_off_ins_prod_ms.tcl')
+;
+
+
+
+insert into app.sch_control_before values 
+ ('BASS1_EXP_G_I_02026_MONTH' , 'BASS1_G_I_02026_MONTH.tcl')
+;
+insert into app.sch_control_before values 
+ ('BASS1_EXP_G_I_02027_MONTH' , 'BASS1_G_I_02027_MONTH.tcl')
+;
+
+
+
+delete from  app.sch_control_task where control_code in ( 'BASS1_G_I_02026_MONTH.tcl','BASS1_EXP_G_I_02026_MONTH');
+delete from  app.sch_control_task where control_code in ( 'BASS1_G_I_02027_MONTH.tcl','BASS1_EXP_G_I_02027_MONTH');
+
+
+
+insert into app.sch_control_task values('BASS1_G_I_02026_MONTH.tcl' , 2 , 2 , 'int -s G_I_02026_MONTH.tcl' ,-1,-1,'资费套餐基本信息（资费统一编码）' , 'app' , 'BASS1' , 1 , '/bassapp/bass1/tcl/');
+insert into app.sch_control_task values('BASS1_G_I_02027_MONTH.tcl' , 2 , 2 , 'int -s G_I_02027_MONTH.tcl' ,-1,-1,'用户选择资费套餐（资费统一编码）' , 'app' , 'BASS1' , 1 , '/bassapp/bass1/tcl/');
+
+
+
+insert into app.sch_control_task values('BASS1_EXP_G_I_02026_MONTH' , 2 , 2 , 'bass1_export bass1.g_i_02026_month LASTMONTH()' ,-1,-1,'EXPORT_of 资费套餐基本信息（资费统一编码）' , 'app' , 'BASS1' , 1 , '/bassapp/backapp/bin/bass1_export/');
+insert into app.sch_control_task values('BASS1_EXP_G_I_02027_MONTH' , 2 , 2 , 'bass1_export bass1.g_i_02027_month LASTMONTH()' ,-1,-1,'EXPORT_of 用户选择资费套餐（资费统一编码）' , 'app' , 'BASS1' , 1 , '/bassapp/backapp/bin/bass1_export/');
+
+
+
+
+select repeat('0',100) from bass2.dual
+
+select length('我,') from bass2.dual
+
+select count(0),count(distinct OLD_PKG_ID),count(distinct NEW_PKG_ID)
+from G_I_02026_MONTH_LOAD
+
+ BASS1.G_I_02026_MONTH_LOAD
+ 
+ 
+ select PKG_NAME||repeat(' ',600-length(PKG_NAME))
+from   BASS1.G_I_02026_MONTH_LOAD
+
+
+select  item_type,count(0) from   bass2.dim_prod_up_product_item 
+where item_type = 'OFFER_PLAN'
+group by item_type
+
+
+
+select *  from   bass2.dim_prod_up_product_item 
+fetch first 10 rows only
+
+
+select product_item_id,del_flag,eff_date,exp_date  from   bass2.dim_prod_up_product_item 
+where item_type = 'OFFER_PLAN'
+group by item_type
+
+
+
+select * from   BASS1.ALL_DIM_LKP 
+where bass1_tbid in ('BASS_STD1_0114','BASS_STD1_0115')
+
+
+select pkg_name from G_I_02026_MONTH
+
+
+select * from G_I_02026_MONTH_LOAD
+
+select * from bass1.G_I_02026_MONTH
+fetch first 10 rows only
+
+
+select count(0),count(distinct pkg_id )
+,count(distinct user_id||pkg_id )
+ from G_I_02027_MONTH
+ 
+
+
+
+select MONTH_OFF_MARK,count(0)
+from  bass2.dw_product_201112
+group by MONTH_OFF_MARK
+
+
