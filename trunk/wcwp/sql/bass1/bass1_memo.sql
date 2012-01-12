@@ -8163,4 +8163,9 @@ cat b |read prev_val
 echo $this_val 
 echo $prev_val
 
-
+链表
+队列和栈
+树
+图
+排序
+查找
