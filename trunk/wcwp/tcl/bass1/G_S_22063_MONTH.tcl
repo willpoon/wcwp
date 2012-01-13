@@ -24,6 +24,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
     set optime $op_time
 
     #本月 yyyymm
+    #set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
+	set optime_month 2011-11
     set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
     puts $op_month
 
@@ -45,6 +47,19 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 
 
+	  
+    # 10	普通业务酬金	            
+    # 11	前台缴费酬金	            
+    # 12	自助终端缴费酬金	        
+    # 13	营销活动老用户预存费酬金	
+    # 17	银行代收费酬金	          
+    # 18	随E行酬金	                
+    # 19	预提卡酬金	              
+    # 20	空中充值酬金	            
+    # 21	充值卡酬金	              
+    # 22	TD公话超市酬金	          
+    # 23	公话超市酬金   
+	
     #往正式表插入本月数据
     set sql_buff "
     insert into BASS1.G_S_22063_MONTH
@@ -62,9 +77,9 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			   $op_month
 			 	,'$op_month'
 			 	,trim(char(a.CHANNEL_ID))
-				,char(bigint( sum(case when t_index_id in (1,4,14) then result else 0 end )                 ))
-				,char(bigint( sum(case when t_index_id in (10,11,12,13,19,20,21) then result else 0 end )   ))
-				,char(bigint( sum(case when t_index_id in (7) then result else 0 end )                      ))
+				,char(bigint( sum(case when t_index_id in (1,2,3,4,5,6) then result else 0 end )                 ))
+				,char(bigint( sum(case when t_index_id in (10,11,12,13,19,20,21,22,23) then result else 0 end )   ))
+				,char(bigint( sum(case when t_index_id in (7,8,9) then result else 0 end )                      ))
 				,'0'
 				,'0'
 				,'0'
@@ -98,7 +113,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			 	,'$op_month' STATMONTH
         ,CHANNEL_ID
         ,'0' FH_REWARD
-        ,'100' BASIC_REWARD
+        ,'0' BASIC_REWARD
         ,'0' INCR_REWARD
         ,'0' INSPIRE_REWARD
         ,'0' TERM_REWARD
