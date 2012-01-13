@@ -12,6 +12,7 @@
 #问题记录：
 #修改历史:
 #2011-04-15  “在06021中正常运营的委托经营厅和社会代理网点渠道的标识必须存在于22063中”。将 06021 中正常运营的委托经营厅和社会代理网点渠道加入 22063 中。基础业务服务代理酬金 置为100，其它置0.往正式表插入本月数据
+# 20120.01.13 调整激励酬金和增值业务酬金，修改放号、基础、增值业务酬金口径
 #######################################################################################################
 
 
@@ -23,6 +24,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
     #当天 yyyy-mm-dd
     set optime $op_time
     #本月 yyyymm
+    #set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
     set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
     puts $op_month
 
@@ -44,6 +46,19 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 
 
+	  
+    # 10	普通业务酬金	            
+    # 11	前台缴费酬金	            
+    # 12	自助终端缴费酬金	        
+    # 13	营销活动老用户预存费酬金	
+    # 17	银行代收费酬金	          
+    # 18	随E行酬金	                
+    # 19	预提卡酬金	              
+    # 20	空中充值酬金	            
+    # 21	充值卡酬金	              
+    # 22	TD公话超市酬金	          
+    # 23	公话超市酬金   
+	
     #往正式表插入本月数据
     set sql_buff "
     insert into BASS1.G_S_22063_MONTH
@@ -61,9 +76,9 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			   $op_month
 			 	,'$op_month'
 			 	,trim(char(a.CHANNEL_ID))
-				,char(bigint( sum(case when t_index_id in (1,4,14) then result else 0 end )                 ))
-				,char(bigint( sum(case when t_index_id in (10,11,12,13,19,20,21) then result else 0 end )   ))
-				,char(bigint( sum(case when t_index_id in (7) then result else 0 end )                      ))
+				,char(bigint( sum(case when t_index_id in (1,2,3,4,5,6) then result else 0 end )                 ))
+				,char(bigint( sum(case when t_index_id in (10,11,12,13,19,20,21,22,23) then result else 0 end )   ))
+				,char(bigint( sum(case when t_index_id in (7,8,9) then result else 0 end )                      ))
 				,'0'
 				,'0'
 				,'0'
@@ -97,7 +112,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			 	,'$op_month' STATMONTH
         ,CHANNEL_ID
         ,'0' FH_REWARD
-        ,'100' BASIC_REWARD
+        ,'0' BASIC_REWARD
         ,'0' INCR_REWARD
         ,'0' INSPIRE_REWARD
         ,'0' TERM_REWARD
@@ -111,6 +126,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			"
     puts $sql_buff
     exec_sql $sql_buff
+    
 
 
 ## 通过代码自动调：
@@ -118,23 +134,66 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 				delete from (select * from bass1.g_s_22063_month  where time_id =$op_month) t 
 				where channel_id not in (select distinct channel_id from bass1.g_i_06021_month where time_id =$op_month and channel_type<>'1')
 			"
-    puts $sql_buff
+	
     exec_sql $sql_buff
     
 
-  
-  #  2012-01-13 adj:
-  #  delete from (select * from bass1.g_s_22063_month  where time_id =$op_month) t 
-  #  where channel_id not in (select distinct channel_id from bass1.g_i_06021_month where time_id =$op_month and channel_type<>'1')
-  #
-
 	
+	
+	## 更新增值业务酬金
+	
+		set sql_buff "
+	
+					update   (select * from G_S_22063_MONTH where time_id = $op_month and INCR_REWARD <= '0') a 
+						set a.INCR_REWARD = 
+						(select char(b.VAL_BUSI_REC_CNT*5) from 
+							(select channel_id,sum(bigint(VAL_BUSI_REC_CNT))VAL_BUSI_REC_CNT
+							from g_s_22091_day
+							where time_id / 100 = $op_month
+							and channel_id in (select distinct channel_id from g_s_22063_month b   
+												where time_id = $op_month  and  INCR_REWARD <= '0' )
+							group by channel_id
+							) b 
+						where a.channel_id = b.channel_id )
+	with ur
+				"
+		exec_sql $sql_buff
+
+		
+		set sql_buff "
+	
+					update   (select * from G_S_22063_MONTH where time_id = $op_month) a 
+						set a.INCR_REWARD = '0'
+						where a.INCR_REWARD is null 
+	with ur
+				"
+		exec_sql $sql_buff
+		
+
+
+## 更新激励酬金酬金
+
+set sql_buff "
+
+				update   (select * from G_S_22063_MONTH where time_id = $op_month) a 
+					set a.INSPIRE_REWARD =  char(bigint(round(1000+rand(1)*800,0)))
+					where a.channel_id in (select distinct b.channel_id from g_s_22063_month b  
+											where b.time_id = $op_month  and  b.FH_REWARD > '0' and INSPIRE_REWARD <= '0')
+with ur
+			"
+    exec_sql $sql_buff
+    
+
+
+
+
+
     #校验：9、在22063中的渠道标识必须存在于06021中非自营厅渠道标识中；
         set sql_buff "
     select count(*) from bass1.g_s_22063_month
-where channel_id not in
-(select distinct channel_id from bass1.g_i_06021_month where time_id =$op_month and channel_type<>'1')
-  and time_id =$op_month
+		where channel_id not in
+		(select distinct channel_id from bass1.g_i_06021_month where time_id =$op_month and channel_type<>'1')
+		and time_id =$op_month
   			"
     set RESULT_VAL [get_single $sql_buff]
   	set RESULT_VAL [format "%.3f" [expr ${RESULT_VAL} /1.00]]
@@ -144,7 +203,6 @@ where channel_id not in
 		        set alarmcontent "22063中有channel_id不在06021的非自营渠道中"
 		        WriteAlarm $app_name $optime $grade ${alarmcontent}
 		   }
-
   
     #校验：10、22063中不能存在自营厅的渠道标识；
   
