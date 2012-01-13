@@ -29,8 +29,18 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	set sql_buff "delete from bass1.G_I_02027_MONTH where time_id=$op_month"
 	exec_sql $sql_buff
 
-
-
+#	
+#	STATE
+#	  0历史
+#	1正常
+#	2变更中
+#	3暂停中
+#	 
+#	 VALID_TYPE
+#	 1 当前有效
+#	2 下周期生效
+#	
+#	
 
 
 	set sql_buff "
@@ -62,8 +72,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 								and b.USERTYPE_ID in (1,2,9)
 								and replace(char(a.VALID_DATE),'-','') <= '$this_month_last_day'
 								and replace(char(a.expire_date ),'-','') >= '$ThisMonthFirstDay'
-								--and a.state =1
-								--and a.valid_type = 1
+								and a.valid_type = 1
 				) i
 			) o where o.rn = 1
 		  ) c on a.OLD_PKG_ID = c.OFFER_ID
