@@ -439,4 +439,14 @@ getxlsdata(){
 				db2 terminate
 }
 
+###########################
+fmt:将excel字段 格式化成文本代码
+###########################
+fmt(){
+if [ $# -ne 0 ];then
+	echo "fmt fmt.txt"
+	return
+fi
+nawk -F"\t" '{ printf "\t,%-20s\t%-20s--%-20s\n", $1,$2,$3 }' fmt.txt
+}
 

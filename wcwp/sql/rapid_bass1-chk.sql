@@ -402,7 +402,7 @@ where time_id=int(replace(char(current date - 1 days),'-',''))
 
   --调整脚本，''里更新一定的值就是
 --离网客户数
-update bass1.g_s_22012_day set m_off_users='82' 
+update bass1.g_s_22012_day set m_off_users='62' 
 where time_id=int(replace(char(current date - 1 days),'-',''))
 
  select * from  bass1.G_RULE_CHECK where rule_code = 'C1'
@@ -4601,6 +4601,12 @@ group by  time_id
 order by 1 
 
 
+select PKG_STS , count(0) 
+--,  count(distinct PKG_STS ) 
+from G_I_02026_MONTH 
+group by  PKG_STS 
+order by 1 
+
 
 CREATE TABLE "BASS1   "."G_I_02026_MONTH_LOAD"  (
                   "OLD_PKG_ID" VARCHAR(12) NOT NULL , 
@@ -4789,7 +4795,7 @@ select * from   BASS1.ALL_DIM_LKP
 where bass1_tbid in ('BASS_STD1_0114','BASS_STD1_0115')
 
 
-select pkg_name from G_I_02026_MONTH
+select pkg_id,pkg_name from G_I_02026_MONTH
 
 
 select * from G_I_02026_MONTH_LOAD
@@ -4802,11 +4808,266 @@ select count(0),count(distinct pkg_id )
 ,count(distinct user_id||pkg_id )
  from G_I_02027_MONTH
  
+ 1	2	3	   
+3371652	276	3371652	   
+			
+
+USERSTATUS_ID	MONTH_OFF_MARK	3	   
+4	1	16	   
+5	1	81	   
+3	0	516670	   
+8	0	43	   
+1	0	2854842	   
+			
+
+select USERSTATUS_ID, MONTH_OFF_MARK,count(0)
+from  bass2.dw_product_201112 a
+,G_I_02027_MONTH b 
+where a.user_id = b.user_id
+group by USERSTATUS_ID,MONTH_OFF_MARK
 
 
 
-select MONTH_OFF_MARK,count(0)
-from  bass2.dw_product_201112
-group by MONTH_OFF_MARK
+
+select * from G_S_22063_MONTH
+where time_id = 201111
+
+
+
+		  SELECT
+			   201111
+			 	,'$op_month'
+			 	,trim(char(a.CHANNEL_ID))
+				,char(bigint( sum(case when t_index_id in (1,4,14) then result else 0 end )                 ))
+				,char(bigint( sum(case when t_index_id in (10,11,12,13,19,20,21) then result else 0 end )   ))
+				,char(bigint( sum(case when t_index_id in (7) then result else 0 end )                      ))
+				,'0'
+				,'0'
+				,'0'
+			FROM BASS2.DW_CHANNEL_INFO_201111 A
+			inner join bass2.stat_channel_reward_0002 b on a.channel_id=b.channel_id
+			WHERE A.CHANNEL_TYPE_CLASS IN (90105,90102) 
+						and b.op_time=201111
+						AND B.result>0
+                        			group by trim(char(a.CHANNEL_ID))
+                        
+                        
+
+    select count(*) from bass1.g_s_22063_month
+where channel_id not in
+(select distinct channel_id from bass1.g_i_06021_month where time_id =201111 and channel_type<>'1')
+  and time_id =201111
+  
+
+select time_id , count(0) cnt
+--,  count(distinct time_id ) 
+,sum(bigint(FH_REWARD))FH_REWARD
+,sum(bigint(BASIC_REWARD))BASIC_REWARD
+,sum(bigint(INCR_REWARD))INCR_REWARD
+,sum(bigint(INSPIRE_REWARD))INSPIRE_REWARD
+,sum(bigint(TERM_REWARD))TERM_REWARD
+,sum(bigint(RENT_CHARGE))RENT_CHARGE
+from G_S_22063_MONTH 
+/**
+where channel_id not in     (select channel_id from bass1.g_s_22063_month
+where channel_id not in
+(select distinct channel_id from bass1.g_i_06021_month where time_id =201111 and channel_type<>'1')
+  and time_id =201111
+  )
+ **/
+group by  time_id 
+order by 1 desc
+
+                        
+                        
+                        
+                        
+select * from g_s_22062_month
+                        
+                        
+                        
+201112	23518	116047	   
+
+201111	19070	80739	   
+
+select a.time_id /100, count(0) cnt
+--,  count(distinct time_id ) VAL_BUSI_REC_CNT
+,sum(bigint(NEW_USER_CNT))NEW_USER_CNT
+,sum(bigint(VAL_BUSI_REC_CNT))VAL_BUSI_REC_CNT
+,sum(bigint(VAL_BUSI_OPEN_CNT))VAL_BUSI_OPEN_CNT
+,sum(bigint(IMP_VAL_OPEN_CNT))IMP_VAL_OPEN_CNT
+from g_s_22091_day  a
+where a.CHANNEL_ID in (select distinct channel_id from g_s_22063_month b  where time_id = 201111)
+group by  a.time_id / 100
+order by 1 desc
+
+                        
+
+
+CREATE TABLE "BASS1   "."G_S_22063_MONTH_BAK20120113"  (
+                  "TIME_ID" INTEGER NOT NULL , 
+                  "STATMONTH" CHAR(6) NOT NULL , 
+                  "CHANNEL_ID" CHAR(40) NOT NULL , 
+                  "FH_REWARD" CHAR(10) , 
+                  "BASIC_REWARD" CHAR(10) , 
+                  "INCR_REWARD" CHAR(10) , 
+                  "INSPIRE_REWARD" CHAR(10) , 
+                  "TERM_REWARD" CHAR(10) , 
+                  "RENT_CHARGE" CHAR(8) )   
+                 DISTRIBUTE BY HASH("TIME_ID",  
+                 "STATMONTH",  
+                 "CHANNEL_ID")   
+                   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" ; 
+
+
+INSERT INTO G_S_22063_MONTH_BAK20120113
+SELECT * 
+FROM G_S_22063_MONTH
+                        
+select * from bass2.stat_channel_reward_0002
+fetch first 10 rows only
+                        
+                        
+                        
+
+select * from  app.sch_control_alarm 
+where  control_code like 'BASS1%22063%'
+
+
+    select count(*) from bass1.g_s_22063_month where time_id = 201112
+    select count(*) from bass1.g_s_22063_month where time_id = 201112
+                        
+                        
+                        
+                        
+                            select count(*) from bass1.g_s_22063_month
+                            where time_id = 201112
+                            
+                            select count(*) from 
+                            G_S_22063_MONTH_BAK20120113 where time_id = 201112
+                            
+                            
+
+    select count(*) from bass1.G_S_22063_MONTH_BAK20120113
+where channel_id not in
+(select distinct channel_id from bass1.g_i_06021_month where time_id =201112 and channel_type<>'1')
+  and time_id =201112
+                        
+109
+109.000
+
+    select count(*) from bass1.G_S_22063_MONTH_BAK20120113
+                        where channel_id in
+                        (select distinct channel_id from bass1.g_i_06021_month where time_id =201112 and channel_type='1')
+                          and time_id =201112
+
+                            
+                            
+
+
+select STOP_DT , count(0) 
+--,  count(distinct STOP_DT ) 
+from G_I_02026_MONTH 
+group by  STOP_DT 
+order by 1 
+
+                            
+                            
+
+
+select t_index_id , count(0) 
+--,  count(distinct t_index_id ) 
+from bass2.stat_channel_reward_0002 
+where op_time = 201111
+group by  t_index_id 
+order by 1 
+                            
+                            
+update(
+select * from app.g_runlog 
+where time_id in (201111,201112)
+and return_flag=1               
+and unit_code = '22063'
+) a 
+set   return_flag=0
+           
+
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_22063_MONTH 2011-11 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_22063_MONTH 2011-12 &
+
+           
+           
+select * from G_I_06032_DAY
+where time_id = 20120101
+           
+           
+select * from G_I_06032_DAY
+where time_id = 20120101
+
+           
+select substr(new_pkg_id,1,4),count(0) from BASS1.G_I_02026_MONTH_LOAD
+group by substr(new_pkg_id,1,4)
+
+fetch first 10 rows only 
+
+ select * from           
+(
+select '1' a from bass2.dual
+union all
+select '2' a from bass2.dual
+) t
+where a between '1' and '2'
+           
+
+select count(0) from  G_I_02027_MONTH a
+where not exists ( select 1 from bass1.int_02004_02008_month_stage b 
+where a.user_id = b.user_id )
+and a.time_id = 
+
+
+
+
+
+select count(0)
+from 
+           
+           
+           
+           delete from (
+           select * from bass1.mon_all_interface
+           where interface_code = '02026'
+           and sts is null
+           ) t
+           
+
+
+select * from G_I_06032_DAY
+where time_id = 20120101
+
+update   G_I_02026_MONTH
+set PKG_ID = '31'||substr(pkg_id,3)
+
+select     pkg_id,     substr(pkg_id,3)
+from G_I_02026_MONTH
+
+
+update   G_I_02027_MONTH
+set PKG_ID = '31'||substr(pkg_id,3)
+
+
+
+select  *
+from G_I_02026_MONTH
+fetch first 10 rows only
+
+
+
+
+update 
+(
+select * from app.g_runlog where unit_code = '02027'
+and time_id = 201112 ) a
+set return_flag = 0
+where return_flag = 1
 
 
