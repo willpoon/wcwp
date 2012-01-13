@@ -56,8 +56,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	  ,c.user_id
 	  ,b.PKG_ID
 	  ,c.valid_date
-	from BASS1.G_I_02026_MONTH_LOAD a
-	join bass1.G_I_02026_MONTH b on a.NEW_PKG_ID = b.pkg_id
+	from  bass1.G_I_02026_MONTH_1 b
 	join ( select user_id,offer_id,valid_date 
 			from (
 				select user_id,offer_id,valid_date
@@ -75,7 +74,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 								and a.valid_type = 1
 				) i
 			) o where o.rn = 1
-		  ) c on a.OLD_PKG_ID = c.OFFER_ID
+		  ) c on b.BASS2_PKG_ID = c.OFFER_ID
 	  with ur
   "     
   exec_sql $sql_buff

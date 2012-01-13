@@ -5002,7 +5002,8 @@ where time_id = 20120101
            
            
 select * from G_I_06032_DAY
-where time_id = 20120101
+where time_id = 20120112
+
 
            
 select substr(new_pkg_id,1,4),count(0) from BASS1.G_I_02026_MONTH_LOAD
@@ -5069,5 +5070,67 @@ select * from app.g_runlog where unit_code = '02027'
 and time_id = 201112 ) a
 set return_flag = 0
 where return_flag = 1
+
+
+
+
+select substr(pkg_id,1,4),count(0) from BASS1.G_I_02026_MONTH
+group by substr(pkg_id,1,4)
+
+
+
+
+update   G_I_02026_MONTH
+set PKG_ID = '99'||substr(pkg_id,3)
+where substr(pkg_id,1,4) = '3199'
+ 
+select     pkg_id,     substr(pkg_id,3)
+from G_I_02026_MONTH
+
+
+update   G_I_02027_MONTH
+set PKG_ID = '99'||substr(pkg_id,3)
+where substr(pkg_id,1,4) = '3199'
+
+
+
+
+update   G_I_02026_MONTH_load
+set NEW_PKG_ID = '31'||substr(NEW_PKG_ID,3)
+
+
+select 
+         TIME_ID
+        ,PKG_ID
+        ,PKG_NAME
+       -- ,PKG_DESC
+        ,PKG_STS
+        ,STOP_DT
+        from G_I_02026_MONTH
+        
+        
+ 
+ 
+ 
+select pkg_id , count(0) 
+--,  count(distinct pkg_id ) 
+from G_I_02027_MONTH 
+group by  pkg_id 
+order by 1 
+
+
+
+
+CREATE TABLE "BASS1   "."G_I_02026_MONTH_1"  (
+                  "TIME_ID" INTEGER , 
+                  "PKG_ID" CHAR(18) , 
+                  "BASS2_PKG_ID" CHAR(12) , 
+                  "PKG_NAME" CHAR(100) , 
+                  "PKG_DESC" VARCHAR(600) , 
+                  "PKG_STS" CHAR(1) , 
+                  "STOP_DT" CHAR(8) )   
+                 DISTRIBUTE BY HASH("TIME_ID",  
+                 "PKG_ID")   
+                   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" NOT LOGGED INITIALLY ; 
 
 

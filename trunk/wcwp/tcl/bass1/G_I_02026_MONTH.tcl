@@ -30,6 +30,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	exec_sql $sql_buff
 
 
+ set sql_buff "ALTER TABLE BASS1.G_I_02026_MONTH_1 ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
+ 	exec_sql $sql_buff
 
 								
 	set sql_buff "
@@ -53,11 +55,13 @@ chkzero2 $sql_buff "02026 src data pk check not pass!"
 #	where bass1_tbid = 'BASS_STD1_0114'
 #	
 
+
 	set sql_buff "
-	insert into bass1.G_I_02026_MONTH
+	insert into bass1.G_I_02026_MONTH_1
 		  (
 			 TIME_ID
 			,PKG_ID
+			,BASS2_PKG_ID
 			,PKG_NAME
 			,PKG_DESC
 			,PKG_STS
@@ -66,6 +70,7 @@ chkzero2 $sql_buff "02026 src data pk check not pass!"
 	select 
 	  $op_month TIME_ID
 	  ,value(d.NEW_PKG_ID,a.NEW_PKG_ID) PKG_ID
+	  ,a.OLD_PKG_ID
 	  ,case when length(b.NAME) > 100 then substr(b.NAME,100) else b.NAME end PKG_NAME
 	  ,repeat(' ',600) PKG_DESC
 	  ,case when exp_date > '$this_month_last_day' and del_flag = '1' then '2' else '3' end PKG_STS
@@ -79,7 +84,7 @@ chkzero2 $sql_buff "02026 src data pk check not pass!"
 			where item_type = 'OFFER_PLAN'
 		) b on a.old_pkg_id = b.product_item_id
 	where b.product_item_id is not null 
-	and substr(a.new_pkg_id,1,4) between '3101' and '3107'
+	and (substr(a.new_pkg_id,1,4) between '3101' and '3107' or substr(a.new_pkg_id,1,4) = '9999')
 	and substr(a.new_pkg_id,5,1) between '1' and '3'
 	and substr(a.new_pkg_id,6,1) between '1' and '6'
 	and substr(a.new_pkg_id,7,1) between '1' and '7'
@@ -88,6 +93,30 @@ chkzero2 $sql_buff "02026 src data pk check not pass!"
 	and substr(a.new_pkg_id,12,4) between '0000' and '9999'
 	and substr(a.new_pkg_id,16,3) between '001' and '999'
 	  with ur 
+  "     
+  exec_sql $sql_buff
+
+
+
+	set sql_buff "
+	insert into bass1.G_I_02026_MONTH
+		  (
+			 TIME_ID
+			,PKG_ID
+			,PKG_NAME
+			,PKG_DESC
+			,PKG_STS
+			,STOP_DT
+		  )
+	select 
+			TIME_ID
+			,PKG_ID
+			,PKG_NAME
+			,PKG_DESC
+			,PKG_STS
+			,STOP_DT
+		from bass1.G_I_02026_MONTH_1
+	  with ur
   "     
   exec_sql $sql_buff
 
