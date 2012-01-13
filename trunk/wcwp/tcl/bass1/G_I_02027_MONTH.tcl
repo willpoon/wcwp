@@ -81,6 +81,20 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
   exec_sql $sql_buff
 
 
+
+	set sql_buff "
+	select count(0) from  G_I_02027_MONTH a
+	where not exists ( select 1 from bass1.int_02004_02008_month_stage b 
+					where a.user_id = b.user_id )
+	and a.time_id = $op_month
+with ur
+	"
+
+chkzero2 $sql_buff "02027有用户不在用户表中！"
+
+
+
+
   #1.检查chkpkunique
 	set tabname "G_I_02027_MONTH"
 	set pk 			"USER_ID,PKG_ID"

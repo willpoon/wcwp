@@ -79,6 +79,14 @@ chkzero2 $sql_buff "02026 src data pk check not pass!"
 			where item_type = 'OFFER_PLAN'
 		) b on a.old_pkg_id = b.product_item_id
 	where b.product_item_id is not null 
+	and substr(a.new_pkg_id,1,4) between '3101' and '3107'
+	and substr(a.new_pkg_id,5,1) between '1' and '3'
+	and substr(a.new_pkg_id,6,1) between '1' and '6'
+	and substr(a.new_pkg_id,7,1) between '1' and '7'
+	and substr(a.new_pkg_id,8,1) between '1' and '2'
+	and substr(a.new_pkg_id,9,3) between '001' and '147'
+	and substr(a.new_pkg_id,12,4) between '0000' and '9999'
+	and substr(a.new_pkg_id,16,3) between '001' and '999'
 	  with ur 
   "     
   exec_sql $sql_buff
