@@ -1,0 +1,223 @@
+<HTML
+><HEAD
+><TITLE
+>Linux and assembly</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Linux Assembly HOWTO"
+HREF="Assembly-HOWTO.html"><LINK
+REL="UP"
+TITLE="Do you need assembly?"
+HREF="doyouneed.html"><LINK
+REL="PREVIOUS"
+TITLE="How to NOT use Assembly"
+HREF="howtonot.html"><LINK
+REL="NEXT"
+TITLE="Assemblers"
+HREF="assemblers.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Linux Assembly HOWTO</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="howtonot.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Do you need assembly?</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="assemblers.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="AEN233"
+></A
+>2.3. Linux and assembly</H1
+><P
+>As you probably noticed, in general case
+you don't need to use assembly language in Linux programming.
+Unlike DOS, you do not have to write Linux drivers in assembly
+(well, actually you can do it if you really want).
+And with modern optimizing compilers,
+if you care of speed optimization for different CPU's,
+it's much simpler to write in C.
+However, if you're reading this,
+you might have some reason to use assembly instead of C/C++.</P
+><P
+>You may <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>need</I
+></SPAN
+> to use assembly, or you may <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>want</I
+></SPAN
+> to use assembly.
+In short, main practical (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>need</I
+></SPAN
+>) reasons
+of diving into the assembly realm are <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>small code</I
+></SPAN
+>
+and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+><SPAN
+CLASS="APPLICATION"
+>libc</SPAN
+> independence</I
+></SPAN
+>.
+Impractical (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>want</I
+></SPAN
+>), and the most often reason is
+being just an old crazy hacker,
+who has twenty years old habit of doing everything in assembly language.</P
+><P
+>However, if you're porting Linux to some embedded hardware
+you can be quite short at the size of whole system:
+you need to fit kernel, <SPAN
+CLASS="APPLICATION"
+>libc</SPAN
+>
+and all that stuff of <SPAN
+CLASS="APPLICATION"
+>(file|find|text|sh|etc.) utils</SPAN
+>
+into several hundreds of kilobytes,
+and every kilobyte costs much.
+So, one of the possible ways is to rewrite some
+(or all) parts of system in assembly,
+and this will really save you a lot of space.
+For instance, a simple <B
+CLASS="COMMAND"
+>httpd</B
+> written in assembly
+can take less than 600 bytes;
+you can fit a server consisting of kernel, httpd and ftpd
+in 400 KB or less... Think about it.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="howtonot.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="Assembly-HOWTO.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="assemblers.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>How to NOT use Assembly</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="doyouneed.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Assemblers</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

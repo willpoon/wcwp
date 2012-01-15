@@ -1,0 +1,385 @@
+<HTML
+><HEAD
+><TITLE
+>Introduction</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Linux Assembly HOWTO"
+HREF="Assembly-HOWTO.html"><LINK
+REL="PREVIOUS"
+TITLE="Linux Assembly HOWTO"
+HREF="Assembly-HOWTO.html"><LINK
+REL="NEXT"
+TITLE="Do you need assembly?"
+HREF="doyouneed.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Linux Assembly HOWTO</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="Assembly-HOWTO.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="doyouneed.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="S-INTRO"
+></A
+>Chapter 1. Introduction</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>1.1. <A
+HREF="introduction.html#AEN75"
+>Legal Blurb</A
+></DT
+><DT
+>1.2. <A
+HREF="introduction.html#AEN83"
+>Foreword</A
+></DT
+><DT
+>1.3. <A
+HREF="introduction.html#AEN100"
+>Contributions</A
+></DT
+><DT
+>1.4. <A
+HREF="introduction.html#AEN111"
+>Translations</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>You can skip this chapter if you are familiar with HOWTOs,
+or just hate to read all this assembly-unrelated crap.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SIMPLESECT"
+><H4
+CLASS="SIMPLESECT"
+><A
+NAME="AEN75"
+></A
+>1.1. Legal Blurb</H4
+><P
+>Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU
+<A
+HREF="http://www.gnu.org/copyleft/fdl.html"
+TARGET="_top"
+>Free Documentation License</A
+> Version 1.1;
+with no Invariant Sections, with no Front-Cover Texts, and no Back-Cover texts.
+A copy of the license is included in the <A
+HREF="fdl.html"
+>GNU Free Documentation License</A
+> appendix.</P
+><P
+>The most recent official version of this document is available from the
+<A
+HREF="http://linuxassembly.org/howto.html"
+TARGET="_top"
+>Linux Assembly</A
+> and
+<A
+HREF="http://tldp.org/docs.html"
+TARGET="_top"
+>LDP</A
+> sites.
+If you are reading a few-months-old copy,
+consider checking the above URLs for a new version.</P
+></DIV
+><DIV
+CLASS="SIMPLESECT"
+><H4
+CLASS="SIMPLESECT"
+><A
+NAME="AEN83"
+></A
+>1.2. Foreword</H4
+><P
+>This document aims answering questions of those
+who program or want to program 32-bit x86 assembly using
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>free software</I
+></SPAN
+>,
+particularly under the Linux operating system.
+At many places Universal Resource Locators (<SPAN
+CLASS="ACRONYM"
+>URL</SPAN
+>) are given
+for some software or documentation repository.
+This document also points to other documents about
+non-free, non-x86, or non-32-bit assemblers,
+although this is not its primary goal.
+Also note that there are FAQs and docs about programming
+on your favorite platform (whatever it is), which you should consult
+for platform-specific issues, not related directly to assembly programming.</P
+><P
+>Because the main interest of assembly programming is to build
+the guts of operating systems, interpreters, compilers, and games,
+where C compiler fails to provide the needed expressiveness
+(performance is more and more seldom as issue),
+we are focusing on development of such kind of software.</P
+><P
+>If you don't know what 
+<A
+HREF="http://www.gnu.org/philosophy/"
+TARGET="_top"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>free software</I
+></SPAN
+></A
+> is,
+please do read <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>carefully</I
+></SPAN
+>
+the GNU <A
+HREF="http://www.gnu.org/copyleft/gpl.html"
+TARGET="_top"
+>General Public License</A
+>
+(<SPAN
+CLASS="ACRONYM"
+>GPL</SPAN
+> or <SPAN
+CLASS="ACRONYM"
+>copyleft</SPAN
+>),
+which is used in a lot of free software,
+and is the model for most of their licenses.
+It generally comes in a file named <TT
+CLASS="FILENAME"
+>COPYING</TT
+>
+(or <TT
+CLASS="FILENAME"
+>COPYING.LIB</TT
+>).
+Literature from the
+<A
+HREF="http://www.fsf.org"
+TARGET="_top"
+>Free Software Foundation</A
+>
+(<SPAN
+CLASS="ACRONYM"
+>FSF</SPAN
+>) might help you too.
+Particularly, the interesting feature of free software
+is that it comes with source code which you can consult and correct,
+or sometimes even borrow from.
+Read your particular license carefully and do comply to it.</P
+></DIV
+><DIV
+CLASS="SIMPLESECT"
+><H4
+CLASS="SIMPLESECT"
+><A
+NAME="AEN100"
+></A
+>1.3. Contributions</H4
+><P
+>This is an interactively evolving document: you are especially invited
+to ask questions,
+to answer questions,
+to correct given answers,
+to give pointers to new software,
+to point the current maintainer to bugs or deficiencies in the pages.
+In one word, contribute!</P
+><P
+>To contribute, please contact the <A
+HREF="Assembly-HOWTO.html#KONST"
+>maintainer</A
+>.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>At the time of writing, it is
+<A
+HREF="Assembly-HOWTO.html#KONST"
+>Konstantin Boldyshev</A
+>
+and no more
+<A
+HREF="Assembly-HOWTO.html#FARE"
+>Francois-Rene Rideau</A
+> (since version 0.5).
+I (<A
+HREF="Assembly-HOWTO.html#FARE"
+>Fare</A
+>) had been looking for some time
+for a serious hacker to replace me as maintainer of this document,
+and am pleased to announce
+<A
+HREF="Assembly-HOWTO.html#KONST"
+>Konstantin</A
+> as my worthy successor.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SIMPLESECT"
+><H4
+CLASS="SIMPLESECT"
+><A
+NAME="AEN111"
+></A
+>1.4. Translations</H4
+><P
+>Korean translation of this HOWTO is avalilable at
+<A
+HREF="http://kldp.org/HOWTO/html/Assembly-HOWTO/"
+TARGET="_top"
+>http://kldp.org/HOWTO/html/Assembly-HOWTO/</A
+>.
+Turkish translation of this HOWTO is available at
+<A
+HREF="http://belgeler.org/howto/assembly-howto.html"
+TARGET="_top"
+>http://belgeler.org/howto/assembly-howto.html</A
+>.
+Incomplete Russian translation is available at 
+<A
+HREF="http://volgograd.lug.ru/wiki/GrableVodstvo/articles/AssembleInLinux/"
+TARGET="_top"
+>http://volgograd.lug.ru/wiki/GrableVodstvo/articles/AssembleInLinux/</A
+>.
+Also, there was a French translation of the early HOWTO versions,
+but I can't find it now.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="Assembly-HOWTO.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="Assembly-HOWTO.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="doyouneed.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Linux Assembly HOWTO</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Do you need assembly?</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,496 @@
+<HTML
+><HEAD
+><TITLE
+>GAS</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Linux Assembly HOWTO"
+HREF="Assembly-HOWTO.html"><LINK
+REL="UP"
+TITLE="Assemblers"
+HREF="assemblers.html"><LINK
+REL="PREVIOUS"
+TITLE="Assemblers"
+HREF="assemblers.html"><LINK
+REL="NEXT"
+TITLE="NASM"
+HREF="nasm.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Linux Assembly HOWTO</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="assemblers.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Assemblers</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="nasm.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="P-GAS"
+></A
+>3.2. GAS</H1
+><P
+>GAS is the GNU Assembler, that GCC relies upon.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN339"
+></A
+>3.2.1. Where to find it</H2
+><P
+>Find it at the same place where you've found GCC,
+in the binutils package.
+The latest version of binutils is available from
+<A
+HREF="http://sources.redhat.com/binutils/"
+TARGET="_top"
+>http://sources.redhat.com/binutils/</A
+>.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN343"
+></A
+>3.2.2. What is this AT&#38;T syntax</H2
+><P
+>Because GAS was invented to support a 32-bit unix compiler,
+it uses standard AT&#38;T syntax,
+which resembles a lot the syntax for standard m68k assemblers,
+and is standard in the UNIX world.
+This syntax is neither worse, nor better than the Intel syntax.
+It's just different.
+When you get used to it,
+you find it much more regular than the Intel syntax,
+though a bit boring.</P
+><P
+>Here are the major caveats about GAS syntax:
+
+<P
+></P
+><UL
+><LI
+><P
+>Register names are prefixed with <TT
+CLASS="LITERAL"
+>%</TT
+>, so that registers
+are <TT
+CLASS="LITERAL"
+>%eax</TT
+>, <TT
+CLASS="LITERAL"
+>%dl</TT
+> and so on,
+instead of just <TT
+CLASS="LITERAL"
+>eax</TT
+>, <TT
+CLASS="LITERAL"
+>dl</TT
+>, etc.
+This makes it possible to include external C symbols directly
+in assembly source, without any risk of confusion, or any need
+for ugly underscore prefixes.</P
+></LI
+><LI
+><P
+>The order of operands is source(s) first, and destination last,
+as opposed to the Intel convention of destination first and sources last.
+Hence, what in Intel syntax is
+<TT
+CLASS="FUNCTION"
+>mov eax,edx</TT
+>
+(move contents of register <TT
+CLASS="LITERAL"
+>edx</TT
+> into register <TT
+CLASS="LITERAL"
+>eax</TT
+>)
+will be in GAS syntax
+<TT
+CLASS="FUNCTION"
+>mov %edx,%eax</TT
+>.</P
+></LI
+><LI
+><P
+>The operand size is specified as a suffix to the instruction name.
+The suffix is
+<TT
+CLASS="LITERAL"
+>b</TT
+> for (8-bit) byte,
+<TT
+CLASS="LITERAL"
+>w</TT
+> for (16-bit) word, and
+<TT
+CLASS="LITERAL"
+>l</TT
+> for (32-bit) long.
+For instance, the correct syntax for the above instruction
+would have been <TT
+CLASS="FUNCTION"
+>movl %edx,%eax</TT
+>.
+However, gas does not require strict AT&#38;T syntax,
+so the suffix is optional when size can be guessed from register operands,
+and else defaults to 32-bit (with a warning).</P
+></LI
+><LI
+><P
+>Immediate operands are marked with a <TT
+CLASS="LITERAL"
+>$</TT
+> prefix,
+as in <TT
+CLASS="FUNCTION"
+>addl $5,%eax</TT
+>
+(add immediate long value 5 to register <TT
+CLASS="LITERAL"
+>%eax</TT
+>).</P
+></LI
+><LI
+><P
+>Missing operand prefix indicates that it is memory-contents;
+hence <TT
+CLASS="FUNCTION"
+>movl $foo,%eax</TT
+>
+puts the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>address</I
+></SPAN
+> of variable <TT
+CLASS="LITERAL"
+>foo</TT
+>
+into register <TT
+CLASS="LITERAL"
+>%eax</TT
+>,
+but <TT
+CLASS="FUNCTION"
+>movl foo,%eax</TT
+>
+puts the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>contents</I
+></SPAN
+> of variable <TT
+CLASS="LITERAL"
+>foo</TT
+>
+into register <TT
+CLASS="LITERAL"
+>%eax</TT
+>.</P
+></LI
+><LI
+><P
+>Indexing or indirection is done by enclosing the index register
+or indirection memory cell address in parentheses,
+as in <TT
+CLASS="FUNCTION"
+>testb $0x80,17(%ebp)</TT
+>
+(test the high bit of the byte value at offset 17
+from the cell pointed to by <TT
+CLASS="LITERAL"
+>%ebp</TT
+>).</P
+></LI
+></UL
+>&#13;</P
+><P
+><A
+NAME="P-CONVERT"
+></A
+>
+Note: There are <A
+HREF="resources.html"
+>few programs</A
+> which may help you
+to convert source code between AT&#38;T and Intel assembler syntaxes;
+some of the are capable of performing conversion in both directions.</P
+><P
+>GAS has comprehensive documentation in TeXinfo format,
+which comes at least with the source distribution.
+Browse extracted <TT
+CLASS="FILENAME"
+>.info</TT
+> pages with Emacs or whatever.
+There used to be a file named gas.doc or as.doc
+around the GAS source package, but it was merged into the TeXinfo docs.
+Of course, in case of doubt, the ultimate documentation
+is the sources themselves!
+A section that will particularly interest you is
+<TT
+CLASS="LITERAL"
+>Machine Dependencies::i386-Dependent::</TT
+></P
+><P
+>Again, the sources for Linux (the OS kernel) come in as excellent examples;
+see under <TT
+CLASS="FILENAME"
+>linux/arch/i386/</TT
+> the following files:
+<TT
+CLASS="FILENAME"
+>kernel/*.S</TT
+>,
+<TT
+CLASS="FILENAME"
+>boot/compressed/*.S</TT
+>,
+<TT
+CLASS="FILENAME"
+>math-emu/*.S</TT
+>.</P
+><P
+>If you are writing kind of a language, a thread package, etc.,
+you might as well see how other languages (
+<A
+HREF="http://para.inria.fr/"
+TARGET="_top"
+>OCaml</A
+>,
+<A
+HREF="http://www.jwdt.com/~paysan/gforth.html"
+TARGET="_top"
+>Gforth</A
+>,
+etc.),
+or thread packages (QuickThreads, MIT pthreads, LinuxThreads, etc),
+or whatever else do it.</P
+><P
+>Finally, just compiling a C program to assembly
+might show you the syntax for the kind of instructions you want.
+See section <A
+HREF="doyouneed.html"
+>Do you need assembly?</A
+> above.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN402"
+></A
+>3.2.3. Intel syntax</H2
+><P
+>Good news are that starting from binutils 2.10 release,
+GAS supports Intel syntax too.
+It can be triggered with <TT
+CLASS="LITERAL"
+>.intel_syntax</TT
+> directive.
+Unfortunately this mode is not documented (yet?) in the official
+binutils manual, so if you want to use it, try to examine
+<A
+HREF="http://www.lxhp.in-berlin.de/lhpas86.html"
+TARGET="_top"
+>http://www.lxhp.in-berlin.de/lhpas86.html</A
+>,
+which is an extract from AMD 64bit port of binutils 2.11.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN407"
+></A
+>3.2.4. 16-bit mode</H2
+><P
+>Binutils (2.9.1.0.25+) now fully support 16-bit mode
+(registers <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>and</I
+></SPAN
+> addressing) on i386 PCs.
+Use <TT
+CLASS="LITERAL"
+>.code16</TT
+> and <TT
+CLASS="LITERAL"
+>.code32</TT
+>
+to switch between assembly modes.</P
+><P
+>Also, a neat trick used by several people (including the oskit authors)
+is to force GCC to produce code for 16-bit real mode,
+using an inline assembly statement
+<TT
+CLASS="LITERAL"
+>asm(".code16\n")</TT
+>.
+GCC will still emit only 32-bit addressing modes,
+but GAS will insert proper 32-bit prefixes for them.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN415"
+></A
+>3.2.5. Macro support</H2
+><P
+>GAS has some macro capability included, as detailed in the texinfo docs.
+Moreover, while GCC recognizes <TT
+CLASS="FILENAME"
+>.s</TT
+> files as raw assembly
+to send to GAS, it also recognizes <TT
+CLASS="FILENAME"
+>.S</TT
+> files as files
+to pipe through CPP before feeding them to GAS.
+Again and again, see Linux sources for examples.</P
+><P
+>GAS also has GASP (GAS Preprocessor),
+which adds all the usual macroassembly tricks to GAS.
+GASP comes together with GAS in the GNU binutils archive.
+It works as a filter, like <A
+HREF="metaprogramming.html#P-CPP"
+>CPP</A
+> and <A
+HREF="metaprogramming.html#P-M4"
+>M4</A
+>.
+I have no idea on details, but it comes with its own texinfo documentation,
+which you would like to browse (<B
+CLASS="COMMAND"
+>info gasp</B
+>), print, grok.
+GAS with GASP looks like a regular macro-assembler to me.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="assemblers.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="Assembly-HOWTO.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="nasm.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Assemblers</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="assemblers.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>NASM</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

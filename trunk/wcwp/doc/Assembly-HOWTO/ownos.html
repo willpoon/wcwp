@@ -1,0 +1,180 @@
+<HTML
+><HEAD
+><TITLE
+>Your own OS</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Linux Assembly HOWTO"
+HREF="Assembly-HOWTO.html"><LINK
+REL="UP"
+TITLE="Calling conventions"
+HREF="conventions.html"><LINK
+REL="PREVIOUS"
+TITLE="DOS and Windows"
+HREF="dos.html"><LINK
+REL="NEXT"
+TITLE="Quick start"
+HREF="quickstart.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Linux Assembly HOWTO</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="dos.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Calling conventions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="quickstart.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="AEN815"
+></A
+>5.3. Your own OS</H1
+><P
+>Control is what attracts many OS developers to assembly,
+often is what leads to or stems from assembly hacking.
+Note that any system that allows self-development
+could be qualified an "OS",
+though it can run "on the top" of an underlying system
+(much like Linux over Mach or OpenGenera over Unix).</P
+><P
+>Hence, for easier debugging purpose,
+you might like to develop your "OS" first as a process running
+on top of Linux (despite the slowness), then use the
+<A
+HREF="http://www.cs.utah.edu/projects/flux/oskit/"
+TARGET="_top"
+>Flux OS kit</A
+>
+(which grants use of Linux and BSD drivers in your own OS)
+to make it stand-alone.
+When your OS is stable, it is time to write your own
+hardware drivers if you really love that.</P
+><P
+>This HOWTO will not cover topics such as
+bootloader code,
+getting into 32-bit mode,
+handling Interrupts,
+the basics about Intel protected mode or V86/R86 braindeadness,
+defining your object format
+and calling conventions.</P
+><P
+>The main place where to find reliable information about that all,
+is source code of existing OSes and bootloaders.
+Lots of pointers are on the following webpage:
+<A
+HREF="http://www.tunes.org/Review/OSes.html"
+TARGET="_top"
+>http://www.tunes.org/Review/OSes.html</A
+></P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="dos.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="Assembly-HOWTO.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="quickstart.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>DOS and Windows</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="conventions.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Quick start</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,291 @@
+<HTML
+><HEAD
+><TITLE
+>Quick start</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Linux Assembly HOWTO"
+HREF="Assembly-HOWTO.html"><LINK
+REL="PREVIOUS"
+TITLE="Your own OS"
+HREF="ownos.html"><LINK
+REL="NEXT"
+TITLE="Hello, world!"
+HREF="hello.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Linux Assembly HOWTO</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="ownos.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="hello.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="S-QUICK"
+></A
+>Chapter 6. Quick start</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>6.1. <A
+HREF="quickstart.html#AEN825"
+>Introduction</A
+></DT
+><DT
+>6.2. <A
+HREF="hello.html"
+>Hello, world!</A
+></DT
+><DD
+><DL
+><DT
+>6.2.1. <A
+HREF="hello.html#AEN852"
+>Program layout</A
+></DT
+><DT
+>6.2.2. <A
+HREF="hello.html#AEN861"
+>NASM (hello.asm)</A
+></DT
+><DT
+>6.2.3. <A
+HREF="hello.html#AEN865"
+>GAS (hello.S)</A
+></DT
+></DL
+></DD
+><DT
+>6.3. <A
+HREF="build.html"
+>Building an executable</A
+></DT
+><DD
+><DL
+><DT
+>6.3.1. <A
+HREF="build.html#AEN871"
+>Producing object code</A
+></DT
+><DT
+>6.3.2. <A
+HREF="build.html#AEN884"
+>Producing executable</A
+></DT
+></DL
+></DD
+><DT
+>6.4. <A
+HREF="mips.html"
+>MIPS Example</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="AEN825"
+></A
+>6.1. Introduction</H1
+><P
+>Finally, if you still want to try this crazy idea and write something in
+assembly (if you've reached this section -- you're real assembly fan),
+here's what you need to start.</P
+><P
+>As you've read before, you can write for Linux in different ways;
+I'll show how to use <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>direct</I
+></SPAN
+> kernel calls,
+since this is the fastest way to call kernel service;
+our code is not linked to any library, does not use ELF interpreter,
+it communicates with kernel directly.</P
+><P
+>I will show the same sample program in two assemblers,
+<B
+CLASS="COMMAND"
+>nasm</B
+> and <B
+CLASS="COMMAND"
+>gas</B
+>,
+thus showing Intel and AT&#38;T syntax.</P
+><P
+>You may also want to read <A
+HREF="http://linuxassembly.org/intro.html"
+TARGET="_top"
+>Introduction to UNIX assembly programming</A
+> tutorial,
+it contains sample code for other UNIX-like OSes.</P
+><P
+></P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN836"
+></A
+>6.1.1. Tools you need</H2
+><P
+>First of all you need assembler (compiler) --
+<B
+CLASS="COMMAND"
+>nasm</B
+> or <B
+CLASS="COMMAND"
+>gas</B
+>.</P
+><P
+>Second, you need a linker -- <B
+CLASS="COMMAND"
+>ld</B
+>,
+since assembler produces only object code. Almost all distributions have
+<SPAN
+CLASS="APPLICATION"
+>gas</SPAN
+> and <SPAN
+CLASS="APPLICATION"
+>ld</SPAN
+>,
+in the binutils package.</P
+><P
+>As for <SPAN
+CLASS="APPLICATION"
+>nasm</SPAN
+>,
+you may have to download and install binary packages for Linux and docs
+from the <A
+HREF="nasm.html#P-NASM-WHERE"
+>nasm site</A
+>;
+note that several distributions (Stampede, Debian, SuSe, Mandrake)
+already have <SPAN
+CLASS="APPLICATION"
+>nasm</SPAN
+>, check first.</P
+><P
+>If you're going to dig in, you should also install include files for your OS,
+and if possible, kernel source.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="ownos.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="Assembly-HOWTO.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="hello.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Your own OS</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Hello, world!</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

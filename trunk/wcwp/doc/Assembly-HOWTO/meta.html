@@ -1,0 +1,251 @@
+<HTML
+><HEAD
+><TITLE
+>Metaprogramming</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Linux Assembly HOWTO"
+HREF="Assembly-HOWTO.html"><LINK
+REL="UP"
+TITLE="Metaprogramming"
+HREF="metaprogramming.html"><LINK
+REL="PREVIOUS"
+TITLE="Metaprogramming"
+HREF="metaprogramming.html"><LINK
+REL="NEXT"
+TITLE="Calling conventions"
+HREF="conventions.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Linux Assembly HOWTO</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="metaprogramming.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Metaprogramming</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="conventions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="AEN588"
+></A
+>4.2. Metaprogramming</H1
+><P
+>Instead of using an external filter that expands macros,
+one way to do things is to write programs that write part
+or all of other programs.</P
+><P
+>For instance, you could use a program outputting source code
+
+<P
+></P
+><UL
+><LI
+><P
+>to generate sine/cosine/whatever lookup tables,</P
+></LI
+><LI
+><P
+>to extract a source-form representation of a binary file,</P
+></LI
+><LI
+><P
+>to compile your bitmaps into fast display routines,</P
+></LI
+><LI
+><P
+>to extract documentation, initialization/finalization code,
+description tables, as well as normal code from the same source files,</P
+></LI
+><LI
+><P
+>to have customized assembly code, generated from a perl/shell/scheme script
+that does arbitrary processing,</P
+></LI
+><LI
+><P
+>to propagate data defined at one point only
+into several cross-referencing tables and code chunks.</P
+></LI
+><LI
+><P
+>etc.</P
+></LI
+></UL
+>&#13;</P
+><P
+>Think about it!</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN608"
+></A
+>4.2.1. Backends from compilers</H2
+><P
+>Compilers like GCC, SML/NJ, Objective CAML, MIT-Scheme, CMUCL, etc,
+do have their own generic assembler backend,
+which you might choose to use,
+if you intend to generate code semi-automatically
+from the according languages,
+or from a language you hack:
+rather than write great assembly code,
+you may instead modify a compiler so that it dumps great assembly code!</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN611"
+></A
+>4.2.2. The New-Jersey Machine-Code Toolkit</H2
+><P
+>There is a project, using the programming language Icon
+(with an experimental ML version),
+to build a basis for producing assembly-manipulating code.
+See around
+<A
+HREF="http://www.eecs.harvard.edu/~nr/toolkit/"
+TARGET="_top"
+>http://www.eecs.harvard.edu/~nr/toolkit/</A
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN615"
+></A
+>4.2.3. TUNES</H2
+><P
+>The <A
+HREF="http://www.tunes.org"
+TARGET="_top"
+>TUNES Project</A
+>
+for a Free Reflective Computing System
+is developing its own assembler
+as an extension to the Scheme language,
+as part of its development process.
+It doesn't run at all yet, though help is welcome.</P
+><P
+>The assembler manipulates abstract syntax trees,
+so it could equally serve as the basis for a assembly syntax translator,
+a disassembler, a common assembler/compiler back-end, etc.
+Also, the full power of a real language, Scheme,
+make it unchallenged as for macroprocessing/metaprogramming.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="metaprogramming.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="Assembly-HOWTO.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="conventions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Metaprogramming</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="metaprogramming.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Calling conventions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

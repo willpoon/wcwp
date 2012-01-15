@@ -1,0 +1,204 @@
+<HTML
+><HEAD
+><TITLE
+>Building an executable</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Linux Assembly HOWTO"
+HREF="Assembly-HOWTO.html"><LINK
+REL="UP"
+TITLE="Quick start"
+HREF="quickstart.html"><LINK
+REL="PREVIOUS"
+TITLE="Hello, world!"
+HREF="hello.html"><LINK
+REL="NEXT"
+TITLE="MIPS Example"
+HREF="mips.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Linux Assembly HOWTO</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="hello.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 6. Quick start</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="mips.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="AEN869"
+></A
+>6.3. Building an executable</H1
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN871"
+></A
+>6.3.1. Producing object code</H2
+><P
+>First step of building an executable is compiling (or assembling)
+object file from the source:</P
+><P
+>For <SPAN
+CLASS="APPLICATION"
+>nasm</SPAN
+> example:</P
+><P
+><PRE
+CLASS="SCREEN"
+>$ nasm -f elf hello.asm</PRE
+></P
+><P
+>For <SPAN
+CLASS="APPLICATION"
+>gas</SPAN
+> example:</P
+><P
+><PRE
+CLASS="SCREEN"
+>$ as -o hello.o hello.S</PRE
+></P
+><P
+>This makes <TT
+CLASS="FILENAME"
+>hello.o</TT
+> object file.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN884"
+></A
+>6.3.2. Producing executable</H2
+><P
+>Second step is producing executable file itself
+from the object file by invoking linker:</P
+><P
+><PRE
+CLASS="SCREEN"
+>$ ld -s -o hello hello.o</PRE
+></P
+><P
+>This will finally build <TT
+CLASS="FILENAME"
+>hello</TT
+> executable.</P
+><P
+>Hey, try to run it... Works? That's it. Pretty simple.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="hello.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="Assembly-HOWTO.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="mips.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Hello, world!</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="quickstart.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>MIPS Example</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
