@@ -5118,6 +5118,8 @@ from G_I_02027_MONTH
 group by  pkg_id 
 order by 1 
 
+select count(0)
+from G_I_02027_MONTH 
 
 
 
@@ -5132,5 +5134,16 @@ CREATE TABLE "BASS1   "."G_I_02026_MONTH_1"  (
                  DISTRIBUTE BY HASH("TIME_ID",  
                  "PKG_ID")   
                    IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" NOT LOGGED INITIALLY ; 
+
+
+
+
+select * from G_I_02026_MONTH_1
+
+
+
+select * from  app.sch_control_alarm 
+where control_code like 'BASS1%DAY%'
+order by alarmtime desc
 
 
