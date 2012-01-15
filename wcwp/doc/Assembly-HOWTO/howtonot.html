@@ -1,0 +1,315 @@
+<HTML
+><HEAD
+><TITLE
+>How to NOT use Assembly</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Linux Assembly HOWTO"
+HREF="Assembly-HOWTO.html"><LINK
+REL="UP"
+TITLE="Do you need assembly?"
+HREF="doyouneed.html"><LINK
+REL="PREVIOUS"
+TITLE="Do you need assembly?"
+HREF="doyouneed.html"><LINK
+REL="NEXT"
+TITLE="Linux and assembly"
+HREF="landa.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Linux Assembly HOWTO</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="doyouneed.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Do you need assembly?</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="landa.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="AEN190"
+></A
+>2.2. How to NOT use Assembly</H1
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN192"
+></A
+>2.2.1. General procedure to achieve efficient code</H2
+><P
+>As Charles Fiterman says on
+<A
+HREF="news:comp.compilers"
+TARGET="_top"
+>comp.compilers</A
+>
+about human vs computer-generated assembly code:</P
+><A
+NAME="AEN196"
+></A
+><BLOCKQUOTE
+CLASS="BLOCKQUOTE"
+><P
+CLASS="LITERALLAYOUT"
+>The&nbsp;human&nbsp;should&nbsp;always&nbsp;win&nbsp;and&nbsp;here&nbsp;is&nbsp;why.<br>
+<br>
+First&nbsp;the&nbsp;human&nbsp;writes&nbsp;the&nbsp;whole&nbsp;thing&nbsp;in&nbsp;a&nbsp;high&nbsp;level&nbsp;language.<br>
+Second&nbsp;he&nbsp;profiles&nbsp;it&nbsp;to&nbsp;find&nbsp;the&nbsp;hot&nbsp;spots&nbsp;where&nbsp;it&nbsp;spends&nbsp;its&nbsp;time.<br>
+Third&nbsp;he&nbsp;has&nbsp;the&nbsp;compiler&nbsp;produce&nbsp;assembly&nbsp;for&nbsp;those&nbsp;small&nbsp;sections&nbsp;of&nbsp;code.<br>
+Fourth&nbsp;he&nbsp;hand&nbsp;tunes&nbsp;them&nbsp;looking&nbsp;for&nbsp;tiny&nbsp;improvements&nbsp;over&nbsp;the&nbsp;machine&nbsp;generated&nbsp;code.<br>
+<br>
+The&nbsp;human&nbsp;wins&nbsp;because&nbsp;he&nbsp;can&nbsp;use&nbsp;the&nbsp;machine.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN198"
+></A
+>2.2.2. Languages with optimizing compilers</H2
+><P
+>Languages like ObjectiveCAML, SML, CommonLISP, Scheme, ADA, Pascal, C, C++,
+among others, all have free optimizing compilers
+that will optimize the bulk of your programs,
+and often do better than hand-coded assembly even for tight loops,
+while allowing you to focus on higher-level details,
+and without forbidding you to grab
+a few percent of extra performance in the above-mentioned way,
+once you've reached a stable design.
+Of course, there are also commercial optimizing compilers
+for most of these languages, too!</P
+><P
+>Some languages have compilers that produce C code,
+which can be further optimized by a C compiler:
+LISP, Scheme, Perl, and many other.
+Speed is fairly good.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN202"
+></A
+>2.2.3. General procedure to speed your code up</H2
+><P
+>As for speeding code up,
+you should do it only for parts of a program
+that a profiling tool has consistently identified
+as being a performance bottleneck.</P
+><P
+>Hence, if you identify some code portion as being too slow, you should
+
+<P
+></P
+><UL
+><LI
+><P
+>first try to use a better algorithm;</P
+></LI
+><LI
+><P
+>then try to compile it rather than interpret it;</P
+></LI
+><LI
+><P
+>then try to enable and tweak optimization from your compiler;</P
+></LI
+><LI
+><P
+>then give the compiler hints about how to optimize
+(typing information in LISP; register usage with GCC;
+lots of options in most compilers, etc).</P
+></LI
+><LI
+><P
+>then possibly fallback to assembly programming</P
+></LI
+></UL
+>&#13;</P
+><P
+>Finally, before you end up writing assembly,
+you should inspect generated code,
+to check that the problem really is with bad code generation,
+as this might really not be the case:
+compiler-generated code might be better than what you'd have written,
+particularly on modern multi-pipelined architectures!
+Slow parts of a program might be intrinsically so.
+The biggest problems on modern architectures with fast processors
+are due to delays from memory access, cache-misses, TLB-misses,
+and page-faults;
+register optimization becomes useless,
+and you'll more profitably re-think data structures and threading
+to achieve better locality in memory access.
+Perhaps a completely different approach to the problem might help, then.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN218"
+></A
+>2.2.4. Inspecting compiler-generated code</H2
+><P
+>There are many reasons to inspect compiler-generated assembly code.
+Here is what you'll do with such code:
+
+<P
+></P
+><UL
+><LI
+><P
+>check whether generated code
+can be obviously enhanced with hand-coded assembly
+(or by tweaking compiler switches)</P
+></LI
+><LI
+><P
+>when that's the case,
+start from generated code and modify it
+instead of starting from scratch</P
+></LI
+><LI
+><P
+>more generally, use generated code as stubs to modify,
+which at least gets right the way
+your assembly routines interface to the external world</P
+></LI
+><LI
+><P
+>track down bugs in your compiler (hopefully the rarer)</P
+></LI
+></UL
+>&#13;</P
+><P
+>The standard way to have assembly code be generated
+is to invoke your compiler with the <TT
+CLASS="OPTION"
+>-S</TT
+> flag.
+This works with most Unix compilers,
+including the GNU C Compiler (GCC), but YMMV.
+As for GCC, it will produce more understandable assembly code with
+the <TT
+CLASS="OPTION"
+>-fverbose-asm</TT
+> command-line option.
+Of course, if you want to get good assembly code,
+don't forget your usual optimization options and hints!</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="doyouneed.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="Assembly-HOWTO.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="landa.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Do you need assembly?</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="doyouneed.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Linux and assembly</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,313 @@
+<HTML
+><HEAD
+><TITLE
+>Metaprogramming</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Linux Assembly HOWTO"
+HREF="Assembly-HOWTO.html"><LINK
+REL="PREVIOUS"
+TITLE="Other Assemblers"
+HREF="other.html"><LINK
+REL="NEXT"
+TITLE="Metaprogramming"
+HREF="meta.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Linux Assembly HOWTO</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="other.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="meta.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="S-META"
+></A
+>Chapter 4. Metaprogramming</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>4.1. <A
+HREF="metaprogramming.html#AEN565"
+>External filters</A
+></DT
+><DD
+><DL
+><DT
+>4.1.1. <A
+HREF="metaprogramming.html#P-CPP"
+>CPP</A
+></DT
+><DT
+>4.1.2. <A
+HREF="metaprogramming.html#P-M4"
+>M4</A
+></DT
+><DT
+>4.1.3. <A
+HREF="metaprogramming.html#AEN585"
+>Macroprocessing with your own filter</A
+></DT
+></DL
+></DD
+><DT
+>4.2. <A
+HREF="meta.html"
+>Metaprogramming</A
+></DT
+><DD
+><DL
+><DT
+>4.2.1. <A
+HREF="meta.html#AEN608"
+>Backends from compilers</A
+></DT
+><DT
+>4.2.2. <A
+HREF="meta.html#AEN611"
+>The New-Jersey Machine-Code Toolkit</A
+></DT
+><DT
+>4.2.3. <A
+HREF="meta.html#AEN615"
+>TUNES</A
+></DT
+></DL
+></DD
+></DL
+></DIV
+><P
+>Assembly programming is a bore,
+but for critical parts of programs.</P
+><P
+>You should use the appropriate tool for the right task,
+so don't choose assembly when it does not fit;
+C, OCaml, perl, Scheme, might be a better choice 
+in the most cases.</P
+><P
+>However, there are cases when these tools do not give
+fine enough control on the machine, and assembly is useful or needed.
+In these cases you'll appreciate a system of macroprocessing and
+metaprogramming that allows recurring patterns to be factored
+each into one indefinitely reusable definition, which allows
+safer programming, automatic propagation of pattern modification, etc.
+Plain assembler often is not enough,
+even when one is doing only small routines to link with C.</P
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="AEN565"
+></A
+>4.1. External filters</H1
+><P
+>Whatever is the macro support from your assembler,
+or whatever language you use (even C!),
+if the language is not expressive enough to you,
+you can have files passed through an external filter
+with a Makefile rule like that:</P
+><P
+>&#13;<PRE
+CLASS="PROGRAMLISTING"
+>%.s:    %.S other_dependencies
+        $(FILTER) $(FILTER_OPTIONS) &#60; $&#60; &#62; $@</PRE
+>&#13;</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="P-CPP"
+></A
+>4.1.1. CPP</H2
+><P
+>CPP is truly not very expressive, but it's enough for easy things,
+it's standard, and called transparently by GCC.</P
+><P
+>As an example of its limitations, you can't declare objects so that
+destructors are automatically called at the end of the declaring block;
+you don't have diversions or scoping, etc.</P
+><P
+>CPP comes with any C compiler.
+However, considering how mediocre it is,
+stay away from it if by chance you can make it without C.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="P-M4"
+></A
+>4.1.2. M4</H2
+><P
+>M4 gives you the full power of macroprocessing,
+with a Turing equivalent language, recursion, regular expressions, etc.
+You can do with it everything that CPP cannot.</P
+><P
+>See
+<A
+HREF="ftp://ftp.forth.org/pub/Forth/Compilers/native/unix/this4th.tar.gz"
+TARGET="_top"
+>macro4th (this4th)</A
+> or
+<A
+HREF="ftp://ftp.tunes.org/pub/tunes/obsolete/dist/tunes.0.0.0/tunes.0.0.0.25.src.zip"
+TARGET="_top"
+>the Tunes 0.0.0.25 sources</A
+>
+as examples of advanced macroprogramming using m4.</P
+><P
+>However, its disfunctional quoting and unquoting semantics force you to use
+explicit continuation-passing tail-recursive macro style if
+you want to do <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>advanced</I
+></SPAN
+> macro programming
+(which is remindful of TeX -- BTW, has anyone tried to use TeX as
+a macroprocessor for anything else than typesetting ?).
+This is NOT worse than CPP that does not allow quoting and recursion anyway.</P
+><P
+>The right version of M4 to get is <TT
+CLASS="LITERAL"
+>GNU m4 1.4</TT
+>
+(or later if exists),
+which has the most features and the least bugs or limitations of all.
+m4 is designed to be slow for anything but the simplest uses,
+which might still be ok for most assembly programming
+(you are not writing million-lines assembly programs, are you?).</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN585"
+></A
+>4.1.3. Macroprocessing with your own filter</H2
+><P
+>You can write your own simple macro-expansion filter
+with the usual tools: perl, awk, sed, etc.
+It can be made rather quickly, and you control everything.
+But, of course, power in macroprocessing implies "the hard way".</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="other.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="Assembly-HOWTO.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="meta.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Other Assemblers</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Metaprogramming</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

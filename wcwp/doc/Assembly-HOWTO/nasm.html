@@ -1,0 +1,257 @@
+<HTML
+><HEAD
+><TITLE
+>NASM</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Linux Assembly HOWTO"
+HREF="Assembly-HOWTO.html"><LINK
+REL="UP"
+TITLE="Assemblers"
+HREF="assemblers.html"><LINK
+REL="PREVIOUS"
+TITLE="GAS"
+HREF="gas.html"><LINK
+REL="NEXT"
+TITLE="Other Assemblers"
+HREF="other.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Linux Assembly HOWTO</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="gas.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Assemblers</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="other.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="P-NASM"
+></A
+>3.3. NASM</H1
+><P
+>The Netwide Assembler project provides cool i386 assembler,
+written in C, that should be modular enough
+to eventually support all known syntaxes and object formats.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="P-NASM-WHERE"
+></A
+>3.3.1. Where to find NASM</H2
+><P
+><A
+HREF="http://nasm.sourceforge.net"
+TARGET="_top"
+>http://nasm.sourceforge.net</A
+>, 
+<A
+HREF="http://sourceforge.net/projects/nasm/"
+TARGET="_top"
+>http://sourceforge.net/projects/nasm/</A
+>&#13;</P
+><P
+>Binary release on your usual metalab mirror
+in <TT
+CLASS="FILENAME"
+>devel/lang/asm/</TT
+> directory.
+Should also be available as <TT
+CLASS="FILENAME"
+>.rpm</TT
+> or
+<TT
+CLASS="FILENAME"
+>.deb</TT
+> in your usual Linux distribution.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN436"
+></A
+>3.3.2. What it does</H2
+><P
+>The syntax is Intel-style.
+Comprehensive macroprocessing support is integrated.</P
+><P
+>Supported object file formats are
+<TT
+CLASS="LITERAL"
+>bin</TT
+>,
+<TT
+CLASS="LITERAL"
+>aout</TT
+>,
+<TT
+CLASS="LITERAL"
+>coff</TT
+>,
+<TT
+CLASS="LITERAL"
+>elf</TT
+>,
+<TT
+CLASS="LITERAL"
+>as86</TT
+>,
+<TT
+CLASS="LITERAL"
+>obj</TT
+> (DOS),
+<TT
+CLASS="LITERAL"
+>win32</TT
+>,
+<TT
+CLASS="LITERAL"
+>rdf</TT
+> (their own format).</P
+><P
+>NASM can be used as a backend for the free LCC compiler
+(support files included).</P
+><P
+>Unless you're using BCC as a 16-bit compiler
+(which is out of scope of this 32-bit HOWTO),
+you should definitely use NASM instead of say AS86 or MASM,
+because it runs on all platforms.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>NASM comes with a disassembler, NDISASM.</P
+></BLOCKQUOTE
+></DIV
+><P
+>Its hand-written parser makes it much faster than GAS,
+though of course, it doesn't support three bazillion different architectures.
+If you like Intel-style syntax, as opposed to GAS syntax,
+then it should be the assembler of choice...</P
+><P
+>Note: There are <A
+HREF="resources.html"
+>few programs</A
+>
+which may help you to convert source code between AT&#38;T and Intel assembler syntaxes;
+some of the are capable of performing conversion in both directions.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="gas.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="Assembly-HOWTO.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="other.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>GAS</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="assemblers.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Other Assemblers</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,445 @@
+<HTML
+><HEAD
+><TITLE
+>Do you need assembly?</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="Linux Assembly HOWTO"
+HREF="Assembly-HOWTO.html"><LINK
+REL="PREVIOUS"
+TITLE="Introduction"
+HREF="introduction.html"><LINK
+REL="NEXT"
+TITLE="How to NOT use Assembly"
+HREF="howtonot.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Linux Assembly HOWTO</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="introduction.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="howtonot.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="S-DOYOU"
+></A
+>Chapter 2. Do you need assembly?</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>2.1. <A
+HREF="doyouneed.html#AEN120"
+>Pros and Cons</A
+></DT
+><DD
+><DL
+><DT
+>2.1.1. <A
+HREF="doyouneed.html#AEN122"
+>The advantages of Assembly</A
+></DT
+><DT
+>2.1.2. <A
+HREF="doyouneed.html#AEN144"
+>The disadvantages of Assembly</A
+></DT
+><DT
+>2.1.3. <A
+HREF="doyouneed.html#AEN172"
+>Assessment</A
+></DT
+></DL
+></DD
+><DT
+>2.2. <A
+HREF="howtonot.html"
+>How to NOT use Assembly</A
+></DT
+><DD
+><DL
+><DT
+>2.2.1. <A
+HREF="howtonot.html#AEN192"
+>General procedure to achieve efficient code</A
+></DT
+><DT
+>2.2.2. <A
+HREF="howtonot.html#AEN198"
+>Languages with optimizing compilers</A
+></DT
+><DT
+>2.2.3. <A
+HREF="howtonot.html#AEN202"
+>General procedure to speed your code up</A
+></DT
+><DT
+>2.2.4. <A
+HREF="howtonot.html#AEN218"
+>Inspecting compiler-generated code</A
+></DT
+></DL
+></DD
+><DT
+>2.3. <A
+HREF="landa.html"
+>Linux and assembly</A
+></DT
+></DL
+></DIV
+><P
+>Well, I wouldn't want to interfere with what you're doing,
+but here is some advice from the hard-earned experience.</P
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="AEN120"
+></A
+>2.1. Pros and Cons</H1
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN122"
+></A
+>2.1.1. The advantages of Assembly</H2
+><P
+>Assembly can express very low-level things:
+
+<P
+></P
+><UL
+><LI
+><P
+>you can access machine-dependent registers and I/O</P
+></LI
+><LI
+><P
+>you can control the exact code behavior
+in critical sections that might otherwise involve deadlock
+between multiple software threads or hardware devices</P
+></LI
+><LI
+><P
+>you can break the conventions of your usual compiler,
+which might allow some optimizations
+(like temporarily breaking rules about memory allocation,
+threading, calling conventions, etc)</P
+></LI
+><LI
+><P
+>you can build interfaces between code fragments
+using incompatible conventions
+(e.g. produced by different compilers,
+or separated by a low-level interface)</P
+></LI
+><LI
+><P
+>you can get access to unusual programming modes of your processor
+(e.g. 16 bit mode to interface startup, firmware, or legacy code
+on Intel PCs)</P
+></LI
+><LI
+><P
+>you can produce reasonably fast code for tight loops
+to cope with a bad non-optimizing compiler
+(but then, there are free optimizing compilers available!)</P
+></LI
+><LI
+><P
+>you can produce hand-optimized code
+perfectly tuned for your particular hardware setup,
+though not to someone else's</P
+></LI
+><LI
+><P
+>you can write some code for your new language's optimizing compiler
+(that is something what very few ones will ever do, and even they not often)</P
+></LI
+><LI
+><P
+>i.e. you can be in complete control of your code</P
+></LI
+></UL
+>&#13;</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN144"
+></A
+>2.1.2. The disadvantages of Assembly</H2
+><P
+>Assembly is a very low-level language
+(the lowest above hand-coding the binary instruction patterns).
+This means
+
+<P
+></P
+><UL
+><LI
+><P
+>it is long and tedious to write initially</P
+></LI
+><LI
+><P
+>it is quite bug-prone</P
+></LI
+><LI
+><P
+>your bugs can be very difficult to chase</P
+></LI
+><LI
+><P
+>your code can be fairly difficult to understand and modify,
+i.e. to maintain</P
+></LI
+><LI
+><P
+>the result is non-portable to other architectures,
+existing or upcoming</P
+></LI
+><LI
+><P
+>your code will be optimized only for a certain implementation
+of a same architecture:
+for instance, among Intel-compatible platforms
+each CPU design and its variations
+(relative latency, through-output, and capacity,
+of processing units, caches, RAM, bus, disks,
+presence of FPU, MMX, 3DNOW, SIMD extensions, etc)
+implies potentially completely different optimization techniques.
+CPU designs already include:
+Intel 386, 486, Pentium, PPro, PII, PIII, PIV;
+Cyrix 5x86, 6x86, M2; AMD K5, K6 (K6-2, K6-III), K7 (Athlon, Duron).
+New designs keep popping up, so don't expect either this listing
+and your code to be up-to-date.</P
+></LI
+><LI
+><P
+>you spend more time on a few details
+and can't focus on small and large algorithmic design,
+that are known to bring the largest part of the speed up
+(e.g. you might spend some time building very fast
+list/array manipulation primitives in assembly;
+only a hash table would have sped up your program much more;
+or, in another context, a binary tree;
+or some high-level structure distributed over a cluster of CPUs)</P
+></LI
+><LI
+><P
+>a small change in algorithmic design might completely
+invalidate all your existing assembly code.
+So that either you're ready (and able) to rewrite it all,
+or you're tied to a particular algorithmic design</P
+></LI
+><LI
+><P
+>On code that ain't too far from what's in standard benchmarks,
+commercial optimizing compilers outperform hand-coded assembly
+(well, that's less true on the x86 architecture than on RISC architectures,
+and perhaps less true for widely available/free compilers;
+anyway, for typical C code, GCC is fairly good);</P
+></LI
+><LI
+><P
+>And in any case, as moderator John Levine says on
+<A
+HREF="news:comp.compilers"
+TARGET="_top"
+>comp.compilers</A
+>,</P
+><P
+CLASS="LITERALLAYOUT"
+>"compilers&nbsp;make&nbsp;it&nbsp;a&nbsp;lot&nbsp;easier&nbsp;to&nbsp;use&nbsp;complex	data&nbsp;structures,<br>
+and&nbsp;compilers&nbsp;don't&nbsp;get&nbsp;bored&nbsp;halfway&nbsp;through<br>
+and&nbsp;generate&nbsp;reliably&nbsp;pretty&nbsp;good&nbsp;code."</P
+><P
+>They will also <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>correctly</I
+></SPAN
+> propagate code transformations
+throughout the whole (huge) program
+when optimizing code between procedures and module boundaries.</P
+></LI
+></UL
+>&#13;</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN172"
+></A
+>2.1.3. Assessment</H2
+><P
+>All in all, you might find that though using assembly is sometimes needed,
+and might even be useful in a few cases where it is not, you'll want to:
+
+<P
+></P
+><UL
+><LI
+><P
+>minimize use of assembly code</P
+></LI
+><LI
+><P
+>encapsulate this code in well-defined interfaces</P
+></LI
+><LI
+><P
+>have your assembly code automatically generated
+from patterns expressed in a higher-level language
+than assembly (e.g. GCC inline assembly macros)</P
+></LI
+><LI
+><P
+>have automatic tools translate these programs
+into assembly code</P
+></LI
+><LI
+><P
+>have this code be optimized if possible</P
+></LI
+><LI
+><P
+>All of the above,
+i.e. write (an extension to) an optimizing compiler back-end.</P
+></LI
+></UL
+>&#13;</P
+><P
+>Even when assembly is needed (e.g. OS development),
+you'll find that not so much of it is required,
+and that the above principles retain.</P
+><P
+>See the Linux kernel sources concerning this:
+as little assembly as needed,
+resulting in a fast, reliable, portable, maintainable OS.
+Even a successful game like DOOM was almost massively written in C,
+with a tiny part only being written in assembly for speed up.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="introduction.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="Assembly-HOWTO.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="howtonot.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Introduction</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>How to NOT use Assembly</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
