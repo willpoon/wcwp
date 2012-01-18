@@ -260,6 +260,26 @@ set sql_buff "
 #		aidb_close $handle
 #	
 
+set sql_buff "
+select count(0)
+from G_I_02006_MONTH
+where bigint(ALL_POINTS) <> bigint(ALL_CONVERTED_POINTS) + bigint(CONVERTIBLE_POINTS) 
+and time_id = $op_month
+with ur
+"
+
+chkzero2 $sql_buff "总积分<>已兑换+可兑换"
+
+
+
+
+  #进行结果数据检查
+  #1.检查chkpkunique
+  set tabname "g_i_02006_month"
+        set pk                  "USER_ID"
+        chkpkunique ${tabname} ${pk} ${op_month}
+        #
+		
 
 	return 0
 }
