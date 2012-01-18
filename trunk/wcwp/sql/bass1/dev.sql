@@ -66,8 +66,8 @@ TABLE ( time_id int
         ,seq int
         ,rule_code varchar(10)
         ,rule_name varchar(128)
-        ,threshold decimal(10,4)
-        ,wave_rate decimal(8,4)
+        ,threshold decimal(20,6)
+        ,wave_rate decimal(20,6)
         ,if_ok VARCHAR(8)
       )
 BEGIN ATOMIC      
