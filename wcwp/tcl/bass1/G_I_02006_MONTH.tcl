@@ -61,55 +61,13 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			,sum( USRSCR )   as all_converted_points
 			,0 LEAVE_CLEAR_POINTS
 			,0 OTHER_CLEAR_POINTS
-		from bass2.DWD_PRODUCT_SC_SCORELIST_201112_BASS1
-		where   actflag='1' and  scrtype<>5 and count_cycle_id <= $op_month
-		group by product_instance_id
-		with ur
-	"
-	exec_sql $sql_buff
-
-##~   sc_scorelist 表中SCRTYPE:为积分类型：
-
-##~   01：消费积分 
-
-##~   21：奖励积分 
-
-##~   23：转赠积分 
-
-##~   24：品牌积分 
-
-##~   25：网龄积分 
-
-##~   05：其他 
-
-
-
-##~   积分转换：
-##~   1.2008年之后
-##~   2.分品牌
-##~   3.按BOSS操作，转成5 ，再应用原口径
-
-	set sql_buff "
-		insert into G_I_02006_MONTH_1
-		select
-			product_instance_id  as user_id
-			,sum( case when  count_cycle_id=$op_month and scrtype=1 then orgscr+adjscr else 0 end )   as month_points
-			,sum( case when  count_cycle_id=$op_month and scrtype=24 then orgscr+adjscr else 0 end )   as month_qqt_points
-			,sum( case when  count_cycle_id=$op_month and scrtype=25 then orgscr+adjscr else 0 end )   as month_age_points
-			,sum( case when  scrtype=5 then orgscr+adjscr else 0 end )   as trans_points
-			,sum(  CURSCR )   as convertible_points
-			,sum( orgscr+adjscr )   as all_points
-			,sum( case when scrtype=1 then orgscr+adjscr else 0 end )   as all_consume_points
-			,sum( USRSCR )   as all_converted_points
-			,0 LEAVE_CLEAR_POINTS
-			,0 OTHER_CLEAR_POINTS
-		from (select * from bass2.DWD_PRODUCT_SC_SCORELIST_201112_BASS1 where scrtype = 5) a
+		from bass2.dwd_product_sc_scorelist_$op_month
 		where   actflag='1' and count_cycle_id <= $op_month
 		group by product_instance_id
 		with ur
 	"
 	exec_sql $sql_buff
-	
+
 
 	set sql_buff "
 	insert into G_I_02006_MONTH_1
@@ -260,12 +218,13 @@ set sql_buff "
 #		aidb_close $handle
 #	
 
+
 set sql_buff "
-select count(0)
-from G_I_02006_MONTH
-where bigint(ALL_POINTS) <> bigint(ALL_CONVERTED_POINTS) + bigint(CONVERTIBLE_POINTS) 
-and time_id = $op_month
-with ur
+	select count(0)
+	from G_I_02006_MONTH
+	where bigint(ALL_POINTS) <> bigint(ALL_CONVERTED_POINTS) + bigint(CONVERTIBLE_POINTS) 
+	and time_id = $op_month
+	with ur
 "
 
 chkzero2 $sql_buff "总积分<>已兑换+可兑换"
@@ -279,8 +238,8 @@ chkzero2 $sql_buff "总积分<>已兑换+可兑换"
         set pk                  "USER_ID"
         chkpkunique ${tabname} ${pk} ${op_month}
         #
-		
-
+                
+				
 	return 0
 }
 
