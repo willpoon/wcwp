@@ -442,7 +442,7 @@ getxlsdata(){
 ###########################
 fmt:将excel字段 格式化成文本代码
 ###########################
-fmt(){
+fmttbs(){
 if [ $# -ne 0 ];then
 	echo "fmt fmt.txt"
 	return

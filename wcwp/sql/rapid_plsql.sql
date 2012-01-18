@@ -2508,3 +2508,103 @@ select * from   NFSO.INS_OFF_INS_PROD_0892
 
 
 ---------------------------------------------------用户订购关系模型--------用户实例select * from so.ins_prod_0891 where product_instance_id='89157332411386'select * from so.ins_prod_0891 where cust_party_role_id='89100000003716'--产品表select * from product.up_product_item@dbl_ggdb where product_item_id='122091109253'112091101001 offer_plan122091109253 service_price--------策划实例表select * from so.ins_offer_0894 where offer_instance_id='9110000002'select * from so.ins_offer_0891 where offer_id='142000000910'select * from so.ins_offer_0891 where offer_id='112091101001'select * from so.ins_offer_0893 where offer_instance_id='9110000003'--策划表select * from product.up_offer@dbl_ggdb where offer_id='111089110017'--可用offer_id在product.up_product_item表中查到对应信息select distinct(offer_type) from product.up_offer@dbl_ggdb--------用户策划关联关系表so.ins_off_ins_prod_0891 中的is_main_offer字端标识是否主策划，通常集团产品示例为0select * from  so.ins_off_ins_prod_0891 where offer_instance_id=9110000002where  PRODUCT_INSTANCE_ID=89160000908640---------------------------------------------------服务模型select * from product.up_product_item@dbl_ggdb where product_item_id='122100000132'--------产品服务包实例表select * from so.ins_srvpkg_0891 --可用servicepkg_id在product.up_product_item表中查到对应信息where SERVICEPKG_INSTANCE_ID=100026379947select count(distinct(servicepkg_id) ) from  so.ins_srvpkg_0891 select * from product.up_product_item@dbl_ggdb where product_item_id in (select servicepkg_id from  so.ins_srvpkg_0891 )--服务表select * from product.up_service@dbl_ggdb where --可用service_id在product.up_product_item表中查到对应信息select * from product.up_product_item@dbl_ggdb where product_item_id in (select service_id from product.up_service@dbl_ggdb)--------服务实例表select * from so.ins_srv_0891  where service_id=142000000910where service_instance_id in(100024725646,100024725902)--------服务包实例-服务示例关联关系表select * from so.ins_srvpkg_ins_srv_0891 where  offer_instance_id=9110000002select t.*,t.rowid from so.ins_prod_0891 t where bill_id ='13889082098'
+
+
+
+select * from ams.sc_scorelist_0891_2011@lnk_Zwdb where rownum < 10
+
+ams.sc_payment_0891@lnk_Zwdb
+
+select * from all_tables@lnk_Zwdb where table_name like '%SCORELIST%2011%'
+
+
+
+select count(0) from ams.sc_scorelist_0891_2011@lnk_Zwdb where rownum < 10
+6401482
+
+select count(0) from ams.sc_scorelist_0891_2012@lnk_Zwdb 
+
+
+select * from ams.sc_payment_0891@lnk_Zwdb where rownum < 10
+AMS.SC_SCORELIST_0$FEE_AREA$_2011
+select * from 
+ams.sc_scorelist_0891_2011@lnk_Zwdb
+where rownum < 10
+
+
+select * from kf.DXYYT_YEWUL_ZONGBAOBIAO_2012@dbl_crmdb
+where rownum < 10
+
+
+
+
+
+select * from ams.sc_scorelist_0891_2011
+where product_instance_id = '89160001196765'
+
+
+
+
+		select
+			product_instance_id  as user_id
+			,sum( case when  count_cycle_id=201112 and scrtype=1 then orgscr+adjscr else 0 end )   as month_points
+			,sum( case when  count_cycle_id=201112 and scrtype=24 then orgscr+adjscr else 0 end )   as month_qqt_points
+			,sum( case when  count_cycle_id=201112 and scrtype=25 then orgscr+adjscr else 0 end )   as month_age_points
+			,sum( case when  scrtype=5 then orgscr+adjscr else 0 end )   as trans_points
+			,sum( case when  scrtype=5 then CURSCR else 0 end )   as convertible_points
+			,sum( orgscr+adjscr )   as all_points
+			,sum( case when scrtype=1 then orgscr+adjscr else 0 end )   as all_consume_points
+			,sum( USRSCR )   as all_converted_points
+		from bass2.dwd_product_sc_scorelist_201112
+		where   actflag='1' and product_instance_id = '89160001196765'
+		group by product_instance_id
+		
+		
+
+
+
+
+
+		select
+			product_instance_id  as user_id
+			,sum( case when  count_cycle_id=201112 and scrtype=1 then orgscr+adjscr else 0 end )   as month_points
+			,sum( case when  count_cycle_id=201112 and scrtype=24 then orgscr+adjscr else 0 end )   as month_qqt_points
+			,sum( case when  count_cycle_id=201112 and scrtype=25 then orgscr+adjscr else 0 end )   as month_age_points
+			,sum( case when  scrtype=5 then orgscr+adjscr else 0 end )   as trans_points
+			,sum( CURSCR )   as convertible_points
+			,sum( orgscr+adjscr )   as all_points
+			,sum( case when scrtype=1 then orgscr+adjscr else 0 end )   as all_consume_points
+			,sum( USRSCR )   as all_converted_points
+		from ams.sc_scorelist_0891_2011
+		where   actflag='1' and product_instance_id = '89357332152792'
+		group by product_instance_id
+		
+        
+        
+        
+        89357332152792
+        
+        select * from ams.sc_scorelist_0891_2011
+where product_instance_id = '89357332152792'
+
+
+select t.*,t.rowid from base.cfg_static_data@dbl_ggdb t where t.code_type ='735011';select t.*,t.rowid from base.cfg_static_data@dbl_ggdb t where t.code_type = '4_BOSS_VIP_LEVEL';
+
+
+
+select * from ams.SC_PAYOUT_0891_1201
+where product_instance_id = '89160001196765'
+
+
+		select 
+		a.USER_ID
+		,a.SC_PAYMENT_ID
+		,b.product_no
+		,a.BILLING_CYCLE_ID
+		,replace(char(date(STATE_DATE)),'-','') STATE_DATE
+from bass2.dwd_product_sc_payout_201112 a
+,bass2.dw_product_201112 b 
+where a.user_id = b.user_id 
+
+
+select * from product.up_product_item@dbl_ggdb where product_item_id in (191000000007);

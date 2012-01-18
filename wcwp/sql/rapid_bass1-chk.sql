@@ -70,7 +70,7 @@ set  flag = -2
 select * from   table( bass1.chk_same(0) ) a order by 2
 ---------------------------------------------------------------------------------
 
-select * from   table( bass1.chk_wave(0) ) a order by 2
+select * from   table( bass1.chk_wave(20120116) ) a order by 2
 
 
 ---------------------------------------------------------------------------------
@@ -402,7 +402,7 @@ where time_id=int(replace(char(current date - 1 days),'-',''))
 
   --调整脚本，''里更新一定的值就是
 --离网客户数
-update bass1.g_s_22012_day set m_off_users='62' 
+update bass1.g_s_22012_day set m_off_users='68' 
 where time_id=int(replace(char(current date - 1 days),'-',''))
 
  select * from  bass1.G_RULE_CHECK where rule_code = 'C1'
@@ -716,7 +716,7 @@ order by 1
 
 select * from   bass2.dw_product_20110808 where product_no = '13989007120'
                        
-select tabname from syscat.tables where tabname like '%INS_OFF_INS_PR%'                          
+select tabname from syscat.tables where tabname like 'DIM%CUSTCLASS%'                          
 
 select * from bass2.CDR_GPRS_LOCAL_20110701 fetch first 10 rows only  
 
@@ -821,7 +821,12 @@ select tabname from syscat.tables where tabname like '%ODS_PRODUCT_ORD_BUSI_OTHE
 select * from   app.sch_control_task where control_code like '%product%other%ds%.tcl'                
 select * from   app.sch_control_task where control_code like '%product%%tcl'                
 
-select * from  table( bass1.get_before('ins_off_ins')) a 
+select * from  table( bass1.get_before('02006')) a 
+
+delete from app.sch_control_before 
+where control_code = 'BASS1_EXP_G_I_02006_MONTH'
+and before_control_code = 'BASS1_INT_CHECK_02006_MONTH.tcl'
+
 
 
 
@@ -832,7 +837,7 @@ select * from  table( bass1.get_before('ins_off_ins')) a
                 
                 BASS2_Dwd_product_ord_busi_other_ds.tcl	TR1_L_11060
 
-select * from   app.sch_control_task where control_code like 'TR1_L_1106%'                
+select * from   app.sch_control_task where control_code like '%11013%'                
 
 
 
@@ -907,6 +912,8 @@ select distinct extend_id prod_id, name  from   bass2.dim_prod_up_product_item
 where UPPER(name) like '%WLAN%'
 and extend_id is not null
 
+select * from 　bass2.dim_prod_up_product_item 
+where product_item_id = 　191000001024
 
 
 
@@ -5147,3 +5154,1731 @@ where control_code like 'BASS1%DAY%'
 order by alarmtime desc
 
 
+
+
+
+
+select 
+time_id
+,int(substr(rule_code,6)) seq
+,rule_code
+,case 
+    when rule_code = 'R161_1' then '新增客户数'
+    when rule_code = 'R161_2' then '客户到达数'
+    when rule_code = 'R161_3' then '净增客户数'
+    when rule_code = 'R161_4' then '通信客户数'
+    when rule_code = 'R161_5' then '当月累计通信客户数'
+    when rule_code = 'R161_6' then '使用TD网络的客户数'
+    when rule_code = 'R161_7' then '当月累计使用TD网络的手机客户数'
+    when rule_code = 'R161_8' then '当月累计使用TD网络的信息机客户数'
+    when rule_code = 'R161_9' then '当月累计使用TD网络的数据卡客户数'
+    when rule_code = 'R161_10' then '当月累计使用TD网络的上网本客户数'
+    when rule_code = 'R161_11' then '联通移动客户总数'
+    when rule_code = 'R161_12' then '电信移动客户总数'
+    when rule_code = 'R161_13' then '联通移动新增客户数'
+    when rule_code = 'R161_14' then '电信移动新增客户数'
+    when rule_code = 'R161_15' then '使用TD网络的客户在T网上计费时长'
+    when rule_code = 'R161_16' then '使用TD网络的客户在T网上的数据流量'
+    when rule_code = 'R161_17' then '离网客户数' else '0' end rule_name 
+,case 
+    when rule_code = 'R161_1' then 15
+    when rule_code = 'R161_2' then 2
+    when rule_code = 'R161_3' then 100
+    when rule_code = 'R161_4' then 5
+    when rule_code = 'R161_5' then 5
+    when rule_code = 'R161_6' then 5
+    when rule_code = 'R161_7' then 5
+    when rule_code = 'R161_8' then 5
+    when rule_code = 'R161_9' then 5
+    when rule_code = 'R161_10' then 5
+    when rule_code = 'R161_11' then 2
+    when rule_code = 'R161_12' then 2
+    when rule_code = 'R161_13' then 8
+    when rule_code = 'R161_14' then 8
+    when rule_code = 'R161_15' then 20
+    when rule_code = 'R161_16' then 20
+    when rule_code = 'R161_17' then 70 else 0 end threshold 
+    , target3*100 wave_rate
+    ,case 
+    when rule_code = 'R161_1' and abs(target3*100) > 15 then '超标'
+    when rule_code = 'R161_2' and abs(target3*100) > 2 then '超标'
+    when rule_code = 'R161_3' and abs(target3*100) > 100 then '超标'
+    when rule_code = 'R161_4' and abs(target3*100) > 5 then '超标'
+    when rule_code = 'R161_5' and abs(target3*100) > 5 then '超标'
+    when rule_code = 'R161_6' and abs(target3*100) > 5 then '超标'
+    when rule_code = 'R161_7' and abs(target3*100) > 5 then '超标'
+    when rule_code = 'R161_8' and abs(target3*100) > 5 then '超标'
+    when rule_code = 'R161_9' and abs(target3*100) > 5 then '超标'
+    when rule_code = 'R161_10' and abs(target3*100) > 5 then '超标'
+    when rule_code = 'R161_11' and abs(target3*100) > 2 then '超标'
+    when rule_code = 'R161_12' and abs(target3*100) > 2 then '超标'
+    when rule_code = 'R161_13' and abs(target3*100) > 8 then '超标'
+    when rule_code = 'R161_14' and abs(target3*100) > 8 then '超标'
+    when rule_code = 'R161_15' and abs(target3*100) > 20 then '超标'
+    when rule_code = 'R161_16' and abs(target3*100) > 20 then '超标'
+    when rule_code = 'R161_17' and abs(target3*100) > 70 then '超标'
+else '0' end if_ok
+from 
+bass1.g_rule_check a 
+where rule_code like 'R161_%'
+and time_id = 20120113;
+
+
+select BODY from syscat.functions  
+where FUNCNAME like '%CHK%WAVE%'
+
+
+
+
+
+drop FUNCTION bass1.chk_wave
+CREATE FUNCTION bass1.chk_wave(p_time_id integer)
+RETURNS
+TABLE ( time_id int
+        ,seq int
+        ,rule_code varchar(10)
+        ,rule_name varchar(128)
+        ,threshold decimal(20,6)
+        ,wave_rate decimal(20,6)
+        ,if_ok VARCHAR(8)
+      )
+BEGIN ATOMIC      
+     DECLARE v_time_id int default 0;
+if p_time_id = 0 then
+set v_time_id=int(replace(char(current date - 1 days),'-',''));
+else 
+set v_time_id= p_time_id;
+end if;      
+RETURN
+select 
+time_id
+,int(substr(rule_code,6)) seq
+,rule_code
+,case 
+    when rule_code = 'R161_1' then '新增客户数'
+    when rule_code = 'R161_2' then '客户到达数'
+    when rule_code = 'R161_3' then '净增客户数'
+    when rule_code = 'R161_4' then '通信客户数'
+    when rule_code = 'R161_5' then '当月累计通信客户数'
+    when rule_code = 'R161_6' then '使用TD网络的客户数'
+    when rule_code = 'R161_7' then '当月累计使用TD网络的手机客户数'
+    when rule_code = 'R161_8' then '当月累计使用TD网络的信息机客户数'
+    when rule_code = 'R161_9' then '当月累计使用TD网络的数据卡客户数'
+    when rule_code = 'R161_10' then '当月累计使用TD网络的上网本客户数'
+    when rule_code = 'R161_11' then '联通移动客户总数'
+    when rule_code = 'R161_12' then '电信移动客户总数'
+    when rule_code = 'R161_13' then '联通移动新增客户数'
+    when rule_code = 'R161_14' then '电信移动新增客户数'
+    when rule_code = 'R161_15' then '使用TD网络的客户在T网上计费时长'
+    when rule_code = 'R161_16' then '使用TD网络的客户在T网上的数据流量'
+    when rule_code = 'R161_17' then '离网客户数' else '0' end rule_name 
+,case 
+    when rule_code = 'R161_1' then 15
+    when rule_code = 'R161_2' then 2
+    when rule_code = 'R161_3' then 100
+    when rule_code = 'R161_4' then 5
+    when rule_code = 'R161_5' then 5
+    when rule_code = 'R161_6' then 5
+    when rule_code = 'R161_7' then 5
+    when rule_code = 'R161_8' then 5
+    when rule_code = 'R161_9' then 5
+    when rule_code = 'R161_10' then 5
+    when rule_code = 'R161_11' then 2
+    when rule_code = 'R161_12' then 2
+    when rule_code = 'R161_13' then 8
+    when rule_code = 'R161_14' then 8
+    when rule_code = 'R161_15' then 20
+    when rule_code = 'R161_16' then 20
+    when rule_code = 'R161_17' then 70 else 0 end threshold 
+    , target3*100 wave_rate
+    ,case 
+    when rule_code = 'R161_1' and abs(target3*100) > 15 then '超标'
+    when rule_code = 'R161_2' and abs(target3*100) > 2 then '超标'
+    when rule_code = 'R161_3' and abs(target3*100) > 100 then '超标'
+    when rule_code = 'R161_4' and abs(target3*100) > 5 then '超标'
+    when rule_code = 'R161_5' and abs(target3*100) > 5 then '超标'
+    when rule_code = 'R161_6' and abs(target3*100) > 5 then '超标'
+    when rule_code = 'R161_7' and abs(target3*100) > 5 then '超标'
+    when rule_code = 'R161_8' and abs(target3*100) > 5 then '超标'
+    when rule_code = 'R161_9' and abs(target3*100) > 5 then '超标'
+    when rule_code = 'R161_10' and abs(target3*100) > 5 then '超标'
+    when rule_code = 'R161_11' and abs(target3*100) > 2 then '超标'
+    when rule_code = 'R161_12' and abs(target3*100) > 2 then '超标'
+    when rule_code = 'R161_13' and abs(target3*100) > 8 then '超标'
+    when rule_code = 'R161_14' and abs(target3*100) > 8 then '超标'
+    when rule_code = 'R161_15' and abs(target3*100) > 20 then '超标'
+    when rule_code = 'R161_16' and abs(target3*100) > 20 then '超标'
+    when rule_code = 'R161_17' and abs(target3*100) > 70 then '超标'
+else '0' end if_ok
+from 
+bass1.g_rule_check a 
+where rule_code like 'R161_%'
+and time_id =v_time_id;
+end            
+
+
+
+select * from app.sch_control_task 
+where control_code like  '%11014%'
+
+ODS_PRODUCT_SC_SCORELIST_YYYYMM
+
+
+
+A11014
+
+
+ODS_PRODUCT_SC_PAYMENT_YYYYMMDD
+
+
+select * from bass2.dw_cust_vip_card_20120115
+
+
+
+select distinct VIP_CARD_LVL from  bass2.ods_cust_cm_vip_info_20120115
+select * from bass2.DIM_APP_NB_CUSTCLASS
+
+
+
+ rename bass1.G_I_02006_MONTH to G_I_02006_MONTH_bak20120117
+rename bass1.G_I_02006_MONTH to G_I_02006_MONTH_bak20120118
+
+ 
+ select count(0) from G_I_02006_MONTH_bak20120117
+ 
+
+ CREATE TABLE "BASS1   "."G_I_02006_MONTH"  (
+         time_id                integer        
+        ,user_id                char(20)      
+        ,month_points           char(8)       
+        ,month_qqt_points       char(8)       
+        ,month_age_points       char(8)       
+        ,trans_points           char(8)       
+        ,convertible_points     char(8)       
+        ,all_points             char(8)       
+        ,all_consume_points     char(8)       
+        ,all_converted_points   char(8)       
+        ,leave_clear_points     char(8)       
+        ,other_clear_points     char(8)       
+				  )   
+                 DISTRIBUTE BY HASH("USER_ID")   
+                   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" ; 
+
+
+
+select user_id,userstatus_id from bass2.dw_product_20120116 where product_no = '13989007120'
+
+select days('2012-01-17')-days('2011-09-01') from bass2.dual
+
+select * from 
+G_I_02006_MONTH
+where  user_id = '89160001196765'
+
+select * from bass2.dwd_product_sc_scorelist_201112
+where product_instance_id = '89160001196765'
+
+select * from bass2.dwd_product_sc_scorelist_201111
+where product_instance_id = '89357332152792'
+
+        select * from ams.sc_scorelist_0891_2011
+where product_instance_id = '89357332152792'
+
+select * from bass2.dwd_product_sc_payout_201112
+where USER_ID = '89160001196765'
+
+
+
+
+
+
+		select
+			product_instance_id  as user_id
+			,sum( case when  count_cycle_id=201112 and scrtype=1 then orgscr+adjscr else 0 end )   as month_points
+			,sum( case when  count_cycle_id=201112 and scrtype=24 then orgscr+adjscr else 0 end )   as month_qqt_points
+			,sum( case when  count_cycle_id=201112 and scrtype=25 then orgscr+adjscr else 0 end )   as month_age_points
+			,sum( case when  scrtype=5 then orgscr+adjscr else 0 end )   as trans_points
+			,sum( CURSCR )   as convertible_points
+			,sum( orgscr+adjscr )   as all_points
+			,sum( case when scrtype=1 then orgscr+adjscr else 0 end )   as all_consume_points
+			,sum( USRSCR )   as all_converted_points
+		from bass2.dwd_product_sc_scorelist_201112
+		where   actflag='1' and product_instance_id = '89357332152792'
+		group by product_instance_id
+		
+        
+
+
+		select
+			product_instance_id  as user_id
+			,sum( case when  count_cycle_id=$op_month and scrtype=1 then orgscr+adjscr else 0 end )   as month_points
+			,sum( case when  count_cycle_id=$op_month and scrtype=24 then orgscr+adjscr else 0 end )   as month_qqt_points
+			,sum( case when  count_cycle_id=$op_month and scrtype=25 then orgscr+adjscr else 0 end )   as month_age_points
+			,sum( case when  scrtype=5 then orgscr+adjscr else 0 end )   as trans_points
+			,sum(  CURSCR )   as convertible_points
+			,sum( orgscr+adjscr )   as all_points
+			,sum( case when scrtype=1 then orgscr+adjscr else 0 end )   as all_consume_points
+			,sum( USRSCR )   as all_converted_points
+		from bass2.dwd_product_sc_scorelist_$op_month
+		where   actflag='1'
+		group by product_instance_id
+		
+		
+        
+
+select * from bass2.dw_product_201112
+where MONTH_OFF_MARK = 1
+and USER_ONLINE > 365
+and BRAND_ID = 1
+fetch first 10 rows only
+        
+
+ SELECT * FROM  SC_MONTH_BACKUP_0893_1111 WHERE /*KEY_NUM ='13989007120'*/
+  
+
+select * from bass2.ods_product_sc_month_backup_201112
+where  END_SCORE > 0
+fetch first 10 rows only
+
+
+
+
+select * from bass2.ods_product_sc_month_backup_201110
+where  product_instance_id = '89101110015523'
+fetch first 10 rows only
+
+
+
+
+
+
+		select
+			product_instance_id  as user_id
+			,sum( case when  count_cycle_id=201111 and scrtype=1 then orgscr+adjscr else 0 end )   as month_points
+			,sum( case when  count_cycle_id=201111 and scrtype=24 then orgscr+adjscr else 0 end )   as month_qqt_points
+			,sum( case when  count_cycle_id=201111 and scrtype=25 then orgscr+adjscr else 0 end )   as month_age_points
+			,sum( case when  scrtype=5 then orgscr+adjscr else 0 end )   as trans_points
+			,sum( CURSCR )   as convertible_points
+			,sum( orgscr+adjscr )   as all_points
+			,sum( case when scrtype=1 then orgscr+adjscr else 0 end )   as all_consume_points
+			,sum( USRSCR )   as all_converted_points
+		from bass2.dwd_product_sc_scorelist_201111
+		where   actflag='1' and product_instance_id = '89357332152792'
+		group by product_instance_id
+		
+        
+        
+        
+
+89101110015523
+
+select YEAR,sum( orgscr+adjscr ) 
+from  bass2.dwd_product_sc_scorelist_201112
+where product_instance_id = '89101110015523' 
+group by YEAR
+        
+ 
+select userstatus_id,count(0)
+from bass2.dw_product_201112 a ,       
+(
+select distinct product_instance_id user_id from bass2.dwd_product_sc_scorelist_201112  where  actflag='1'     ) b 
+where a.user_id = b.user_id 
+group by userstatus_id
+
+USERSTATUS_ID	2	   
+0	3	   
+1	758064	   
+3	136536	   
+4	4480	   
+5	44453	   
+8	1	   
+9	16	   
+		
+        
+       
+        
+drop table "BASS1   "."G_I_02006_MONTH_1"
+CREATE TABLE "BASS1   "."G_I_02006_MONTH_1"  (
+                
+                  "USER_ID" CHAR(20) , 
+                  "MONTH_POINTS" integer , 
+                  "MONTH_QQT_POINTS" integer , 
+                  "MONTH_AGE_POINTS" integer , 
+                  "TRANS_POINTS" integer , 
+                  "CONVERTIBLE_POINTS" integer , 
+                  "ALL_POINTS" integer , 
+                  "ALL_CONSUME_POINTS" integer , 
+                  "ALL_CONVERTED_POINTS" integer , 
+                  "LEAVE_CLEAR_POINTS" integer , 
+                  "OTHER_CLEAR_POINTS" integer )   
+                 DISTRIBUTE BY HASH("USER_ID")   
+                   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" ; 
+
+        
+        
+        select count(0) from G_I_02006_MONTH
+        
+        
+
+        select 
+        201112 TIME_ID
+        ,a.USER_ID
+        ,char(value(a.MONTH_POINTS,0))
+        ,char(value(a.MONTH_QQT_POINTS,0))
+        ,char(value(a.MONTH_AGE_POINTS,0))
+        ,char(value(a.TRANS_POINTS,0))
+        ,char(value(a.CONVERTIBLE_POINTS,0))
+        ,char(value(a.ALL_POINTS,0))
+        ,char(value(a.ALL_CONSUME_POINTS,0))
+        ,char(value(a.ALL_CONVERTED_POINTS,0))
+        ,char(value(a.LEAVE_CLEAR_POINTS,0))
+        ,char(value(a.OTHER_CLEAR_POINTS,0))
+        from G_I_02006_MONTH_1 a
+        ,bass2.dw_product_201112 b
+           where a.user_id = b.user_id 
+                 and b.usertype_id in (1,2,9)
+                 and b.test_mark = 0
+                 and (b.userstatus_id in (1,2,3,6,8) or b.month_off_mark = 1)
+   group by a.user_id
+        with ur
+        
+        
+
+select * from G_I_02006_MONTH
+where user_id = '89357332152792'
+
+
+        
+        89101110015523
+        
+        
+        
+
+
+ rename bass1.G_S_02007_MONTH to G_S_02007_MONTH_bak20120117
+
+CREATE TABLE "BASS1   "."G_S_02007_MONTH"  (
+		 time_id                integer                    
+        ,POINT_FEEDBACK_ID       CHAR(4)         
+        ,USER_ID                char(20)                   
+        ,month_converted_points char(8)                    
+        ,month_converted_cnt    char(8)            
+)   
+                 DISTRIBUTE BY HASH("TIME_ID",  
+                 "USER_ID")   
+                   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" ; 
+
+
+select *
+ from bass2.ODS_SC_SCRD_ORD_INFO_201112
+ fetch first 10 rows only
+ 
+		
+
+        
+        
+        
+        
+        
+
+		select 
+		a.USER_ID
+		,a.SC_PAYMENT_ID
+		,b.product_no
+		,a.BILLING_CYCLE_ID
+		,replace(char(date(STATE_DATE)),'-','') STATE_DATE
+from bass2.dwd_product_sc_payout_201112 a
+,bass2.dw_product_201112 b 
+where a.user_id = b.user_id 
+
+        
+        
+
+select * from  bass2.dw_product_sc_payment_dm_201112
+where product_no = '13648907966'
+
+fetch first 10 rows only  
+        
+
+
+select *
+ from bass2.ODS_SC_SCRD_ORD_INFO_201112
+ where MOB_NUM = '13648907966'
+
+
+ fetch first 10 rows only
+ 
+		EXT2
+[NULL]
+20111202200829308096
+20111202203723312674
+[NULL]
+
+
+        
+        
+        
+
+select OPERATION_TYPE , count(0) 
+--,  count(distinct OPERATION_TYPE ) 
+from bass2.dw_product_sc_payment_dm_201112 
+group by  OPERATION_TYPE 
+order by 1 
+
+select * 
+ from bass2.dw_product_ord_so_log_dm_201112
+where  ORD_CODE = '20111202203723312674'
+
+
+PEER_SEQ
+20111202203723312674
+20111202200829308096
+20111202203723312674
+20111202200829308096
+
+select * from g_s_02007_month_bak20120117 
+where time_id = 201112
+fetch first 10 rows only 
+
+89101110014833      
+
+
+select * 
+ from bass2.dw_product_ord_so_log_dm_201112
+where user_id = '89101110014833'
+
+
+ORD_CODE
+111228134244B153940180891
+
+
+
+
+
+select count(0),count(distinct PEER_SEQ) from  bass2.dw_product_sc_payment_dm_201112
+where operation_type='3'
+and PEER_SEQ is not null
+1	2	   
+10445	10380	   
+		
+    select count(0),count(distinct sc_payment_id) from  bass2.dw_product_sc_payment_dm_201112
+where operation_type in ('3','8')
+and PEER_SEQ is not null
+    
+    15969
+    
+    1	2	   
+10445	10445	   
+		
+        
+        select PEER_SEQ,count(0)
+        from  bass2.dw_product_sc_payment_dm_201112
+        group by PEER_SEQ
+        having count(0) > 1
+        
+        
+        
+        
+        select * from   bass2.dw_product_sc_payment_dm_201112
+        where PEER_SEQ = '111202124059B141354100895'
+        
+        
+        
+
+where PEER_SEQ = '111228134244B153940180891'
+
+
+
+select count(0),count(distinct ORD_CODE)
+ from bass2.dw_product_ord_so_log_dm_201112
+ where  ORD_CODE is not null
+ and offer_name like '%积分%'
+ 1	2	   
+7562	7498	   
+		
+        
+ 
+ 1	2	   
+2364698	1541326	   
+		
+        
+                select ORD_CODE,count(0)
+        from  bass2.dw_product_ord_so_log_dm_201112
+        group by ORD_CODE
+        having count(0) > 2
+        
+        
+        
+        select ORD_CODE , count(0)
+ from bass2.dw_product_ord_so_log_dm_201112 a
+ where exists (select 1 from bass2.dw_product_sc_payment_dm_201112 b where  a.user_id = b.user_id and 
+ a.ORD_CODE = b.PEER_SEQ )
+         group by ORD_CODE
+        having count(0) > 2
+
+select *
+ from bass2.dw_product_ord_so_log_dm_201112 a
+where ORD_CODE = '111201184728B141148030896'
+
+
+select *
+ from  bass2.dw_product_sc_payment_dm_201112 a
+where PEER_SEQ = '111201184728B141148030896'
+
+ 
+ 111201184733C102398840896
+ 
+ select *
+ from bass2.dw_product_ord_so_log_dm_201112 a
+where ORD_CODE = '111201184733C102398840896'
+
+
+
+select count(0),count(distinct ORD_CODE)
+ from bass2.dw_product_ord_so_log_dm_201112
+ where  ORD_CODE is not null
+ and (offer_name like '%积分%' or offer_name like '%M值%')
+ 
+ 1	2	   
+7562	7498	   
+
+1	2	   
+10674	10609	   
+		
+        
+select PEER_SEQ from  bass2.dw_product_sc_payment_dm_201112
+where operation_type='3'
+except
+select ORD_CODE
+ from bass2.dw_product_ord_so_log_dm_201112
+ where  ORD_CODE is not null
+ and (offer_name like '%积分%' or offer_name like '%M值%')
+
+
+select * from  bass2.dw_product_sc_payment_dm_201112
+where PEER_SEQ ='111229192528B155103110894'
+
+select * from  bass2.dw_product_ord_so_log_dm_201112
+where ORD_CODE ='111229192528B155103110894'
+
+SC_PAYMENT_ID	OPT_SEQ	PEER_SEQ
+111201083457C102383130891	1	111201083457B140759360891
+		
+        select * from  bass2.dwd_product_sc_payout_201112
+        where SC_PAYMENT_ID = '111229192528C102752220894'
+        
+        
+select count(0),count(distinct PEER_SEQ) from  bass2.dw_product_sc_payment_dm_201112
+where operation_type='3'
+and PEER_SEQ is not null
+1	2	   
+10445	10380	   
+
+select *
+from bass2.dw_product_ord_so_log_dm_201112
+where ORD_CODE in (
+select PEER_SEQ from  bass2.dw_product_sc_payment_dm_201112
+where operation_type in ('3')
+except
+select ORD_CODE
+ from bass2.dw_product_ord_so_log_dm_201112
+ where  ORD_CODE is not null
+ and (offer_name like '%积分%' or offer_name like '%M值%')
+
+)
+
+
+
+select distinct offer_name
+from bass2.dw_product_ord_so_log_dm_201112
+where ORD_CODE in (
+select PEER_SEQ from  bass2.dw_product_sc_payment_dm_201112
+where operation_type in ('3')
+except
+select ORD_CODE
+ from bass2.dw_product_ord_so_log_dm_201112
+ where  ORD_CODE is not null
+ and (offer_name like '%积分%' or offer_name like '%M值%')
+
+)
+
+
+    select count(0),count(distinct sc_payment_id) from  bass2.dw_product_sc_payment_dm_201112
+where operation_type in ('3','8')
+and PEER_SEQ is not null
+    
+    15969
+    
+    
+    select count(0),count(distinct sc_payment_id)  from bass2.dwd_product_sc_payout_201112
+
+1	2	   
+488875	40772	   
+		
+        1	2	   
+43985	43780	   
+
+1	2	   
+40977	40772	   
+		
+    select count(0),count(distinct a.sc_payment_id),count(distinct peer_seq) from  bass2.dw_product_sc_payment_dm_201112 a
+,(
+select sc_payment_id,sum(USRSCR) USRSCR
+from bass2.dwd_product_sc_payout_201112
+group by sc_payment_id
+) t
+where a.sc_payment_id = t.sc_payment_id
+and  a.amount = t.USRSCR
+
+1	2	   
+40772	40772	   
+		
+        
+        select count(0),count(distinct ORD_SEQ)
+ from bass2.ODS_SC_SCRD_ORD_INFO_201112
+        
+        1	2	   
+23709	23031	   
+
+        select count(0),count(distinct ORD_SEQ)
+ from bass2.ODS_SC_SCRD_ORD_INFO_201112
+   where ORD_SEQ like '201112%'
+   1	2	   
+3692	3520	   
+		
+        
+	        select count(0),count(distinct ORD_SEQ) ,count(distinct PEER_SEQ)
+ from bass2.ODS_SC_SCRD_ORD_INFO_201112	 a
+ ,bass2.dw_product_sc_payment_dm_201112 b 
+ where a.ORD_SEQ = b.PEER_SEQ
+ 
+        1	2	3	   
+4358	3299	3299	   
+			
+            
+        
+select count(0),count(distinct ORD_SEQ||MOB_NUM||char(ITEM_POINT))
+ from bass2.ODS_SC_SCRD_ORD_INFO_201112
+ 
+ 1	2	   
+23709	23031	   
+		
+              select ORD_SEQ
+              from (
+select ORD_SEQ,type1
+ from bass2.ODS_SC_SCRD_ORD_INFO_201112
+   group by ORD_SEQ,type1
+   having count(0) > 1
+   )
+   t 
+   group by ORD_SEQ
+   having count(0) > 1
+   
+   select * from bass2.ODS_SC_SCRD_ORD_INFO_201112
+   where op_time like '201112%'
+   
+   
+   
+
+
+select count(0),count(distinct ORD_CODE)
+ from bass2.dw_product_ord_so_log_dm_201112
+ where  ORD_CODE is not null
+ and (offer_name like '%积分%' or offer_name like '%M值%')
+
+
+1	2	   
+10674	10609	   
+	select ORD_CODE, count(0)
+ from bass2.dw_product_ord_so_log_dm_201112
+ where  ORD_CODE is not null
+ and (offer_name like '%积分%' or offer_name like '%M值%')
+	group by ORD_CODE having count(0) > 1 
+    
+    111221173840B150170470895
+    
+    select * from   bass2.dw_product_ord_so_log_dm_201112
+    where ORD_CODE = '111221173840B150170470895'
+    
+    
+    
+        
+
+select * from G_I_02006_MONTH_bak20120118
+where user_id = '89160001196765'
+union all
+select * from G_I_02006_MONTH  
+where user_id = '89160001196765'
+
+      
+      
+
+
+select * from G_I_02006_MONTH_bak20120118
+where user_id = '89160001196765'
+union all
+select * from G_I_02006_MONTH  
+where user_id = '89160001196765'
+
+      89157333538285
+      
+select * from bass2.dw_product_201112
+where product_no = '15089051890'
+
+select * from bass2.dw_product_201112
+where product_no = '15289195954'
+      
+      89160000655341
+      
+
+select count(0)
+from G_I_02006_MONTH a       
+,G_I_02006_MONTH_bak20120118 b 
+where a.user_id = b.user_id 
+and a.ALL_CONVERTED_POINTS <> b.ALL_CONVERTED_POINTS
+1	   
+9351	   
+	CONVERTIBLE_POINTS
+    
+    select count(0)
+from G_I_02006_MONTH a       
+,G_I_02006_MONTH_bak20120118 b 
+where a.user_id = b.user_id 
+and a.CONVERTIBLE_POINTS <> b.CONVERTIBLE_POINTS
+
+
+select *
+from G_I_02006_MONTH a       
+,G_I_02006_MONTH_bak20120118 b 
+where a.user_id = b.user_id 
+where 
+and bigint(a.ALL_POINTS) <> 
+(bigint(b.ALL_POINTS)+ bigint(b.TRANS_POINTS)+bigint(b.MONTH_AGE_POINTS)+bigint(b.MONTH_QQT_POINTS))
+
+
+
+select * from G_I_02006_MONTH_bak20120118
+where user_id = '89157333538285'
+union all
+select * from G_I_02006_MONTH  
+where user_id = '89157333538285'
+     
+
+
+insert into app.sch_control_before 
+values('BASS1_G_I_02006_MONTH.tcl','M11013')
+     
+     
+select * from app.sch_control_runlog
+where control_code in (
+select before_control_code from  table( bass1.get_before('02006')) a 
+)
+
+     
+     
+     select * from app.sch_control_before 
+where control_code = 'BASS1_G_I_02006_MONTH.tcl'
+and before_control_code = 'M11013'
+
+
+
+delete from (
+select * from app.sch_control_before 
+where control_code = 'BASS1_G_I_02006_MONTH.tcl'
+and before_control_code = 'M11013'
+) a 
+
+
+
+
+insert into app.sch_control_before 
+values('BASS1_G_I_02006_MONTH.tcl','TR1_L_11013')
+
+
+
+
+select * from  bass2.ODS_PRODUCT_SC_SCORELIST_201112
+where product_instance_id = '89160001196765'
+
+
+
+
+select *
+from G_I_02006_MONTH a       
+,G_I_02006_MONTH_bak20120118 b 
+where a.user_id = b.user_id 
+and a.user_id =  '89157333538285'
+and bigint(a.ALL_POINTS) <> 
+(bigint(b.ALL_POINTS)+ bigint(a.TRANS_POINTS)+bigint(b.MONTH_AGE_POINTS))
+
+
+
+
+
+select count(0)
+from G_I_02006_MONTH a       
+,G_I_02006_MONTH_bak20120118 b 
+where a.user_id = b.user_id 
+and a.TIME_ID = 201112
+and b.TIME_ID = 201112
+and bigint(a.ALL_POINTS) <> 
+(bigint(b.ALL_POINTS)+ bigint(b.TRANS_POINTS))
+
+
+
+
+select *
+from G_I_02006_MONTH a       
+,G_I_02006_MONTH_bak20120118 b 
+where a.user_id = b.user_id 
+and a.TIME_ID = 201112
+and b.TIME_ID = 201112
+and bigint(a.ALL_POINTS) <> 
+(bigint(b.ALL_POINTS)+ bigint(b.TRANS_POINTS))
+fetch first 10 rows only
+
+
+select *
+from 
+(
+select 
+a.user_id
+,bigint(a.ALL_POINTS) ap
+,bigint(b.ALL_POINTS) bp1
+,bigint(a.TRANS_POINTS) bp2
+from G_I_02006_MONTH a       
+,G_I_02006_MONTH_bak20120118 b 
+where a.user_id = b.user_id 
+and a.TIME_ID = 201112
+and b.TIME_ID = 201112
+) t 
+where ap <> (bp1+bp2)
+fetch first 10 rows only
+
+
+89101110038821      	2314	2234	0	   
+
+
+
+
+
+select *
+from G_I_02006_MONTH a       
+,G_I_02006_MONTH_bak20120118 b 
+where a.user_id = b.user_id 
+and a.user_id =  '89101110038821'
+
+
+
+select count(0)
+from 
+(
+select 
+a.user_id
+,bigint(a.ALL_POINTS) ap
+,bigint(b.ALL_POINTS) bp1
+,bigint(a.TRANS_POINTS) bp2
+from G_I_02006_MONTH a       
+,G_I_02006_MONTH_bak20120118 b 
+where a.user_id = b.user_id 
+and a.TIME_ID = 201112
+and b.TIME_ID = 201112
+) t 
+where ap <> (bp1+bp2)
+
+
+
+
+select *
+from 
+(
+select 
+a.user_id
+,bigint(a.ALL_POINTS) ap
+,bigint(b.ALL_POINTS) bp1
+,bigint(a.TRANS_POINTS) bp2
+from G_I_02006_MONTH a       
+,G_I_02006_MONTH_bak20120118 b 
+where a.user_id = b.user_id 
+and a.TIME_ID = 201112
+and b.TIME_ID = 201112
+) t 
+where ap <> (bp1+bp2)
+fetch first 10 rows only
+
+
+
+89101110011598      
+
+
+
+
+select *
+from G_I_02006_MONTH a       
+,G_I_02006_MONTH_bak20120118 b 
+where a.user_id = b.user_id 
+and a.user_id =  '89101110011598'
+
+
+89101110011598
+
+select * from bass2.ODS_PRODUCT_SC_SCORELIST_201112
+where product_instance_id = '89157333538285'
+
+
+
+
+
+select * from bass2.dwd_PRODUCT_SC_SCORELIST_201112
+where product_instance_id = '89157333538285'
+
+insert into 
+bass2.DWD_PRODUCT_SC_SCORELIST_201112_BASS1
+select * from 
+bass2.DWD_PRODUCT_SC_SCORELIST_201112
+
+
+CREATE TABLE "BASS2   "."DWD_PRODUCT_SC_SCORELIST_201112_BASS1"  (
+                  "SC_SCORELIST_ID" BIGINT , 
+                  "SC_PAYMENT_ID" VARCHAR(25) , 
+                  "SVCNUM" VARCHAR(12) , 
+                  "REGION_ID" VARCHAR(7) , 
+                  "AREAR_ID" VARCHAR(20) , 
+                  "OPT_ORG_ID" BIGINT , 
+                  "BRANDID" BIGINT , 
+                  "COUNT_CYCLE_ID" INTEGER , 
+                  "SC_CYCLE_ID" INTEGER , 
+                  "SCRTYPE" SMALLINT , 
+                  "CURSCR" BIGINT , 
+                  "ORGSCR" BIGINT , 
+                  "ADJSCR" BIGINT , 
+                  "USRSCR" BIGINT , 
+                  "VALIDDATE" TIMESTAMP , 
+                  "EXPIREDATE" TIMESTAMP , 
+                  "ACTFLAG" CHAR(1) , 
+                  "CHGDATE" TIMESTAMP , 
+                  "OPTSN" VARCHAR(25) , 
+                  "REMARK" VARCHAR(255) , 
+                  "EXT1" VARCHAR(32) , 
+                  "EXT2" VARCHAR(32) , 
+                  "EXT3" VARCHAR(32) , 
+                  "PRODUCT_INSTANCE_ID" VARCHAR(20) , 
+                  "YEAR" INTEGER )   
+                 DISTRIBUTE BY HASH("SC_SCORELIST_ID")   
+                   IN "TBS_3H" INDEX IN "TBS_INDEX" NOT LOGGED INITIALLY ; 
+
+
+
+
+select *
+from G_I_02006_MONTH a       
+,G_I_02006_MONTH_bak20120117 b 
+where a.user_id = b.user_id 
+and a.TIME_ID = 201112
+and b.TIME_ID = 201112
+and a.user_id =  '89101110011598'
+
+
+
+select * from 
+bass2.DWD_PRODUCT_SC_SCORELIST_201112
+where SCRTYPE = 21
+fetch first 10 rows only
+
+
+89101110165834
+
+
+
+
+select * from bass2.ODS_PRODUCT_SC_SCORELIST_201112
+where product_instance_id = '89101110165834'
+
+
+
+
+
+select * from bass2.dwd_PRODUCT_SC_SCORELIST_201112
+where product_instance_id = '89101110165834'
+
+select * from  bass2.ODS_PRODUCT_SC_SCORELIST_201112 
+where  SCRTYPE = 21
+;
+
+select max() from bass2.dwd_PRODUCT_SC_SCORELIST_201112
+
+select SCRTYPE , count(0) 
+--,  count(distinct SCRTYPE ) 
+from bass2.ODS_PRODUCT_SC_SCORELIST_201112 
+where year > 2008 and 
+group by  SCRTYPE 
+order by 1 
+SCRTYPE	2	   
+1	11005265	   
+4	7	   
+5	9561550	   
+9	1	   
+21	980	   
+23	4626	   
+24	324025	   
+25	448616	   
+99	100209	   
+		
+
+
+select SCRTYPE , count(0) 
+--,  count(distinct SCRTYPE ) 
+from bass2.dwd_PRODUCT_SC_SCORELIST_201112 
+group by  SCRTYPE 
+order by 1 
+
+SCRTYPE	2	   
+1	11068314	   
+4	7	   
+5	959	   
+9	1	   
+21	5199	   
+23	4582	   
+24	324157	   
+25	448807	   
+99	100213	   
+		
+
+select * from  bass2.dwd_PRODUCT_SC_SCORELIST_201112 
+where  SCRTYPE = 5
+;
+
+
+select year , count(0) 
+--,  count(distinct year ) 
+from bass2.ODS_PRODUCT_SC_SCORELIST_201112 
+group by  year 
+order by 1 
+
+
+        
+
+
+select REMARK,count(0),sum(adjscr)
+from bass2.ODS_PRODUCT_SC_SCORELIST_201112 
+where year > 2008 and year < 2012
+and scrtype = 5
+group by REMARK
+
+
+
+
+select year,SCRTYPE , count(0) 
+--,  count(distinct SCRTYPE ) 
+from bass2.dwd_PRODUCT_SC_SCORELIST_201112 
+group by  year,SCRTYPE 
+order by 1 
+
+
+select scrtype,count(0)
+from bass2.ODS_PRODUCT_SC_SCORELIST_201112 
+where year > 2008 and year < 2012
+group by scrtype
+
+select * from bass2.ODS_PRODUCT_SC_SCORELIST_201112 
+where product_instance_id = '89160001196765'
+
+
+
+select *
+from bass2.ODS_PRODUCT_SC_SCORELIST_201112 
+where year > 2008 and year < 2012
+and scrtype = 5
+fetch first 10 rows only
+
+select count(0) 
+from bass2.ODS_PRODUCT_SC_SCORELIST_201112  a, bass2.dwd_PRODUCT_SC_SCORELIST_201112 b
+where a.year > 2008 and a.year < 2012
+and a.scrtype = 5
+and a.remark = '积分改造20120104'
+and a.SC_SCORELIST_ID = b.SC_SCORELIST_ID
+A'割接前新口径'
+b'割接后新口径'
+C '割接前新口径-一经转换'
+
+select 'A', a.* from G_I_02006_MONTH_bak20120118 a
+where user_id  = '89160001196765'
+union all
+select 'B', a.* from G_I_02006_MONTH a
+where user_id  = '89160001196765'
+union all
+select  'C'
+         ,TIME_ID
+        ,USER_ID
+        ,MONTH_POINTS
+        ,MONTH_QQT_POINTS
+        ,MONTH_AGE_POINTS
+        ,CHAR(ceil((0.035/0.015-1.0000)*bigint(ALL_CONSUME_POINTS))) TRANS_POINTS
+        ,CONVERTIBLE_POINTS
+        ,ALL_POINTS
+        ,ALL_CONSUME_POINTS
+        ,ALL_CONVERTED_POINTS
+        ,LEAVE_CLEAR_POINTS
+        ,OTHER_CLEAR_POINTS
+ from G_I_02006_MONTH_bak20120118
+where user_id  = '89160001196765'
+
+
+select ceil(2.1) from bass2.dual
+
+select char(ceil((0.035/0.015-1.0000)*bigint(ALL_CONSUME_POINTS)))
+ from G_I_02006_MONTH_bak20120118
+where user_id  = '89160001196765'
+
+select 0.035/0.015,0.035/0.015-1 from bass2.dual
+
+
+
+
+select 
+         --SC_SCORELIST_ID
+        --,SC_PAYMENT_ID
+        SVCNUM
+        ,REGION_ID
+        --,AREAR_ID
+        --,OPT_ORG_ID
+        ,BRANDID
+        ,COUNT_CYCLE_ID
+        ,SC_CYCLE_ID
+        ,5 SCRTYPE
+        ,ceil(SUM(curscr)*(0.035/0.015-1)) CURSCR
+        ,ceil(SUM(curscr)*(0.035/0.015-1)) ORGSCR
+        --~   ,ADJSCR
+        --~   ,USRSCR
+        --~   ,VALIDDATE
+        --~   ,EXPIREDATE
+        ,1 ACTFLAG
+        --~   ,CHGDATE
+        --~   ,OPTSN
+        ,'积分改造20120104' REMARK
+        --~   ,EXT1
+        --~   ,EXT2
+        --~   ,EXT3
+        ,PRODUCT_INSTANCE_ID
+        ,YEAR
+from bass2.DWD_PRODUCT_SC_SCORELIST_201112
+where  scrtype=1 and brandid=161000000001
+group by svcnum,region_id,count_cycle_id,product_instance_id,brandid,YEAR,SC_CYCLE_ID
+
+select 0.035/0.015-1 from bass2.dual
+
+select max(CURSCR),max(ORGSCR) from (
+select 
+         --SC_SCORELIST_ID
+        --,SC_PAYMENT_ID
+        SVCNUM
+        ,REGION_ID
+        --,AREAR_ID
+        --,OPT_ORG_ID
+        ,BRANDID
+        ,COUNT_CYCLE_ID
+        ,SC_CYCLE_ID
+        ,5 SCRTYPE
+        ,ceil(SUM(curscr)*decimal(0.035/0.015-1,10,6)) CURSCR
+        ,ceil(SUM(curscr)*decimal(0.035/0.015-1,10,6)) ORGSCR
+        ,0 ADJSCR
+        ,0 USRSCR
+        --~   ,VALIDDATE
+        --~   ,EXPIREDATE
+        ,'1' ACTFLAG
+        --~   ,CHGDATE
+        --~   ,OPTSN
+        ,'积分改造20120104' REMARK
+        --~   ,EXT1
+        --~   ,EXT2
+        --~   ,EXT3
+        ,PRODUCT_INSTANCE_ID
+        ,YEAR
+from bass2.DWD_PRODUCT_SC_SCORELIST_201112
+where  scrtype=1 and brandid=161000000001
+group by svcnum,region_id,count_cycle_id,product_instance_id,brandid,YEAR,SC_CYCLE_ID
+
+
+) t
+
+
+db2 runstats on table bass2.DWD_PRODUCT_SC_SCORELIST_201112_BASS1 with distribution and detailed indexes all           
+
+select * from bass2.DWD_PRODUCT_SC_SCORELIST_201112_BASS1
+where product_instance_id = '89160001196765'
+
+
+
+select * from 
+G_I_02006_MONTH
+where  user_id = '89160001196765'
+
+
+select 'A', a.* from G_I_02006_MONTH_bak20120118 a
+where user_id  = '89160001196765'
+union all
+select 'B', a.* from G_I_02006_MONTH a
+where user_id  = '89160001196765'
+
+
+89157333538285
+
+
+
+select 'NotCvtNotConsm', a.* from G_I_02006_MONTH_bak20120118 a
+where user_id  = '89157333538285'
+union all
+select 'HavCvtNotConsm', a.* from G_I_02006_MONTH_bak20120118cnvt a
+where user_id  = '89157333538285'
+union all
+select 'HavCvtHavConsm', a.* from G_I_02006_MONTH a
+where user_id  = '89157333538285'
+
+
+89160001196765
+
+select 'NotCvtNotConsm', a.* from G_I_02006_MONTH_bak20120118 a
+where user_id  = '89160001196765'
+union all
+select 'HavCvtNotConsm', a.* from G_I_02006_MONTH_bak20120118cnvt a
+where user_id  = '89160001196765'
+union all
+select 'HavCvtHavConsm', a.* from G_I_02006_MONTH a
+where user_id  = '89160001196765'
+
+
+
+rename bass1.G_I_02006_MONTH to G_I_02006_MONTH_bak20120118cnvt
+
+rename bass1.G_I_02006_MONTH to G_I_02006_MONTH_use20120117data
+
+
+
+
+select * from bass2.dw_product_201112
+where product_no = '15289195954'
+      
+      89160000655341
+      
+      
+      
+      select * from bass2.ods_product_sc_scorelist_201112
+where product_instance_id = '89160000655341'
+
+
+
+select 'NotCvtNotConsm', a.* from G_I_02006_MONTH_bak20120118 a
+where user_id  = '89160000655341'
+union all
+select 'HavCvtNotConsm', a.* from G_I_02006_MONTH_bak20120118cnvt a
+where user_id  = '89160000655341'
+union all
+select 'HavCvtHavConsm', a.* from G_I_02006_MONTH a
+where user_id  = '89160000655341'
+
+
+select 
+svcnum,region_id,count_cycle_id,product_instance_id,brandid
+        ,ceil(SUM(curscr)*decimal(0.035/0.015-1,10,6)) CURSCR --ceil(SUM(curscr)*decimal(0.035/0.015-1,10,6))
+        ,ceil(SUM(curscr)*decimal(0.035/0.015-1,10,6)) ORGSCR
+from bass2.DWD_PRODUCT_SC_SCORELIST_201112
+where  scrtype=1 and brandid=161000000001
+and product_instance_id  = '89160000655341'
+GROUP BY svcnum,region_id,count_cycle_id,product_instance_id,brandid
+
+
+
+
+select 
+svcnum,region_id,count_cycle_id,product_instance_id,brandid
+,YEAR,SC_CYCLE_ID
+        ,ceil(SUM(curscr)*decimal(0.035/0.015-1,10,6)) CURSCR --ceil(SUM(curscr)*decimal(0.035/0.015-1,10,6))
+        ,ceil(SUM(curscr)*decimal(0.035/0.015-1,10,6)) ORGSCR
+from bass2.DWD_PRODUCT_SC_SCORELIST_201112
+where  scrtype=1 and brandid=161000000001
+and product_instance_id  = '89160000655341'
+GROUP BY svcnum,region_id,count_cycle_id,product_instance_id,brandid
+,YEAR,SC_CYCLE_ID
+
+
+
+
+select 
+svcnum,region_id,count_cycle_id,product_instance_id,brandid
+,YEAR,SC_CYCLE_ID
+        ,ceil(SUM(curscr)*decimal(0.035/0.015-1,10,6)) CURSCR --ceil(SUM(curscr)*decimal(0.035/0.015-1,10,6))
+        ,ceil(SUM(curscr)*decimal(0.035/0.015-1,10,6)) ORGSCR
+from bass2.DWD_PRODUCT_SC_SCORELIST_201112
+where  scrtype=1 and brandid=161000000001
+and product_instance_id  = '89160000655341'
+GROUP BY svcnum,region_id,count_cycle_id,product_instance_id,brandid
+,YEAR,SC_CYCLE_ID
+
+
+
+
+
+select * from  bass2.ODS_PRODUCT_SC_SCORELIST_201112
+where product_instance_id = '89160000655341'
+
+
+
+select 'NotCvtNotConsm', a.* from G_I_02006_MONTH_bak20120118 a
+where user_id  = '89160000655341'
+union all
+select 'HavCvtNotConsm', a.* from G_I_02006_MONTH_bak20120118cnvt a
+where user_id  = '89160000655341'
+union all
+select 'HavCvtHavConsm', a.* from G_I_02006_MONTH_use20120117data a
+where user_id  = '89160000655341'
+union all
+select 'HavCvtNotConsm2', a.* from G_I_02006_MONTH a
+where user_id  = '89160000655341'
+
+
+
+
+
+select 'NotCvtNotConsm', a.* from G_I_02006_MONTH_bak20120118 a
+where user_id  = '89157333538285'
+union all
+select 'HavCvtNotConsm', a.* from G_I_02006_MONTH_bak20120118cnvt a
+where user_id  = '89157333538285'
+union all
+select 'HavCvtHavConsm', a.* from G_I_02006_MONTH_use20120117data a
+where user_id  = '89157333538285'
+union all
+select 'HavCvtNotConsm2', a.* from G_I_02006_MONTH a
+where user_id  = '89157333538285'
+
+
+
+select 'NotCvtNotConsm', a.* from G_I_02006_MONTH_bak20120118 a
+where user_id  = '89160001196765'
+union all
+select 'HavCvtNotConsm', a.* from G_I_02006_MONTH_bak20120118cnvt a
+where user_id  = '89160001196765'
+union all
+select 'HavCvtHavConsm', a.* from G_I_02006_MONTH_use20120117data a
+where user_id  = '89160001196765'
+union all
+select 'HavCvtNotConsm2', a.* from G_I_02006_MONTH a
+where user_id  = '89160001196765'
+
+
+
+89160001196765
+
+
+select count(0)
+from G_I_02006_MONTH
+where bigint(ALL_POINTS) <> bigint(ALL_CONVERTED_POINTS) + bigint(CONVERTIBLE_POINTS) 
+
+
+
+select count(0),count(distinct user_id)
+from G_I_02006_MONTH
+
+1	2	   
+918811	918811	   
+		
+        
+select count(0),count(distinct product_instance_id) from  bass2.ODS_PRODUCT_SC_SCORELIST_201112
+where actflag='1'
+
+21437306	936231	   
+
+select sum(a.orgscr) , sum(b.orgscr)
+from 
+(
+select PRODUCT_INSTANCE_ID ,scrtype, sum(orgscr) orgscr 
+from bass2.ODS_PRODUCT_SC_SCORELIST_201112 a 
+where actflag='1'
+ group by PRODUCT_INSTANCE_ID,scrtype
+ ) a 
+, (
+select PRODUCT_INSTANCE_ID ,scrtype, sum(orgscr) orgscr 
+from bass2.DWD_PRODUCT_SC_SCORELIST_201112_BASS1 a 
+where actflag='1'
+ group by PRODUCT_INSTANCE_ID,scrtype
+ ) b 
+where a.PRODUCT_INSTANCE_ID = b.PRODUCT_INSTANCE_ID
+and a.scrtype = b.scrtype
+
+
+
+DWD_PRODUCT_SC_SCORELIST_201112_BASS1
+
+
+1	2	   
+2922439633	2988538313	   
+		
+
+
+select *
+from 
+(
+select PRODUCT_INSTANCE_ID ,scrtype, sum(orgscr) orgscr 
+from bass2.ODS_PRODUCT_SC_SCORELIST_201112 a 
+where actflag='1'
+ group by PRODUCT_INSTANCE_ID,scrtype
+ ) a 
+, (
+select PRODUCT_INSTANCE_ID ,scrtype, sum(orgscr) orgscr 
+from bass2.DWD_PRODUCT_SC_SCORELIST_201112_BASS1 a 
+where actflag='1'
+ group by PRODUCT_INSTANCE_ID,scrtype
+ ) b 
+where a.PRODUCT_INSTANCE_ID = b.PRODUCT_INSTANCE_ID
+and a.scrtype = b.scrtype
+and a.orgscr <> b.orgscr
+
+与BOSS差异在转移积分上。一经用1231.24hr的数据转换，而boss用4号24点的数据转换。
+
+
+
+
+update 
+(
+select * from app.g_runlog 
+where unit_code = '02006'
+and time_id = 201112
+and return_flag = 1
+) t
+set return_flag = 0
+
+
+
+
+select *
+ from  bass2.dw_product_sc_payment_dm_201112 a
+where user_id = '89160001196765'
+
+ 
+
+
+select count(0)
+,count(distinct ord_code )
+from G_S_02007_MONTH_4
+
+
+
+		from (select user_id,ord_code,max(offer_name) offer_name,count(*) cnt from  bass2.dw_product_ord_so_log_dm_$op_month 
+	         group by user_id,ord_code ) a ,
+             
+             
+
+
+select count(0)
+,count(distinct SC_PAYMENT_ID )
+,count(distinct user_id )
+,count(distinct peer_seq )
+from G_S_02007_MONTH_2a
+
+1	2	3	4	   
+37265	37265	37265	13481	   
+
+
+1	2	3	4	   
+37265	37265	37265	13737	   
+				
+				
+                
+            
+            
+
+select count(0) from G_S_02007_MONTH_1
+
+select 
+         a.USER_ID
+        ,a.MONTH_CONVERTED_POINTS
+        ,a.MONTH_CONVERTED_CNT
+		--,c.TYPE1
+		--,d.offer_name
+		from G_S_02007_MONTH_1 a
+		left join  G_S_02007_MONTH_2a b on a.user_id = b.user_id  
+		left join G_S_02007_MONTH_3 c on  b.PEER_SEQ = c.ORD_SEQ
+		left join G_S_02007_MONTH_4 d on  b.PEER_SEQ = d.ORD_CODE
+            
+
+drop table G_S_02007_MONTH_3
+
+ CREATE TABLE BASS1.G_S_02007_MONTH_3  (
+                  ORD_SEQ CHAR(20) , 
+                  ORDER_SUM_POINT bigint,
+                  type1 varchar(10),
+                  ITEM_TYPE varchar(2)
+                  ) 
+                 DISTRIBUTE BY HASH(ORD_SEQ)   
+                   IN TBS_APP_BASS1 INDEX IN TBS_INDEX ; 
+                   
+insert into G_S_02007_MONTH_3
+select  
+ORD_SEQ 
+,ORDER_SUM_POINT
+,type1
+,ITEM_TYPE
+from 
+( select a.* , row_number()over(partition by ORD_SEQ order by ORDER_SUM_POINT desc  ) rn 
+ from (select ORD_SEQ,ITEM_TYPE,type1,sum(ORDER_SUM_POINT) ORDER_SUM_POINT  from bass2.ODS_SC_SCRD_ORD_INFO_201112
+  where op_time like '201112%' 
+  group by  ORD_SEQ,ITEM_TYPE,type1
+ )  a
+,G_S_02007_MONTH_2a b 
+where  a.ORD_SEQ = b.peer_seq
+) t where t.rn = 1
+
+            
+            
+
+
+select ORD_SEQ,substr(ITEM_TYPE,2,1)||cast(int(substr(type1,2,1))+1 as char(1))||'00' feedback_id 
+from 
+(
+select
+                ORD_SEQ,ITEM_TYPE
+                ,case 
+                    when type1 = '实物类' then '00'
+                    when type1 = '自有类' then '01'
+                    when type1 = '合作类' then '02'
+                    else type1 end type1 
+     from G_S_02007_MONTH_3 a
+) t
+					
+
+
+insert into G_S_02007_MONTH_1
+			select user_id
+				,sum(USRSCR) MONTH_CONVERTED_POINTS 
+				,count(distinct sc_payment_id)  MONTH_CONVERTED_CNT
+			from bass2.dwd_product_sc_payout_201112
+			group by user_id
+            with ur
+
+                        
+                        
+
+select 
+         a.USER_ID
+        ,a.MONTH_CONVERTED_POINTS
+        ,a.MONTH_CONVERTED_CNT
+		,substr(ITEM_TYPE,2,1)||cast(int(substr(type1,2,1))+1 as char(1))||'00' feedback_id_hq
+		,case when (d.offer_name like '%加油%' or d.offer_name like '%购物%') then '2100'
+	       when (d.offer_name like '%充值卡%' or d.offer_name like '%送%话费%') then '2210'
+	       when (d.offer_name like '%GPRS套餐%' or d.offer_name like '%手机报%' or d.offer_name like '%短信套餐%' or 
+	             d.offer_name like '%送彩铃%'   or d.offer_name like '%彩信套餐%' or d.offer_name like '%无线音乐俱乐部%') then '2230'
+	       when (d.offer_name like '%VIP客户%') then '2220'
+	       when (d.offer_name like '%送手机%') or (d.offer_name like '%兑手机%') then '2240'
+	       when (d.offer_name like '%电影票%') or (d.offer_name like '%演唱会门票%') or (d.offer_name like '%新专辑%') then '2100'
+	       else '2250'
+		end feedback_id_lc
+		from G_S_02007_MONTH_1 a
+		left join  G_S_02007_MONTH_2a b on a.user_id = b.user_id  
+		left join G_S_02007_MONTH_3 c on  b.PEER_SEQ = c.ORD_SEQ
+		left join G_S_02007_MONTH_4 d on  b.PEER_SEQ = d.ORD_CODE
+                        
+                        
+
+select distinct offer_name from G_S_02007_MONTH_4                        
+select distinct substr(ITEM_TYPE,2,1)||cast(int(substr(type1,2,1))+1 as char(1))||'00' from G_S_02007_MONTH_3                        
+
+G_S_02007_MONTH_3
+
+		select count(0) from  G_S_02007_MONTH_2a b 
+		 join G_S_02007_MONTH_3 c on  b.PEER_SEQ = c.ORD_SEQ
+        
+        
+
+select feedback_id_hq,feedback_id_lc,count(0)
+from (
+
+select 
+         a.USER_ID
+        ,a.MONTH_CONVERTED_POINTS
+        ,a.MONTH_CONVERTED_CNT
+		,feedback_id feedback_id_hq
+		,case when (d.offer_name like '%加油%' or d.offer_name like '%购物%') then '2100'
+	       when (d.offer_name like '%充值卡%' or d.offer_name like '%送%话费%') then '2210'
+	       when (d.offer_name like '%GPRS套餐%' or d.offer_name like '%手机报%' or d.offer_name like '%短信套餐%' or 
+	             d.offer_name like '%送彩铃%'   or d.offer_name like '%彩信套餐%' or d.offer_name like '%无线音乐俱乐部%') then '2230'
+	       when (d.offer_name like '%VIP客户%') then '2220'
+	       when (d.offer_name like '%送手机%') or (d.offer_name like '%兑手机%') then '2240'
+	       when (d.offer_name like '%电影票%') or (d.offer_name like '%演唱会门票%') or (d.offer_name like '%新专辑%') then '2100'
+	       else '2250'
+		end feedback_id_lc
+		from G_S_02007_MONTH_1 a
+		left join  G_S_02007_MONTH_2a b on a.user_id = b.user_id  
+		left join (select ORD_SEQ,substr(ITEM_TYPE,2,1)||cast(int(substr(type1,2,1))+1 as char(1))||'00' feedback_id 
+						from 
+						(
+						select
+										ORD_SEQ,ITEM_TYPE
+										,case 
+											when type1 = '实物类' then '00'
+											when type1 = '自有类' then '01'
+											when type1 = '合作类' then '02'
+											else type1 end type1 
+							 from G_S_02007_MONTH_3 a
+						) t
+						) c on  b.PEER_SEQ = c.ORD_SEQ
+		left join G_S_02007_MONTH_4 d on  b.PEER_SEQ = d.ORD_CODE
+) t 
+group by 
+
+        feedback_id_hq,feedback_id_lc
+        
+
+
+
+select count(0),count(distinct user_id)
+from (
+
+select 
+         a.USER_ID
+        ,a.MONTH_CONVERTED_POINTS
+        ,a.MONTH_CONVERTED_CNT
+		,feedback_id feedback_id_hq
+		,case when (d.offer_name like '%加油%' or d.offer_name like '%购物%') then '2100'
+	       when (d.offer_name like '%充值卡%' or d.offer_name like '%送%话费%') then '2210'
+	       when (d.offer_name like '%GPRS套餐%' or d.offer_name like '%手机报%' or d.offer_name like '%短信套餐%' or 
+	             d.offer_name like '%送彩铃%'   or d.offer_name like '%彩信套餐%' or d.offer_name like '%无线音乐俱乐部%') then '2230'
+	       when (d.offer_name like '%VIP客户%') then '2220'
+	       when (d.offer_name like '%送手机%') or (d.offer_name like '%兑手机%') then '2240'
+	       when (d.offer_name like '%电影票%') or (d.offer_name like '%演唱会门票%') or (d.offer_name like '%新专辑%') then '2100'
+	       else '2250'
+		end feedback_id_lc
+		from G_S_02007_MONTH_1 a
+		left join  G_S_02007_MONTH_2a b on a.user_id = b.user_id  
+		left join (select ORD_SEQ,substr(ITEM_TYPE,2,1)||cast(int(substr(type1,2,1))+1 as char(1))||'00' feedback_id 
+						from 
+						(
+						select
+										ORD_SEQ,ITEM_TYPE
+										,case 
+											when type1 = '实物类' then '00'
+											when type1 = '自有类' then '01'
+											when type1 = '合作类' then '02'
+											else type1 end type1 
+							 from G_S_02007_MONTH_3 a
+						) t
+						) c on  b.PEER_SEQ = c.ORD_SEQ
+		left join G_S_02007_MONTH_4 d on  b.PEER_SEQ = d.ORD_CODE
+) t 
+group by 
+
+        feedback_id_hq,feedback_id_lc
+        
+        
+
+select count(0) from G_S_02007_MONTH
+        
+        
+
+select * from g_s_02007_month
+        
+        
+        
+select POINT_FEEDBACK_ID , count(0) 
+--,  count(distinct POINT_FEEDBACK_ID ) 
+from g_s_02007_month 
+group by  POINT_FEEDBACK_ID 
+order by 1 
