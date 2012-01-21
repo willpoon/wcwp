@@ -533,11 +533,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 source /bassapp/bass1/tcl/INT_FIX_TMP.tcl
 Deal_fixqixintong $op_time $optime_month
 
-
-  #1.检查chkpkunique
-set tabname "g_a_02054_day"
-set pk "ENTERPRISE_ID||ENTERPRISE_BUSI_TYPE||MANAGE_MODE"
-chkpkunique ${tabname} ${pk} ${timestamp}
+## 主键校验02054 转到R186
 
 	return 0
 }
