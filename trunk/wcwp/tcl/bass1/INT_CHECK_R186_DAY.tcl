@@ -66,7 +66,16 @@ LEFT JOIN bass1.dim_trans_enterprise_id B on  A.enterprise_id = B.ENTERPRISE_ID 
 	        puts ${alarmcontent}
 	        WriteAlarm $app_name $op_time $grade ${alarmcontent}
 		 }
-		 
+
+
+
+  #1.¼ì²échkpkunique
+set tabname "g_a_02054_day"
+set pk "ENTERPRISE_ID||ENTERPRISE_BUSI_TYPE||MANAGE_MODE"
+chkpkunique ${tabname} ${pk} ${timestamp}
+
+
+
 	return 0
 }
 
