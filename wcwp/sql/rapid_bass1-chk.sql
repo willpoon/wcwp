@@ -70,7 +70,7 @@ set  flag = -2
 select * from   table( bass1.chk_same(0) ) a order by 2
 ---------------------------------------------------------------------------------
 
-select * from   table( bass1.chk_wave(20120116) ) a order by 2
+select * from   table( bass1.chk_wave(0) ) a order by 2
 
 
 ---------------------------------------------------------------------------------
@@ -716,7 +716,7 @@ order by 1
 
 select * from   bass2.dw_product_20110808 where product_no = '13989007120'
                        
-select tabname from syscat.tables where tabname like 'DIM%CUSTCLASS%'                          
+select tabname from syscat.tables where tabname like '%CALL%2011%'                          
 
 select * from bass2.CDR_GPRS_LOCAL_20110701 fetch first 10 rows only  
 
@@ -2422,7 +2422,7 @@ and a.OFFER_ID = b.PRODUCT_ITEM_ID
 
 
 
-select * from  table( bass1.get_after('BASS1_INT_CHECK_A369B2C2_DAY')) a 
+select * from  table( bass1.get_after('04008')) a 
 
 select *  from  table( bass1.get_before('IMPORTSERV')) a 
 where control_code like '%DAY%'
@@ -6882,3 +6882,223 @@ select POINT_FEEDBACK_ID , count(0)
 from g_s_02007_month 
 group by  POINT_FEEDBACK_ID 
 order by 1 
+
+
+
+select ENTERPRISE_ID||ENTERPRISE_BUSI_TYPE||MANAGE_MODE , count(0) 
+--,  count(distinct ENTERPRISE_ID||ENTERPRISE_BUSI_TYPE||MANAGE_MODE ) 
+from g_a_02054_day 
+where time_id = 20120119
+group by  ENTERPRISE_ID||ENTERPRISE_BUSI_TYPE||MANAGE_MODE 
+order by 1 
+
+
+
+89100000003797      13302	4	   
+89102999652155      13302	2	   
+delete from 
+(
+select * from g_a_02054_day 
+where time_id = 20120119
+and ENTERPRISE_ID in ('89100000003797','89102999652155')
+and not (order_date = '20120119'
+and status_id = '2'
+)
+)
+
+
+select ENTERPRISE_ID||ENTERPRISE_BUSI_TYPE||MANAGE_MODE , count(0) 
+--,  count(distinct ENTERPRISE_ID||ENTERPRISE_BUSI_TYPE||MANAGE_MODE ) 
+from g_a_02054_day 
+where time_id = 20120120
+group by  ENTERPRISE_ID||ENTERPRISE_BUSI_TYPE||MANAGE_MODE having count(0) > 1
+order by 1 
+
+
+89100000003797      13302	3	   
+
+delete from (
+select * from g_a_02054_day 
+where time_id = 20120120
+and ENTERPRISE_ID in ('89100000003797')
+and order_date < '20120119'
+) a 
+
+
+RENAME TABLE BASS2.DIM_TERM_TAC TO DIM_TERM_TAC_20120131BAK;
+CREATE TABLE BASS2.DIM_TERM_TAC
+ (ID             INTEGER,
+  TAC_NUM        VARCHAR(15),
+  TERM_ID        VARCHAR(10),
+  TERM_MODEL     VARCHAR(50),
+  TERMPROD_ID    VARCHAR(10),
+  TERMPROD_NAME  VARCHAR(200),
+  NET_TYPE       CHARACTER(1),
+  TERM_TYPE      CHARACTER(1)
+ )
+  DATA CAPTURE NONE
+ IN TBS_DIM
+  PARTITIONING KEY
+   (ID
+   ) USING HASHING;
+ALTER TABLE BASS2.DIM_TERM_TAC
+  LOCKSIZE ROW
+  APPEND OFF
+  NOT VOLATILE;
+  
+  
+  ALTER TABLE BASS2.DIM_TERM_TAC_MID ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE
+
+
+
+
+delete from BASS2.DIM_TERM_TAC 
+insert into BASS2.DIM_TERM_TAC
+select * from BASS2.DIM_TERM_TAC_MID
+
+ insert into BASS2.DIM_TERM_TAC
+select 
+ID,
+TAC_NUM,
+TERM_ID,
+TERM_MODEL,
+TERMPROD_ID,
+TERMPROD_NAME,
+NET_TYPE,
+TERM_TYPE from BASS2.DIM_TERM_TAC_20120131BAK
+where net_type <>'2';
+
+
+select tac_nuM,count(*) from BASS2.DIM_TERM_TAC
+group by tac_nuM
+having count(*)>1
+
+35805102       	2
+
+35719102       	2	   
+
+select tac_nuM,count(*) from BASS2.DIM_TERM_TAC_20120131BAK
+group by tac_nuM
+having count(*)>1
+
+
+
+
+/**
+假如有重复：
+35805102
+select * from BASS2.DIM_TERM_TAC
+where tac_nuM='35719102'
+ID	TAC_NUM	TERM_ID	TERM_MODEL	TERMPROD_ID	TERMPROD_NAME	NET_TYPE	TERM_TYPE	   
+635	35719102       	26003     	K-Touch T390                                      	006010071 	天宇朗通                                                                                                                                                                                                	2	1	   
+17307	35719102	26805	TCL C338	006010004	TCL	1	0	   
+								
+select * from BASS2.DIM_TERM_TAC_20120131BAK
+where tac_nuM='35719102'
+
+ID	TAC_NUM	TERM_ID	TERM_MODEL	TERMPROD_ID	TERMPROD_NAME	NET_TYPE	TERM_TYPE	   
+17307	35719102	26805	TCL C338	006010004	TCL	1	0	   
+								
+delete from BASS2.DIM_TERM_TAC
+where tac_nuM='35719102' and id = 17307
+commit;
+
+delete from BASS2.DIM_TERM_TAC
+where tac_nuM='35805102' and term_id='25208';
+
+select * from BASS2.DIM_TERM_TAC
+where tac_nuM='35719102'
+**/
+
+--drop table BASS2.DIM_TERM_TAC_MID
+
+db2 RUNSTATS ON table BASS2.DIM_TERM_TAC      with distribution and detailed indexes all  
+
+
+
+
+select * from bass1.g_rule_check where rule_code in ('R107') order by time_id desc
+select * from bass1.g_rule_check where rule_code in ('R108') order by time_id desc
+
+
+select * from  app.sch_control_alarm 
+where alarmtime >=  current timestamp - 3 days
+and control_code like 'BASS1%'
+order by alarmtime desc
+;
+
+
+
+
+
+select count(0) from bass2.CDR_CALL_DTL_20110101
+where OPP_NUMBER = '95533'
+
+fetch first 10 rows only
+
+
+
+
+select 
+CALLMOMENT_ID
+,sum(CALL_DURATION_M) dur_m 
+from bass2.CDR_CALL_DTL_20110101
+where OPP_NUMBER = '95533'
+and calltype_id = 0
+group by CALLMOMENT_ID
+
+
+
+
+CREATE TABLE "BASS1   "."T_STAT_95533"  (
+    time_id integer 
+    ,CALLMOMENT_ID smallint
+    ,dur_m bigint
+                   )   
+                 DISTRIBUTE BY HASH("TIME_ID")   
+                   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" NOT LOGGED INITIALLY ; 
+
+
+
+select * from  BASS1.T_STAT_95533
+
+
+
+
+select time_id , count(0) 
+--,  count(distinct time_id ) 
+from BASS1.T_STAT_95533 
+group by  time_id 
+order by 1 
+
+select replace(char(date('2011-02-01') + 1 days),'-','') from bass2.dual
+
+
+
+select replace(char(date('2011-02-01') + 333 days),'-','') from bass2.dual
+
+
+
+select time_id,count(0) from bass1.g_user_lst
+group by time_id 
+order by 1 desc 
+
+
+
+select time_id/100 
+, sum(dur_m)*1.0/10000 dur_m
+, sum(case when not (CALLMOMENT_ID between 2 and 9 ) then dur_m else 0 end)*1.0/10000 busy_dur_m
+--,  count(distinct time_id ) 
+from BASS1.T_STAT_95533 
+group by  time_id /100
+order by 1 
+ 
+
+
+select 
+sum(bigint(ALL_FEE))
+,sum(bigint(UP_FLOWS))
+,sum(bigint(DOWN_FLOWS))
+from G_S_04002_DAY
+where time_id/100 between 201101 and 201112
+

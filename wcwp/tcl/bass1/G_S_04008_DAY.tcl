@@ -156,7 +156,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 ##如果调整口径有变，那么就屏蔽此段代码，手工调。
 source /bassapp/bass1/tcl/INT_FIX_TMP.tcl
 ADJ_04008_R107 $op_time $optime_month
-ADJ_04008_R108 $op_time $optime_month
+#ADJ_04008_R108 $op_time $optime_month
 
 	return 0
 }
