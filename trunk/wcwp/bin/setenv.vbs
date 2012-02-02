@@ -9,3 +9,22 @@ msgbox("wcwp already in path")
 else
 WshEnv("Path") = WshEnv("Path") & ";C:\poon\wcwp\wcwp\bin"
 end if
+'masm
+if InstrRev(WshEnv("Path"),"masm615") then
+msgbox("MASM615 already in path")
+else
+WshEnv("Path") = WshEnv("Path") & ";c:\poon\wcwp\wcwp\bin\masm615\bin"
+end if
+
+
+'SET PATH=C:\poon\wcwp\wcwp\bin\masm615\BIN;C:\poon\wcwp\wcwp\bin\masm615\BINR;c:\winnt\system32
+'SET LIB=C:\poon\wcwp\wcwp\bin\masm615\LIB
+'SET INCLUDE=C:\poon\wcwp\wcwp\bin\masm615\INCLUDE
+'SET INIT=E:\PROGRAMS
+'SET HELPFILES=C:\poon\wcwp\wcwp\bin\masm615\HELP\*.HLP
+'SET TMP=C:\WINDOWS\TEMP
+
+
+
+
+
