@@ -115,7 +115,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	insert into bass1.g_i_02021_month
 		  (
 		   time_id
-	    ,user_id
+			,user_id
 			,over_prod_id
 			,prod_valid_date
 		  )
@@ -131,14 +131,14 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 				where BASS1_TBID = 'BASS_STD1_0115'
 				and bass1_value like 'QW_QQT_DJ%'
 				) d on char(a.offer_id) = d.offer_id
+		left join bass1.DIM_QW_QQT_PKGID e on  d.bass1_offer_id = e.old_pkg_id              				
 		left join  (select user_id , ADD_PKG_ID,VALID_DT
 				from
 				(select a.*,row_number()over(partition by user_id,ADD_PKG_ID order by VALID_DT desc ) rn
 				from bass1.g_i_02023_day  a
 				where time_id  = $this_month_last_day
 				) t where  t.rn = 1 
-				) c on  a.user_id=c.user_id and d.bass1_offer_id = c.ADD_PKG_ID
-		left join bass1.DIM_QW_QQT_PKGID e on  c.ADD_PKG_ID = e.old_pkg_id		
+				) c on  a.user_id=c.user_id and e.new_pkg_id = c.ADD_PKG_ID
 with ur
 "
 
