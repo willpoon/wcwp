@@ -235,8 +235,8 @@ select * from USYS_TABLE_MAINTAIN ;
                
 select count(0),TABSCHEMA from syscat.tables group by TABSCHEMA order by 1
 
-db2 catalog tcpip node bass2 remote 172.16.9.25 server 50000
-db2 catalog database bassdb as bass2 at node bass2 authentication server
+db2 catalog tcpip node node27 remote 172.16.9.27 server 50000
+db2 catalog database bassdb as bassdb27 at node node27 authentication server
 db2 terminate
 
 

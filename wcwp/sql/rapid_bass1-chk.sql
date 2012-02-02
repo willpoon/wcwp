@@ -2880,7 +2880,7 @@ select
  ' *'||b.interface_code||'*dat \' 
 ) list
  from   bass1.MON_ALL_INTERFACE b where 
-deadline  in (15)
+deadline  in (3)
 and type = 'm'
 and sts = 1
 
@@ -7102,3 +7102,52 @@ sum(bigint(ALL_FEE))
 from G_S_04002_DAY
 where time_id/100 between 201101 and 201112
 
+
+select  distinct user_id,ADD_PKG_ID from bass1.g_i_02023_day a where time_id = 20120131 
+fetch first 10 rows only
+select distinct user_id,OVER_PROD_ID from bass1.g_i_02021_month a where time_id = 201201 and  OVER_PROD_ID like '99991222%'
+fetch first 10 rows only
+    select 
+        (select  count(distinct user_id||ADD_PKG_ID) cnt from bass1.g_i_02023_day a where time_id = 20120131 )                     
+         - (select  count(distinct user_id||OVER_PROD_ID) cnt from bass1.g_i_02021_month a where time_id = 201201 and  OVER_PROD_ID like '99991222%')
+         from bass2.dual
+        with ur 
+        
+        
+
+select * from  bass1.g_i_02021_month where time_id / 100 = 201201
+select * from bass1.g_i_02021_month_temp1
+
+select * from bass1.g_i_02021_month_temp2
+        
+        select xzbas_value  as offer_id ,bass1_value bass1_offer_id
+                                from  BASS1.ALL_DIM_LKP 
+                                where BASS1_TBID = 'BASS_STD1_0115'
+                                and bass1_value like 'QW_QQT_DJ%'
+
+
+                select 
+                     201201,
+                     a.user_id,
+                     value(value(e.new_pkg_id,c.ADD_PKG_ID),char(a.offer_id)),
+                     value(c.VALID_DT,a.create_date) VALID_DT
+                     select distinct value(value(e.new_pkg_id,c.ADD_PKG_ID),char(a.offer_id))
+                from bass1.g_i_02021_month_temp2 a
+                inner join bass1.g_i_02021_month_temp1 b        on  a.user_id=b.user_id
+                left join (select xzbas_value  as offer_id ,bass1_value bass1_offer_id
+                                from  BASS1.ALL_DIM_LKP 
+                                where BASS1_TBID = 'BASS_STD1_0115'
+                                and bass1_value like 'QW_QQT_DJ%'
+                                ) d on char(a.offer_id) = d.offer_id
+                left join bass1.DIM_QW_QQT_PKGID e on  d.bass1_offer_id = e.old_pkg_id              
+                left join  (select user_id , ADD_PKG_ID,VALID_DT
+                                from
+                                (select a.*,row_number()over(partition by user_id,ADD_PKG_ID order by VALID_DT desc ) rn
+                                from bass1.g_i_02023_day  a
+                                where time_id  = 20120131
+                                ) t where  t.rn = 1 
+                                ) c on  a.user_id=c.user_id and e.new_pkg_id = c.ADD_PKG_ID
+with ur
+
+
+        
