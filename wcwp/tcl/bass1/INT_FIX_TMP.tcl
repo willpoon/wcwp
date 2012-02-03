@@ -399,3 +399,317 @@ exec_sql $sql_buff
 return 0  
 
 }
+
+
+
+
+proc ADJ_R235_MONTH1 { op_time optime_month } {
+
+puts $op_time
+puts $optime_month
+
+#当天 yyyymmdd
+set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
+set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
+puts $timestamp
+puts $op_month
+#当天 yyyy-mm-dd
+set optime $op_time
+set curr_month [string range $op_time 0 3][string range $op_time 5 6]
+set last_day [GetLastDay [string range $timestamp 0 7]]
+set this_month_last_day [string range $curr_month 0 5][GetThisMonthDays [string range $curr_month 0 5]01]
+
+puts $optime
+puts $curr_month
+
+puts $timestamp
+puts $this_month_last_day
+	
+
+set sql_buff "
+ALTER TABLE g_s_03004_03005_R235_adj ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE
+"
+exec_sql $sql_buff
+
+set sql_buff "
+ALTER TABLE G_S_03004_MONTH_ADJ_BAK ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE
+"
+exec_sql $sql_buff
+
+set sql_buff "
+ALTER TABLE G_S_03005_MONTH_ADJ_BAK ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE
+"
+exec_sql $sql_buff
+
+set sql_buff "
+insert into g_s_03004_03005_R235_adj  
+select '$op_month'
+,a.user_id   
+, case when c.user_id is null then '0' else '1' end iffeezero  
+, case when d.user_id is null then '0' else '1' end if03004  
+from  (                  
+	select distinct user_id 
+	from BASS1.G_S_21003_MONTH_mobile   a                          
+	,int_02004_02008_month_stage b                  
+	where a.product_no = b.product_no                 
+	and  b.usertype_id NOT IN ('2010','2020','2030','9000')                 
+	and b.test_flag = '0' 
+	) a
+left join  (
+			select user_id                 
+			from g_s_03004_month                 
+			where time_id = $op_month                 
+			and                   ( int(substr(ACCT_ITEM_ID,2))/100 in (1,2,3)                                 
+			or ACCT_ITEM_ID in ('0401','0403','0407'))                  
+			group by user_id                   
+			having sum(bigint(FEE_RECEIVABLE)) > 0 
+			) b  on  a.user_id = b.user_id
+left join (    select  user_id from  g_s_03004_month                   
+				where time_id = $op_month                
+				and ( int(substr(ACCT_ITEM_ID,2))/100 in (1,2,3)                         
+				or ACCT_ITEM_ID in ('0401','0403','0407')
+				)                 
+				group by user_id  having sum(bigint(FEE_RECEIVABLE)) <= 0                              
+		  ) c on a.user_id = c.user_id
+left join (select distinct  user_id from  g_s_03004_month where time_id = $op_month ) d on a.user_id = d.user_id
+where b.user_id is  null
+with ur
+"
+exec_sql $sql_buff
+
+#调整0101科目
+
+set sql_buff "
+insert into G_S_03004_MONTH_ADJ_BAK  
+select a.* from G_S_03004_MONTH a
+	,g_s_03004_03005_R235_adj b  
+	where a.time_id = $op_month 
+	and a.ACCT_ITEM_ID = '0101' 
+	and a.user_id = b.user_id  
+	and b.IFFEEZERO = '1'
+    and a.FEE_RECEIVABLE = '0'
+	"
+exec_sql $sql_buff
+
+set sql_buff "
+insert into G_S_03005_MONTH_ADJ_BAK  
+select a.* from G_S_03005_MONTH a
+	,g_s_03004_03005_R235_adj b  
+	where a.time_id = $op_month 
+	and a.ITEM_ID = '0100'
+	and a.user_id = b.user_id  
+	and b.IFFEEZERO = '1'
+	and a.SHOULD_FEE = '0'
+"
+exec_sql $sql_buff
+
+
+set sql_buff "
+delete 
+ from G_S_03005_MONTH_ADJ_BAK a
+where (user_id,acct_id) not in  (select user_id,max(acct_id) acct_id from G_S_03005_MONTH_ADJ_BAK group by user_id)
+"
+exec_sql $sql_buff
+
+
+set sql_buff "
+delete from 
+(select * from G_S_03004_MONTH  a 
+where time_id = $op_month
+and  a.FEE_RECEIVABLE = '0'
+and  a.ACCT_ITEM_ID = '0101' 
+) a
+where exists (select 1 from g_s_03004_03005_R235_adj b where a.user_id = b.user_id and b.IFFEEZERO = '1' )
+ 
+"
+exec_sql $sql_buff
+
+
+set sql_buff "
+insert into G_S_03004_MONTH
+select 
+         TIME_ID
+        ,USER_ID
+        ,ACCT_ITEM_ID
+        ,BILL_CYC_ID
+        ,'1' FEE_RECEIVABLE
+        ,FAV_CHRG
+from    G_S_03004_MONTH_ADJ_BAK
+where time_id = $op_month
+"
+exec_sql $sql_buff
+
+
+set sql_buff "
+delete from 
+(select * from G_S_03005_MONTH  a 
+where time_id = $op_month
+and  a.SHOULD_FEE = '0'
+and  a.ITEM_ID = '0100' 
+) a
+where exists (select 1 from g_s_03004_03005_R235_adj b where a.user_id = b.user_id and b.IFFEEZERO = '1' )
+"
+exec_sql $sql_buff
+
+
+set sql_buff "
+insert into G_S_03005_MONTH
+select 
+         TIME_ID
+        ,ACCT_ID
+        ,USER_ID
+        ,BILL_CYC_ID
+        ,ITEM_ID
+        ,'1' SHOULD_FEE
+from    G_S_03005_MONTH_ADJ_BAK
+where time_id = $op_month
+"
+exec_sql $sql_buff
+
+
+
+
+
+return 0  
+
+}
+
+
+
+
+#如果ADJ_R235_MONTH1 不足以调整至校验通过，则进一步调整之
+proc ADJ_R235_MONTH2 { op_time optime_month } {
+
+puts $op_time
+puts $optime_month
+
+#当天 yyyymmdd
+set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
+set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
+puts $timestamp
+puts $op_month
+#当天 yyyy-mm-dd
+set optime $op_time
+set curr_month [string range $op_time 0 3][string range $op_time 5 6]
+set last_day [GetLastDay [string range $timestamp 0 7]]
+set this_month_last_day [string range $curr_month 0 5][GetThisMonthDays [string range $curr_month 0 5]01]
+
+puts $optime
+puts $curr_month
+
+puts $timestamp
+puts $this_month_last_day
+	
+
+set sql_buff "
+ALTER TABLE G_S_03004_MONTH_ADJ_BAK2 ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE
+"
+exec_sql $sql_buff
+
+set sql_buff "
+ALTER TABLE G_S_03005_MONTH_ADJ_BAK2 ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE
+"
+exec_sql $sql_buff
+
+#调整0203科目
+
+set sql_buff "
+insert into G_S_03004_MONTH_ADJ_BAK2  
+select a.* from G_S_03004_MONTH a
+	,g_s_03004_03005_R235_adj b  
+	where a.time_id = $op_month 
+	and a.ACCT_ITEM_ID = '0203' 
+	and a.user_id = b.user_id  
+	and b.IFFEEZERO = '1'
+	and IF03004 = '1'
+    and a.FEE_RECEIVABLE = '0'
+	and b.user_id not in (select distinct user_id from G_S_03004_MONTH_ADJ_BAK)
+	"
+exec_sql $sql_buff
+
+set sql_buff "
+insert into G_S_03005_MONTH_ADJ_BAK2
+select a.* from G_S_03005_MONTH a
+	,g_s_03004_03005_R235_adj b  
+	where a.time_id = $op_month 
+	and a.ITEM_ID = '0200'
+	and a.user_id = b.user_id  
+	and b.IFFEEZERO = '1'
+	and b.IF03004 = '1'
+	and a.SHOULD_FEE = '0'
+	and b.user_id not in (select distinct user_id from G_S_03005_MONTH_ADJ_BAK)
+"
+exec_sql $sql_buff
+
+
+set sql_buff "
+delete 
+ from G_S_03005_MONTH_ADJ_BAK2 a
+where (user_id,acct_id) not in  (select user_id,max(acct_id) acct_id from G_S_03005_MONTH_ADJ_BAK2 group by user_id)
+"
+exec_sql $sql_buff
+
+
+set sql_buff "
+delete from 
+(select * from G_S_03004_MONTH  a 
+where time_id = $op_month
+and  a.FEE_RECEIVABLE = '0'
+and  a.ACCT_ITEM_ID = '0203'
+and  a.user_id not in (select distinct user_id from G_S_03004_MONTH_ADJ_BAK)
+) a
+where exists (select 1 from g_s_03004_03005_R235_adj b where a.user_id = b.user_id and b.IFFEEZERO = '1' and  b.IF03004 = '1' )
+ 
+"
+exec_sql $sql_buff
+
+
+set sql_buff "
+insert into G_S_03004_MONTH
+select 
+         TIME_ID
+        ,USER_ID
+        ,ACCT_ITEM_ID
+        ,BILL_CYC_ID
+        ,'1' FEE_RECEIVABLE
+        ,FAV_CHRG
+from    G_S_03004_MONTH_ADJ_BAK2
+where time_id = $op_month
+"
+exec_sql $sql_buff
+
+
+set sql_buff "
+delete from 
+(select * from G_S_03005_MONTH  a 
+where time_id = $op_month
+and  a.SHOULD_FEE = '0'
+and  a.ITEM_ID = '0200' 
+and  a.user_id not in (select distinct user_id from G_S_03005_MONTH_ADJ_BAK)
+) a
+where exists (select 1 from g_s_03004_03005_R235_adj b where a.user_id = b.user_id and b.IFFEEZERO = '1' and  b.IF03004 = '1')
+"
+exec_sql $sql_buff
+
+
+set sql_buff "
+insert into G_S_03005_MONTH
+select 
+         TIME_ID
+        ,ACCT_ID
+        ,USER_ID
+        ,BILL_CYC_ID
+        ,ITEM_ID
+        ,'1' SHOULD_FEE
+from    G_S_03005_MONTH_ADJ_BAK2
+where time_id = $op_month
+"
+exec_sql $sql_buff
+
+
+
+
+
+return 0  
+
+}

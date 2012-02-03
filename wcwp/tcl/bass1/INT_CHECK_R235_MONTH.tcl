@@ -41,6 +41,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 #R235			新增	月	06_账务收入	在网的通话用户中无语音收入的用户的占比	在网的通话用户中无语音收入（含语音套餐费和基本月租费）的用户的占比≤3%	0.05		
 
 
+
 set sql_buff "ALTER TABLE G_S_21003_MONTH_mobile ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
 
 exec_sql $sql_buff
@@ -56,6 +57,14 @@ exec_sql $sql_buff
 
 
 aidb_runstats bass1.G_S_21003_MONTH_mobile 3
+
+
+source /bassapp/bass1/tcl/INT_FIX_TMP.tcl
+
+ADJ_R235_MONTH1  $op_time $optime_month
+ADJ_R235_MONTH2  $op_time $optime_month
+
+
 
 #在网的通话用户
 set sql_buff "
