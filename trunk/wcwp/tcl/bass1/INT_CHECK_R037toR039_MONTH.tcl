@@ -269,7 +269,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 	#统计超标指标R037
 	set handle [ aidb_open $conn ]
-	set sqlbuf "select count(*) from bass1.G_RULE_CHECK where time_id = $op_month and rule_code in ('R037') and target3 > 0.1"
+	set sqlbuf "select count(*) from bass1.G_RULE_CHECK where time_id = $op_month and rule_code in ('R037') and abs(target3) > 0.1"
 	puts ${sqlbuf}
 	if [ catch { aidb_sql $handle $sqlbuf } errmsg ] {
 		WriteTrace $errmsg 10020
@@ -282,7 +282,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	aidb_close $handle
 	#统计超标指标R038
 	set handle [ aidb_open $conn ]
-	set sqlbuf "select count(*) from bass1.G_RULE_CHECK where time_id = $op_month and rule_code in ('R038') and target3 > 0.1"
+	set sqlbuf "select count(*) from bass1.G_RULE_CHECK where time_id = $op_month and rule_code in ('R038') and abs(target3) > 0.1"
 	puts ${sqlbuf}
 	if [ catch { aidb_sql $handle $sqlbuf } errmsg ] {
 		WriteTrace $errmsg 10020
@@ -295,7 +295,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	aidb_close $handle
 	#统计超标指标R039
 	set handle [ aidb_open $conn ]
-	set sqlbuf "select count(*) from bass1.G_RULE_CHECK where time_id = $op_month and rule_code in ('R039') and target3 > 0.15"
+	set sqlbuf "select count(*) from bass1.G_RULE_CHECK where time_id = $op_month and rule_code in ('R039') and abs(target3) > 0.15"
 	puts ${sqlbuf}
 	if [ catch { aidb_sql $handle $sqlbuf } errmsg ] {
 		WriteTrace $errmsg 10020

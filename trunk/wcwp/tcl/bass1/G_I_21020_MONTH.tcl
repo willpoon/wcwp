@@ -122,11 +122,23 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	aidb_close $handle
 
 set sql_buff "
-update g_i_21020_month a
-set COMP_PRODUCT_NO = substr(COMP_PRODUCT_NO,1,11)
-where time_id = $op_month
-and COMP_BRAND_ID = '021000'
-and length(trim(COMP_PRODUCT_NO)) > 11
+	update g_i_21020_month a
+	set COMP_PRODUCT_NO = substr(COMP_PRODUCT_NO,1,11)
+	where time_id = $op_month
+	and COMP_BRAND_ID = '021000'
+	and length(trim(COMP_PRODUCT_NO)) > 11
+"
+exec_sql $sql_buff
+
+
+set sql_buff "
+	delete from 
+	(
+		select * from   G_I_21020_MONTH
+			where COMP_BRAND_ID = '021000'
+			and time_id = $op_month
+			and length(trim(COMP_PRODUCT_NO)) <> 11
+	) t
 "
 exec_sql $sql_buff
 
@@ -139,6 +151,18 @@ exec_sql $sql_buff
 		"
 
 	 chkzero2 $sql_buff "invalid COMP_PRODUCT_NO ! 1 "
+
+
+set sql_buff "
+	delete from 
+	(
+		select * from   G_I_21020_MONTH
+			where COMP_BRAND_ID = '031000'
+			and time_id = $op_month
+			and length(trim(COMP_PRODUCT_NO)) <> 11
+	) t
+"
+exec_sql $sql_buff
 
 
 	set sql_buff "
