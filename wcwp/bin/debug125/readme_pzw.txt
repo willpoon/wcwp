@@ -3,7 +3,7 @@
 3.打开调试窗口
 4.执行
 >cmd /c debug.com
-
+5. or *.asm ctrl+5
 debug:
 e1000:0
 23
