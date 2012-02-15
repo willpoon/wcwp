@@ -1,10 +1,13 @@
-yingji_asiainfo3
-cmcc@7779
+	cd /bassapp/bass1/tcl
 
 
-ksh -o vi
-. /bassapp/bihome/panzw/.profile
-. /bassapp/bihome/panzw/config/cds
+	yingji_asiainfo3
+	cmcc@7779
+
+
+	ksh -o vi
+	. /bassapp/bihome/panzw/.profile
+	. /bassapp/bihome/panzw/config/cds
 
 
 
