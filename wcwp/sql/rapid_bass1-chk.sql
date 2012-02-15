@@ -4,9 +4,8 @@ where alarmtime >=  current timestamp - 1 days
 and flag = -1
 and control_code like 'BASS1%'
 order by alarmtime desc
-;
----------------------------------------------------------------------------------
 
+---------------------------------------------------------------------------------
 select message_id, send_time,mobile_num,message_content from   APP.SMS_SEND_INFO
 where send_time is not null
 and mobile_num = '13989007120'
@@ -96,9 +95,7 @@ select * from table(bass1.fn_dn_flret_cnt(15)) a
 
 --接口文件级返回检查(正常情况为56条记录) file 
 --file lvl
-select  * from APP.G_FILE_REPORT
-where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err_code='00'
-
+ 
 select  * from APP.G_FILE_REPORT
 where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err_code<>'00'
 
@@ -222,7 +219,7 @@ and return_flag=1
 
 --已上传未返回 (b表将为NULL)
 --mreturn
-
+/**
 select distinct c.INTERFACE_NAME,a.*,b.*
 FROM 
 (select t.*
@@ -242,6 +239,9 @@ where time_id= int(substr(replace(char(current date - 1 month),'-',''),1,6))
 and return_flag=1
 ) b on substr(a.filename,16,5) = b.unit_code 
 left join bass1.mon_all_interface c on substr(a.filename,16,5) = c.INTERFACE_CODE 
+with ur
+**/
+
 
 select * from app.g_runlog 
 where unit_code = '02016'
@@ -402,9 +402,9 @@ where time_id=int(replace(char(current date - 1 days),'-',''))
 
   --调整脚本，''里更新一定的值就是
 --离网客户数
-update bass1.g_s_22012_day set m_off_users='68' 
-where time_id=int(replace(char(current date - 1 days),'-',''))
-
+    update bass1.g_s_22012_day set m_off_users='53' 
+    where time_id=int(replace(char(current date - 1 days),'-',''))
+    
  select * from  bass1.G_RULE_CHECK where rule_code = 'C1'
  order by 1 desc 
 
@@ -821,7 +821,7 @@ select tabname from syscat.tables where tabname like '%ODS_PRODUCT_ORD_BUSI_OTHE
 select * from   app.sch_control_task where control_code like '%product%other%ds%.tcl'                
 select * from   app.sch_control_task where control_code like '%product%%tcl'                
 
-select * from  table( bass1.get_before('02006')) a 
+select * from  table( bass1.get_before('BASS1_INT_CHECK_Z345_DAY')) a 
 
 delete from app.sch_control_before 
 where control_code = 'BASS1_EXP_G_I_02006_MONTH'
@@ -2422,10 +2422,12 @@ and a.OFFER_ID = b.PRODUCT_ITEM_ID
 
 
 
-select * from  table( bass1.get_after('04008')) a 
+select * from  table( bass1.get_after('22049')) a 
 
 select *  from  table( bass1.get_before('IMPORTSERV')) a 
 where control_code like '%DAY%'
+
+select * from  table( bass1.get_after('22049')) a 
 
 
 select * from app.sch_control_before 
@@ -2880,7 +2882,7 @@ select
  ' *'||b.interface_code||'*dat \' 
 ) list
  from   bass1.MON_ALL_INTERFACE b where 
-deadline  in (3)
+deadline  in (15)
 and type = 'm'
 and sts = 1
 
@@ -4240,7 +4242,7 @@ FROM
     and length(filename)=length('s_13100_201002_03014_01_001.dat')
     ) t where rn = 1
 ) a 
-left join 
+ join 
 (
 select * from app.g_runlog 
 where time_id= int(substr(replace(char(current date - 1 month),'-',''),1,6))
@@ -4249,7 +4251,28 @@ and return_flag=1
 left join bass1.mon_all_interface c on substr(a.filename,16,5) = c.INTERFACE_CODE 
                                        
                                        
+except
 
+
+select distinct  substr(a.filename,16,5) 
+FROM 
+(select t.*
+    from 
+    (
+    select  a.* ,row_number()over(partition by  substr(filename,16,5) order by deal_time desc ) rn 
+    from APP.G_FILE_REPORT a
+    where substr(filename,9,6) = substr(replace(char(current date - 2 month),'-',''),1,6)
+    and err_code='00'
+    and length(filename)=length('s_13100_201002_03014_01_001.dat')
+    ) t where rn = 1
+) a 
+ join 
+(
+select * from app.g_runlog 
+where time_id= int(substr(replace(char(current date - 2 month),'-',''),1,6))
+and return_flag=1
+) b on substr(a.filename,16,5) = b.unit_code 
+left join bass1.mon_all_interface c on substr(a.filename,16,5) = c.INTERFACE_CODE                                        
 
 
 except
@@ -4265,14 +4288,15 @@ FROM
     and length(filename)=length('s_13100_201002_03014_01_001.dat')
     ) t where rn = 1
 ) a 
-left join 
+ join 
 (
 select * from app.g_runlog 
-where time_id= int(substr(replace(char(current date - 2 month),'-',''),1,6))
+where time_id= int(substr(replace(char(current date - 1 month),'-',''),1,6))
 and return_flag=1
 ) b on substr(a.filename,16,5) = b.unit_code 
-left join bass1.mon_all_interface c on substr(a.filename,16,5) = c.INTERFACE_CODE                                        
-
+left join bass1.mon_all_interface c on substr(a.filename,16,5) = c.INTERFACE_CODE 
+                                       
+                                       
 
 
 select count(0) from 
@@ -4576,9 +4600,19 @@ and time_id = 201112
 ) t
 set return_flag = 1
 
+select avg(target1) 
+from bass1.g_rule_check where rule_code in ('R174')
+and time_id / 100 >= 201101
 
-select * from bass1.g_rule_check where rule_code in ('R173') and time_id / 100 = 201201 order by time_id desc
-select * from bass1.g_rule_check where rule_code in ('R174')  and time_id / 100 = 201201  order by time_id desc
+1
+135203700121.00000
+74796247813.
+85389116862
+select * from bass1.g_rule_check where rule_code in ('R140') and time_id / 100 = 201202 order by time_id desc
+select * from bass1.g_rule_check where rule_code in ('R143') and time_id / 100 = 201202 order by time_id desc
+
+select * from bass1.g_rule_check where rule_code in ('R173') and time_id / 100 = 201202 order by time_id desc
+select * from bass1.g_rule_check where rule_code in ('R174')  and time_id / 100 = 201202  order by time_id desc
 select * from bass1.g_rule_check where rule_code in ('R169')  and time_id / 100 = 201201  order by time_id desc
 select * from bass1.g_rule_check where rule_code in ('R170')  and time_id / 100 = 201201  order by time_id desc
 select * from bass1.g_rule_check where rule_code in ('R171')  and time_id / 100 = 201201  order by time_id desc
@@ -4684,7 +4718,7 @@ m	15	4
 
 select * from app.sch_control_runlog where control_code like  'BASS1%DAY%'
 
-select * from  table( bass1.get_after('BASS1_INT_CHECK_A369B2C2_DAY')) a 
+select * from  table( bass1.get_after('02004')) a 
 
 drop table G_I_02026_MONTH_test
 
@@ -7120,7 +7154,7 @@ select * from bass1.g_i_02021_month_temp1
 
 select * from bass1.g_i_02021_month_temp2
         
-        select xzbas_value  as offer_id ,bass1_value bass1_offer_id
+        select *
                                 from  BASS1.ALL_DIM_LKP 
                                 where BASS1_TBID = 'BASS_STD1_0115'
                                 and bass1_value like 'QW_QQT_DJ%'
@@ -7151,3 +7185,1470 @@ with ur
 
 
         
+        
+select * from
+                (select * from 
+                (
+                select user_id,chg_vip_time,row_number()over(partition by user_id order by time_id) row_id from BASS1.G_I_02005_MONTH
+                where time_id=201201
+                ) k
+                where k.row_id =1) a
+                left outer join 
+                (
+                select * from
+                (
+                select user_id,create_date,row_number()over(partition by user_id order by time_id desc) row_id 
+                from BASS1.G_A_02004_DAY
+                where time_id<=20120131
+                ) k
+                where k.row_id=1) b
+                on a.user_id=b.user_id
+                where bigint(chg_vip_time)<bigint(create_date)
+                with ur
+
+USER_ID	CHG_VIP_TIME	ROW_ID	USER_ID	CREATE_DATE	ROW_ID	   
+89160001048760      	20110624	1	89160001048760      	20110629	1	   
+						
+
+update BASS1.G_I_02005_MONTH
+set CHG_VIP_TIME = '20110629'
+where user_id = '89160001048760'
+and time_id = 201201
+          
+          
+delete from 
+(
+select * from   G_I_21020_MONTH
+				where COMP_BRAND_ID = '021000'
+				and time_id = 201201
+				and length(trim(COMP_PRODUCT_NO)) <> 11
+) t
+
+
+                
+                
+select count(0) from   G_I_21020_MONTH where time_id = 201201
+734925
+
+				where COMP_BRAND_ID = '021000'
+				and time_id = 201201
+				and length(trim(COMP_PRODUCT_NO)) <> 11
+
+                
+                
+                 select a.* ,(target1-target2)*1.0/target2 from  bass1.G_RULE_CHECK a where rule_code = '53'
+ order by 1 desc 
+ 
+ BASS1_INT_CHECK_D9E234F2_651TO56_MONTH.tcl
+ 
+ 
+ ---------------------------------------------------------------------------------
+select * from  app.sch_control_alarm 
+where 
+control_code like 'BASS1_INT_CHECK_R037toR039_MONTH%'
+order by alarmtime desc
+
+
+
+                 select a.* ,(target1-target2)*1.0/target2 from  bass1.G_RULE_CHECK a where rule_code = '53'
+ order by 1 desc 
+ 
+ 
+ select a.*  from  bass1.G_RULE_CHECK a where rule_code = 'R146'
+  order by 1 desc 
+
+ 201201	R235	1373830.00000	75573.00000	0.05500	0.00000	   
+ 
+ 
+ select count(*) from bass1.G_RULE_CHECK where time_id = 201103 and rule_code in ('R038') and abs(target3) > 0.1
+ 
+  select count(*) from bass1.G_RULE_CHECK where time_id = 201201 and rule_code in ('R038') and abs(target3) > 0.1
+
+select a.*,abs(target3) 
+from bass1.G_RULE_CHECK  a where  rule_code in ('R235') 
+
+
+
+
+
+update G_I_21020_MONTH 
+set CALL_COUNTS = char(int(rand(1)*5+1))
+where (
+char(TIME_ID) = substr(COMP_LAST_DATE,1,6)
+and CALL_COUNTS = '0'
+and SMS_COUNTS = '0'
+and MMS_COUNTS = '0'
+and time_id = 201201 )
+
+
+
+select distinct BASE_PROD_ID
+from G_I_02020_MONTH
+where time_id = 201201
+
+
+
+select distinct OVER_PROD_ID
+from G_I_02019_MONTH
+where time_id = 201201
+
+
+
+
+
+select distinct BASE_PROD_ID
+from G_I_02018_MONTH
+where time_id = 201201
+
+
+OFFER_ID	BASS1_OFFER_ID	   
+111090001363	QW_QQT_DJ_DX0001	   
+111090001364	QW_QQT_DJ_CX0001	   
+111090001365	QW_QQT_DJ_ZX0001	   
+111090001366	QW_QQT_DJ_YD0001	   
+111090001367	QW_QQT_DJ_YY0001	   
+111090001368	QW_QQT_DJ_FHZX0001	   
+		
+
+select distinct OVER_PROD_ID
+from G_I_02021_MONTH
+where time_id = 201201
+
+999912221010006001            	   
+999912220630003001            	   
+999912220470003001            	   
+999912220450010001            	   
+999912220440010001            	   
+
+999912221010006001            	   
+999912221010005001            	   
+999912220630003001            	   
+999912220470003001            	   
+999912220450010001            	   
+999912220440010001            	   
+
+
+select distinct OVER_PROD_ID
+from G_I_02021_MONTH
+where time_id = 201112
+
+
+
+
+select distinct OVER_PROD_ID
+from G_I_02021_MONTH
+where time_id = 201111
+
+
+QW_QQT_DJ_ZX0001              	   
+QW_QQT_DJ_YD0001              	   
+QW_QQT_DJ_FHZX0001            	   
+QW_QQT_DJ_DX0001              	   
+QW_QQT_DJ_CX0001              	   
+
+BASS1_OFFER_ID
+QW_QQT_DJ_CX0001
+QW_QQT_DJ_DX0001
+QW_QQT_DJ_FHZX0001
+QW_QQT_DJ_YD0001
+QW_QQT_DJ_YY0001
+QW_QQT_DJ_ZX0001
+
+
+
+111090001367
+
+
+ select count(0) from bass2.dw_product_ins_off_ins_prod_201201
+ where OFFER_ID = 111090001367
+ 
+
+        select A.*,B.NAME from bass2.dw_product_ins_off_ins_prod_201108 a, bass2.dim_prod_up_product_item  b
+where product_instance_id 
+in 
+('89160001135476'
+)
+and a.OFFER_ID = b.PRODUCT_ITEM_ID
+AND B.NAME LIKE '%全球通%'
+
+
+select * 
+from g_s_03004_03005_R235_adj
+where user_id not in (select  user_id 
+from G_S_03004_MONTH_ADJ_BAK)
+
+
+89101110016671 
+
+select * from g_s_03004_03005_R235_adj
+where user_id = '89101110016671'
+
+TIME_ID	USER_ID	IFFEEZERO	IF03004	   
+201201	89101110016671 	0	1	   
+				
+                
+select * from G_S_03004_MONTH_ADJ_BAK
+where user_id = '89101110016671'
+
+		select *                 
+		from g_s_03004_month                 
+		where time_id = 201201                 
+		and                   ( int(substr(ACCT_ITEM_ID,2))/100 in (1,2,3)                                 
+		or ACCT_ITEM_ID in ('0401','0403','0407')                  )      
+        and user_id = '89101110016671'
+                
+
+
+select IF03004 ,IFFEEZERO
+,case when b.USER_ID is not null then 1 else 0 end ifadj
+, count(0) ,count(distinct a.user_id)
+--,  count(distinct IF03004 ) 
+from g_s_03004_03005_R235_adj  a
+left join G_S_03004_MONTH_ADJ_BAK b on a.user_id = b.user_id 
+group by  IF03004 ,IFFEEZERO
+,case when b.USER_ID is not null then 1 else 0 end
+order by 1 
+
+
+                
+select a.*        
+from g_s_03004_03005_R235_adj  a
+left join G_S_03004_MONTH_ADJ_BAK b on a.user_id = b.user_id 
+where 
+(case when b.USER_ID is not null then 1 else 0 end ) = 0
+and IF03004 = '1'
+and IFFEEZERO = '1'
+
+
+
+89101110011990 
+
+                
+		select ACCT_ITEM_ID,count(0),count(distinct user_id)                
+		from g_s_03004_month  t               
+		where time_id = 201201                  
+        and exists (
+select 1
+from g_s_03004_03005_R235_adj k
+where k.user_id not in (select  user_id 
+from G_S_03004_MONTH_ADJ_BAK) and t.user_id = k.user_id)
+group by ACCT_ITEM_ID
+
+                
+                
+
+CREATE TABLE "BASS1   "."G_S_03004_MONTH_ADJ_BAK2"  (
+                  "TIME_ID" INTEGER NOT NULL , 
+                  "USER_ID" CHAR(20) NOT NULL , 
+                  "ACCT_ITEM_ID" CHAR(4) NOT NULL , 
+                  "BILL_CYC_ID" CHAR(6) NOT NULL , 
+                  "FEE_RECEIVABLE" CHAR(10) NOT NULL , 
+                  "FAV_CHRG" CHAR(10) )   
+                 DISTRIBUTE BY HASH("TIME_ID",  
+                 "USER_ID",  
+                 "ACCT_ITEM_ID",  
+                 "BILL_CYC_ID")   
+                   IN "TBS_APP_BASS1" NOT LOGGED INITIALLY ; 
+
+
+
+
+
+
+
+
+
+                
+                CREATE TABLE "BASS1   "."G_S_03005_MONTH_ADJ_BAK2"  (
+                  "TIME_ID" INTEGER NOT NULL , 
+                  "ACCT_ID" CHAR(20) NOT NULL , 
+                  "USER_ID" CHAR(20) NOT NULL , 
+                  "BILL_CYC_ID" CHAR(6) NOT NULL , 
+                  "ITEM_ID" CHAR(4) NOT NULL , 
+                  "SHOULD_FEE" CHAR(10) NOT NULL )   
+                 DISTRIBUTE BY HASH("TIME_ID",  
+                 "ACCT_ID",  
+                 "USER_ID",  
+                 "BILL_CYC_ID",  
+                 "ITEM_ID")   
+                   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" NOT LOGGED INITIALLY ; 
+
+
+
+select '201201'
+,a.user_id   
+, case when c.user_id is null then '0' else '1' end iffeezero  
+, case when d.user_id is null then '0' else '1' end if03004  
+from  (                  
+        select distinct user_id 
+        from BASS1.G_S_21003_MONTH_mobile   a                          
+        ,int_02004_02008_month_stage b                  
+        where a.product_no = b.product_no                 
+        and  b.usertype_id NOT IN ('2010','2020','2030','9000')                 
+        and b.test_flag = '0' 
+        ) a
+--在网用户
+left join  (
+                        select user_id                 
+                        from g_s_03004_month                 
+                        where time_id = 201201                 
+                        and                   ( int(substr(ACCT_ITEM_ID,2))/100 in (1,2,3)                                 
+                        or ACCT_ITEM_ID in ('0401','0403','0407'))                  
+                        group by user_id                   
+                        having sum(bigint(FEE_RECEIVABLE)) > 0 
+                        ) b  on  a.user_id = b.user_id
+--有语音收入的用户
+left join (    select  user_id from  g_s_03004_month                   
+                                where time_id = 201201                
+                                and ( int(substr(ACCT_ITEM_ID,2))/100 in (1,2,3)                         
+                                or ACCT_ITEM_ID in ('0401','0403','0407')
+                                )                 
+                                group by user_id  having sum(bigint(FEE_RECEIVABLE)) <= 0                              
+                  ) c on a.user_id = c.user_id
+--03004中语音费<=0的用户
+left join (select distinct  user_id from  g_s_03004_month where time_id = 201201 ) d on a.user_id = d.user_id
+--用户是否在03004中
+where b.user_id is  null
+with ur
+
+
+
+select count(0) val1 
+from (  select product_no,ROAM_TYPE_ID,TOLL_TYPE_ID,CALL_TYPE_ID
+from bass1.g_s_21003_month
+where time_id=201201 and mns_type='1'
+except
+select product_no,ROAM_TYPE_ID,TOLL_TYPE_ID,CALL_TYPE_ID 
+from bass1.g_s_04017_day
+where time_id/100=201201 and mns_type='1'
+group by product_no,ROAM_TYPE_ID,TOLL_TYPE_ID,CALL_TYPE_ID 
+) M
+with ur
+
+
+select count(0) val1 
+from (  select product_no,ROAM_TYPE_ID,TOLL_TYPE_ID,CALL_TYPE_ID
+from bass1.g_s_21003_month
+where time_id=201201 and mns_type='1'
+except
+select product_no,ROAM_TYPE_ID,TOLL_TYPE_ID,CALL_TYPE_ID 
+from bass1.g_s_04017_day
+where time_id/100=201201 and mns_type='1'
+group by product_no,ROAM_TYPE_ID,TOLL_TYPE_ID,CALL_TYPE_ID 
+) M
+with ur
+
+
+
+select product_no,ROAM_TYPE_ID,TOLL_TYPE_ID,CALL_TYPE_ID 
+from bass1.g_s_04017_day
+where time_id/100=201201 and mns_type='1'
+group by product_no,ROAM_TYPE_ID,TOLL_TYPE_ID,CALL_TYPE_ID 
+except
+select product_no,ROAM_TYPE_ID,TOLL_TYPE_ID,CALL_TYPE_ID
+from bass1.g_s_21003_month
+where time_id=201201 and mns_type='1'
+
+
+
+select * from bass1.g_rule_check where rule_code in ('R235') order by time_id desc
+
+
+
+ bass1.g_a_02004_02008_stage
+ 
+ select count(0) from BASS1.G_S_03012_MONTH
+ 
+ 
+ select time_id , count(0) 
+--,  count(distinct time_id ) 
+from G_S_22049_MONTH 
+group by  time_id 
+order by 1 
+
+select time_
+
+
+
+select
+201201
+  ,'201201'
+  ,a.PRODUCT_NO
+  ,coalesce(bass1.fn_get_all_dim('BASS_STD1_0054',char(a.CITY_ID)),'13101') 
+  ,char(a.channel_id)
+  ,case when a.channel_type=90102 
+         and a.channel_type_dtl2 in (90176,90886,90741,90885,90178,90177,90880,90883,90175,90884,90179) then '2'
+   else '1'
+   end 
+  ,char(bigint(sum(a.fee )))
+from bass2.stat_channel_reward_0007 a
+WHERE a.channel_type in (90105,90102)
+  and a.op_time=201201
+group by
+  a.PRODUCT_NO
+  ,coalesce(bass1.fn_get_all_dim('BASS_STD1_0054',char(a.city_id)),'13101') 
+  ,char(a.channel_id)  
+  ,case when a.channel_type=90102 
+         and a.channel_type_dtl2 in (90176,90886,90741,90885,90178,90177,90880,90883,90175,90884,90179) then '2'
+   else '1'
+   end 
+   
+select count(0)   
+   from bass2.stat_channel_reward_0007 a
+where a.op_time=201201
+
+
+
+select op_time , count(0) 
+--,  count(distinct op_time ) 
+from bass2.stat_channel_reward_0007 
+group by  op_time 
+order by 1 
+
+
+BASS1_G_S_22049_MONTH.tcl	REP_stat_channel_reward_0007.tcl	   
+
+select * from 
+app.sch_control_runlog
+where control_code = 'REP_stat_channel_reward_0007.tcl'
+CONTROL_CODE	BEGINTIME	ENDTIME	RUNTIME	FLAG	   
+REP_stat_channel_reward_0007.tcl	2012-02-02 15:16:35	2012-02-02 15:17:30	55	0	   
+					
+
+select count(0)   
+   from bass2.stat_channel_reward_0007 a
+where a.op_time=201201
+
+                    
+                    
+                    
+
+select time_id,sum(bigint(STLMNT_FEE))*1.00/sum(bigint(PAY_STLMNT_FEE)) 
+from   bass1.g_s_05001_month 
+group by  time_id 
+order by 1 desc 
+
+select time_id,sum(bigint(STLMNT_FEE))*1.00/sum(bigint(PAY_STLMNT_FEE)) 
+from   bass1.g_s_05002_month 
+group by time_id 
+order by 1 desc 
+
+
+
+
+
+insert into bass1.g_s_05001_month
+select * from  bass1.T_GS05001M where time_id = 201201
+
+
+insert into bass1.g_s_05002_month
+select * from  bass1.T_GS05002M where time_id = 201201
+
+select time_id,sum(bigint(STLMNT_FEE))*1.00/sum(bigint(PAY_STLMNT_FEE)) 
+from   bass1.g_s_05001_month 
+group by  time_id 
+order by 1 desc 
+
+select time_id,sum(bigint(STLMNT_FEE))*1.00/sum(bigint(PAY_STLMNT_FEE)) 
+from   bass1.g_s_05002_month 
+group by time_id 
+order by 1 desc 
+
+
+
+
+
+
+
+select * from bass1.mon_all_interface 
+where interface_code = '02026'
+
+
+
+
+CREATE TABLE "BASS1   "."INT_02004_02008_MONTH_STAGE_201112"  (
+                  "USER_ID" CHAR(15) , 
+                  "PRODUCT_NO" CHAR(15) , 
+                  "TEST_FLAG" CHAR(1) , 
+                  "SIM_CODE" CHAR(15) , 
+                  "USERTYPE_ID" CHAR(4) , 
+                  "CREATE_DATE" CHAR(15) , 
+                  "BRAND_ID" CHAR(4) , 
+                  "TIME_ID" INTEGER )   
+                 DISTRIBUTE BY HASH("USER_ID")   
+                   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" ; 
+
+
+
+insert into bass1.INT_02004_02008_MONTH_STAGE_201112 (
+                     user_id    
+                    ,product_no 
+                    ,test_flag  
+                    ,sim_code   
+                    ,usertype_id  
+                    ,create_date
+                    ,brand_id
+                    ,time_id )
+                select e.user_id
+                    ,e.product_no  
+                    ,case when e.usertype_id in ('1','2') then '0' else '1' end  test_flag
+                    ,e.sim_code
+                    ,f.usertype_id  
+                    ,e.create_date  
+                    ,e.brand_id
+                    ,f.time_id       
+                from (select user_id,create_date,product_no,brand_id,sim_code,usertype_id
+                                ,row_number() over(partition by user_id order by time_id desc ) row_id   
+                from bass1.g_a_02004_day
+                where time_id/100 <= 201112 ) e
+                inner join ( select user_id,usertype_id,time_id,row_number() over(partition by user_id order by time_id desc ) row_id   
+                           from bass1.g_a_02008_day
+                           where  time_id/100 <= 201112 ) f on f.user_id=e.user_id
+                where e.row_id=1 and f.row_id=1
+
+                    
+
+ select * from bass1.G_RULE_CHECK where rule_code in ('R038')
+ order by 1 desc
+ 
+ select * from bass1.G_RULE_CHECK where rule_code in ('53')
+ order by 1 desc
+ 
+ 
+ 
+                    
+                    
+
+
+CREATE TABLE "BASS1   "."INT_02004_02008_MONTH_STAGE_201105"  (
+                  "USER_ID" CHAR(15) , 
+                  "PRODUCT_NO" CHAR(15) , 
+                  "TEST_FLAG" CHAR(1) , 
+                  "SIM_CODE" CHAR(15) , 
+                  "USERTYPE_ID" CHAR(4) , 
+                  "CREATE_DATE" CHAR(15) , 
+                  "BRAND_ID" CHAR(4) , 
+                  "TIME_ID" INTEGER )   
+                 DISTRIBUTE BY HASH("USER_ID")   
+                   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" ; 
+
+
+
+insert into bass1.INT_02004_02008_MONTH_STAGE_201105 (
+                     user_id    
+                    ,product_no 
+                    ,test_flag  
+                    ,sim_code   
+                    ,usertype_id  
+                    ,create_date
+                    ,brand_id
+                    ,time_id )
+                select e.user_id
+                    ,e.product_no  
+                    ,case when e.usertype_id in ('1','2') then '0' else '1' end  test_flag
+                    ,e.sim_code
+                    ,f.usertype_id  
+                    ,e.create_date  
+                    ,e.brand_id
+                    ,f.time_id       
+                from (select user_id,create_date,product_no,brand_id,sim_code,usertype_id
+                                ,row_number() over(partition by user_id order by time_id desc ) row_id   
+                from bass1.g_a_02004_day
+                where time_id/100 <= 201105 ) e
+                inner join ( select user_id,usertype_id,time_id,row_number() over(partition by user_id order by time_id desc ) row_id   
+                           from bass1.g_a_02008_day
+                           where  time_id/100 <= 201105 ) f on f.user_id=e.user_id
+                where e.row_id=1 and f.row_id=1
+
+                    
+create index bass1.idxr038201201 on  bass1.INT_02004_02008_MONTH_STAGE_201201(user_id)
+create index bass1.idxr038201105 on  bass1.INT_02004_02008_MONTH_STAGE_201105(user_id)
+create index bass1.idxr038201112 on  bass1.INT_02004_02008_MONTH_STAGE_201112(user_id)
+
+                    
+
+select brand_id,ITEM_ID,sum(should_fee) fee
+from INT_02004_02008_MONTH_STAGE_201201 a
+,(select user_id,ITEM_ID,sum(bigint(should_fee)) should_fee 
+from g_s_03005_month where item_id in ('0100','0200','0300','0400','0500','0600','0700','0900') 
+ and time_id = 201201 group by user_id,ITEM_ID) b
+ where a.user_id = b.user_id 
+group by a.brand_id ,ITEM_ID
+order by 1
+
+
+
+
+select brand_id,ITEM_ID,sum(should_fee) fee
+from INT_02004_02008_MONTH_STAGE_201112 a
+,(select user_id,ITEM_ID,sum(bigint(should_fee)) should_fee 
+from g_s_03005_month where item_id in ('0100','0200','0300','0400','0500','0600','0700','0900') 
+ and time_id = 201112 group by user_id,ITEM_ID) b
+ where a.user_id = b.user_id 
+group by a.brand_id ,ITEM_ID
+order by 1
+
+
+
+select time_id , count(0) 
+--,  count(distinct time_id ) 
+,sum(bigint(TRANS_POINTS))
+from G_I_02006_MONTH 
+group by  time_id 
+order by 1 
+
+select * from bass2.dw_product_201201
+where product_no = '13989007120'
+
+89160001196765
+
+select * from G_I_02006_MONTH
+where user_id = '89160001196765'
+
+
+
+select time_id , count(0) 
+--,  count(distinct time_id ) 
+from G_a_02052_MONTH
+group by  time_id 
+order by 1 
+
+
+select time_id , count(0) 
+--,  count(distinct time_id ) 
+from G_S_22062_MONTH 
+group by  time_id 
+order by 1 
+
+
+select * from BASS1.DIM_QW_QQT_PKGID 
+
+
+select 
+xzbas_value 二经编码
+,xzbas_colname 二经名称
+ from bass1.ALL_DIM_LKP where bass1_tbid in ('BASS_STD1_0114','BASS_STD1_0115')
+
+
+
+
+select distinct PKG_ID from BASS1.G_I_02026_MONTH
+
+select distinct PKG_ID from BASS1.G_I_02027_MONTH
+
+select a.*
+from G_I_02026_MONTH_LOAD a
+	left join (select xzbas_value BASS2_ID, bass1_value QW_QQT_ID from bass1.ALL_DIM_LKP where bass1_tbid in ('BASS_STD1_0114','BASS_STD1_0115') ) c on a.old_pkg_id = c.bass2_id
+	left join BASS1.DIM_QW_QQT_PKGID d on c.qw_qqt_id = d.OLD_PKG_ID
+    where  c.qw_qqt_id  is not null
+    
+    
+    select * from G_I_02026_MONTH_LOAD a
+    where substr(a.new_pkg_id,1,4) = '9999'
+    
+    select * from bass1.G_I_02026_MONTH_1  a
+    where substr(a.pkg_id,1,4) = '9999'
+    
+
+select count(0) from g_a_02004_day where time_id = 20120210
+G_A_01004_DAY
+select count(0) from G_A_01004_DAY where time_id = 20120210
+12825
+select count(0) from G_A_02008_DAY where time_id = 20120210
+35014
+select count(0) from G_A_02011_DAY where time_id = 20120210
+
+1
+7015
+
+select count(0) from G_A_01004_DAY where time_id = 20120110
+select count(0) from G_A_01004_DAY where time_id = 20120110
+select count(0) from G_A_01004_DAY where time_id = 20120110
+select count(0) from G_A_01004_DAY where time_id = 20120110
+select count(0) from G_A_01004_DAY where time_id = 20120110
+select count(0) from G_A_01004_DAY where time_id = 20120110
+12825
+select * from   BASS1.MON_ALL_INTERFACE 
+where type = 'd'
+and deadline = 9
+
+
+select * from  table( bass1.get_before('02004')) a 
+
+
+
+
+select * from app.sch_control_before 
+where control_code 
+in 
+(
+ 'BASS1_G_S_02007_MONTH.tcl'
+,'BASS1_G_S_03005_MONTH.tcl'
+,'BASS1_G_S_03017_MONTH.tcl'
+,'BASS1_G_I_03007_MONTH.tcl'
+,'BASS1_G_S_03004_MONTH.tcl'
+,'BASS1_G_S_22305_MONTH.tcl'
+,'BASS1_G_S_03015_MONTH.tcl'
+,'BASS1_G_S_22307_MONTH.tcl'
+,'BASS1_G_S_03019_MONTH.tcl'
+,'BASS1_G_I_02006_MONTH.tcl'
+,'BASS1_G_S_22039_MONTH.tcl'
+)
+
+select * from  app.sch_control_runlog
+where control_code not in (
+select before_control_code from app.sch_control_before 
+where control_code 
+in 
+(
+ 'BASS1_EXP_G_A_02004_DAY'
+,'BASS1_EXP_G_A_02008_DAY'
+,'BASS1_EXP_G_A_02011_DAY'
+)
+and control_code like 'BASS1%'
+)
+
+
+
+select distinct before_control_code from app.sch_control_before 
+where control_code 
+in 
+(
+ 'BASS1_EXP_G_A_02004_DAY'
+,'BASS1_EXP_G_A_02008_DAY'
+,'BASS1_EXP_G_A_02011_DAY'
+)
+and before_control_code like 'BASS1%'
+and control_code not in (select control_code from app.sch_control_runlog)
+
+select distinct before_control_code from app.sch_control_before 
+where control_code 
+in (
+'BASS1_INT_CHECK_Z345_DAY.tcl'	   
+,'BASS1_INT_CHECK_E1_DAY.tcl'
+,'BASS1_INT_CHECK_02004_02008_DAY.tcl'
+,'BASS1_INT_CHECK_33TO40_DAY.tcl'
+) 	
+
+
+select distinct * from app.sch_control_before 
+where control_code like 'BASS1%'
+
+
+
+select before_control_code from app.sch_control_before 
+where
+ control_code 
+in (
+'BASS1_INT_CHECK_Z345_DAY.tcl'	   
+,'BASS1_INT_CHECK_E1_DAY.tcl'
+,'BASS1_INT_CHECK_02004_02008_DAY.tcl'
+,'BASS1_INT_CHECK_33TO40_DAY.tcl'
+) 	
+
+
+
+select distinct * from app.sch_control_before 
+where control_code like 'BASS1%'
+and before_control_code like '%DM%'
+
+
+select * from app.sch_control_runlog a
+,(
+select distinct control_code from app.sch_control_before 
+where
+ control_code 
+in (
+'BASS1_INT_CHECK_Z345_DAY.tcl'	   
+,'BASS1_INT_CHECK_E1_DAY.tcl'
+,'BASS1_INT_CHECK_02004_02008_DAY.tcl'
+,'BASS1_INT_CHECK_33TO40_DAY.tcl'
+) 	) b
+,app.sch_control_task c
+ where a.control_code = b.control_code
+and a.control_code = c.control_code 
+
+
+
+
+
+select * from app.sch_control_runlog a
+,(
+select distinct before_control_code control_code from app.sch_control_before 
+where
+ control_code 
+in (
+'BASS1_INT_CHECK_Z345_DAY.tcl'	   
+,'BASS1_INT_CHECK_E1_DAY.tcl'
+,'BASS1_INT_CHECK_02004_02008_DAY.tcl'
+,'BASS1_INT_CHECK_33TO40_DAY.tcl'
+) 	) b
+,app.sch_control_task c
+ where a.control_code = b.control_code
+and a.control_code = c.control_code 
+and date(a.endtime) < '2012-02-11'
+
+
+
+
+select * from app.sch_control_runlog a
+,(
+select distinct before_control_code control_code from app.sch_control_before 
+where
+ control_code 
+in (
+'BASS1_INT_CHECK_Z345_DAY.tcl'	   
+,'BASS1_INT_CHECK_E1_DAY.tcl'
+,'BASS1_INT_CHECK_02004_02008_DAY.tcl'
+,'BASS1_INT_CHECK_33TO40_DAY.tcl'
+) 	) b
+,app.sch_control_task c
+ where a.control_code = b.control_code
+and a.control_code = c.control_code 
+
+
+
+CONTROL_CODE
+BASS1_INT_CHECK_Z345_DAY.tcl
+BASS1_G_A_02004_DAY.tcl
+BASS1_G_A_02011_DAY.tcl
+
+
+
+
+select * from app.sch_control_runlog a
+,(
+select distinct before_control_code control_code from app.sch_control_before 
+where
+ control_code 
+in (
+'BASS1_INT_CHECK_Z345_DAY.tcl'	   
+,'BASS1_G_A_02004_DAY.tcl'
+,'BASS1_G_A_02011_DAY.tcl'
+) 	) b
+,app.sch_control_task c
+ where a.control_code = b.control_code
+and a.control_code = c.control_code 
+
+
+
+
+
+
+select * from app.sch_control_runlog a
+,(
+select distinct before_control_code control_code from app.sch_control_before 
+where
+ control_code 
+in (
+'BASS1_INT_CHECK_Z345_DAY.tcl'	   
+,'BASS1_G_A_02004_DAY.tcl'
+,'BASS1_G_A_02011_DAY.tcl'
+) 	) b
+,app.sch_control_task c
+ where a.control_code = b.control_code
+and a.control_code = c.control_code 
+and date(a.endtime) < '2012-02-11'
+
+
+
+BASS1_G_A_02062_DAY.tcl
+BASS1_G_A_02004_DAY.tcl
+
+
+
+
+
+
+select * from app.sch_control_runlog a
+,(
+select distinct before_control_code control_code from app.sch_control_before 
+where
+ control_code 
+in (
+'BASS1_G_A_02062_DAY.tcl'	   
+,'BASS1_G_A_02004_DAY.tcl'
+,'BASS1_G_A_02011_DAY.tcl'
+) 	) b
+,app.sch_control_task c
+ where a.control_code = b.control_code
+and a.control_code = c.control_code 
+and date(a.endtime) < '2012-02-11'
+
+
+
+BASS1_G_A_02062_DAY.tcl
+select * from app.sch_control_before  a,app.sch_control_runlog b 
+where a.control_code = 'BASS1_G_A_02062_DAY.tcl'
+and a.BEFORE_CONTROL_CODE = b.CONTROL_CODE
+
+
+select a.*,b.*,c.PRIORITY_VAL from app.sch_control_before  a,app.sch_control_runlog b 
+,app.sch_control_task c 
+where a.control_code 
+in (
+ 'BASS1_G_A_02011_DAY.tcl'
+,'BASS1_G_A_02062_DAY.tcl'	   
+,'BASS1_G_A_02004_DAY.tcl'
+,'BASS1_G_A_02011_DAY.tcl'
+,'BASS1_G_A_02008_DAY.tcl'
+ )
+and a.BEFORE_CONTROL_CODE = b.CONTROL_CODE
+and b.CONTROL_CODE = c.CONTROL_CODE
+
+
+
+
+
+
+
+
+WITH n(control_code, before_control_code) AS 
+          (SELECT control_code, before_control_code 
+             FROM app.sch_control_before
+             WHERE before_control_code in 
+
+(
+
+ 'BASS1_G_S_03016_MONTH.tcl'
+,'BASS1_G_S_21008_MONTH.tcl'
+,'BASS1_G_S_21011_MONTH.tcl'
+,'BASS1_G_S_21020_MONTH.tcl'
+,'BASS1_G_S_22040_MONTH.tcl'
+,'BASS1_G_S_22072_MONTH.tcl'
+,'BASS1_G_S_22306_MONTH.tcl'
+,'BASS1_G_S_22304_MONTH.tcl'
+,'BASS1_G_S_22303_MONTH.tcl'
+,'BASS1_G_S_22305_MONTH.tcl'
+,'BASS1_G_S_22085_MONTH.tcl'
+,'BASS1_G_S_22083_MONTH.tcl'
+,'BASS1_G_S_22086_MONTH.tcl'
+,'BASS1_G_S_22081_MONTH.tcl'
+,'BASS1_G_S_03018_MONTH.tcl'
+,'BASS1_G_S_21012_MONTH.tcl'
+,'BASS1_G_I_21020_MONTH.tcl'
+
+)
+
+
+           UNION ALL
+           SELECT b.control_code,b.before_control_code 
+             FROM app.sch_control_before as b, n
+             WHERE b.before_control_code = n.control_code)
+SELECT distinct c.control_code FROM n,app.sch_control_task c
+where n.control_code = c.control_code
+and c.deal_time = 2    
+AND c.control_code  like 'BASS1_%' 
+             
+       
+       
+       
+       
+       
+
+
+
+select 
+ b.*
+, lower(
+ 'put *'||b.interface_code||'*.dat ' 
+) put_dat
+, lower(
+ 'put *'||b.interface_code||'*.verf ' 
+) put_verf
+, lower(
+ 'rm *'||b.interface_code||'* ' 
+) put_verf
+, lower(
+ ' *'||b.interface_code||'*dat \' 
+) list
+ from   bass1.MON_ALL_INTERFACE b where 
+deadline  in (9)
+and type = 'd'
+and sts = 1
+
+
+       
+       
+       select  substr(filename,18,5) from APP.G_FILE_REPORT
+where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err_code='00'
+
+
+
+select *
+from bass1.g_rule_check where rule_code in ('R174')
+and target1 = 641104142931
+
+select *
+from bass1.g_rule_check where rule_code in ('R173')
+and target1 = 108556539559
+
+
+
+and time_id / 100 >= 201101
+
+
+select *
+from bass1.g_rule_check where rule_code in ('R174')
+and time_id / 100 >= 201201
+
+select count(0)
+            from bass2.CDR_GPRS_LOCAL_20120210
+            where drtype_id not in (8307)
+              and bigint(product_no) not between 14734500000 
+              and 14734999999 and apn_ni <> 'JF.XZ.IP.MOBILE.LAN.CHINAMOBILE'
+              and service_code not in ('1010000001','1010000002','2000000000')
+              
+              3838946 bass1
+              
+              3839974 bass2
+              
+              
+
+select * from app.g_runlog 
+where time_id=int(replace(char(current date - 1 days),'-',''))
+and return_flag=1
+and unit_code in ('01002','01004','02004','02008','06031','06032','02011','02053')
+              
+              
+        
+update (
+select * from app.g_runlog 
+where time_id=int(replace(char(current date - 1 days),'-',''))
+and return_flag=1
+and unit_code in ('01002','01004','02004','02008','06031','06032','02011','02053')
+       ) t
+set   return_flag = 0
+where     return_flag=1
+  
+  
+
+
+update (
+select * from app.g_runlog 
+where time_id=int(replace(char(current date - 1 days),'-',''))
+and return_flag = 0
+and unit_code in ('01002','01004','02004','02008','06031','06032','02011','02053')
+       ) t
+set   return_flag = 1
+where     return_flag=0
+
+
+  
+              
+              
+              select * from  bass2.temp_20120131_zfp11a,b
+b,a
+a,c
+
+
+ temp_20120131_zfp11
+ 
+ 
+ select PRODUCT_NO,OPP_NUMBER ,SMS_CNT,count(0)
+ from 
+ (
+ select PRODUCT_NO,OPP_NUMBER,SMS_CNT
+ from bass2.temp_20120131_zfp11 a
+ union all
+ select OPP_NUMBER PRODUCT_NO,PRODUCT_NO OPP_NUMBER,SMS_CNT
+ from bass2.temp_20120131_zfp11 b
+ ) t 
+ group by PRODUCT_NO,OPP_NUMBER ,SMS_CNT
+ having count(0) > 1
+ 
+ 
+
+ select * from  bass2.temp_20120131_zfp11
+ 
+ select * from  bass2.temp_20120131_zfp12
+ 
+ 13518900000	15289106662	127
+  
+  
+ select * from  bass2.temp_20120131_zfp11
+where PRODUCT_NO = '13518900000'
+and OPP_NUMBER = '15289106662'
+
+13518900000	15289106662	127	   
+
+
+ 
+   
+ select * from  bass2.temp_20120131_zfp12
+where PRODUCT_NO = '13518900000'
+and OPP_NUMBER = '15289106662'
+
+13518900000	15289106662	127	2	   
+
+
+delete from 
+(
+
+ select * from  bass2.temp_20120131_zfp11
+ where (PRODUCT_NO,OPP_NUMBER,SMS_CNT) in ( 
+ select PRODUCT_NO,OPP_NUMBER,SMS_CNT from  bass2.temp_20120131_zfp12
+ )
+ 
+ ) t
+
+
+
+ select count(0) from  bass2.temp_20120131_zfp11
+ where (PRODUCT_NO,OPP_NUMBER,SMS_CNT) in ( 
+ select PRODUCT_NO,OPP_NUMBER,SMS_CNT from  bass2.temp_20120131_zfp12
+ )
+ 
+ 1656250
+ 
+ select count(0) from  bass2.temp_20120131_zfp12
+ 
+ 1656250
+ 
+
+ select * from  bass2.temp_20120131_zfp11
+ where (PRODUCT_NO,OPP_NUMBER,SMS_CNT) in ( 
+ select PRODUCT_NO,OPP_NUMBER,SMS_CNT from  bass2.temp_20120131_zfp12
+ )  
+ and  PRODUCT_NO = '13518900000'
+and OPP_NUMBER = '15289106662'
+
+
+
+ select * from  bass2.temp_20120131_zfp11
+ where (PRODUCT_NO,OPP_NUMBER,SMS_CNT) in ( 
+ select PRODUCT_NO,OPP_NUMBER,SMS_CNT from  bass2.temp_20120131_zfp12
+ )  
+ and  OPP_NUMBER = '13518900000'
+and PRODUCT_NO = '15289106662'
+
+a,b
+b,a
+
+a,b
+b,a
+
+
+select count(0) from 
+ bass2.temp_20120131_zfp11
+
+
+ select PRODUCT_NO,OPP_NUMBER,SMS_CNT from  bass2.temp_20120131_zfp12
+ where ( PRODUCT_NO = '13518900000'
+and OPP_NUMBER = '15289106662'
+) or 
+(
+   OPP_NUMBER = '13518900000'
+and PRODUCT_NO = '15289106662'
+)
+
+
+
+
+select a.PRODUCT_NO,b.OPP_NUMBER,a.SMS_CNT
+from bass2.temp_20120131_zfp12 a 
+, bass2.temp_20120131_zfp12 b
+where a.PRODUCT_NO = b.OPP_NUMBER
+and a.OPP_NUMBER = b.PRODUCT_NO
+
+
+select count(0)
+from bass2.temp_20120131_zfp11 a 
+, bass2.temp_20120131_zfp11 b
+where a.PRODUCT_NO = b.OPP_NUMBER
+and a.OPP_NUMBER = b.PRODUCT_NO
+
+1656250
+
+select *
+from bass2.temp_20120131_zfp11 a 
+, bass2.temp_20120131_zfp11 b
+where a.PRODUCT_NO = b.OPP_NUMBER
+and a.OPP_NUMBER = b.PRODUCT_NO
+ and (( a.PRODUCT_NO = '13518900000'
+and a.OPP_NUMBER = '15289106662'
+) or 
+(
+   a.OPP_NUMBER = '13518900000'
+and a.PRODUCT_NO = '15289106662'
+)
+)
+
+
+select a.PRODUCT_NO a,b.OPP_NUMBER b
+from (
+select *
+from bass2.temp_20120131_zfp12 a 
+, bass2.temp_20120131_zfp12 b
+where a.PRODUCT_NO = b.OPP_NUMBER
+and a.OPP_NUMBER = b.PRODUCT_NO
+) t 
+group by a.PRODUCT_NO ,b.OPP_NUMBER 
+
+
+
+select count(0)
+from (
+select a.PRODUCT_NO a ,b.OPP_NUMBER  b
+from bass2.temp_20120131_zfp12 a 
+, bass2.temp_20120131_zfp12 b
+where a.PRODUCT_NO = b.OPP_NUMBER
+and a.OPP_NUMBER = b.PRODUCT_NO
+) t 
+group by a,b
+having count(0) > 1
+
+
+select count(0) from bass2.temp_20120131_zfp11 o
+where (PRODUCT_NO,OPP_NUMBER)
+in (select a,b
+from  ( 
+select  a.PRODUCT_NO a ,b.OPP_NUMBER  b
+, b.PRODUCT_NO c ,b.OPP_NUMBER  d
+from bass2.temp_20120131_zfp11 a 
+, bass2.temp_20120131_zfp11 b
+where a.PRODUCT_NO = b.OPP_NUMBER
+and a.OPP_NUMBER = b.PRODUCT_NO
+) i
+)
+and (PRODUCT_NO,OPP_NUMBER)
+not in 
+(select c,d
+from ( 
+select  a.PRODUCT_NO a ,b.OPP_NUMBER  b
+, b.PRODUCT_NO c ,b.OPP_NUMBER  d
+from bass2.temp_20120131_zfp11 a 
+, bass2.temp_20120131_zfp11 b
+where a.PRODUCT_NO = b.OPP_NUMBER
+and a.OPP_NUMBER = b.PRODUCT_NO
+) i
+)
+
+
+select * from  bass2.dim_cfg_static_data
+where code_name like '%二卡合一%'
+
+
+
+
+drop view v_tac_20120214
+
+create view v_tac_20120214
+as
+select a.tac_num,
+                a.type,
+                case when c.tac_num is not null then 1
+                  else 0
+                end iftd
+         from (SELECT b.tac_num, CASE
+                                    WHEN lower (a.value_desc) LIKE '%ios%' THEN 3
+                                    WHEN lower (a.value_desc) LIKE '%android%' THEN 5
+                                    WHEN lower (a.value_desc) LIKE '%symbian%' THEN 6
+                                    ELSE 7
+                                 END
+                                    AS type
+                 FROM bass2.dim_device_profile a, bass2.dim_tacnum_devid b
+                WHERE a.device_id = b.dev_id AND a.property_id = '003001'
+                  AND (lower (a.value_desc) LIKE '%android%'
+                    OR lower (a.value_desc) LIKE '%ios%'
+                    OR lower (a.value_desc) LIKE '%linux%'
+                    OR lower (a.value_desc) LIKE '%palm%'
+                    OR lower (a.value_desc) LIKE '%symbian%'
+                    OR lower (a.value_desc) LIKE '%windows%')
+               GROUP BY b.tac_num, CASE
+                                      WHEN lower (a.value_desc) LIKE '%ios%' THEN 3
+                                      WHEN lower (a.value_desc) LIKE '%android%' THEN 5
+                                      WHEN lower (a.value_desc) LIKE '%symbian%' THEN 6
+                                      ELSE 7
+                                   END) a
+                               LEFT JOIN
+                                  (SELECT tac_num
+                                     FROM bass2.DIM_TERM_TAC
+                                    WHERE net_type = '2') c
+                         ON a.tac_num = c.tac_num
+          group by a.tac_num,
+                a.type,
+                case when c.tac_num is not null then 1
+                  else 0
+                end
+                
+                
+
+select count(0),count(distinct tac_num) from 
+v_tac_20120214                
+
+
+
+SELECT a.user_id, b.term_type, b.td_termmark
+           FROM    (SELECT user_id, substr (imei, 1, 8) AS imei
+                      FROM dw_product_mobilefunc_$year$month
+                     WHERE usertype_id IN (1, 2, 9)
+                       AND userstatus_id IN (1, 2, 3, 6, 8)) a
+                LEFT JOIN
+                   session.stat_inte_term_tmp b
+                ON a.imei = b.tac_num
+          WHERE b.tac_num IS NOT NULL
+         GROUP BY a.user_id, b.term_type, b.td_termmark
+         
+         
+         
+select time_id , count(0) ,count(distinct user_id) , count(distinct imei)
+--,  count(distinct time_id ) 
+from G_S_02047_MONTH where time_id = 201201
+group by  time_id 
+order by 1 
+
+         
+         TIME_ID	2	3	4	   
+201201	2366921	1373990	1486712	   
+				
+              v_tac_20120214  
+                
+                SELECT a.user_id, b.TYPE, b.iftd
+           FROM    (SELECT user_id, substr (imei, 1, 8) AS imei
+                      FROM bass1.G_S_02047_MONTH /**dw_product_mobilefunc_$year$month**/
+                   ) a
+                LEFT JOIN
+                   v_tac_20120214 b
+                ON a.imei = b.tac_num
+          WHERE b.tac_num IS NOT NULL
+         GROUP BY a.user_id, b.TYPE, b.iftd
+         
+         
+
+select          
+
+
+
+select count(0)
+from (
+                SELECT a.user_id, b.TYPE, b.iftd
+           FROM    (SELECT user_id, substr (imei, 1, 8) AS imei
+                      FROM bass1.G_S_02047_MONTH where time_id = 201112 /**dw_product_mobilefunc_$year$month**/
+                   ) a
+                LEFT JOIN
+                   v_tac_20120214 b
+                ON a.imei = b.tac_num
+          WHERE b.tac_num IS NOT NULL
+         GROUP BY a.user_id, b.TYPE, b.iftd
+         ) a
+         242523
+         25.54
+         
+         x = -14% *x  + 242523
+         1.14x=242523
+         
+         220876
+         
+         
+         
+         
+         
+select * from G_I_06021_MONTH
+where time_id = 201201
+and channel_id = '20200124'
+
+select * from G_I_06023_MONTH
+where time_id = 201201
+and channel_id = '10100101'
+
+ channel_addr like '%无%'
+         
+         
+         G_A_06035_DAY
+           
+select * from G_A_06035_DAY
+where time_id/10 = 201201
+and channel_name like '%无%'
+         
+                
+                
+update (                         
+select * from G_I_06021_MONTH
+where time_id = 
+and
+channel_addr  = '无'
+) t 
+set channel_addr = trim(COUNTRY_NAME)||trim(CHANNEL_NAME)
+
+         
+select    trim(COUNTRY_NAME)||trim(CHANNEL_NAME)
+from    G_I_06021_MONTH
+where time_id = 201201
+and
+channel_addr  = '无'    
+         
+         
+
+select avg(bigint(STORE_AREA)) from G_I_06023_MONTH
+where time_id = 201201
+and STORE_AREA <> ''
+
+and channel_id = '10100101'
+         
+
+update (         
+select * from G_I_06023_MONTH
+where time_id = 201201
+and 
+(
+STORE_AREA = '' or STORE_AREA = '0'
+)
+and bigint(BUILD_AREA) > 2
+and BUILD_AREA <> ''
+and channel_id = '100003065'
+) t 
+set STORE_AREA = char(bigint(BUILD_AREA)-2)
+
+ 
+100003065
+
+100003064
+100003065
+
+select * from G_I_06023_MONTH
+where channel_id like '10000%'
+
+select * from G_I_06021_MONTH
+where channel_id like '10000%'
+
+
+
+
+SEAT_NUM
+
+
+
+
+update (         
+select * from G_I_06023_MONTH
+where time_id = 201201
+and 
+(
+SEAT_NUM = '' or SEAT_NUM = '0'
+)
+) t 
+set SEAT_NUM = '1'
+
+
+
+
+
+       
+select case when SEAT_NUM = '' or SEAT_NUM = '0' then '1' else SEAT_NUM  end  SEAT_NUM 
+,bigint(case when SEAT_NUM = '' or SEAT_NUM = '0' then '1' else SEAT_NUM  end)*2 STORE_EMPLOYE
+ from G_I_06023_MONTH
+where time_id = 201201
+and 
+(
+SEAT_NUM = '' or SEAT_NUM = '0'
+)
+
+
+) t 
+
+
+set SEAT_NUM = '1'
+
+
+STORE_EMPLOYE

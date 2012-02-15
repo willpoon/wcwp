@@ -1,0 +1,60 @@
+知识点：
+1.在80386及其以上的微处理器中， EAX寄存器可以用来存储单元的偏移地址。
+(%eax) 内存引用：如：movl	$16, (%eax) ;把16放到eax引用的内存中
+
+2.
+For the code you pasted, the instructions break down as follows:
+
+First four instructions (pushl through andl): set up a new stack frame
+Next five instructions (movl through sall): generating a weird value for eax, which will become the return value (I have no idea how it decided to do this)
+Next two instructions (both movl): store the computed return value in a temporary variable on the stack
+Next two instructions (both call): invoke the C library init functions
+leave instruction: tears down the stack frame
+ret instruction: returns to caller (the outer runtime function, or perhaps the kernel function that invoked your program)
+
+3.
+指针的初始化:
+movl	$4094, -4(%ebp) #赋常数
+movl	%eax, -12(%ebp) #赋变量 %eax 是地址
+
+指针值的修改：第一步，取得要修改的指针值，第二步，复制到指针变量所在的内存
+	movl	$9, -4(%ebp)
+	leal	-4(%ebp), %eax 	#%eax 取得地址，该地址是%ebp 的值，是一个地址，用这个地址再-4
+	movl	%eax, -8(%ebp)  # -8（%ebp) 是一个指针变量的内存空间。
+
+4.变量的定义：
+如果单纯声明，则只是给编译器提供类型/名称，不分配内存。
+定义：分配内存。int a 是定义！！ 因为程序开始为此变量分配了内存！！
+当为变量赋值的时候，就会引用分配的内存，写入数值！
+http://ee.hawaii.edu/~tep/EE160/Book/chap14/subsection2.1.1.4.html
+http://www.cprogramming.com/declare_vs_define.html
+
+
+指针的定义：
+	movl	$9, -4(%ebp)
+	leal	-4(%ebp), %eax
+	movl	%eax, -8(%ebp)
+
+x.
+objdump -d -mi386:x86-64:intel ./t.so
+
+
+
+x.
+lea  和 MOV 的区别
+http://kb.cnblogs.com/a/2285334/
+
+x.学编程不能有功利心
+学编程有很多好处：能够锻炼思维，培养耐性，养成寻根究底的良好习惯。
+最后，你收获了知识，能让计算机帮你做事，提高了效率，节约了生命！
+作为一项技能，它还能帮你找到一份很不错的工作！
+
+但如果操之过急，就可能欲速则不达，不但浪费了时间，反而徒增付出得不到回报的烦恼。
+
+x.unsigned
+int main(void){
+unsigned int i = -123;
+	return 0;
+}
+
+是否unsigned，汇编代码并无差异，只是如果给出负值时，就会告警。
