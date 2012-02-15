@@ -129,6 +129,7 @@ chkzero2 $sql_buff "02026 src data pk check not pass!"
 
 
 ## 直接告警提示数据装载！
+
                 set grade 2
                 set alarmcontent "请检查本月02026统一资费编码更新情况"
                 puts ${alarmcontent}            
