@@ -158,6 +158,24 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
   exec_sql $sql_buff
 
+
+# 针对《请西藏核查%月渠道相关数据》 修复部分数据
+          
+
+set  sql_buff "                
+update (                         
+select * from G_I_06021_MONTH
+where time_id = $op_month
+and channel_addr  = '无'
+) t 
+set channel_addr = trim(COUNTRY_NAME)||trim(CHANNEL_NAME)
+ "
+  exec_sql $sql_buff
+
+       
+	   
+	   
+
 #2011.11.25 加入 06035 和 06021 channel_id 一致性校验
 
 set  sql_buff "

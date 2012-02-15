@@ -101,6 +101,54 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	"
     exec_sql $sql_buff
 
+#STORE_AREA
+
+    set sql_buff "
+update (         
+select * from G_I_06023_MONTH
+where time_id = $op_month
+and 
+(
+STORE_AREA = '' or STORE_AREA = '0'
+)
+and bigint(BUILD_AREA) > 2
+and BUILD_AREA <> ''
+) t 
+set STORE_AREA = char(bigint(BUILD_AREA)-2)
+	"
+    exec_sql $sql_buff
+
+
+#SEAT_NUM
+    set sql_buff "
+	update (         
+	select * from G_I_06023_MONTH
+	where time_id = $op_month
+	and 
+	(
+	SEAT_NUM = '' or SEAT_NUM = '0'
+	)
+	) t 
+	set SEAT_NUM = '1'
+"
+    exec_sql $sql_buff
+
+#STORE_EMPLOYE
+    set sql_buff "
+	update (
+	select * from G_I_06023_MONTH
+	where time_id = $op_month
+	and SEAT_NUM > '0'
+	) t 
+	set STORE_EMPLOYE = char(2*bigint(SEAT_NUM))
+	with ur
+"
+    exec_sql $sql_buff
+
+
+
+
+
 
   set tabname "G_I_06023_MONTH"
         set pk                  "CHANNEL_ID"
