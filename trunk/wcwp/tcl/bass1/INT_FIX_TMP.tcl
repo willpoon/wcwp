@@ -500,6 +500,8 @@ select a.* from G_S_03005_MONTH a
 	and a.user_id = b.user_id  
 	and b.IFFEEZERO = '1'
 	and a.SHOULD_FEE = '0'
+	and b.user_id in (select distinct user_id from G_S_03004_MONTH_ADJ_BAK)
+
 "
 exec_sql $sql_buff
 
@@ -567,6 +569,18 @@ where time_id = $op_month
 exec_sql $sql_buff
 
 
+set sql_buff "
+select (
+select sum(bigint(FEE_RECEIVABLE)) from  G_S_03004_MONTH where time_id = $op_month
+) 
+-
+(
+select sum(bigint(SHOULD_FEE)) from  G_S_03005_MONTH where time_id = $op_month
+) diff030040_3005 
+from bass2.dual
+"
+
+chkzero2 $sql_buff "03004 - 03005 not agree! "
 
 
 
@@ -638,6 +652,7 @@ select a.* from G_S_03005_MONTH a
 	and b.IF03004 = '1'
 	and a.SHOULD_FEE = '0'
 	and b.user_id not in (select distinct user_id from G_S_03005_MONTH_ADJ_BAK)
+	and b.user_id in (select distinct user_id from G_S_03004_MONTH_ADJ_BAK2)
 "
 exec_sql $sql_buff
 
@@ -706,9 +721,18 @@ where time_id = $op_month
 "
 exec_sql $sql_buff
 
+set sql_buff "
+select (
+select sum(bigint(FEE_RECEIVABLE)) from  G_S_03004_MONTH where time_id = $op_month
+) 
+-
+(
+select sum(bigint(SHOULD_FEE)) from  G_S_03005_MONTH where time_id = $op_month
+) diff030040_3005 
+from bass2.dual
+"
 
-
-
+chkzero2 $sql_buff "03004 - 03005 not agree! "
 
 return 0  
 
