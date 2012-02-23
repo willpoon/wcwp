@@ -388,7 +388,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
   #指标全部入库
   set handle [aidb_open $conn]
-	set sql_buff "insert into bass1.g_s_22012_day values
+	set sql_buff "insert into bass1.g_s_	_day values
 	             (
 	              $timestamp
 	              ,'$timestamp'

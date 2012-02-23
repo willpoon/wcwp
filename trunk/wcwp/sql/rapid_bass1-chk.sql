@@ -97,7 +97,7 @@ select * from table(bass1.fn_dn_flret_cnt(15)) a
 --file lvl
  
 select  * from APP.G_FILE_REPORT
-where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err_code<>'00'
+where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err_code='00'
 
 ---------------------------------------------------------------------------------
 --或者：有接口重传时、记录级重新返回时。
@@ -402,7 +402,7 @@ where time_id=int(replace(char(current date - 1 days),'-',''))
 
   --调整脚本，''里更新一定的值就是
 --离网客户数
-    update bass1.g_s_22012_day set m_off_users='53' 
+    update bass1.g_s_22012_day set m_off_users='70' 
     where time_id=int(replace(char(current date - 1 days),'-',''))
     
  select * from  bass1.G_RULE_CHECK where rule_code = 'C1'
@@ -8652,3 +8652,78 @@ set SEAT_NUM = '1'
 
 
 STORE_EMPLOYE
+
+
+select * from app.g_runlog 
+where time_id=int(replace(char(current date - 2 days),'-',''))
+and return_flag=1
+
+
+select * from  bass1.g_rule_check
+where rule_code = 'R159_1'
+and time_id/100 = 201201
+
+
+select count(0) from 
+bass1.int_02004_02008_month_stage 
+where bigint(CREATE_DATE) / 100 = 201201
+and TEST_FLAG = '0'
+and USERTYPE_ID not IN ('2010','2020','2030','9000')
+
+ 57243
+ 
+ 
+ select sum(target1) from  bass1.g_rule_check
+where rule_code = 'R159_1'
+and time_id/100 = 201201
+
+57214.00000
+
+1	   
+57183	   
+	
+    
+    
+     select sum(target1) from  bass1.g_rule_check
+where rule_code = 'R159_4'
+and time_id/100 = 201201
+1
+62107.00000
+
+
+
+select time_id, sum(bigint(FAVOURED_BASECALL_FEE))
+from G_S_21001_DAY 
+where TIME_ID/100 = 201201
+group by time_id
+
+select unit_code from app.g_runlog 
+where time_id=int(replace(char(current date - 4 days),'-',''))
+and return_flag=1
+except
+select unit_code from app.g_runlog 
+where time_id=int(replace(char(current date - 3 days),'-',''))
+and return_flag=1
+
+UNIT_CODE
+04002
+22036
+
+
+
+select 
+         time_id,
+         case when rule_code='R159_1' then '新增客户数'
+              when rule_code='R159_2' then '客户到达数'
+              when rule_code='R159_3' then '上网本客户数'
+              when rule_code='R159_4' then '离网客户数'
+         end,
+         target1,
+         target2,
+         target3
+from bass1.g_rule_check
+where 
+    rule_code in ('R159_1','R159_2','R159_3','R159_4')
+and rule_code='R159_4'
+order by 3 
+ 

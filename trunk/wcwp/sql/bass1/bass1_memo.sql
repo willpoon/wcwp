@@ -8172,3 +8172,23 @@ echo $prev_val
 图
 排序
 查找
+
+
+
+http://218.206.191.179/public/cmschema/N11_New_WXKH/WXKH_viewday_YiJing_memo.asp?PublishTime=2012-2-10&BranchCode=010&BranchDec=北京
+
+
+http://218.206.191.179/public/cmschema/N11_New_WXKH/WXKH_ViewDay_YiJing.asp
+
+
+$ ./bass1_report && lt /bassapp/backapp/data/bass1/report/report_20120215/r* |wc -l
+
+
+4367
+4550
+3745
+7129
+建行
+
+
+
