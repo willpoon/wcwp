@@ -16,6 +16,34 @@ else
 WshEnv("Path") = WshEnv("Path") & ";c:\poon\wcwp\wcwp\bin\masm615\bin"
 end if
 
+'masm sdk
+
+if InstrRev(WshEnv("Path"),"masm32") then
+msgbox("masm32 already in path")
+else
+WshEnv("Path") = WshEnv("Path") & ";c:\masm32\bin;c:\masm32\lib;c:\masm32\include"
+end if
+'masm sdk %include%
+if InstrRev(WshEnv("include"),"masm32") then
+msgbox("masm32\include already in %include%")
+else
+WshEnv("include") = "c:\masm32\include;" & WshEnv("include")
+end if
+
+'masm sdk %lib%
+if InstrRev(WshEnv("lib"),"masm32") then
+msgbox("masm32\lib already in %lib%")
+else
+WshEnv("lib") = "c:\masm32\lib;" & WshEnv("lib")
+end if
+
+'C:\poon\wcwp\wcwp\bin\nasm-2.09.10
+
+if InstrRev(WshEnv("Path"),"nasm") then
+msgbox("nasm already in %Path%")
+else
+WshEnv("Path") = "C:\poon\wcwp\wcwp\bin\nasm-2.09.10;" & WshEnv("Path")
+end if
 
 'SET PATH=C:\poon\wcwp\wcwp\bin\masm615\BIN;C:\poon\wcwp\wcwp\bin\masm615\BINR;c:\winnt\system32
 'SET LIB=C:\poon\wcwp\wcwp\bin\masm615\LIB
