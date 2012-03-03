@@ -396,7 +396,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	set sql_buff "
 		insert into bass1.g_s_04002_day_tmp
 		select product_no,imei,count(0) 
-		bass1.G_S_04002_DAY a
+		from bass1.G_S_04002_DAY a
 		where time_id between $this_month_first_day and $this_month_last_day
 		  and mns_type='1'
 		group by product_no,imei
@@ -2152,7 +2152,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	set handle [ aidb_open $conn ]
 	set sqlbuf "
 		select 
-		sum(bigint(a.flows))
+		value(sum(bigint(a.flows)),0)
 		from bass1.g_s_04002_day_flows a,
 		bass1.td_check_user_flow b
 		where a.product_no=b.product_no
