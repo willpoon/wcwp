@@ -2083,7 +2083,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	set handle [ aidb_open $conn ]
 	set sqlbuf "
 		select 
-		sum(bigint(a.flows))
+		value(sum(bigint(a.flows)),0)
 		from bass1.g_s_04002_day_flows a,
 		bass1.td_check_user_flow b
 		where a.product_no=b.product_no
