@@ -1,0 +1,14 @@
+Feb-28-00:26:42 下载开始
+
+C:\poon\wcwp\wcwp\bin\DJYXinWen\djy-2012-02-25-daily.zip 文件下载成功
+
+C:\poon\wcwp\wcwp\bin\RMBXinWen\rmb-2012-02-26-daily.zip 文件下载成功
+C:\poon\wcwp\wcwp\bin\RMBXinWen\rmb-2012-02-25-daily.zip 文件下载成功
+
+C:\poon\wcwp\wcwp\bin\MHXinWen\2012-2-27-t.zip 文件下载成功
+C:\poon\wcwp\wcwp\bin\MHXinWen\2012-2-26-t.zip 文件下载成功
+C:\poon\wcwp\wcwp\bin\MHXinWen\2012-2-25-t.zip 文件下载成功
+
+Feb-28-00:27:43 下载结束
+
+如果您所选的期刊没有文件被下载下来，可能是因为在指定的天数内没有这个期刊。您可以增加指定天数或者过几天再试。
