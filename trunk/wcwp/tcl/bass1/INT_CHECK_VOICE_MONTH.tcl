@@ -576,17 +576,17 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
          #--上月三品牌合计语音通话费
          set handle [aidb_open $conn]
 
-	 set sqlbuf "SELECT SUM(T.FY)
-   	         FROM 
-   	         (
-   	            SELECT SUM(BIGINT(FAVOURED_CALL_FEE)) AS FY
-   	            FROM BASS1.G_S_21003_TO_DAY
-   	            WHERE TIME_ID/100=${last_month}
-   	            UNION
-   	            SELECT SUM(BIGINT(FAVOURED_CALL_FEE)) AS FY
-   	            FROM BASS1.G_S_21006_TO_DAY
-   	            WHERE TIME_ID/100=${last_month}
-   	         )T"
+	 ##~   set sqlbuf "SELECT SUM(T.FY)
+   	         ##~   FROM 
+   	         ##~   (
+   	            ##~   SELECT SUM(BIGINT(FAVOURED_CALL_FEE)) AS FY
+   	            ##~   FROM BASS1.G_S_21003_TO_DAY
+   	            ##~   WHERE TIME_ID/100=${last_month}
+   	            ##~   UNION
+   	            ##~   SELECT SUM(BIGINT(FAVOURED_CALL_FEE)) AS FY
+   	            ##~   FROM BASS1.G_S_21006_TO_DAY
+   	            ##~   WHERE TIME_ID/100=${last_month}
+   	         ##~   )T"	 set sqlbuf "SELECT SUM(T.FY)   	         FROM    	         (   	            SELECT SUM(BIGINT(FAVOURED_CALL_FEE)) AS FY   	            FROM BASS1.G_S_21003_MONTH   	            WHERE TIME_ID=${last_month}   	            UNION   	            SELECT SUM(BIGINT(FAVOURED_CALL_FEE)) AS FY   	            FROM BASS1.G_S_21006_TO_DAY   	            WHERE TIME_ID/100=${last_month}   	         )T"
   puts $sqlbuf
 
   if [catch { aidb_sql $handle $sqlbuf } errmsg ] {
@@ -738,11 +738,11 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 ##   	         WHERE TIME_ID=${last_month_day}
 ##                   AND RULE_CODE='R090'"  
 
-    set sqlbuf "SELECT SUM(BIGINT(FAVOURED_CALL_FEE)) AS FY
-       FROM BASS1.G_S_21003_TO_DAY
-      WHERE TIME_ID/100=${last_month}
-        AND BRAND_ID='2'"
-
+    ##~   set sqlbuf "SELECT SUM(BIGINT(FAVOURED_CALL_FEE)) AS FY
+       ##~   FROM BASS1.G_S_21003_TO_DAY
+      ##~   WHERE TIME_ID/100=${last_month}
+        ##~   AND BRAND_ID='2'"
+    set sqlbuf "SELECT SUM(BIGINT(FAVOURED_CALL_FEE)) AS FY       FROM BASS1.G_S_21003_MONTH      WHERE TIME_ID=${last_month}        AND BRAND_ID='2'"
   puts $sqlbuf
 
 	if [catch {aidb_sql $handle $sqlbuf} errmsg] {
@@ -834,11 +834,11 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 ##   	         WHERE TIME_ID=${last_month_day}
 ##                   AND RULE_CODE='R091'"
 
-    set sqlbuf "SELECT SUM(BIGINT(FAVOURED_CALL_FEE)) AS FY
-       FROM BASS1.G_S_21003_TO_DAY
-      WHERE TIME_ID/100=${last_month}
-        AND BRAND_ID='3'"
-
+    ##~   set sqlbuf "SELECT SUM(BIGINT(FAVOURED_CALL_FEE)) AS FY
+       ##~   FROM BASS1.G_S_21003_TO_DAY
+      ##~   WHERE TIME_ID/100=${last_month}
+        ##~   AND BRAND_ID='3'"
+    set sqlbuf "SELECT SUM(BIGINT(FAVOURED_CALL_FEE)) AS FY       FROM BASS1.G_S_21003_MONTH      WHERE TIME_ID=${last_month}        AND BRAND_ID='3'"
   puts $sqlbuf
 
 	if [catch {aidb_sql $handle $sqlbuf} errmsg] {
