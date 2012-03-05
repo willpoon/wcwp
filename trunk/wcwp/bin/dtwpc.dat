@@ -1,0 +1,6 @@
+[SystemRecord]
+DirectList=.cn|.baidu.com|.qq.com|.taobao.com|.163.com|.weibo.com|.sohu.com|.soso.com|.youku.com|.tudou.com|.renren.com|.netease.com|.taobaocdn.com|.wallcoo.com|.fminutes.com|.gtimg.com|.gooooal.com|.218.206.191.162|
+ExceptList=.google.cn|.googleadsserving.cn|.360.cn|
+WhiteList=.dajiyuan.com|.djyimg.com|.dongtaiwang.net|.epochtimes.com|.falundafa.org|.fawanghuihui.org|.mhradio.org|.minghui.org|.ntdtv.com|.shenyunperformingarts.org|.soundofhope.org|.tiandixing.org|.zhengjian.org|
+UseDPList=1
+SkipProxyCtrl=1

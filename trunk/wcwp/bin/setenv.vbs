@@ -45,6 +45,21 @@ else
 WshEnv("Path") = "C:\poon\wcwp\wcwp\bin\nasm-2.09.10;" & WshEnv("Path")
 end if
 
+'c:\Dev-Cpp\bin
+if InstrRev(WshEnv("Path"),"Dev-Cpp") then
+msgbox("Dev-Cpp already in %Path%")
+else
+WshEnv("Path") = "c:\Dev-Cpp\bin;" & WshEnv("Path")
+end if
+
+'C:\poon\wcwp\wcwp\bin\radasm
+if InstrRev(WshEnv("Path"),"radasm") then
+msgbox("radasm already in %Path%")
+else
+WshEnv("Path") = "C:\poon\wcwp\wcwp\bin\radasm;" & WshEnv("Path")
+end if
+
+
 'SET PATH=C:\poon\wcwp\wcwp\bin\masm615\BIN;C:\poon\wcwp\wcwp\bin\masm615\BINR;c:\winnt\system32
 'SET LIB=C:\poon\wcwp\wcwp\bin\masm615\LIB
 'SET INCLUDE=C:\poon\wcwp\wcwp\bin\masm615\INCLUDE
