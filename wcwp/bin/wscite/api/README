@@ -1,0 +1,76 @@
+
+			lua5api for scite
+
+Lua 5 API files for SciTE. The source for the material is Lua 5.0.2.
+
+========================================================================
+NOTE (20100802) As you can see from the date, this is terribly ancient.
+I seem to recall someone posting a 5.1 version on the SciTE list, but
+I can't seem to find the thing right now...
+========================================================================
+
+--
+
+By Kein-Hong Man (esq.) <mkh@pl.jaring.my> 20040719
+The files in this archive are hereby placed into PUBLIC DOMAIN.
+
+--
+
+CHANGES
+
+20040719	Added "$(SciteDefaultHome)/" to file spec
+20040418	Initial release
+20100802	Added note on 5.1 stuff
+--
+
+FILES
+
+You will most probably be using lua5.api and lualib5_annot.api. The
+file lualib5.api is a list of just the Lua calls, without explanatory
+annotations.
+
+	README			this file...
+	lua5.api		Lua C API calls
+	lualib5.api		Lua calls without annotations
+	lualib5_annot.api	Lua calls with annotations
+
+The following are the raw, unsorted material created from the Lua manual
+and C header files. You won't need them unless you want to rework the
+files from the original material.
+
+	lua5_raw.api		unsorted stuff made from C header files
+	lualib5_raw.api		unsorted stuff made from manual.html
+	lualib5_annot_raw.api	unsorted stuff made from manual.html
+
+Copy the appropriate API files to your SciTE data folder. Alternatively,
+you can place them in a separate location and specify the appropriate path
+to the files in the property files.
+
+--
+
+SETTING UP THE API FILES ON SCITE
+
+To set up Lua C API calls, add the following to cpp.properties:
+
+	api.$(file.patterns.cpp)=$(SciteDefaultHome)/lua5.api
+	calltip.cpp.end.definition=)
+
+To set up Lua calls, add the following to lua.properties:
+
+	api.$(file.patterns.lua)=$(SciteDefaultHome)/lualib5_annot.api
+	calltip.lua.word.characters=.:$(word.chars.lua)
+	calltip.lua.end.definition=)
+
+Note: don't add these lines at the very top of the file, because some
+parameters that are used need to be defined first, e.g. file.patterns.cpp.
+
+Note: you can also set up autocompletion, but personally I don't use the
+autocompletion feature, so I can't really help you on that.
+
+--
+
+Enjoy!!
+
+Kein-Hong Man (esq.)
+Kuala Lumpur
+Malaysia 20040719
