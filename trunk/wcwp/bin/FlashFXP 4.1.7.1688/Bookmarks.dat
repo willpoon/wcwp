@@ -4,3 +4,7 @@ tcl=C:\poon\wcwp\wcwp\tcl\bass1\
 [44_bass1]
 pzwbin=/bassapp/bihome/panzw/bin/
 bass1_tcl=/bassapp/bass1/tcl/
+
+[43]
+bass1_tcl=/bassapp/bass1/tcl/
+pzwbin=/bassapp/bihome/panzw/bin/

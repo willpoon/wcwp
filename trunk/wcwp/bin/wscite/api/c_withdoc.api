@@ -1,0 +1,144 @@
+int abs(int x); Returns the absolute value of x
+div_t div(int numer, int denom); Divides numer (numerator) by denom (denominator)
+long int labs(long int x); Returns the absolute value of x
+ldiv_t ldiv(long int numer, long int denom); Divides numer (numerator) by denom (denominator)
+int rand(void); Returns a pseudo-random number in the range of 0 to RAND_MAX
+void srand(unsigned int seed); This function seeds the random number generator used by the function rand
+double acos(double x); Returns the arc cosine of x in radians
+double asin(double x); Returns the arc sine of x in radians
+double atan(double x); Returns the arc tangent of x in radians
+double atan2(doubly y, double x); Returns the arc tangent in radians of y/x based on signs of both values
+double cos(double x); Returns the cosine of a radian angle x
+double cosh(double x); Returns the hyperbolic cosine of x
+double sin(double x); Returns the sine of a radian angle x
+double sinh(double x); Returns the hyperbolic sine of x
+double tan(double x); Returns the tangent of a radian angle x
+double tanh(double x); Returns the hyperbolic tangent of x
+double exp(double x); Returns the value of e raised to the xth power
+double frexp(double x, int *exponent); The floating-point number x is broken up into a mantissa and exponent
+double ldexp(double x, int exponent); Returns x multiplied by 2 raised to the power of exponent
+double log(double x); Returns the natural logarithm (base-e logarithm) of x
+double log10(double x); Returns the common logarithm (base-10 logarithm) of x
+double modf(double x, double *integer); Breaks the floating-point number x into integer and fraction components
+double pow(double x, double y); Returns x raised to the power of y
+double sqrt(double x); Returns the square root of x
+double ceil(double x); Returns the smallest integer value greater than or equal to x
+double fabs(double x); Returns the absolute value of x
+double floor(double x); Returns the largest integer value less than or equal to x
+double fmod(double x, double y); Returns the remainder of x divided by y
+void *calloc(size_t nitems, size_t size); Allocates the requested memory and returns a pointer to it
+void free(void *ptr); Deallocates the memory previously allocated by a call to calloc, malloc, or realloc
+void *malloc(size_t size); Allocates the requested memory and returns a pointer to it
+void *realloc(void *ptr, size_t size); Attempts to resize the memory block pointed to by ptr that was previously allocated
+void *memchr(const void *str, int c, size_t n); Searches for the first occurrence of the character c (an unsigned char) in the first n bytes of the string pointed to by the argument str
+int memcmp(const void *str1, const void *str2, size_t n); Compares the first n bytes of str1 and str2
+void *memcpy(void *str1, const void *str2, size_t n); Copies n characters from str2 to str1
+void *memmove(void *str1, const void *str2, size_t n); Copies n characters from str2 to str1
+void *memset(void *str, int c, size_t n); Copies the character c (an unsigned char) to the first n characters of the string pointed to by the argument str
+double atof(const char *str); The string pointed to by the argument str is converted to a floating-point number (type double)
+int atoi(const char *str); The string pointed to by the argument str is converted to an integer (type int)
+long int atol(const char *str); The string pointed to by the argument str is converted to a long integer (type long int)
+double strtod(const char *str, char **endptr); The string pointed to by the argument str is converted to a floating-point number (type double)
+long int strtol(const char *str, char **endptr, int base); The string pointed to by the argument str is converted to a long integer (type long int)
+unsigned long int strtoul(const char *str, char **endptr, int base); The string pointed to by the argument str is converted to an unsigned long integer (type unsigned long int)
+char *strcat(char *str1, const char *str2); Appends the string pointed to by str2 to the end of the string pointed to by str1
+char *strncat(char *str1, const char *str2, size_t n); Appends the string pointed to by str2 to the end of the string pointed to by str1 up to n characters long
+char *strchr(const char *str, int c); Searches for the first occurrence of the character c (an unsigned char) in the string pointed to by the argument str
+int strcmp(const char *str1, const char *str2); Compares the string pointed to by str1 to the string pointed to by str2
+int strncmp(const char *str1, const char *str2, size_t n); Compares at most the first n bytes of str1 and str2
+int strcoll(const char *str1, const char *str2); Compares string str1 to str2
+char *strcpy(char *str1, const char *str2); Copies the string pointed to by str2 to str1
+char *strncpy(char *str1, const char *str2, size_t n); Copies up to n characters from the string pointed to by str2 to str1
+size_t strcspn(const char *str1, const char *str2); Finds the first sequence of characters in the string str1 that does not contain any character specified in str2
+char *strerror(int errnum); Searches an internal array for the error number errnum and returns a pointer to an error message string
+size_t strlen(const char *str); Computes the length of the string str up to but not including the terminating null character
+char *strpbrk(const char *str1, const char *str2); Finds the first character in the string str1 that matches any character specified in str2
+char *strrchr(const char *str, int c); Searches for the last occurrence of the character c (an unsigned char) in the string pointed to by the argument str
+size_t strspn(const char *str1, const char *str2); Finds the first sequence of characters in the string str1 that contains any character specified in str2
+char *strstr(const char *str1, const char *str2); Finds the first occurrence of the entire string str2 (not including the terminating null character) which appears in the string str1
+char *strtok(char *str1, const char *str2); Breaks string str1 into a series of tokens
+size_t strxfrm(char *str1, const char *str2, size_t n); Transforms the string str2 and places the result into str1
+int isalnum(int character); a letter (A to Z or a to z) or a digit (0 to 9)
+int isalpha(int character); a letter (A to Z or a to z)
+int iscntrl(int character); any control character (0x00 to 0x1F or 0x7F)
+int isdigit(int character); a digit (0 to 9)
+int isgraph(int character); any printing character except for the space character (0x21 to 0x7E)
+int islower(int character); a lowercase letter (a to z)
+int isprint(int character); any printing character (0x20 to 0x7E)
+int ispunct(int character); any punctuation character (any printing character except for space character or isalnum)
+int isspace(int character); a whitespace character (space, tab, carriage return, new line, vertical tab, or formfeed)
+int isupper(int character); an uppercase letter (A to Z)
+int isxdigit(int character); a hexadecimal digit (0 to 9, A to F, or a to f)
+int tolower(int character); If the character is an uppercase character (A to Z), then it is converted to lowercase (a to z)
+int toupper(int character); If the character is a lowercase character (a to z), then it is converted to uppercase (A to Z)
+int mblen(const char *str, size_t n); Returns the length of a multibyte character pointed to by the argument str
+size_t mbstowcs(schar_t *pwcs, const char *str, size_t n); Converts the string of multibyte characters pointed to by the argument str to the array pointed to by pwcs
+int mbtowc(whcar_t *pwc, const char *str, size_t n); Examines the multibyte character pointed to by the argument str
+size_t wcstombs(char *str, const wchar_t *pwcs, size_t n); Converts the codes stored in the array pwcs to multibyte characters and stores them in the string str
+int wctomb(char *str, wchar_t wchar); Examines the code which corresponds to a multibyte character given by the argument wchar
+int printf(const char *format, ...); sends formatted output to stdout
+int sprintf(char *str, const char *format, ...); sends formatted output to a string
+int vprintf(const char *format, va_list arg); sends formatted output to stdout using an argument list
+int vsprintf(char *str, const char *format, va_list arg); sends formatted output to a string using an argument list
+int scanf(const char *format, ...); read formatted input
+int sscanf(const char *str, const char *format, ...); reads formatted input from a string
+int getchar(void); Gets a character (an unsigned char) from stdin
+char *gets(char *str); Reads a line from stdin and stores it into the string pointed to by str
+int putchar(int char); Writes a character (an unsigned char) specified by the argument char to stdout
+int puts(const char *str); Writes a string to stdout up to but not including the null character
+void perror(const char *str); Prints a descriptive error message to stderr
+void clearerr(FILE *stream); Clears the end-of-file and error indicators for the given stream
+int fclose(FILE *stream); Closes the stream
+int feof(FILE *stream); Tests the end-of-file indicator for the given stream
+int ferror(FILE *stream); Tests the error indicator for the given stream
+int fflush(FILE *stream); Flushes the output buffer of a stream
+int fgetpos(FILE *stream, fpos_t *pos); Gets the current file position of the stream and writes it to pos
+FILE *fopen(const char *filename, const char *mode); Opens the filename pointed to by filename
+size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream); Reads data from the given stream into the array pointed to by ptr
+FILE *freopen(const char *filename, const char *mode, FILE *stream); Associates a new filename with the given open stream
+int fseek(FILE *stream, long int offset, int whence); Sets the file position of the stream to the given offset
+int fsetpos(FILE *stream, const fpos_t *pos); Sets the file position of the given stream to the given position
+long int ftell(FILE *stream); Returns the current file position of the given stream
+size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream); Writes data from the array pointed to by ptr to the given stream
+int remove(const char *filename); Deletes the given filename so that it is no longer accessible (unlinks the file)
+int rename(const char *old_filename, const char *new_filename); Causes the filename referred to by old_filename to be changed to new_filename
+void rewind(FILE *stream); Sets the file position to the beginning of the file of the given stream
+void setbuf(FILE *stream, char *buffer); Defines how a stream should be buffered
+int setvbuf(FILE *stream, char *buffer, int mode, size_t size); Defines how a stream should be buffered
+FILE *tmpfile(void); Creates a temporary file in binary update mode (wb+)
+char *tmpnam(char *str); Generates and returns a valid temporary filename which does not exist
+int fgetc(FILE *stream); Gets the next character (an unsigned char) from the specified stream and advances the position indicator for the stream
+char *fgets(char *str, int n, FILE *stream); Reads a line from the specified stream and stores it into the string pointed to by str
+int fputc(int char, FILE *stream); Writes a character (an unsigned char) specified by the argument char to the specified stream and advances the position indicator for the stream
+int fputs(const char *str, FILE *stream); Writes a string to the specified stream up to but not including the null character
+int fprintf(FILE *stream, const char *format, ...); See printf
+int fscanf(FILE *stream, const char *format, ...); See scanf
+int vfprintf(FILE *stream, const char *format, va_list arg); sends formatted output to a stream using an argument list
+int getc(FILE *stream); Gets the next character (an unsigned char) from the specified stream and advances the position indicator for the stream
+int putc(int char, FILE *stream); Writes an unsigned char specified by the argument char to the specified stream and advances the position indicator for the stream
+int ungetc(int char, FILE *stream); Pushes the character char (an unsigned char) onto the specified stream so that the this is the next character read
+void assert(int expression); The assert macro allows diagnostic information to be written to the standard error file
+int setjmp(jmp_buf environment); Saves the environment into the variable environment
+void longjmp(jmp_buf environment, int value); Causes the environment to be restored from a setjmp call where the environment variable had been saved
+void (*signal(int sig, void (*func)(int)))(int); Controls how a signal is handled
+int raise(int sig); Causes signal sig to be generated
+void abort(void); Causes an abnormal program termination
+int atexit(void (*func)(void)); Causes the specified function to be called when the program terminates normally
+void exit(int status); Causes the program to terminate normally
+char *getenv(const char *name); Searches for the environment string pointed to by name and returns the associated value to the string
+int system(const char *string); The command specified by string is passed to the host environment to be executed by the command processor
+char *asctime(const struct tm *timeptr); Returns a pointer to a string which represents the day and time of the structure timeptr
+clock_t clock(void); Returns the processor clock time used since the beginning of an implementation-defined era (normally the beginning of the program)
+char *ctime(const time_t *timer); Returns a string representing the localtime based on the argument timer
+double difftime(time_t time1, time_t time2); Calculates the difference of seconds between time1 and time2 (time1-time2)
+struct tm *gmtime(const time_t *timer); The value of timer is broken up into the structure tm and expressed in (UTC)
+struct tm *localtime(const time_t *timer); The value of timer is broken up into the structure tm and expressed in the local time zone
+time_t mktime(struct tm *timeptr); Converts the structure pointed to by timeptr into a time_t value according to the local time zone
+size_t strftime(char *str, size_t maxsize, const char *format, const struct tm *timeptr); Formats the time represented in the structure timeptr according to the formatting rules
+time_t time(time_t *timer); Calculates the current calender time and encodes it into time_t format
+void *bsearch(const void *key, const void *base, size_t nitems, size_t size, int(*compar)(const void *, const void *)); Performs a binary search
+void qsort(void *base, size_t nitems, size_t size, int (*compar)(const void *, constvoid*)); Sorts an array
+type va_arg(va_list ap, type); Expands to the next argument in the paramater list of the function with type type
+void va_end(va_list ap); Allows a function with variable arguments which used the va_start macro to return
+char *setlocale(int category, const char *locale); Sets or reads location dependent information
+struct lconv* localeconv(void); Gets lconv representing the current location settings

@@ -51,7 +51,7 @@ MilestoneOnTime=2
 MilestoneOnDate=0
 MilestoneOnDateWhen=1
 MilestoneOnDateStatus=0
-MilestoneOnDateDate=5
+MilestoneOnDateDate=7
 MilestoneOnDateTimeYear=2012
 MilestoneOnDateTimeMonth=3
 MilestoneOnDateTimeDate=5
@@ -99,6 +99,13 @@ ProductVer4Range=0
 [Collapse]
 1=
 2=,
+3=
 [Size]
-1=0,0,0,0,509
+1=0,0,0,0,626
 2=0,0,0,0,6531
+3=0,0,0,0,0
+[Find]
+1="uMsg"
+2="loadi"
+3="MessageBox"
+4="mess"
