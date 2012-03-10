@@ -1,9 +1,8 @@
- 
+print ("hello!") 
+
+print (package.path);
+
  function make_uppercase()
---~   local sel = editor:GetSelText()
---~   editor:ReplaceSel(string.upper(sel))
---~    ext = props['file.patterns.lua']
---~ ext='a'
 local	comment_asm=props['comment.block.asm']
     local f = props['FileName']    -- e.g 'test'
     local ext = props['FileExt']   -- e.g 'cpp'
