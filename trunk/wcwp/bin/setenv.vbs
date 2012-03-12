@@ -59,6 +59,21 @@ else
 WshEnv("Path") = "C:\poon\wcwp\wcwp\bin\radasm;" & WshEnv("Path")
 end if
 
+'java bin
+if InstrRev(WshEnv("Path"),"jdk1.7") then
+msgbox("jdk1.7 already in %Path%")
+else
+WshEnv("Path") = "C:\Program Files\Java\jdk1.7.0_01\bin;" & WshEnv("Path")
+end if
+
+
+'javaclasspath
+if InstrRev(WshEnv("classpath"),"jdk1.7") then
+msgbox("jdk1.7 already in %classpath%")
+else
+WshEnv("classpath") = "C:\Program Files\Java\jdk1.7.0_01\bin;" & WshEnv("classpath")
+end if
+
 
 'SET PATH=C:\poon\wcwp\wcwp\bin\masm615\BIN;C:\poon\wcwp\wcwp\bin\masm615\BINR;c:\winnt\system32
 'SET LIB=C:\poon\wcwp\wcwp\bin\masm615\LIB
