@@ -1032,7 +1032,7 @@ end
 --~ EXTMAN_PATH = props['SciteDefaultHome']..'\\scite-debug\\?.lua'
 package.path  = package.path..';'..LUA_PATH
 --~ require 'scite\\scite' -- load scite module
-require 'scite\\theme' -- load scite module
+--~ require 'scite\\theme' -- load scite module
 --~ require 'scite/extman' -- load scite module
 
 
