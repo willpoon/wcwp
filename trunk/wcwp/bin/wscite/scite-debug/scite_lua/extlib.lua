@@ -442,3 +442,65 @@ function SetBreakMarker(line)
 	init_breakpoints()
 	return breakpoint:create(line)
 end
+
+--~ The functions below will sort the selected text in alphabetical or alphabetical reverse order. The lines() function has been updated to work on Lua 5.1 or SciTE 1.74+. The new lines() function allows for a missing newline at the end of the selected block. The sort routines also restores the final newline after sorting if there is one. If \n newlines are used, the file size should not change after script execution.
+--~ Enjoy!
+
+-- Sort a selected text
+
+function lines(str)
+  local t = {}
+  local i, lstr = 1, #str
+  while i <= lstr do
+    local x, y = string.find(str, "\r?\n", i)
+    if x then t[#t + 1] = string.sub(str, i, x - 1)
+    else break
+    end
+    i = y + 1
+  end
+  if i <= lstr then t[#t + 1] = string.sub(str, i) end
+  return t
+end
+
+function sort_text()
+  local sel = editor:GetSelText()
+  if #sel == 0 then return end
+  local eol = string.match(sel, "\n$")
+  local buf = lines(sel)
+  --table.foreach(buf, print) --used for debugging
+  table.sort(buf)
+  local out = table.concat(buf, "\n")
+  if eol then out = out.."\n" end
+  editor:ReplaceSel(out)
+end
+
+function sort_text_reverse()
+  local sel = editor:GetSelText()
+  if #sel == 0 then return end
+  local eol = string.match(sel, "\n$")
+  local buf = lines(sel)
+  --table.foreach(buf, print) --used for debugging
+  table.sort(buf, function(a, b) return a > b end)
+  local out = table.concat(buf, "\n")
+  if eol then out = out.."\n" end
+  editor:ReplaceSel(out)
+end
+--~ If empty lines are to be ignored, or there are always no empty lines in the selection to be sorted, the following lines() function is more simple:
+
+--~ function lines(str)
+--~   local t = {}
+--~   for ln in string.gmatch(str, "[^\r\n]+") do
+--~     t[#t + 1] = ln
+--~   end
+--~   return t
+--~ end
+
+--~ The old lines() function, from StringRecipes suitable for pre-SciTE 1.74 (Lua 5.0.x) is as follows:
+
+--~ function lines(str)
+--~   local t = {n = 0}
+--~   local function helper(line) table.insert(t, line) end
+--~   helper((string.gsub(str, "(.-)\r?\n", helper)))
+--~   return t
+--~ end
+

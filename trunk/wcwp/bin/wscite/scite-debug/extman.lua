@@ -1045,3 +1045,7 @@ require "debugger"
 io.stdout:setvbuf("no")
 pause('debug')
 
+--      menu text|Lua command|shortcut
+-- or
+--      menu text|Lua command|mode|shortcut
+scite_Command('SortText|sort_text_reverse|Alt+9')
