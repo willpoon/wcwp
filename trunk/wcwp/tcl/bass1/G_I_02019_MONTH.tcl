@@ -235,8 +235,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		        when b.cnt=5 then '6'
 		        when b.cnt=14 then '7'
 		   else '11' end over_prod_area
-		   ,case when a.base_prod_name like '%假期%' then '1' else '0' end vac_prod_flag
-		   ,case when a.base_prod_name like '%两城%' then '1' else '0' end city_prod_flag
+		   ,case when a.base_prod_name like '%非常假期%' then '1' else '0' end vac_prod_flag
+		   ,case when a.base_prod_name like '%两城一家%' then '1' else '0' end city_prod_flag
 		   ,case when a.prod_end_time<='$this_month_last_day' or a.prod_status='2' then '2' else '1' end prod_status
 		   ,a.prod_begin_time
 		   ,a.prod_end_time

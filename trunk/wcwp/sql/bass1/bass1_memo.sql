@@ -7478,7 +7478,7 @@ a.state in ('1','4','6','8','M','7','C','9')
 ,J-保号期
 ,K-有效期停主叫。
 
-nohup sh load_imei.sh > load_imei.201110.out 2>&1 &
+nohup sh load_imei.sh > load_imei.201202.out 2>&1 &
 
 zto 618159082802 pan
 zto 618158726217 wang

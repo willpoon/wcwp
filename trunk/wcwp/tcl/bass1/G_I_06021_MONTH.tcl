@@ -221,6 +221,27 @@ with ur
 chkzero2 $sql_buff "06035和06021channel_id不一致B"
 
 
+##~   质量管理平台：渠道相关数据核查：
+##~   为检测是否存在前台办理为空的情况，特设立此校验：
+##~   这些渠道经查无业务办理，是否渠道配置有问题？最好从BOSS解决，删数据的话，容易导致违反校验
+    set sql_buff "
+	select count(0) from (
+		select distinct CHANNEL_ID 
+		from G_I_06021_MONTH 
+		where time_id = $op_month
+		and CHANNEL_TYPE = '1'
+		and CHANNEL_STATUS = '1'
+		except
+		select distinct CHANNEL_ID from 
+		G_S_22091_DAY where time_id / 100 = $op_month
+		) t
+		with ur
+"
+
+chkzero2 $sql_buff "《渠道相关核查》校验：部分渠道有效但无业务办理，不合核查要求，请调整!(若无正式考核，可忽略！)"
+
+
+
 	return 0
 }
 

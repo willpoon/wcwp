@@ -146,6 +146,26 @@ set STORE_AREA = char(bigint(BUILD_AREA)-2)
     exec_sql $sql_buff
 
 
+##~   质量管理平台：渠道相关数据核查：
+##~   为了防止有06021中的有效渠道在06023中各项属性为空的情况，特设立此校验：
+
+    set sql_buff "
+		select count(0)
+		from 
+		(
+			select * from G_I_06021_MONTH
+			where time_id = $op_month
+			and CHANNEL_TYPE = '1'
+			and CHANNEL_STATUS = '1'
+		) a 
+		left join (select * from G_I_06023_MONTH where time_id = $op_month ) b on a.channel_id = b.channel_id
+		where (b.BUILD_AREA  <= '0' or b.BUILD_AREA  = ''
+				 or SEAT_NUM = '' or SEAT_NUM = '0'
+			   )
+		with ur
+"
+
+chkzero2 $sql_buff "《渠道相关核查》校验：06023渠道属性有问题，不合核查要求，请调整!(若无正式考核，可忽略！)"
 
 
 
