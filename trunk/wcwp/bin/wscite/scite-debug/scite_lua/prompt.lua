@@ -48,11 +48,12 @@ function edit (f)
     scite.Open(f)
 end
 
--- the cd() command is special, because it is evaluated both in the Lua session _and_ in SciTE.
--- (cmd type 3s are evaluated in both contexts)
+--~ -- the cd() command is special, because it is evaluated both in the Lua session _and_ in SciTE.
+--~ -- (cmd type 3s are evaluated in both contexts)
 function cd (path)
     if path then
-		os.chdir(path)
+--~ 		os.chdir(path)
+print("path change to:",path)
 	end
 end
 

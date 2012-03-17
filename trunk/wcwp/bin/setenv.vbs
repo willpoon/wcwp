@@ -17,14 +17,24 @@ msgbox(WshEnv("path"))
 
 
 if InstrRev(WshEnv("Path"),"wcwp") then
-msgbox("wcwp already in path")
+'msgbox("wcwp already in path")
 else
 WshEnv("Path") = WshEnv("Path") & ";" & WCWP_PATH
 end if
 
+
+'2012-03-17
+'C:\poon\wcwp\wcwp\bin\VC6CMD
+if InstrRev(WshEnv("Path"),"VC6CMD") then
+'msgbox("VC6CMD already in path")
+else
+WshEnv("Path") = WshEnv("Path") & ";" & WCWP_PATH & "\VC6CMD\bin"
+end if
+
+
 'masm
 if InstrRev(WshEnv("Path"),"masm615") then
-msgbox("MASM615 already in path")
+'msgbox("MASM615 already in path")
 else
 WshEnv("Path") = WshEnv("Path") & ";" & WCWP_PATH & "\masm615\bin"
 end if
@@ -32,20 +42,20 @@ end if
 'masm sdk
 
 if InstrRev(WshEnv("Path"),"masm32") then
-msgbox("masm32 already in path")
+'msgbox("masm32 already in path")
 else
 WshEnv("Path") = WshEnv("Path") & ";c:\masm32\bin"
 end if
 'masm sdk %include%
 if InstrRev(WshEnv("include"),"masm32") then
-msgbox("masm32\include already in %include%")
+'msgbox("masm32\include already in %include%")
 else
 WshEnv("include") = "c:\masm32\include;" & WshEnv("include")
 end if
 
 'masm sdk %lib%
 if InstrRev(WshEnv("lib"),"masm32") then
-msgbox("masm32\lib already in %lib%")
+'msgbox("masm32\lib already in %lib%")
 else
 WshEnv("lib") = "c:\masm32\lib;" & WshEnv("lib")
 end if
@@ -53,28 +63,28 @@ end if
 'WCWP_PATH\nasm-2.09.10
 
 if InstrRev(WshEnv("Path"),"nasm") then
-msgbox("nasm already in %Path%")
+'msgbox("nasm already in %Path%")
 else
 WshEnv("Path") = WCWP_PATH & "\nasm-2.09.10;" & WshEnv("Path")
 end if
 
 'c:\Dev-Cpp\bin
 if InstrRev(WshEnv("Path"),"Dev-Cpp") then
-msgbox("Dev-Cpp already in %Path%")
+'msgbox("Dev-Cpp already in %Path%")
 else
 WshEnv("Path") = "c:\Dev-Cpp\bin;" & WshEnv("Path")
 end if
 
 'WCWP_PATH\radasm
 if InstrRev(WshEnv("Path"),"radasm") then
-msgbox("radasm already in %Path%")
+'msgbox("radasm already in %Path%")
 else
 WshEnv("Path") = WCWP_PATH & "\radasm;" & WshEnv("Path")
 end if
 
 'java bin
 if InstrRev(WshEnv("Path"),"jdk1.7") then
-msgbox("jdk1.7 already in %Path%")
+'msgbox("jdk1.7 already in %Path%")
 else
 WshEnv("Path") = "C:\Program Files\Java\jdk1.7.0_01\bin;" & WshEnv("Path")
 end if
@@ -82,8 +92,9 @@ end if
 
 'javaclasspath
 if InstrRev(WshEnv("classpath"),"jdk1.7") then
-msgbox("jdk1.7 already in %classpath%")
+'msgbox("jdk1.7 already in %classpath%")
 else
 WshEnv("classpath") = "C:\Program Files\Java\jdk1.7.0_01\bin;" & WshEnv("classpath")
 end if
 
+msgbox(WshEnv("path"))

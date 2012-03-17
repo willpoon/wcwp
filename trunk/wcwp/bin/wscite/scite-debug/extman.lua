@@ -1049,3 +1049,17 @@ pause('debug')
 -- or
 --      menu text|Lua command|mode|shortcut
 scite_Command('SortText|sort_text_reverse|Alt+9')
+
+
+function CopyDir()
+   editor:CopyText(props.FileDir)
+end
+
+scite_Command('CopyDir|CopyDir|Alt+D')
+
+function CopyFileNameExt()
+   editor:CopyText(props['FileNameExt'])
+   editor:InsertText(0, s)
+end
+
+scite_Command('CopyFileNameExt|CopyFileNameExt|Ctrl+Shift+F')
