@@ -3,7 +3,7 @@
 
 
 select count(user_id) 
-                    from bass2.dw_product_20120203
+                    from bass2.dw_product_20120314
                    where usertype_id in (1,2,9) 
                      and day_off_mark = 1 
                      and userstatus_id not in (1,2,3,6,8)
@@ -29,7 +29,7 @@ select count(user_id)
                                  ) using hashing           
                                 with replace on commit preserve rows not logged in tbs_user_temp
 
-SELECT COUNT(0) FROM session.int_check_user_status
+select count(0) from session.int_check_user_status
 
 insert into session.int_check_user_status (
                      user_id    
@@ -49,10 +49,10 @@ select e.user_id
 from (select user_id,create_date,product_no,sim_code,usertype_id
             ,row_number() over(partition by user_id order by time_id desc ) row_id   
   from bass1.g_a_02004_day
-  where time_id<=20120203 ) e
+  where time_id<=20120314 ) e
 inner join ( select user_id,usertype_id,time_id,row_number() over(partition by user_id order by time_id desc ) row_id   
                            from bass1.g_a_02008_day
-                           where time_id<=20120203 ) f on f.user_id=e.user_id
+                           where time_id<=20120314 ) f on f.user_id=e.user_id
 where e.row_id=1 and f.row_id=1
 
 select tabname from syscat.tables where tabname like '%02004%'                        
@@ -61,7 +61,7 @@ select tabname from syscat.tables where tabname like '%02004%'
 select count(distinct user_id) from   bass1.g_a_02004_02008_stage 
                         where USERSTATUS IN ('2010','2020','2030','9000')
                           and test_flag='0'
-                          and time_id=20120203
+                          and time_id=20120314
 
 
                           
@@ -70,10 +70,10 @@ select count(distinct user_id) from   bass1.g_a_02004_02008_stage
 select user_id from   bass1.g_a_02004_02008_stage 
                         where USERSTATUS IN ('2010','2020','2030','9000')
                           and test_flag='0'
-                          and time_id=20120203
+                          and time_id=20120314
 except
 select user_id 
-from bass2.dw_product_20120203
+from bass2.dw_product_20120314
 where usertype_id in (1,2,9) 
  and day_off_mark = 1 
  and userstatus_id not in (1,2,3,6,8)
@@ -86,7 +86,7 @@ USER_ID
 
 
 select user_id 
-from bass2.dw_product_20120203
+from bass2.dw_product_20120314
 where usertype_id in (1,2,9) 
  and day_off_mark = 1 
  and userstatus_id not in (1,2,3,6,8)
@@ -95,7 +95,7 @@ except
 select user_id from   bass1.g_a_02004_02008_stage    
                         where USERSTATUS IN ('2010','2020','2030','9000')
                           and test_flag='0'
-                          and time_id=20120203                     
+                          and time_id=20120314                     
 
 89157334192161	   
 89160000665299	   
@@ -106,7 +106,7 @@ select a.* from
  where a.USER_ID 
  in(
  select user_id 
-from bass2.dw_product_20120203
+from bass2.dw_product_20120314
 where usertype_id in (1,2,9) 
  and day_off_mark = 1 
  and userstatus_id not in (1,2,3,6,8)
@@ -115,7 +115,7 @@ except
 select user_id from   bass1.g_a_02004_02008_stage    
                         where USERSTATUS IN ('2010','2020','2030','9000')
                           and test_flag='0'
-                          and time_id=20120203                     
+                          and time_id=20120314                     
 
  )
  
@@ -127,13 +127,10 @@ USER_ID
 
 select * from 
 
-select user_id 
-from bass2.dw_product_20120101
-where usertype_id in (1,2,9) 
- and day_off_mark = 1 
- and userstatus_id not in (1,2,3,6,8)
- and test_mark<>1
- and user_id in ('89560001668643','89560001672362')
+select *
+from bass2.dw_product_bass1_20120314
+where  user_id in ('89160001965964')
+
  
  
  20120101	89560001672362      	2020
@@ -148,3 +145,28 @@ dim_cust_status
 
 select * from bass2.dw_cust_20120101
 where cust_id in ('89503000006732','89503000248463')
+
+
+select * from   bass1.g_a_02004_02008_stage 
+ where user_id = '89160001965964'
+ 
+ 
+ 
+select *
+from bass2.dw_product_bass1_20120313
+where  user_id in ('89160001965964')
+
+
+
+select time_id,sum(bigint(tnet_bill_duration)) from bass1.g_s_22202_day 
+where time_id / 100 = 201203
+group by time_id
+order by 1 desc 
+
+
+
+select time_id,sum(bigint(td_tnet_data_flux)) from bass1.g_s_22203_day 
+where time_id / 100 = 201203
+group by time_id
+order by 1 desc
+
