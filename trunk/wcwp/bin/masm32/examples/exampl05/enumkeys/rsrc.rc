@@ -1,0 +1,23 @@
+#define DIALOG_1	1
+#include "\masm32\include\resource.h"
+200 ICON "icon1.ico"
+4006 BITMAP list.bmp
+
+#define IDC_OK						3002
+#define IDC_EXIT					3003
+#define IDC_LISTBOX			3004
+#define IDC_CHECKBOX1	3005
+#define IDC_lbl1                                       4001
+MYDIALOG DIALOGEX MOVEABLE PURE LOADONCALL DISCARDABLE	3, 20, 330, 229, 0
+STYLE 0x0004 | DS_CENTER | WS_CAPTION | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_SYSMENU | WS_VISIBLE | WS_OVERLAPPED
+CAPTION "Enumération de clés ou de valeurs"
+CLASS "DLGCLASS"
+FONT 12, "System", 700, 0 /*FALSE*/
+BEGIN
+    LTEXT           "", IDC_lbl1, 	0,219,330,10, SS_LEFT | WS_BORDER, , 0
+    PUSHBUTTON      "&OK...", IDC_OK, 	200,5,50,12, WS_BORDER, , 0
+    PUSHBUTTON      "&Quitter", IDC_EXIT, 	200,23,50,12, WS_BORDER, , 0
+    LISTBOX         IDC_LISTBOX, 	178,66,129,129, LBS_SORT | WS_VSCROLL, , 0
+    CONTROL         "Propri\351t\351s de Affichage", IDC_CHECKBOX1, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 	179,45,87,10, , 0
+END
+

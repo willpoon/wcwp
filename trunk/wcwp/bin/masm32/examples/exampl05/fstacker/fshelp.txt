@@ -1,0 +1,16 @@
+File Stacker - A simple example for MASM32
+Copyright 2001 Andrea Brunori (Kefren).
+kefren@digitalrice.com
+http://oaqm.cjb.net
+
+This Program has little purpose, apart from tutorial scope.
+It simply stacks 2 files one on top of the other. They can be 
+whatever files you want, but if you want to see the results,
+I suggest you stack 2 .txt files.
+
+This .txt file is an example of how to make a very simple (low budget;))
+help file.
+
+This program should not harm your computer, but I will take no responsibility.
+
+Entirely coded in MASM32.

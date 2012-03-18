@@ -1,0 +1,122 @@
+Omnicron - Omnicron Technologies Corporation (Documentation)
+
+      Windows CGI
+
+      Overview
+
+      The Windows CGI interface is a direct interface designed solely for pure 
+      Windows backend programs (16 and 32 bits). The purpose of the interface, 
+      as touted by O'Reilly, is to make it easy to write extensions in any 
+      programming language that can access Windows specific features, such as 
+      DDE, OLE and ODBC. The popularity of the Windows CGI interface has 
+      declined significantly amidst the current battle of the interfaces. Many 
+      scripters have turned either back to Standard CGI or to Perl for 
+      portability and support. The Windows CGI interface has its own performance 
+      problems as well. It is only suitable for parsing form data.
+      Operation
+      The server first parses the information from the client and places it into 
+      a temporary input file. Other temporary files may also be created during 
+      this initial processing. An empty output file is also created at this 
+      time. The Windows program is then launched with parameters telling it 
+      where to find these files. The program performs its processing and fills 
+      the output file with information to send back to the client's browser. 
+      When the program terminates, the server parses the output file and sends 
+      its contents.
+
+      Four command line parameters are passed to the Windows CGI program:
+
+C:\HTTPD\CGI-WIN\SCRIPT.EXE profile content output query
+
+      The profile parameter is the name of the private profile. It contains 
+      information about the launch and may reference other data files. The 
+      content parameter is the name of the file that contains data from the 
+      user. The output parameter is the name of the output file that the program 
+      should write its output to, for return to the client. The query parameter 
+      is the query string or URL argument, if available.
+      Private Profile
+      The profile is formated like a Windows .INI file. The purpose is to allow 
+      programs to access the information inside of them easily with the Windows 
+      API:
+
+      Section [CGI]
+      Each entry works like the environment variables set in the standard CGI 
+      interface, for a detailed description see the Standard CGI section. The 
+      section CGI contains following entries: 
+        REQUEST PROTOCOL name/revision of the protocol used 
+        REQUEST METHOD GET, POST or HEAD 
+        EXECUTEABLE PATH logical path of the CGI program 
+        LOGICAL PATH additional path information if needed by the script 
+        PHYSICAL PATH the logical path with aliases expanded 
+        QUERY STRING the information in the URL after the question mark 
+        REFERER URL of the document that includes the CGI call 
+        FROM if set by the client: the email address of the user 
+        CONTENT TYPE MIME type of attachment if existing 
+        CONTENT LENGTH attachment length 
+        CONTENT FILE name of attachment file 
+        SERVER SOFTWARE name/version of webserver i.e. Alibaba/1.0 
+        SERVER NAME host name of the server 
+        SERVER PORT internet port number used 
+        SERVER ADMIN email address of the administrator 
+        CGI VERSION 'CGI/1.3a' for this version 
+        REMOTE HOST host name of the client 
+        REMOTE ADDRESS IP address of the client 
+        AUTHENTICATION METHOD 'BASIC' method used for authenticating CGI access 
+        AUTHENTICATION REALM which group of users is allowed access 
+        AUTHENTICATED USERNAME username within realm 
+
+      Section [ACCEPT]
+      All accept fields received are written in the form accept=quality
+      1 is assumed if not stated otherwise 
+Example:
+
+[ACCEPT]
+text/plain=1.00
+text/html=1.00
+audio/x-aiff=1.00
+audio/basic=1.00
+*/*=1.00
+
+      Section [SYSTEM]
+        GMT OFFSET number of seconds the local time differs from GMT. This is a 
+        positive value for regions east of Greenwich (Europe, Asia), a negative 
+        for regions westwards (USA) 
+        DEBUG MODE normally set to zero 
+        CONTENT FILE is the private profile ini filename. 
+        OUTPUT FILE the name of the output file sent to the client. 
+
+      Section [EXTRA HEADERS]
+      Here all values retrieved by a get command are included, in name=value 
+      manner. 
+
+      Example:
+
+        [EXTRAHEADERS]
+        var1=Value_1
+        var2=Value_2 
+
+      Section [FORM LITERAL]
+      Here all values retrieved by a POST command are included, in name=value 
+      manner. In this section we place all values which are less then 1500 
+      bytes, if they are longer, they are put into section [FORM EXTERNAL]. 
+
+      Section [FORM EXTERNAL]
+      Here all values retrieved by a POST command are included, in name=filename 
+      size manner. The files contain the values without any modification. Be 
+      sure to read them with binary file attributes, so that no automatic 
+      conversion takes place. 
+
+      Example:
+
+        NAME_VAR=c:\tmp/03147835.0 181777 
+
+      Section [FORM HUGE]
+      If a string in the content file is more than 64kB, it is referenced here 
+      in the form name=offset length. Offset points to the beginning of the 
+      string in the content file and length is the size of the string. Both 
+      values are in bytes. Be sure to open the content file in binary mode, so 
+      that no automatic conversion takes place. 
+
+
+
+      Copyright © 1997 Omnicron Technologies Corporation
+

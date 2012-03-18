@@ -1,0 +1,4 @@
+LIBRARY TDITBHook
+EXPORTS 
+InstallHook
+UninstallHook

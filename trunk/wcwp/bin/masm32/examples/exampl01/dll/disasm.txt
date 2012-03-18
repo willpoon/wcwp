@@ -1,0 +1,280 @@
+J:\masm32\EXAMPLE1\DLL\Tstdll.dll   (hex)           (dec)
+
+.EXE size (bytes)                    490            1168
+Minimum load size (bytes)            450            1104
+Overlay number                         0               0
+Initial CS:IP                  0000:0000
+Initial SS:SP                  0000:00B8             184
+Minimum allocation (para)              0               0
+Maximum allocation (para)           FFFF           65535
+Header size (para)                     4               4
+Relocation table offset               40              64
+Relocation entries                     0               0
+
+Portable Executable starts at                 c8
+Signature                               00004550 (PE)
+Machine                                     014C (Intel 386)
+Sections                                    0003
+Time Date Stamp                         38364053 Sat Nov 20 16:31:47 1999
+Symbol Table                            00000000
+Number of Symbols                       00000000
+Optional header size                        00E0
+Characteristics                             210E
+	Executable Image
+	Line numbers stripped
+	Local symbols stripped
+	32 bit word machine
+	DLL
+Magic                                       010B
+Linker Version                              5.12
+Size of Code                            00000200
+Size of Initialized Data                00000400
+Size of Uninitialized Data              00000000
+Address of Entry Point                  00001000
+Base of Code                            00001000
+Base of Data                            00002000
+Image Base                              10000000
+Section Alignment                       00001000
+File Alignment                          00000200
+Operating System Version                    4.00
+Image Version                               0.00
+Subsystem Version                           4.00
+reserved                                00000000
+Image Size                              00004000
+Header Size                             00000400
+Checksum                                00000000
+Subsystem                                   0002 (Windows)
+DLL Characteristics                         0000
+Size Of Stack Reserve                   00100000
+Size Of Stack Commit                    00001000
+Size Of Heap Reserve                    00100000
+Size Of Heap Commit                     00001000
+Loader Flags                            00000000
+Number of Directories                   00000010
+
+Directory Name                          VirtAddr  VirtSize
+--------------------------------------  --------  --------
+Export                                  00002060  00000046
+Import                                  00002008  00000028
+Resource                                00000000  00000000
+Exception                               00000000  00000000
+Security                                00000000  00000000
+Base Relocation                         00003000  00000020
+Debug                                   00000000  00000000
+Decription/Architecture                 00000000  00000000
+Machine Value (MIPS GP)                 00000000  00000000
+Thread Storage                          00000000  00000000
+Load Configuration                      00000000  00000000
+Bound Import                            00000000  00000000
+Import Address Table                    00002000  00000008
+Delay Import                            00000000  00000000
+COM Runtime Descriptor                  00000000  00000000
+(reserved)                              00000000  00000000
+
+Section Table
+-------------
+01  .text   	Virtual Address         00001000
+		Virtual Size            0000011E
+		Raw Data Offset         00000400
+		Raw Data Size           00000200
+		Relocation Offset       00000000
+		Relocation Count        0000
+		Line Number Offset      00000000
+		Line Number Count       0000
+		Characteristics         60000020
+			Code
+			Executable
+			Readable
+
+02  .rdata  	Virtual Address         00002000
+		Virtual Size            000000A6
+		Raw Data Offset         00000600
+		Raw Data Size           00000200
+		Relocation Offset       00000000
+		Relocation Count        0000
+		Line Number Offset      00000000
+		Line Number Count       0000
+		Characteristics         40000040
+			Initialized Data
+			Readable
+
+03  .reloc  	Virtual Address         00003000
+		Virtual Size            0000002A
+		Raw Data Offset         00000800
+		Raw Data Size           00000200
+		Relocation Offset       00000000
+		Relocation Count        0000
+		Line Number Offset      00000000
+		Line Number Count       0000
+		Characteristics         42000040
+			Initialized Data
+			Discardable
+			Readable
+
+
+ Exp Addr Hint   Ord Export Name by tstdll.dll - Sat Nov 20 16:31:47 1999
+ -------- ---- ----- ---------------------------------------------------------
+ 000010DB    0     1 TestProc
+
+
+ Imp Addr Hint Import Name from USER32.dll - Not Bound
+ -------- ---- ---------------------------------------------------------------
+ 00002000  1BB MessageBoxA
+
+
+IAT Entry
+
+ 00000000: 00002038 00000000 
+
+Disassembly
+
+10001000                    start:
+10001000 55                     push    ebp
+10001001 8BEC                   mov     ebp,esp
+10001003 EB1A                   jmp     loc_1000101F
+10001005 7473                   jz      loc_1000107A
+10001007 7464                   jz      loc_1000106D
+10001009 6C                     insb
+1000100A 6C                     insb
+1000100B 27                     daa
+1000100C 7320                   jnb     loc_1000102E
+1000100E 4C                     dec     esp
+1000100F 69624D61696E20         imul    esp,[edx+4Dh],206E6961h
+10001016 46                     inc     esi
+10001017 756E                   jnz     loc_10001087
+10001019 6374696F               arpl    [ecx+ebp*2+6Fh],esi
+1000101D 6E                     outsb
+1000101F                    loc_1000101F:
+1000101F 837D0C01               cmp     dword ptr [ebp+0Ch],1
+10001023 7532                   jnz     loc_10001057
+10001025 EB0F                   jmp     loc_10001036
+10001027 50                     push    eax
+10001028 52                     push    edx
+10001029 4F                     dec     edi
+1000102A 43                     inc     ebx
+1000102B 45                     inc     ebp
+1000102C 53                     push    ebx
+1000102D 53                     push    ebx
+1000102E                    loc_1000102E:
+1000102E 5F                     pop     edi
+1000102F 41                     inc     ecx
+10001030 54                     push    esp
+10001031 54                     push    esp
+10001032 41                     inc     ecx
+10001033 43                     inc     ebx
+10001034 48                     dec     eax
+10001036                    loc_10001036:
+10001036 6A00                   push    0
+10001038 6805100010             push    offset 10001005h
+1000103D 6827100010             push    offset 10001027h
+10001042 6A00                   push    0
+10001044 E8CF000000             call    fn_10001118
+10001049 B801000000             mov     eax,1
+1000104E C9                     leave
+1000104F C20C00                 ret     0Ch
+10001052 E980000000             jmp     loc_100010D7
+10001057                    loc_10001057:
+10001057 837D0C00               cmp     dword ptr [ebp+0Ch],0
+1000105B 7526                   jnz     loc_10001083
+1000105D EB0F                   jmp     loc_1000106E
+1000105F 50                     push    eax
+10001060 52                     push    edx
+10001061 4F                     dec     edi
+10001062 43                     inc     ebx
+10001063 45                     inc     ebp
+10001064 53                     push    ebx
+10001065 53                     push    ebx
+10001066 5F                     pop     edi
+10001067 44                     inc     esp
+10001068 45                     inc     ebp
+10001069 54                     push    esp
+1000106A 41                     inc     ecx
+1000106B 43                     inc     ebx
+1000106C 48                     dec     eax
+1000106E                    loc_1000106E:
+1000106E 6A00                   push    0
+10001070 6805100010             push    offset 10001005h
+10001075 685F100010             push    offset 1000105Fh
+1000107A                    loc_1000107A:
+1000107A 6A00                   push    0
+1000107C E897000000             call    fn_10001118
+10001081 EB54                   jmp     loc_100010D7
+10001083                    loc_10001083:
+10001083 837D0C02               cmp     dword ptr [ebp+0Ch],2
+10001087                    loc_10001087:
+10001087 7525                   jnz     loc_100010AE
+10001089 EB0E                   jmp     loc_10001099
+1000108B 54                     push    esp
+1000108C 48                     dec     eax
+1000108D 52                     push    edx
+1000108E 45                     inc     ebp
+1000108F 41                     inc     ecx
+10001090 44                     inc     esp
+10001091 5F                     pop     edi
+10001092 41                     inc     ecx
+10001093 54                     push    esp
+10001094 54                     push    esp
+10001095 41                     inc     ecx
+10001096 43                     inc     ebx
+10001097 48                     dec     eax
+10001099                    loc_10001099:
+10001099 6A00                   push    0
+1000109B 6805100010             push    offset 10001005h
+100010A0 688B100010             push    offset 1000108Bh
+100010A5 6A00                   push    0
+100010A7 E86C000000             call    fn_10001118
+100010AC EB29                   jmp     loc_100010D7
+100010AE                    loc_100010AE:
+100010AE 837D0C03               cmp     dword ptr [ebp+0Ch],3
+100010B2 7523                   jnz     loc_100010D7
+100010B4 EB0E                   jmp     loc_100010C4
+100010B6 54                     push    esp
+100010B7 48                     dec     eax
+100010B8 52                     push    edx
+100010B9 45                     inc     ebp
+100010BA 41                     inc     ecx
+100010BB 44                     inc     esp
+100010BC 5F                     pop     edi
+100010BD 44                     inc     esp
+100010BE 45                     inc     ebp
+100010BF 54                     push    esp
+100010C0 41                     inc     ecx
+100010C1 43                     inc     ebx
+100010C2 48                     dec     eax
+100010C4                    loc_100010C4:
+100010C4 6A00                   push    0
+100010C6 6805100010             push    offset 10001005h
+100010CB 68B6100010             push    offset 100010B6h
+100010D0 6A00                   push    0
+100010D2 E841000000             call    fn_10001118
+100010D7                    loc_100010D7:
+100010D7 C9                     leave
+100010D8 C20C00                 ret     0Ch
+100010DB                    TestProc:
+100010DB EB26                   jmp     loc_10001103
+100010DD 54                     push    esp
+100010DE 657374                 jnb     loc_10001155
+100010E1 206675                 and     [esi+75h],ah
+100010E4 6E                     outsb
+100010E5 6374696F               arpl    [ecx+ebp*2+6Fh],esi
+100010E9 6E                     outsb
+100010EA 00546869               add     [eax+ebp*2+69h],dl
+100010EE 7320                   jnb     loc_10001110
+100010F0 69732074737464         imul    esi,[ebx+20h],64747374h
+100010F7 6C                     insb
+100010F8 6C                     insb
+100010F9 2E646C                 insb
+100010FC 6C                     insb
+100010FD 206865                 and     [eax+65h],ch
+10001100 7265                   jb      loc_10001167
+10001103                    loc_10001103:
+10001103 6A00                   push    0
+10001105 68DD100010             push    offset 100010DDh
+1000110A 68EB100010             push    offset 100010EBh
+1000110F 6A00                   push    0
+10001111 E802000000             call    fn_10001118
+10001116 C3                     ret
+10001117 CC                     int     3
+10001118                    fn_10001118:
+10001118 FF2500200010           jmp     dword ptr [MessageBoxA]
+

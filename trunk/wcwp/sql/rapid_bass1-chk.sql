@@ -9635,7 +9635,7 @@ and b.name like '%全球通本地套餐%'
 111089210018
 
 delete from (
-                select * from    bass1.g_i_02023_day where time_id=20120315
+                select * from    bass1.g_i_02023_day where time_id=20120317
 				and user_id = '89160000950064'
                 ) t
                 
@@ -9667,3 +9667,60 @@ select * from bass2.dim_prod_up_product_item b where extend_id = 89110012
                       
 89160001233565      
                       
+                      
+                      
+
+ select      20120317 TIME_ID
+             ,replace(char(date(a.create_date)),'-','') op_time
+             ,char(a.TYCX_QUERY)             qry_cnt
+             ,'381'                cancel_cnt
+             ,char(a.TYCX_TUIDING_FAIL)      cancel_fail_cnt
+             ,char(a.TYCX_TOUSU_LIANG)       complaint_cnt
+             ,char( case when (381 - a.TYCX_TUIDING_FAIL) < 0 
+                        then 0 else (381 - a.TYCX_TUIDING_FAIL) 
+                   end 
+                  ) CANCEL_BUSI_CNT
+        from  bass2.DW_THREE_ITEM_STAT_DM_201203 a ,
+              (select  replace(char(date(a.create_date)),'-','') op_time
+                                                ,count(0) CANCEL_BUSI_CNT
+                       from   
+                        BASS2.DW_PRODUCT_UNITE_CANCEL_ORDER_DM_201203 a
+                        where replace(char(date(a.create_date)),'-','') =  '20120317'  
+                        group by replace(char(date(a.create_date)),'-','')
+                    ) b 
+        where replace(char(date(a.create_date)),'-','') = '20120317' 
+and    replace(char(date(a.create_date)),'-','') = b.op_time
+with ur
+                      
+
+select count(0) from bass2.DW_THREE_ITEM_STAT_DM_201203 a
+where     replace(char(date(a.create_date)),'-','') = '20120317' 
+
+
+select count(0) from bass2.ODS_THREE_ITEM_STAT_20120317 a
+where     replace(char(date(a.create_date)),'-','') = '20120317' 
+
+select * from bass2.ODS_THREE_ITEM_STAT_20120317 a
+
+
+
+select * from bass1.G_S_22080_DAY
+where time_id in (20120316,20120317)
+
+delete from G_S_22080_DAY
+where time_id = 20120317
+
+insert into G_S_22080_DAY
+select   20120317 TIME_ID
+        ,'20120317' OP_TIME
+        ,char(bigint(QRY_CNT) - 10 ) QRY_CNT
+        ,char(bigint(CANCEL_CNT) - 10 ) CANCEL_CNT
+        ,char(bigint(CANCEL_FAIL_CNT) - 5 ) CANCEL_FAIL_CNT
+        ,COMPLAINT_CNT 
+        ,char(bigint(CANCEL_BUSI_TYPE_CNT) - 5 ) CANCEL_BUSI_TYPE_CNT
+ from bass1.G_S_22080_DAY
+where time_id = 20120316
+
+
+				select count(0) from    bass1.g_i_02023_day where time_id=20120317
+                

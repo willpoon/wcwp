@@ -1,0 +1,119 @@
+; ¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤
+;          Typing Demo using string functions and an API call
+; ¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤
+
+    call init
+    delay = 20   ; set the delay between typed characters
+
+    goto typetext
+
+  start:
+    cls
+
+  typetext:
+    cstr src$ "    Ozymandias\n\n"
+    call typit
+    cstr src$ "    I met a traveller from an antique land\n"
+    call typit
+    cstr src$ "    Who said: Two vast and trunkless legs of stone\n"
+    call typit
+    cstr src$ "    Stand in the desert. Near them on the sand,\n"
+    call typit
+    cstr src$ "    Half sunk, a shatter'd visage lies, whose frown\n"
+    call typit
+    cstr src$ "    And wrinkled lip and sneer of cold command\n"
+    call typit
+    cstr src$ "    Tell that its sculptor well those passions read\n"
+    call typit
+    cstr src$ "    Which yet survive, stamp'd on these lifeless things,\n"
+    call typit
+    cstr src$ "    The hand that mock'd them and the heart that fed.\n"
+    call typit
+    cstr src$ "    And on the pedestal these words appear:\n"
+    call typit
+    cstr src$ "    \qMy name is Ozymandias, king of kings:\n"
+    call typit
+    cstr src$ "    Look on my works, ye mighty, and despair!\q\n"
+    call typit
+    cstr src$ "    Nothing beside remains: round the decay\n"
+    call typit
+    cstr src$ "    Of that colossal wreck, boundless and bare,\n"
+    call typit
+    cstr src$ "    The lone and level sands stretch far away.\n\n"
+    call typit
+    cstr src$ "    Percy Bysshe Shelley (1792-1822)\n"
+    call typit
+
+    msgbox "Do you want to see this again ?" "Ozymandias" MB_YESNO
+    if #0 == IDYES
+    goto start
+
+    call cleanup
+
+; ¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤
+
+  typit:
+    lsrc = len src$             ; get the string length
+    begin = 1                   ; set the counter to 1
+  lbl1:
+    ch$ = mid$ src$ begin 1     ; chomp through string 1 at a time
+    call typechar               ; send each character to the typed output
+    add begin 1                 ; increment the counter
+    if begin <= lsrc            ; test if its reached the end
+    goto lbl1                   ; lop back if it hasn't
+    ret
+
+; ¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤
+
+  typechar:
+    text ch$
+    void = STDCALL SendMessage hEdit WM_PAINT 0 0   ; refresh edit display
+    sleep delay
+    ret
+
+; ¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤
+
+  init:
+    INTEGER SendMessage
+    INTEGER hEdit
+    INTEGER WM_PAINT
+    INTEGER user32
+    INTEGER void
+    INTEGER delay
+
+    STRING src$
+    INTEGER lsrc
+    INTEGER begin
+    STRING ch$
+
+    user32 = LoadLibrary "user32"
+    SendMessage = GetProcAddress user32 "SendMessageA"
+    hEdit = get_hedit
+    WM_PAINT = 15
+    ret
+
+; ¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤
+
+  cleanup:
+    void = FreeLibrary user32
+    end
+
+; ¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
