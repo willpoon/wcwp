@@ -125,6 +125,16 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	with ur 
   "
 	exec_sql $sql_buff
+	
+##~   剔除一个只有叠加套餐没有主套餐的用户特例
+	set sql_buff "
+		delete from (
+						select * from    bass1.g_i_02023_day where time_id=$timestamp
+						and user_id = '89160000950064'
+						) t
+		with ur
+"
+	exec_sql $sql_buff
 
 # 检查02023 的user_id 是否在 02022 中:如果DEC_RESULT_VAL1 = 0 - 正常 ; DEC_RESULT_VAL1 > 0 - 不正常
 

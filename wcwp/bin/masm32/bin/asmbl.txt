@@ -1,0 +1,10 @@
+ Assembling: F:\masm32\m32lib\arralloc.asm
+ Volume in drive F is WIN2K_F
+ Volume Serial Number is F4D2-CDE7
+
+ Directory of F:\masm32\m32lib
+
+08/09/2008  06:34p               1,757 arralloc.asm
+08/09/2008  06:36p                 438 arralloc.obj
+               2 File(s)          2,195 bytes
+               0 Dir(s)  12,177,637,376 bytes free

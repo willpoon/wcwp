@@ -17,6 +17,10 @@ If you plan to make changes, use this command to check out the code as yourself 
 # Project members authenticate over HTTPS to allow committing changes.
 svn checkout https://wcwp.googlecode.com/svn/trunk/ wcwp --username PanWalter@gmail.com
 Ed4SR3pu7Wg3
+Ed4SR3pu7Wg3
+px6XK9Fp3nz9
+pzw.notes : zq3aW7vd3jd5
+
 
 When prompted, enter your generated googlecode.com password.
 Use this command to anonymously check out the latest project source code:
@@ -49,6 +53,9 @@ wlan:
 
 yingji_asiainfo
 gmcc@4889
+
+huangwei / ailknfjdbass!@#456
+
 
 发短信冲QB
 50
@@ -7118,7 +7125,6 @@ SQL1092N "<authorization-ID>" does not have the authority to
           
 http://www.zueiai.net/radio/hk/27.html
 
-route add -p 132.32.22.0 mask 255.255.0.0 10.233.20.158
 
 route add -p 172.16.0.0 mask 255.255.0.0 10.233.20.158
 
@@ -7839,7 +7845,8 @@ http://blog.sina.com.cn/s/blog_4dc3a8c80100qv6j.html
 
 
 
-C:\Documents and Settings\poon>route add -p 132.32.0.0 mask 255.255.0.0 10.233.20.158
+C:\Documents and Settings\poon>
+route add -p 132.32.0.0 mask 255.255.0.0 10.233.20.158
 ok
 
 
@@ -8190,5 +8197,10 @@ $ ./bass1_report && lt /bassapp/backapp/data/bass1/report/report_20120215/r* |wc
 7129
 建行
 
-
+DELL R640:
+本地连接：
+mac:
+0015c551c28a
+无线网卡：
+0019d2004a15
 

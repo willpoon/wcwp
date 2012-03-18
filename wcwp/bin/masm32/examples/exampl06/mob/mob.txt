@@ -1,0 +1,5 @@
+These three examples have been contributed by mob.
+
+CWS.ASM         custom window shape example
+NOIMPORT.ASM    an example of an EXE file in MASM that uses no imports
+TEST.ASM        documentation and example of wincgi coding
