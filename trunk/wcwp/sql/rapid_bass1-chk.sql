@@ -27,6 +27,9 @@ and flag = -1
 
 /**
  
+CONTROL_CODE
+BASS1_INT_CHECK_C1K844TO46_TO_DAY.tcl
+BASS1_INT_CHECK_INDEX_SAME_DAY.tcl
  
 --置完成
 
@@ -34,7 +37,7 @@ update (
 select * from  app.sch_control_alarm 
 where alarmtime >=  current timestamp - 1 days
 and flag = -1
-and control_code  = 'BASS1_G_I_02023_DAY.tcl'
+and control_code  = 'BASS1_INT_CHECK_C1K844TO46_TO_DAY.tcl'
 )t 
 set flag = 1
 
@@ -43,7 +46,7 @@ update
 (
 select * from  app.sch_control_runlog
 where   control_code in (
-'BASS1_G_I_02023_DAY.tcl'
+'BASS1_INT_CHECK_C1K844TO46_TO_DAY.tcl'
 )
 and flag = -1 
 ) t
@@ -80,7 +83,7 @@ update (
 select * from  app.sch_control_alarm 
 where alarmtime >=  current timestamp - 1 days
 and flag = -1
-and control_code like 'BASS1_INT_CHECK_04004_DAY.tcl'
+and control_code = 'BASS1_INT_CHECK_INDEX_SAME_DAY.tcl'
 )t 
 set flag = 1
 
@@ -88,7 +91,7 @@ update
 (
 select * from  app.sch_control_runlog
 where   control_code in (
-'BASS1_INT_CHECK_04004_DAY.tcl'
+'BASS1_INT_CHECK_INDEX_SAME_DAY.tcl'
 )
 and flag = -1 
 ) t
@@ -435,7 +438,7 @@ where time_id=int(replace(char(current date - 1 days),'-',''))
 
   --调整脚本，''里更新一定的值就是
 --离网客户数
-    update bass1.g_s_22012_day set m_off_users='91' 
+    update bass1.g_s_22012_day set m_off_users='75' 
     where time_id=int(replace(char(current date - 1 days),'-',''))
     
  select * from  bass1.G_RULE_CHECK where rule_code = 'C1'
@@ -9723,4 +9726,149 @@ where time_id = 20120316
 
 
 				select count(0) from    bass1.g_i_02023_day where time_id=20120317
+
+
+        select *from  app.sch_control_alarm 
+        where alarmtime >=  current timestamp - 1 days
+        and flag = 1
+        and control_code  = 'BASS1_INT_CHECK_C1K844TO46_TO_DAY.tcl'
                 
+                
+
+        update (
+        select *from  app.sch_control_alarm 
+        where alarmtime >=  current timestamp - 1 days
+        and flag = 1
+        and control_code  = 'BASS1_INT_CHECK_C1K844TO46_TO_DAY.tcl'
+        )t 
+        set flag = -1
+                
+                
+                
+        select *from  app.sch_control_alarm 
+        where alarmtime >=  current timestamp - 1 days
+        and control_code  = 'BASS1_INT_CHECK_C1K844TO46_TO_DAY.tcl'
+        and alarmtime 
+       
+
+select count(*) from 
+                    (
+                     select user_id,count(*) cnt from bass1.g_a_02008_day
+                      where time_id =20120319
+                     group by user_id
+                     having count(*)>1
+                    ) as a
+
+                    
+CONTROL_CODE
+BASS1_INT_CHECK_C1K844TO46_TO_DAY.tcl
+BASS1_INT_CHECK_02004_02008_DAY.tcl
+
+                    
+
+
+select count(*) from 
+                    (
+                     select user_id,count(*) cnt from bass1.g_a_02008_day
+                      where time_id =20120319
+                     group by user_id
+                     having count(*)>1
+                    ) as a
+
+USER_ID	CNT	   
+89160000184970      	2	   
+		
+select * from                     
+ bass1.g_a_02008_day
+ where user_id = '89160000184970'
+ and time_id = 20120319
+ TIME_ID	USER_ID	USERTYPE_ID	   
+20120319	89160000184970      	2020	   
+20120319	89160000184970      	1031	   
+			
+            
+select * from bass2.dw_product_bass1_20120319 where user_id = '89160000184970'
+USER_ID	CUST_ID	USERTYPE_ID	BRAND_ID	CRM_BRAND_ID2	USERSTATUS_ID	STOPSTATUS_ID	PRODUCT_NO	IMSI	CITY_ID	CHANNEL_ID	CREATE_DATE	ACCTTYPE_ID	TEST_MARK	FREE_MARK	ENTERPRISE_MARK	   
+89160000184970	89103001574212	1	32	10	1	16	d15289014474	[NULL]	891	11111111	2010/8/21 	0	0	0	0	   
+																
+select * from                     
+ bass1.g_a_02004_day
+ where user_id = '89160000184970'
+TIME_ID	USER_ID	CUST_ID	USERTYPE_ID	CREATE_DATE	USER_BUS_TYP_ID	PRODUCT_NO	IMSI	CMCC_ID	CHANNEL_ID	MCV_TYP_ID	PROMPT_TYPE	SUBS_STYLE_ID	BRAND_ID	SIM_CODE	   
+20100821	89160000184970      	89103001574212      	1	20100821	01	D15289014474   	0              	13101	11111111                                	1	1	04	2	0	   
+															
+                                                            
+                                                            
+select * from bass2.dw_product_20120319
+where user_id = '89160000184970'
+
+delete fro
+
+
+select user_id,product_no,usertype_id,sim_code from
+ (
+ select user_id,product_no,usertype_id,sim_code,row_number()over(partition by user_id order by time_id desc) row_id from G_A_02004_DAY
+ where time_id<=20120319
+ ) k
+ where k.row_id=1 
+ and k.usertype_id <> '3'
+ with ur
+ 
+            
+            
+
+select distinct 20120319,user_id,'2020' from G_A_02004_DAY where user_id in(select user_id from product_xhx4) with ur
+
+
+					select 
+20120319,					 a.user_id,
+					 '2020'
+					from BASS1.TEMP_CHECK_02008 a
+				 where bass1_usertype_id is not null 
+					 and bass1_usertype_id NOT IN ('2010','2020','2030','9000') 
+					 and (a.userstatus_id not in (1,2,3,6,8) or a.userstatus_id is null)
+
+            
+            
+           
+
+
+select  *
+                    from bass2.dw_product_20120319
+                   where usertype_id in (1,2,9) 
+       --              and day_off_mark = 1 
+                     and userstatus_id  in (1,2,3,6,8)
+                     and test_mark<>1
+and user_id = '89160000184970'
+
+
+delete from (
+select * from                     
+ bass1.g_a_02008_day
+ where user_id = '89160000184970'
+ and time_id = 20120319
+) t 
+
+
+           
+         
+CONTROL_CODE
+BASS1_INT_CHECK_C1K844TO46_TO_DAY.tcl
+BASS1_INT_CHECK_02004_02008_DAY.tcl
+
+select * from  app.sch_control_runlog
+where   control_code  like '%BASS1_INT_CHECK_02004_02008_DAY%'
+
+
+
+update 
+(
+select * from  app.sch_control_runlog
+where   control_code in (
+'BASS1_INT_CHECK_C1K844TO46_TO_DAY.tcl'
+)
+and flag = 0 
+) t
+set  flag = -2
+
+           
