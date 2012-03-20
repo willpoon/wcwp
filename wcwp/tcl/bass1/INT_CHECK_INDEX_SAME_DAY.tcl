@@ -411,11 +411,11 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	aidb_commit $conn
 	aidb_close $handle
 
-  set  RESULT_VAL3 [expr 1.000 * ($RESULT_VAL1 - $RESULT_VAL2) / $RESULT_VAL2 ]
+  set  RESULT_VAL3 [expr 1.0000 * ($RESULT_VAL1 - $RESULT_VAL2) / $RESULT_VAL2 ]
   puts  $RESULT_VAL3
-	if {$RESULT_VAL3>=0.01 || $RESULT_VAL3<=-0.01 } {
+	if {$RESULT_VAL3>=0.001 || $RESULT_VAL3<=-0.001 } {
 		set grade 2
-	        set alarmcontent "R159_4 一致性检查离网客户数超出1%"
+	        set alarmcontent "R159_4 一致性检查离网客户数不等"
 	        WriteAlarm $app_name $optime $grade ${alarmcontent}
 	} 
 
