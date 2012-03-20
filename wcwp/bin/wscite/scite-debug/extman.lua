@@ -1036,7 +1036,7 @@ package.path  = package.path..';'..LUA_PATH
 --~ require 'scite/extman' -- load scite module
 
 
-local CLIDBG = ';C:\\poon\\wcwp\\wcwp\\bin\\wscite\\scite-debug\\lua_clidebugger\\?.'
+local CLIDBG = ';'..props['SciteDefaultHome']..'\\scite-debug\\lua_clidebugger\\?.'
 package.path = package.path..CLIDBG..'lua'
 package.cpath = package.cpath..CLIDBG..'dll'
 WIN=true
