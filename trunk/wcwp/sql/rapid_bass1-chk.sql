@@ -438,7 +438,7 @@ where time_id=int(replace(char(current date - 1 days),'-',''))
 
   --调整脚本，''里更新一定的值就是
 --离网客户数
-    update bass1.g_s_22012_day set m_off_users='75' 
+    update bass1.g_s_22012_day set m_off_users='107' 
     where time_id=int(replace(char(current date - 1 days),'-',''))
     
  select * from  bass1.G_RULE_CHECK where rule_code = 'C1'
@@ -9770,7 +9770,7 @@ BASS1_INT_CHECK_02004_02008_DAY.tcl
 select count(*) from 
                     (
                      select user_id,count(*) cnt from bass1.g_a_02008_day
-                      where time_id =20120319
+                      where time_id =20120320
                      group by user_id
                      having count(*)>1
                     ) as a
@@ -9846,7 +9846,7 @@ delete from (
 select * from                     
  bass1.g_a_02008_day
  where user_id = '89160000184970'
- and time_id = 20120319
+ and time_id = 20120320
 ) t 
 
 
@@ -9871,4 +9871,28 @@ and flag = 0
 ) t
 set  flag = -2
 
-           
+
+
+请帮忙查一下：
+1.为什么这个号码（user_id = '89160000184970' ）昨天都没有数据（销户的历史用户），今天却是停机状态？是否正常？
+ 
+2.这个号码（ user_id = '89160000950064' ）没有办理全网统一资费套餐，但是有全网统一资费叠加包的办理，正常不？
+
+
+
+select * from bass2.dw_product_20120318
+where user_id in ('89160000184970','89160000950064')     
+
+     
+
+select * from  bass2.dwd_product_test_phone_20120319
+
+13549010495
+13618983481
+
+
+
+select * from bass2.dw_product_20120318
+where product_no in ('13549010495','13618983481')
+and userstatus_id in (1,2,3,6,8)
+
