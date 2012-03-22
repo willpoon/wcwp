@@ -438,7 +438,7 @@ where time_id=int(replace(char(current date - 1 days),'-',''))
 
   --调整脚本，''里更新一定的值就是
 --离网客户数
-    update bass1.g_s_22012_day set m_off_users='107' 
+    update bass1.g_s_22012_day set m_off_users='99' 
     where time_id=int(replace(char(current date - 1 days),'-',''))
     
  select * from  bass1.G_RULE_CHECK where rule_code = 'C1'
@@ -996,7 +996,7 @@ where item_id in (80000594,80000105,80000106,82000031,80000628)
 
 select * from   BASS1.ALL_DIM_LKP 
 
-where bass1_tbid = 'BASS_STD1_0114'
+where bass1_tbid = 'BASS_STD1_0074'
 
 dim_acct_item	WLAN基本费	80000106	帐目科目	BASS_STD1_0074	0716	无线局域网（WLAN）通信费
 dim_acct_item	WLAN包月费	80000105	帐目科目	BASS_STD1_0074	0715	无线局域网（WLAN）月使用费
@@ -9770,7 +9770,7 @@ BASS1_INT_CHECK_02004_02008_DAY.tcl
 select count(*) from 
                     (
                      select user_id,count(*) cnt from bass1.g_a_02008_day
-                      where time_id =20120320
+                      where time_id =20120321
                      group by user_id
                      having count(*)>1
                     ) as a
@@ -9846,7 +9846,7 @@ delete from (
 select * from                     
  bass1.g_a_02008_day
  where user_id = '89160000184970'
- and time_id = 20120320
+ and time_id = 20120321
 ) t 
 
 
@@ -9880,7 +9880,7 @@ set  flag = -2
 
 
 
-select * from bass2.dw_product_20120318
+select * from bass2.dw_product_20120321
 where user_id in ('89160000184970','89160000950064')     
 
      
@@ -9892,7 +9892,159 @@ select * from  bass2.dwd_product_test_phone_20120319
 
 
 
-select * from bass2.dw_product_20120318
+select * from bass2.dw_product_20120321
 where product_no in ('13549010495','13618983481')
 and userstatus_id in (1,2,3,6,8)
+
+
+
+select * from g_a_02057_day where time_id/100 = 201203
+
+
+
+
+select * from   BASS1.ALL_DIM_LKP 
+where bass1_tbid = 'BASS_STD1_0074'
+and bass1_value_desc like '%点对点%'
+
+
+
+select * from   BASS1.ALL_DIM_LKP 
+where bass1_value_desc like '%点对点%'
+ 
+ BASS1.ALL_DIM_LKP
+ 
+ 
+
+select * from syscat.functions 
+where lower(funcname) like 'fn_get_all_dim%'
+
+fetch first 10 rows only
+
+
+
+select * from   BASS1.ALL_DIM_LKP 
+where bass1_tbid = 'BASS_STD1_0074'
+and bass1_value_desc like '%点对点%'
+
+BASS1.ALL_DIM_LKP_160 
+
+select * from   BASS1.ALL_DIM_LKP
+where bass1_value_desc like '%点对点%'
+
+
+select * from   BASS1.ALL_DIM_LKP
+where bass1_value like '060%'
+
+
+select 
+
+
+select ACCT_ITEM_ID , count(0) 
+--,  count(distinct ACCT_ITEM_ID ) 
+from G_S_03004_MONTH 
+group by  ACCT_ITEM_ID 
+order by 1 
+
+
+select * from bass2.dim_acct_item
+where item_name like '%短信%'
+
+
+fetch first 10 rows only
+
+
+
+82000009	短信包月
+80000035	短信包月费用
+80000110	短信费（与电信）
+80000079	短信通信费
+82000109	短信虚科目
+82000038	所有短信费
+82000005	网内短信
+
+select * from   BASS1.ALL_DIM_LKP
+where xzbas_value in ('82000009','80000035','80000110','80000079','82000109','82000038','82000005')
+
+
+select a.user_id,sum(b.fact_fee),sum(c.fact_fee),
+case when sum(b.fact_fee)  then 0 else sum(c.fact_fee)*1.0/sum(b.fact_fee) end 
+from
+(
+select distinct user_id,enterprise_id
+ from dwd_enterprise_member_info_201201 a,bass2.dw_enterprise_msg_201201 b
+where a.ent_cust_id=b.enterprise_id 
+  and b.manager_id in (11110081)
+) a,
+bass2.dw_product_201201 b,
+bass2.dw_product_201202 c
+where a.user_id=b.user_id
+  and a.user_id=c.user_id
+group by a.user_id
+
+
+select * from syscat.tables where tabname like 'ALL_DIM_LKP%'
+
+
+
+select * from   BASS1.ALL_DIM_LKP
+where xzbas_value in ('82000009','80000035','80000110','80000079','82000109','82000038','82000005')
+and BASS1_TBID in ('BASS_STD1_0074','BASS_STD1_0152')
+
+
+select count(0) from G_I_02023_DAY where time_id = 20120321
+and  user_id in ('89160000184970','89160000950064')     
+
+15305
+
+
+
+
+select  TIME_ID,USER_ID,BASE_PKG_ID,VALID_DT
+from (
+        select 
+                20120321 TIME_ID
+                ,char(a.product_instance_id)  USER_ID
+                ,bass1.fn_get_all_dim_ex('BASS_STD1_0114',char(a.offer_id)) BASE_PKG_ID
+                ,replace(char(date(a.VALID_DATE)),'-','') VALID_DT
+                ,row_number()over(partition by a.product_instance_id order by expire_date desc ,VALID_DATE desc ) rn 
+        from  bass2.Dw_product_ins_off_ins_prod_ds a
+        ,(select xzbas_value  as offer_id 
+                                        from  BASS1.ALL_DIM_LKP 
+                                        where BASS1_TBID = 'BASS_STD1_0114'
+                                              and bass1_value like 'QW_QQT_JC%'
+                                              and XZBAS_COLNAME not like '套餐减半%'
+                                      ) c
+        where  char(a.offer_id) = c.offer_id 
+          and a.state =1
+          and a.valid_type = 2
+          and a.OP_TIME = '2012-03-21'    
+          and date(a.VALID_DATE)<='2012-03-21'  
+    and date(a.expire_date) >= '2012-03-21'
+          and not exists (      select 1 from bass2.dwd_product_test_phone_20120321 b 
+                                where a.product_instance_id = b.USER_ID  and b.sts = 1
+                         ) 
+) t where t.rn = 1
+         with ur
+         
+         
+
+select * from bass2.dw_product_bass1_20120101 where user_id = '89160000184970'
+
+         
+select * from bass2.dw_product_20120319 where user_id = '89160000184970'
+select * from bass2.dw_product_20120318 where user_id = '89160000184970'
+
+         
+select * from bass1.g_a_02008_day where user_id = '89160000184970'
+TIME_ID	USER_ID	USERTYPE_ID	   
+20100823	89160000184970      	2020	   
+20100821	89160000184970      	1031	   
+
+delete from 
+(
+select * from bass1.g_a_02008_day 
+where user_id = '89160000184970'
+and time_id = $Timestamp 
+) t
 
