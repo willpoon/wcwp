@@ -71,7 +71,7 @@ from (
 	  and char(a.product_instance_id)  = d.user_id
 	  and bass1.fn_get_all_dim_ex('BASS_STD1_0114',char(a.offer_id))  = e.OLD_PKG_ID	  
 	  and a.state =1
-	  and a.valid_type = 1
+	  and a.valid_type in (1,2)
 	  and a.OP_TIME = '$op_time'	  
 	  and date(a.VALID_DATE)<='$op_time'	
     and date(a.expire_date) >= '$op_time'
