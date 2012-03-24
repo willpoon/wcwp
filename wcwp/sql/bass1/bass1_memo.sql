@@ -20,6 +20,7 @@ Ed4SR3pu7Wg3
 Ed4SR3pu7Wg3
 px6XK9Fp3nz9
 pzw.notes : zq3aW7vd3jd5
+svn checkout https://poonzref.googlecode.com/svn/trunk/ poonzref --username pzw.notes@gmail.com
 
 
 When prompted, enter your generated googlecode.com password.
