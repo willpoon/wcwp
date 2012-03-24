@@ -7,6 +7,7 @@ DB2_OSS_USER="bass2"
 DB2_OSS_PASSWD="bass2"
     db2 terminate;db2 connect to $DB2_OSS_DB user $DB2_OSS_USER using $DB2_OSS_PASSWD
     eval $DB2_SQLCOMM 
+    #~ echo $DB2_SQLCOMM
 	db2ret=$?
 	#~ test ${db2ret} -ne 0 -o ${db2ret} -ne 1
 	#~ testval=$?
@@ -42,7 +43,7 @@ ControlCode=$1
 	"
 	DB2_SQLCOMM="db2 \"${iCount}\""
 	DB2_SQL_EXEC>.tmp$$
-	RetCount=`cat .tmp$$|egrep 'xxx'|awk '{print $1}'`
+	RetCount=`cat .tmp$$|egrep 'xxx'|head -1|awk '{print $1}'`
 	if [ ${RetCount} -lt 1 ];then
 	rm .tmp$$
 	echo 》》》》》没有可更新告警！
@@ -119,9 +120,9 @@ echo 》》》》》${ControlCode}置完成OK！
 return 0
 }
 #########################################################################################
-#~ 置重运
+#~  置重运 
 fnSetReDo(){
-echo 》》》》》检查是否可以置重运${ControlCode}...
+echo 》》》》》检查是否可以 置重运 ${ControlCode}...
 	ControlCode=$1
 	if [ ${ControlCode} = "" ];then
 		exit 1
@@ -134,7 +135,7 @@ echo 》》》》》检查是否可以置重运${ControlCode}...
 	exit 1
 	fi	
 	
-echo 》》》》》重运${ControlCode}...
+echo 》》》》》 置重运 ${ControlCode}...
 SetRedo="
 update 
 (
@@ -146,20 +147,45 @@ set  flag = -2
 "
 DB2_SQLCOMM="db2 \"${SetRedo}\""
 DB2_SQL_EXEC>/dev/null
-echo 》》》》》重运${ControlCode} ok!
+echo 》》》》》 置重运 ${ControlCode} ok!
+
+return 0
+}
+
+
+#~  置重运 2
+fnSetReDo2(){
+	ControlCode=$1
+	if [ ${ControlCode} = "" ];then
+		exit 1
+	fi
+	
+	
+echo 》》》》》 置重运 ${ControlCode}...无论调度是否告警！
+SetRedo="
+update 
+(
+	select *from  app.sch_control_runlog
+	where   control_code  = '${ControlCode}'
+	and begintime >=  current timestamp - 1 days
+) t
+set  flag = -2
+"
+DB2_SQLCOMM="db2 \"${SetRedo}\""
+DB2_SQL_EXEC>/dev/null
+echo 》》》》》 置重运 ${ControlCode} ok!
 
 return 0
 }
 
 #########################################################################################
 
-
+if [ $# -eq 1 ];then 
 clear
 echo "-----------------------------------------------------------"
 echo "---sch_control_alarm---------------------------------------"
 echo "-----------------------------------------------------------"
-
-sql_str="select CONTROL_CODE,ALARMTIME,FLAG,DEALTIME,substr(trim(CONTENT),1,100) CONTENT from  app.sch_control_alarm \
+sql_str="select CONTROL_CODE,ALARMTIME,FLAG,substr(trim(CONTENT),1,100) CONTENT from  app.sch_control_alarm \
         where alarmtime >=  current timestamp - 1 days  \
         and flag = -1   \
         and control_code like 'BASS1%'  \
@@ -167,11 +193,11 @@ order by alarmtime desc with ur
 "
 DB2_SQLCOMM="db2 \"${sql_str}\""
 DB2_SQL_EXEC
-
+fi
 
 #~ start here...
 if [ $# -ne 2 ];then 
-echo 》》》》》$0 [ r or d] [control code]
+echo 》》》》》$0 [ -r/d/or] [control code]
 exit 1
 fi
 type=$1
@@ -180,13 +206,13 @@ ControlCode=$2
 if [ ${type} = '-d' -a ${ControlCode} != "" ];then 
 	fnSetDeal ${ControlCode}
 	fnSetDone ${ControlCode}
-else
-	if [ ${type} = '-r' -a ${ControlCode} != "" ];then
+elif [ ${type} = '-r' -a ${ControlCode} != "" ];then
 		fnSetDeal ${ControlCode}
 		fnSetReDo ${ControlCode}
-	else 
+elif [ ${type} = '-or' -a ${ControlCode} != "" ];then
+		fnSetReDo2 ${ControlCode}		
+else 
 		echo 》》》》》invalid argument!
-	fi
 fi
 
 exit 0
