@@ -14,7 +14,8 @@ Set WshEnv = WshShell.Environment("SYSTEM")
 
 msgbox(WshEnv("LIB"))
 msgbox(WshEnv("path"))
-SYSPATH="C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\TortoiseSVN\bin;C:\Program Files\IBM\SQLLIB\BIN;C:\Program Files\IBM\SQLLIB\FUNCTION"
+SYSPATH="C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\TortoiseSVN\bin;C:\Program Files\IBM\SQLLIB\BIN;C:\Program Files\IBM\SQLLIB\FUNCTION;d:\Soft_remove\instantclient_11_2"
+
 
 MYPATH=WCWP_PATH _
 & ";" & WCWP_PATH & "\VC6CMD\bin" _
@@ -43,6 +44,13 @@ MYLIB=WCWP_PATH &"\masm32\lib" _
 WshEnv("lib") = MYLIB
 
 
+oracle_home="d:\Soft_remove\instantclient_11_2"
+  
+WshEnv("ORACLE_HOME") = oracle_home
+WshEnv("LD_LIBRARY_PATH") = oracle_home
+WshEnv("NLS_LANG") = "SIMPLIFIED CHINESE_CHINA.ZHS16GBK"
+WshEnv("SQL_PATH") = oracle_home
+WshEnv("TNS_ADMIN") = oracle_home
 
 '~ if InstrRev(WshEnv("Path"),"wcwp") then
 '~ 'msgbox("wcwp already in path")

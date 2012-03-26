@@ -6,6 +6,12 @@ and control_code like 'BASS1%'
 order by alarmtime desc
 
 
+
+select * from   table( bass1.chk_wave(20120324) ) a order by 2
+
+select * from   table( bass1.chk_wave(0) ) a order by 2
+
+
 select val1
 ,val2-val3
 ,decimal(round(val1/1.00/(val2-val3)-1,4),9,4) rate 
@@ -32,7 +38,11 @@ select * from G_S_22073_DAY where time_id=20120322
 select * from app.sch_control_runlog where control_code like 'BASS1%'
 select * from   table( bass1.chk_same(0) ) a order by 2
 
-update bass1.g_s_22012_day set m_off_users='102' 
+
+    update bass1.g_s_22012_day set m_off_users='' 
+    where time_id=int(replace(char(current date - 1 days),'-',''))
+    
+update bass1.g_s_22012_day set m_off_users='101' 
     where time_id=int(replace(char(current date - 1 days),'-',''))
     
     
@@ -43,7 +53,7 @@ update bass1.g_s_22012_day set m_off_users='102'
                      group by user_id
                      having count(*)>1
  
-select  * from APP.G_FILE_REPORT
+select  substr(filename,18,5)  from APP.G_FILE_REPORT
 where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err_code='00'
 
 
@@ -369,3 +379,137 @@ select * from   G_A_02054_DAY where   ENTERPRISE_ID = '89100000064367'
                   
 
                   
+				  
+
+ÖØ´« 22038,
+
+
+select  substr(filename,18,5)  from APP.G_FILE_REPORT
+where substr(filename,9,8) = replace(char(current date - 2 days),'-','') and err_code='00'
+except
+select  substr(filename,18,5)  from APP.G_FILE_REPORT
+where substr(filename,9,8) = replace(char(current date - 1 days),'-','') and err_code='00'
+
+
+select count(0) from all_tables
+
+
+select AUTH_TYPE , count(0) 
+--,  count(distinct AUTH_TYPE ) 
+from bass2.CDR_WLAN_20120325 
+group by  AUTH_TYPE 
+order by 1 
+
+
+select * from bass1.g_rule_check where rule_code in ('R109') order by time_id desc
+
+
+
+select * from bass1.g_rule_check where rule_code in ('R107') order by time_id desc
+select * from bass1.g_rule_check where rule_code in ('R108') order by time_id desc
+
+
+
+
+select message_id, send_time,mobile_num,message_content from   APP.SMS_SEND_INFO
+where send_time is not null
+and mobile_num = '15089051890'
+and send_time >=  current timestamp - 5 days
+--and date(send_time) = char(current date )
+order by send_time desc
+;
+
+
+WITH n(control_code, before_control_code) AS 
+          (SELECT control_code, before_control_code 
+             FROM app.sch_control_before
+             WHERE control_code = 'BASS2_Dwd_sys_cmd_def_ds.tcl'
+           UNION ALL
+           SELECT b.control_code,b.before_control_code 
+             FROM app.sch_control_before as b, n
+             WHERE b.control_code = n.before_control_code
+             )
+SELECT distinct n.* FROM n
+,app.sch_control_task c
+where n.control_code = c.control_code
+and c.control_code like 'BASS1%'
+
+
+
+
+select * from bass1.g_rule_check where rule_code in ('R140')
+update (
+select * from app.sch_control_runlog where control_code 
+in
+('TR1_DMK015'
+,'TR1_DMK017'
+,'TR1_DMK018'
+,'TR1_DMK058'
+,'TR1_DMK044'
+,'TR1_DMK055'
+)
+)  t set flag = 0
+
+
+update (
+select * from app.sch_control_alarm where control_code 
+in
+('TR1_DMK015'
+,'TR1_DMK017'
+,'TR1_DMK018'
+,'TR1_DMK058'
+)
+and alarmtime >=  current timestamp - 1 days
+) 
+set 
+
+
+
+---------------------------------------------------------------------------------
+select * from  app.sch_control_alarm 
+where alarmtime >=  current timestamp - 1 days
+--and flag = -1
+and control_code like 'BASS1%'
+order by alarmtime desc
+
+
+select * from app.sch_control_task
+where control_code in ('BASS1_G_S_22066_DAY.tcl','BASS1_EXP_G_S_22082_DAY','BASS1_EXP_G_S_22066_DAY')
+
+
+
+
+select * from app.sch_control_runlog where control_code 
+
+   
+in (
+'BASS1_G_S_22066_DAY.tcl'
+,'BASS2_Dw_acct_payitem_dm.tcl'
+,'BASS2_Dw_custsvc_ivr_log_dm.tcl'
+,'BASS2_Dw_kf_cmd_hint_def_dm.tcl'
+,'BASS2_Dw_kf_sms_cmd_receive_dm.tcl'
+,'BASS2_Dw_product_busi_dm.tcl'
+,'BASS2_Dw_product_ds.tcl'
+,'BASS2_Dw_product_ord_cust_dm.tcl'
+,'BASS2_Dw_product_ord_so_log_dm.tcl'
+,'BASS2_Dw_product_ord_srvpkg_dm.tcl'
+,'BASS2_Dwd_ow_loading_log_ds.tcl'
+,'BASS2_Dwd_product_ord_busi_other_ds.tcl'
+,'BASS2_Dwd_sys_cmd_def_ds.tcl'
+,'TR1_L_11060'
+)
+
+select * from app.sch_control_runlog where control_code  = 'TR1_L_11054'
+
+
+PRIORITY_VAL
+0
+
+update (
+select * from app.sch_control_task
+where control_code in ('BASS2_Dwd_sys_cmd_def_ds.tcl')
+) t 
+set PRIORITY_VAL = 0
+
+
+

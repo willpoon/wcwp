@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="gb2312"?>
+<version>
+  <dtl ver="1.02.00" url="http://www.pdmreader.com/updatelist.xml"
+      download_dir="http://www.pdmreader.com/update" 
+      download_memo="http://www.pdmreader.com/updatememo.html" 
+      download_homepage="http://www.pdmreader.com">
+    <file name="PdmReader.exe" dir="" size="2183472" ver="20100113231820" />
+  </dtl>
+</version>
