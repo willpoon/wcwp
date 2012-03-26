@@ -14,7 +14,7 @@ Set WshEnv = WshShell.Environment("SYSTEM")
 
 msgbox(WshEnv("LIB"))
 msgbox(WshEnv("path"))
-SYSPATH="C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\TortoiseSVN\bin;C:\PROGRA~1\IBM\SQLLIB\BIN;C:\PROGRA~1\IBM\SQLLIB\FUNCTION"
+SYSPATH="C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\TortoiseSVN\bin;C:\Program Files\IBM\SQLLIB\BIN;C:\Program Files\IBM\SQLLIB\FUNCTION"
 
 MYPATH=WCWP_PATH _
 & ";" & WCWP_PATH & "\VC6CMD\bin" _
