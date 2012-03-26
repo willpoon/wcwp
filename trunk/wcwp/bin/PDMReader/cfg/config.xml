@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Root>
+	<Dtl>
+		<homeUrl>http://www.pdmreader.com</homeUrl><!--主页-->
+		<serverVer>1.02.00</serverVer>
+		<updateMemo>http://www.pdmreader.com/updatememo.html</updateMemo><!--更新备注-->
+		<runURL>http://202.122.1.80:50018/zhaojy/pdmreader/running.go?hardDisk=</runURL><!--运行的URL-->
+		<recommenderURL>http://202.122.1.80:50018/zhaojy/pdmreader/recommender.go?command=recommend</recommenderURL><!--推荐的URL-->
+		<updateXML>http://www.pdmreader.com/updatelist.xml</updateXML><!--更新的XML地址-->
+		<AD><!--广告设置-->
+			<top>http://www.pdmreader.com/ad.html</top>
+			<home height="36%" width="100%">http://202.122.1.80:50018/zhaojy/pdmreaderhome.go</home>
+			<pdm height="200" width="100%">http://www.pdmreader.com/ad_pdm.html</pdm>
+			<pdmFull height="36%" width="100%">http://www.pdmreader.com/ad_pdmfull.html</pdmFull>
+			<data height="36%" width="100%">http://www.pdmreader.com/ad_data.html</data>
+		</AD>
+	</Dtl>
+</Root>

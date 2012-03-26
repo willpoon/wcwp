@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="gb2312"?>
+<plugin>
+    <!-- 举例 tool name="代码生成器" exe="D:\appl\dream\delphi\mine\代码生成器\codeTool.exe"/ -->
+    <tool name="" exe=""/>
+    <tool name="" exe=""/>
+    <tool name="" exe=""/>
+    <tool name="" exe=""/>
+    <tool name="" exe=""/>
+</plugin>

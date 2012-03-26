@@ -7585,7 +7585,7 @@ svn checkout https://wcwp.googlecode.com/svn/trunk/ .wcwp --username PanWalter@g
 
 
 
---递归取前置
+--递归取前置 !!前置！！
 --get before
 WITH n(control_code, before_control_code) AS 
           (SELECT control_code, before_control_code 
@@ -7603,6 +7603,24 @@ and c.control_code like 'BASS1%'
 --and c.deal_time = 1
 --and n.before_control_code  not like '%INT_CHECK%' 
 --and c.control_code not like 'OLAP_%'
+
+--递归取后续 !!后续！！
+
+
+WITH n(control_code, before_control_code) AS 
+          (SELECT control_code, before_control_code 
+             FROM app.sch_control_before
+             WHERE before_control_code  IN    ('BASS2_Cdr_call_dtl_ds.tcl')        
+			 UNION ALL
+           SELECT b.control_code,b.before_control_code 
+             FROM app.sch_control_before as b, n
+             WHERE b.before_control_code = n.control_code)
+SELECT distinct D.* FROM n,app.sch_control_task c,APP.SCH_CONTROL_RUNLOG D
+where n.control_code = c.control_code
+and c.deal_time = 1
+AND C.CONTROL_CODE=D.CONTROL_CODE
+and D.control_code like 'BASS1%DAY%'
+
 
 
 --regexp
@@ -12020,7 +12038,7 @@ where control_code
 
 
 
-
+--取后续--before_control_code
 WITH n(control_code, before_control_code) AS 
           (SELECT control_code, before_control_code 
              FROM app.sch_control_before
@@ -18304,7 +18322,28 @@ where  a.CONTROL_CODE=b.CONTROL_CODE
 order by c.sort_id,begintime asc
 with ur
 
-    
+--未完成
+select       
+case  when date(current timestamp)<>date(b.begintime)  and  b.flag=0 or b.flag=-2 then '未完成' 
+      when   b.flag=1   then '执行中'
+      when   b.flag=-1  then '执行出错'
+      when   date(current timestamp)=date(b.begintime) and  b.flag=0 then '完成'
+      else  '未知'
+end,
+b.*
+,a.FUNCTION_DESC
+from  APP.SCH_CONTROL_TASK a,
+      APP.SCH_CONTROL_RUNLOG  b,
+      APP.SCH_CONTROL_MOGRPINFO  c
+where  a.CONTROL_CODE=b.CONTROL_CODE  
+   and a.MO_GROUP_CODE = c.MO_GROUP_CODE 
+   and a.deal_time in (1,3)
+   and MO_GROUP_DESC like '%一经%'
+   and (date(current timestamp)<>date(b.begintime)  and  b.flag=0 or b.flag=-2 )
+order by c.sort_id,begintime asc
+with ur
+
+
 --一经监控总览
 
 select       
@@ -18324,3 +18363,88 @@ group by c.MO_GROUP_DESC,c.sort_id
 order by c.sort_id
 with ur	
 
+
+
+
+$ db2 "
+>  select *from  table( bass1.get_after('BASS2_Cdr_call_dtl_ds')) a 
+> where control_code like 'BASS1%'
+> "
+
+CONTROL_CODE                                                                                                                     BEFORE_CONTROL_CODE                                                                                                             
+-------------------------------------------------------------------------------------------------------------------------------- --------------------------------------------------------------------------------------------------------------------------------
+--~   BASS1_G_S_04017_DAY.tcl                                                                                                          BASS2_Cdr_call_dtl_ds.tcl                                                                                                       
+--~   BASS1_INT_0400810_YYYYMM.tcl                                                                                                     BASS2_Cdr_call_dtl_ds.tcl                                                                                                       
+--~   BASS1_G_S_04019_DAY.tcl                                                                                                          BASS2_Cdr_call_dtl_ds.tcl                                                                                                       
+BASS1_INT_210012916_YYYYMM.tcl                                                                                                   BASS2_Cdr_call_dtl_ds.tcl                                                                                                       
+
+
+ls *04017* *04008* *04019* *21002* *21003* *21016* *21001* *21009*
+
+BASS1_G_S_21002_DAY.tcl                                                                                                          BASS1_INT_210012916_YYYYMM.tcl                                                                                                  
+BASS1_G_S_21003_TO_DAY.tcl                                                                                                       BASS1_INT_210012916_YYYYMM.tcl                                                                                                  
+BASS1_G_BUS_00000_DAY.tcl                                                                                                        BASS1_INT_210012916_YYYYMM.tcl                                                                                                  
+BASS1_G_S_21016_DAY.tcl                                                                                                          BASS1_INT_210012916_YYYYMM.tcl                                                                                                  
+BASS1_G_S_21001_DAY.tcl                                                                                                          BASS1_INT_210012916_YYYYMM.tcl                                                                                                  
+BASS1_G_S_21009_DAY.tcl           
+
+
+BASS1_INT_210012916_YYYYMM.tcl
+
+
+select *from  table( bass1.get_after('BASS1_INT_210012916_YYYYMM')) a 
+where control_code like 'BASS1%'
+
+
+ select *from  bass1.G_RULE_CHECK where rule_code = 'R109'
+ order by 1 desc
+ 
+ 
+ db2 "select *from app.sch_control_runlog where control_code like '%dr%call%'"
+ 
+ select *from  table( bass1.get_before('04017')) a 
+
+
+BASS2_Cdr_call_dtl_ds.tcl
+
+select 
+
+ select *from  table( bass1.get_after('BASS2_Cdr_call_dtl_ds')) a 
+where control_code like 'BASS1%'
+
+
+
+
+WITH n(control_code, before_control_code) AS 
+          (SELECT control_code, before_control_code 
+             FROM app.sch_control_before
+             WHERE before_control_code in 
+
+(
+'BASS2_Cdr_call_dtl_ds.tcl'
+)
+           UNION ALL
+           SELECT b.control_code,b.before_control_code 
+             FROM app.sch_control_before as b, n
+             WHERE b.before_control_code = n.control_code)
+SELECT distinct c.control_code FROM n,app.sch_control_task c
+where n.control_code = c.control_code
+and c.deal_time = 2    
+AND c.control_code  like 'BASS1_%' 
+
+
+
+22038
+22073
+
+
+Path（在变量中加入）                                 D:\oracle instantclient
+LD_LIBRARY_PATH                                      D:\oracle instantclient
+NLS_LANG                                   SIMPLIFIED CHINESE_CHINA.ZHS16GBK
+ORACLE_HOME                                          D:\oracle instantclient
+SQL_PATH                                             D:\oracle instantclient
+TNS_ADMIN                                            D:\oracle instantclient
+
+
+
+13811019618
