@@ -1,7 +1,7 @@
 static char sqla_program_id[162] = 
 {
- 0,42,68,65,76,65,73,65,66,65,83,83,49,95,69,88,67,65,122,53,
- 79,97,77,98,48,49,49,49,49,32,50,32,0,8,65,80,80,32,32,32,
+ 0,42,68,65,76,65,73,65,66,65,83,83,49,95,69,88,102,66,112,117,
+ 76,81,69,98,48,49,49,49,49,32,50,32,0,8,65,80,80,32,32,32,
  32,32,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -171,7 +171,7 @@ int main(int argc,char *argv[])
      {
     	printf("Invalid Parameter1\n");
     	printf("Usage: bass1_export tablename yyyy-mm-dd[yyyy-mm]\n");
-    	exit(1);
+    	exit(0);
      }
      if ( strcasecmp("bass1.g_bus_check_all_day",argv[1])!=0  &&  strcasecmp("bass1.g_bus_check_bill_month",argv[1])!=0 ){
             nImportType = DATA_TYPE ;
@@ -179,7 +179,7 @@ int main(int argc,char *argv[])
             {
     	        printf("Invalid Parameter2\n");
     	        printf("Usage: bass1_export creator.tablename yyyy-mm-dd[yyyy-mm]\n");
-    	        exit(1);
+    	        exit(0);
             }
      }else{
             nImportType = BUSI_TYPE ;  
@@ -188,7 +188,7 @@ int main(int argc,char *argv[])
      {
     	printf("Invalid Parameter3\n");
     	printf("Usage: bass1_export creator.tablename yyyy-mm-dd[yyyy-mm]\n");
-    	exit(1);
+    	exit(0);
      }
      
      //取得没有目录的程序名
@@ -209,7 +209,7 @@ int main(int argc,char *argv[])
      
      if ( Connect_DB(strDBName,strUserName,strPassWord)!=0 ){
          printf("连接数据库出错程序退出!\n");
-    	 exit(1);
+    	 exit(0);
      }
      
      //设置过程名，参数名
@@ -228,7 +228,7 @@ int main(int argc,char *argv[])
          printf("日期参数出错:%s\n",strErrorInfo);
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"错误日期参数");
          Close_DB();
-    	 exit(1);
+    	 exit(0);
      }
      
      //建立工作目录，备份目录
@@ -240,61 +240,61 @@ int main(int argc,char *argv[])
          printf("取接口代码信息出错:%s\n",strErrorInfo);
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"取接口代码信息出错");
          Close_DB();
-    	 exit(1);
+    	 exit(0);
      }
      if ( nCoarse!=COARSE_DAY && nCoarse!=COARSE_MON && nCoarse!=COARSE_INI ){
          printf("粒度代码错误\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"粒度代码错误");
          Close_DB();
-    	 exit(1);
+    	 exit(0);
      }
      if ( nCoarse==COARSE_DAY && strlen(strExportDate)!=8 ){
          printf("此表为日粒度,日期参数不正确\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"此表为日粒度,日期参数不正确");
          Close_DB();
-    	 exit(1);
+    	 exit(0);
      }
      if ( nCoarse==COARSE_MON && strlen(strExportDate)!=6 ){
          printf("此表为月粒度,日期参数不正确\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"此表为月粒度,日期参数不正确");
          Close_DB();
-    	 exit(1);
+    	 exit(0);
      }
      if ( strcmp(strFlag,FLAG_INIT)==0 && strcmp(strFlag,FLAG_ADD)==0 && strcmp(strFlag,FLAG_NEW_ADD)==0 && strcmp(strFlag,FLAG_FULL)==0 ){
          printf("抽取方式代码错误:%s\n",strFlag);
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"抽取方式代码错误");
          Close_DB(); 
-    	 exit(1);
+    	 exit(0);
      }       
      if ( nIfPut!=PUT_REJECT && nIfPut!=PUT_MAY ){
          printf("上传标志代码错误\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"上传标志代码错误");
          Close_DB(); 
-    	 exit(1);
+    	 exit(0);
      }
      if ( nIfPut==PUT_REJECT ){
          printf("此接口不需要上传\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"此接口不需要上传");
          Close_DB(); 
-    	 exit(1);
+    	 exit(0);
      }
      if ( nIfEmptyPut!=PUT_EMPTY_REJECT && nIfEmptyPut!=PUT_EMPTY_MAY ){
          printf("上传空文件标志代码错误\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"上传空文件标志代码错误");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      }
      if ( get_num(strExportDate,strUnitCode,nCoarse,strRnum)!=0 ){
          printf("取重传次数值出错\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"取重传次数值出错");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      }
      if ( atoi(strRnum)>90 ){
          printf("取重传次数值太大\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"取重传次数值太大");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      }
      
      //判断文件是否已经上传并通过验证
@@ -302,7 +302,7 @@ int main(int argc,char *argv[])
          printf("接口已经上传并通过验证,不能重复上传\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"接口已经上传并通过验证,不能重复上传");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      }
 /*     
      //判断日业务指标文件是否可以上传
@@ -311,7 +311,7 @@ int main(int argc,char *argv[])
               printf("上传的日数据文件没有全部通过验证,暂不能上传日业务指标文件\n");
               insert_alarm(strDealCode,strVal1,strVal2,strVal3,"上传的日数据文件没有全部通过验证,暂不能上传日业务指标文件");
               Close_DB(); 
-    	      exit(1);     
+    	      exit(0);     
          }     
      } 
      
@@ -321,7 +321,7 @@ int main(int argc,char *argv[])
               printf("上传的月数据文件没有全部通过验证,暂不能上传月业务指标文件\n");
               insert_alarm(strDealCode,strVal1,strVal2,strVal3,"上传的月数据文件没有全部通过验证,暂不能上传月业务指标文件");
               Close_DB(); 
-    	      exit(1);     
+    	      exit(0);     
          }     
      } 
 */
@@ -346,7 +346,7 @@ int main(int argc,char *argv[])
          printf("生成查询语法出错\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"生成查询语法出错");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      }
      printf("生成查询语法成功!\n");
      
@@ -355,7 +355,7 @@ int main(int argc,char *argv[])
          printf("生成数据文件出错：%s\n",strErrorInfo);
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"生成数据文件出错");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      } 
      printf("生成数据文件成功[%s]!\n",strSQL);
      
@@ -364,7 +364,7 @@ int main(int argc,char *argv[])
          printf("不能上传空文件\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"不能上传空文件");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      } 
      
      //生成校验文件
@@ -372,7 +372,7 @@ int main(int argc,char *argv[])
          printf("生成校验文件出错\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"生成校验文件出错");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      }
      printf("生成上校验文件成功!\n");
      
@@ -391,7 +391,7 @@ int main(int argc,char *argv[])
          printf("记录导出日志失败:%s\n",strErrorInfo);
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"记录导出日志失败,请手工处理数据导出日志[APP.G_RUNLOG]");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      }
      printf("记录日志成功!\n");
      Close_DB();
