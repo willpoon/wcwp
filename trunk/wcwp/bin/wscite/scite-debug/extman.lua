@@ -1063,3 +1063,22 @@ function CopyFileNameExt()
 end
 
 scite_Command('CopyFileNameExt|CopyFileNameExt|Ctrl+Shift+F')
+
+
+function del_empty_lines()
+  local txt = editor:GetText()
+  if #txt == 0 then return end
+  local chg, n = false
+  while true do
+    txt, n = string.gsub(txt, "(\r?\n)%s*\r?\n", "%1")
+    if n == 0 then break end
+    chg = true
+  end
+  if chg then
+    editor:SetText(txt)
+    editor:GotoPos(0)
+  end
+end
+
+
+scite_Command('Del_empty_lines|del_empty_lines|Ctrl+Shift+G')
