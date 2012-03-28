@@ -1,7 +1,7 @@
 static char sqla_program_id[162] = 
 {
- 0,42,68,65,76,65,73,65,66,65,83,83,49,95,69,88,67,65,122,53,
- 79,97,77,98,48,49,49,49,49,32,50,32,0,8,65,80,80,32,32,32,
+ 0,42,68,65,76,65,73,65,66,65,83,83,49,95,69,88,69,66,76,78,
+ 76,81,69,98,48,49,49,49,49,32,50,32,0,8,65,80,80,32,32,32,
  32,32,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -171,7 +171,7 @@ int main(int argc,char *argv[])
      {
     	printf("Invalid Parameter1\n");
     	printf("Usage: bass1_export tablename yyyy-mm-dd[yyyy-mm]\n");
-    	exit(1);
+    	exit(0);
      }
      if ( strcasecmp("bass1.g_bus_check_all_day",argv[1])!=0  &&  strcasecmp("bass1.g_bus_check_bill_month",argv[1])!=0 ){
             nImportType = DATA_TYPE ;
@@ -179,7 +179,7 @@ int main(int argc,char *argv[])
             {
     	        printf("Invalid Parameter2\n");
     	        printf("Usage: bass1_export creator.tablename yyyy-mm-dd[yyyy-mm]\n");
-    	        exit(1);
+    	        exit(0);
             }
      }else{
             nImportType = BUSI_TYPE ;  
@@ -188,7 +188,7 @@ int main(int argc,char *argv[])
      {
     	printf("Invalid Parameter3\n");
     	printf("Usage: bass1_export creator.tablename yyyy-mm-dd[yyyy-mm]\n");
-    	exit(1);
+    	exit(0);
      }
      
      //取得没有目录的程序名
@@ -209,7 +209,7 @@ int main(int argc,char *argv[])
      
      if ( Connect_DB(strDBName,strUserName,strPassWord)!=0 ){
          printf("连接数据库出错程序退出!\n");
-    	 exit(1);
+    	 exit(0);
      }
      
      //设置过程名，参数名
@@ -228,7 +228,7 @@ int main(int argc,char *argv[])
          printf("日期参数出错:%s\n",strErrorInfo);
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"错误日期参数");
          Close_DB();
-    	 exit(1);
+    	 exit(0);
      }
      
      //建立工作目录，备份目录
@@ -240,61 +240,61 @@ int main(int argc,char *argv[])
          printf("取接口代码信息出错:%s\n",strErrorInfo);
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"取接口代码信息出错");
          Close_DB();
-    	 exit(1);
+    	 exit(0);
      }
      if ( nCoarse!=COARSE_DAY && nCoarse!=COARSE_MON && nCoarse!=COARSE_INI ){
          printf("粒度代码错误\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"粒度代码错误");
          Close_DB();
-    	 exit(1);
+    	 exit(0);
      }
      if ( nCoarse==COARSE_DAY && strlen(strExportDate)!=8 ){
          printf("此表为日粒度,日期参数不正确\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"此表为日粒度,日期参数不正确");
          Close_DB();
-    	 exit(1);
+    	 exit(0);
      }
      if ( nCoarse==COARSE_MON && strlen(strExportDate)!=6 ){
          printf("此表为月粒度,日期参数不正确\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"此表为月粒度,日期参数不正确");
          Close_DB();
-    	 exit(1);
+    	 exit(0);
      }
      if ( strcmp(strFlag,FLAG_INIT)==0 && strcmp(strFlag,FLAG_ADD)==0 && strcmp(strFlag,FLAG_NEW_ADD)==0 && strcmp(strFlag,FLAG_FULL)==0 ){
          printf("抽取方式代码错误:%s\n",strFlag);
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"抽取方式代码错误");
          Close_DB(); 
-    	 exit(1);
+    	 exit(0);
      }       
      if ( nIfPut!=PUT_REJECT && nIfPut!=PUT_MAY ){
          printf("上传标志代码错误\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"上传标志代码错误");
          Close_DB(); 
-    	 exit(1);
+    	 exit(0);
      }
      if ( nIfPut==PUT_REJECT ){
          printf("此接口不需要上传\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"此接口不需要上传");
          Close_DB(); 
-    	 exit(1);
+    	 exit(0);
      }
      if ( nIfEmptyPut!=PUT_EMPTY_REJECT && nIfEmptyPut!=PUT_EMPTY_MAY ){
          printf("上传空文件标志代码错误\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"上传空文件标志代码错误");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      }
      if ( get_num(strExportDate,strUnitCode,nCoarse,strRnum)!=0 ){
          printf("取重传次数值出错\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"取重传次数值出错");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      }
      if ( atoi(strRnum)>90 ){
          printf("取重传次数值太大\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"取重传次数值太大");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      }
      
      //判断文件是否已经上传并通过验证
@@ -302,7 +302,7 @@ int main(int argc,char *argv[])
          printf("接口已经上传并通过验证,不能重复上传\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"接口已经上传并通过验证,不能重复上传");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      }
 /*     
      //判断日业务指标文件是否可以上传
@@ -311,7 +311,7 @@ int main(int argc,char *argv[])
               printf("上传的日数据文件没有全部通过验证,暂不能上传日业务指标文件\n");
               insert_alarm(strDealCode,strVal1,strVal2,strVal3,"上传的日数据文件没有全部通过验证,暂不能上传日业务指标文件");
               Close_DB(); 
-    	      exit(1);     
+    	      exit(0);     
          }     
      } 
      
@@ -321,7 +321,7 @@ int main(int argc,char *argv[])
               printf("上传的月数据文件没有全部通过验证,暂不能上传月业务指标文件\n");
               insert_alarm(strDealCode,strVal1,strVal2,strVal3,"上传的月数据文件没有全部通过验证,暂不能上传月业务指标文件");
               Close_DB(); 
-    	      exit(1);     
+    	      exit(0);     
          }     
      } 
 */
@@ -346,7 +346,7 @@ int main(int argc,char *argv[])
          printf("生成查询语法出错\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"生成查询语法出错");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      }
      printf("生成查询语法成功!\n");
      
@@ -355,7 +355,7 @@ int main(int argc,char *argv[])
          printf("生成数据文件出错：%s\n",strErrorInfo);
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"生成数据文件出错");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      } 
      printf("生成数据文件成功[%s]!\n",strSQL);
      
@@ -364,7 +364,7 @@ int main(int argc,char *argv[])
          printf("不能上传空文件\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"不能上传空文件");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      } 
      
      //生成校验文件
@@ -372,7 +372,7 @@ int main(int argc,char *argv[])
          printf("生成校验文件出错\n");
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"生成校验文件出错");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      }
      printf("生成上校验文件成功!\n");
      
@@ -391,7 +391,7 @@ int main(int argc,char *argv[])
          printf("记录导出日志失败:%s\n",strErrorInfo);
          insert_alarm(strDealCode,strVal1,strVal2,strVal3,"记录导出日志失败,请手工处理数据导出日志[APP.G_RUNLOG]");
          Close_DB(); 
-    	 exit(1);     
+    	 exit(0);     
      }
      printf("记录日志成功!\n");
      Close_DB();
@@ -693,65 +693,43 @@ EXEC SQL END DECLARE SECTION;
     
 /*
 EXEC SQL select count(*) into :nNum 
-             from SYSIBM.SYSCOLUMNS 
-             where upper(tbname)=upper(:sTableName) and upper(tbcreator)=upper(:sCreator);
+             from SYSIBM.sysdummy1;
 */
 
 {
-#line 530 "bass1_export.sqc"
+#line 529 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 530 "bass1_export.sqc"
-  sqlaaloc(2,2,5,0L);
-    {
-      struct sqla_setdata_list sql_setdlist[2];
-#line 530 "bass1_export.sqc"
-      sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 1024;
-#line 530 "bass1_export.sqc"
-      sql_setdlist[0].sqldata = (void*)sTableName;
-#line 530 "bass1_export.sqc"
-      sql_setdlist[0].sqlind = 0L;
-#line 530 "bass1_export.sqc"
-      sql_setdlist[1].sqltype = 460; sql_setdlist[1].sqllen = 1024;
-#line 530 "bass1_export.sqc"
-      sql_setdlist[1].sqldata = (void*)sCreator;
-#line 530 "bass1_export.sqc"
-      sql_setdlist[1].sqlind = 0L;
-#line 530 "bass1_export.sqc"
-      sqlasetdata(2,0,2,sql_setdlist,0L,0L);
-    }
-#line 530 "bass1_export.sqc"
-  sqlaaloc(3,1,6,0L);
+#line 529 "bass1_export.sqc"
+  sqlaaloc(3,1,5,0L);
     {
       struct sqla_setdata_list sql_setdlist[1];
-#line 530 "bass1_export.sqc"
+#line 529 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 496; sql_setdlist[0].sqllen = 4;
-#line 530 "bass1_export.sqc"
+#line 529 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)&nNum;
-#line 530 "bass1_export.sqc"
+#line 529 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 530 "bass1_export.sqc"
+#line 529 "bass1_export.sqc"
       sqlasetdata(3,0,1,sql_setdlist,0L,0L);
     }
-#line 530 "bass1_export.sqc"
-  sqlacall((unsigned short)24,3,2,3,0L);
-#line 530 "bass1_export.sqc"
+#line 529 "bass1_export.sqc"
+  sqlacall((unsigned short)24,3,0,3,0L);
+#line 529 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 530 "bass1_export.sqc"
+#line 529 "bass1_export.sqc"
 
     if ( sqlca.sqlcode!= 0 ) return sqlca.sqlcode;          
     if ( nNum==0 ) return -1;
     
     
 /*
-EXEC SQL DECLARE c1 CURSOR FOR select name 
-                                   from SYSIBM.SYSCOLUMNS 
-                                   where upper(tbname)=upper(:sTableName) and upper(tbcreator)=upper(:sCreator) 
-                                   order by colno;
+EXEC SQL DECLARE c1 CURSOR FOR select 1
+                                   from SYSIBM.sysdummy1 ;
 */
 
-#line 537 "bass1_export.sqc"
+#line 534 "bass1_export.sqc"
 
     
 /*
@@ -759,34 +737,15 @@ EXEC SQL OPEN c1;
 */
 
 {
-#line 538 "bass1_export.sqc"
+#line 535 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 538 "bass1_export.sqc"
-  sqlaaloc(2,2,7,0L);
-    {
-      struct sqla_setdata_list sql_setdlist[2];
-#line 538 "bass1_export.sqc"
-      sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 1024;
-#line 538 "bass1_export.sqc"
-      sql_setdlist[0].sqldata = (void*)sTableName;
-#line 538 "bass1_export.sqc"
-      sql_setdlist[0].sqlind = 0L;
-#line 538 "bass1_export.sqc"
-      sql_setdlist[1].sqltype = 460; sql_setdlist[1].sqllen = 1024;
-#line 538 "bass1_export.sqc"
-      sql_setdlist[1].sqldata = (void*)sCreator;
-#line 538 "bass1_export.sqc"
-      sql_setdlist[1].sqlind = 0L;
-#line 538 "bass1_export.sqc"
-      sqlasetdata(2,0,2,sql_setdlist,0L,0L);
-    }
-#line 538 "bass1_export.sqc"
-  sqlacall((unsigned short)26,4,2,0,0L);
-#line 538 "bass1_export.sqc"
+#line 535 "bass1_export.sqc"
+  sqlacall((unsigned short)26,4,0,0,0L);
+#line 535 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 538 "bass1_export.sqc"
+#line 535 "bass1_export.sqc"
 
     nNum=0;
     for(;;)
@@ -797,28 +756,28 @@ EXEC SQL fetch c1 into :sCol;
 */
 
 {
-#line 542 "bass1_export.sqc"
+#line 539 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 542 "bass1_export.sqc"
-  sqlaaloc(3,1,8,0L);
+#line 539 "bass1_export.sqc"
+  sqlaaloc(3,1,6,0L);
     {
       struct sqla_setdata_list sql_setdlist[1];
-#line 542 "bass1_export.sqc"
+#line 539 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 1024;
-#line 542 "bass1_export.sqc"
+#line 539 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)sCol;
-#line 542 "bass1_export.sqc"
+#line 539 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 542 "bass1_export.sqc"
+#line 539 "bass1_export.sqc"
       sqlasetdata(3,0,1,sql_setdlist,0L,0L);
     }
-#line 542 "bass1_export.sqc"
+#line 539 "bass1_export.sqc"
   sqlacall((unsigned short)25,4,0,3,0L);
-#line 542 "bass1_export.sqc"
+#line 539 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 542 "bass1_export.sqc"
+#line 539 "bass1_export.sqc"
 
     	if(sqlca.sqlcode==100) break;
     	if(sqlca.sqlcode<0){
@@ -828,15 +787,15 @@ EXEC SQL CLOSE c1;
 */
 
 {
-#line 545 "bass1_export.sqc"
+#line 542 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 545 "bass1_export.sqc"
+#line 542 "bass1_export.sqc"
   sqlacall((unsigned short)20,4,0,0,0L);
-#line 545 "bass1_export.sqc"
+#line 542 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 545 "bass1_export.sqc"
+#line 542 "bass1_export.sqc"
 
     		return -2;
     	}
@@ -854,15 +813,15 @@ EXEC SQL CLOSE c1;
 */
 
 {
-#line 556 "bass1_export.sqc"
+#line 553 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 556 "bass1_export.sqc"
+#line 553 "bass1_export.sqc"
   sqlacall((unsigned short)20,4,0,0,0L);
-#line 556 "bass1_export.sqc"
+#line 553 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 556 "bass1_export.sqc"
+#line 553 "bass1_export.sqc"
 
     
     sprintf(OutSQL,"%s from %s.%s where time_id=%s",OutSQL,rsCreator,rsTableName,rsDate);
@@ -878,7 +837,7 @@ int export_data(char *rsFileName,char *rsSQL,char *OutErrorInfo,int &OutRecNum)
 EXEC SQL BEGIN DECLARE SECTION;
 */
 
-#line 566 "bass1_export.sqc"
+#line 563 "bass1_export.sqc"
 
     char sSQL[10240];
     char sData[10240];
@@ -887,7 +846,7 @@ EXEC SQL BEGIN DECLARE SECTION;
 EXEC SQL END DECLARE SECTION;
 */
 
-#line 569 "bass1_export.sqc"
+#line 566 "bass1_export.sqc"
 
     
     char buf[1024];
@@ -906,24 +865,24 @@ EXEC SQL prepare c2 from :sSQL;
 */
 
 {
-#line 581 "bass1_export.sqc"
+#line 578 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 581 "bass1_export.sqc"
+#line 578 "bass1_export.sqc"
   sqlastls(0,sSQL,0L);
-#line 581 "bass1_export.sqc"
+#line 578 "bass1_export.sqc"
   sqlacall((unsigned short)27,5,0,0,0L);
-#line 581 "bass1_export.sqc"
+#line 578 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 581 "bass1_export.sqc"
+#line 578 "bass1_export.sqc"
 
     
 /*
 EXEC SQL declare c2 cursor for c2;
 */
 
-#line 582 "bass1_export.sqc"
+#line 579 "bass1_export.sqc"
 
     
 /*
@@ -931,15 +890,15 @@ EXEC SQL    OPEN c2;
 */
 
 {
-#line 583 "bass1_export.sqc"
+#line 580 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 583 "bass1_export.sqc"
+#line 580 "bass1_export.sqc"
   sqlacall((unsigned short)26,5,0,0,0L);
-#line 583 "bass1_export.sqc"
+#line 580 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 583 "bass1_export.sqc"
+#line 580 "bass1_export.sqc"
 
     if( sqlca.sqlcode<0 )
     {
@@ -950,15 +909,15 @@ EXEC SQL CLOSE c2;
 */
 
 {
-#line 587 "bass1_export.sqc"
+#line 584 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 587 "bass1_export.sqc"
+#line 584 "bass1_export.sqc"
   sqlacall((unsigned short)20,5,0,0,0L);
-#line 587 "bass1_export.sqc"
+#line 584 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 587 "bass1_export.sqc"
+#line 584 "bass1_export.sqc"
 
         return -2;
     }
@@ -970,28 +929,28 @@ EXEC SQL fetch c2 into :sData;
 */
 
 {
-#line 592 "bass1_export.sqc"
+#line 589 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 592 "bass1_export.sqc"
-  sqlaaloc(3,1,9,0L);
+#line 589 "bass1_export.sqc"
+  sqlaaloc(3,1,7,0L);
     {
       struct sqla_setdata_list sql_setdlist[1];
-#line 592 "bass1_export.sqc"
+#line 589 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 10240;
-#line 592 "bass1_export.sqc"
+#line 589 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)sData;
-#line 592 "bass1_export.sqc"
+#line 589 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 592 "bass1_export.sqc"
+#line 589 "bass1_export.sqc"
       sqlasetdata(3,0,1,sql_setdlist,0L,0L);
     }
-#line 592 "bass1_export.sqc"
+#line 589 "bass1_export.sqc"
   sqlacall((unsigned short)25,5,0,3,0L);
-#line 592 "bass1_export.sqc"
+#line 589 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 592 "bass1_export.sqc"
+#line 589 "bass1_export.sqc"
 
     	if(sqlca.sqlcode==100) break;
     	if(sqlca.sqlcode<0)
@@ -1003,15 +962,15 @@ EXEC SQL CLOSE c2;
 */
 
 {
-#line 597 "bass1_export.sqc"
+#line 594 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 597 "bass1_export.sqc"
+#line 594 "bass1_export.sqc"
   sqlacall((unsigned short)20,5,0,0,0L);
-#line 597 "bass1_export.sqc"
+#line 594 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 597 "bass1_export.sqc"
+#line 594 "bass1_export.sqc"
 
     	    return -3;
     	}
@@ -1026,15 +985,15 @@ EXEC SQL CLOSE c2;
 */
 
 {
-#line 605 "bass1_export.sqc"
+#line 602 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 605 "bass1_export.sqc"
+#line 602 "bass1_export.sqc"
   sqlacall((unsigned short)20,5,0,0,0L);
-#line 605 "bass1_export.sqc"
+#line 602 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 605 "bass1_export.sqc"
+#line 602 "bass1_export.sqc"
 
     fclose(fp1);
     return 0;
@@ -1047,7 +1006,7 @@ int get_digit_date(char *rsDate,char *OutDate,char *OutErrorInfo)
 EXEC SQL BEGIN DECLARE SECTION;
 */
 
-#line 612 "bass1_export.sqc"
+#line 609 "bass1_export.sqc"
 
     char in_Date[20];
     char out_Date[20];
@@ -1057,7 +1016,7 @@ EXEC SQL BEGIN DECLARE SECTION;
 EXEC SQL END DECLARE SECTION;
 */
 
-#line 616 "bass1_export.sqc"
+#line 613 "bass1_export.sqc"
 
 
      sprintf(in_Date,rsDate);
@@ -1069,41 +1028,41 @@ EXEC SQL  select  substr(replace(char(date(:in_Date||'-01'),ISO),'-',''),1,6)  i
 */
 
 {
-#line 621 "bass1_export.sqc"
+#line 618 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 621 "bass1_export.sqc"
-  sqlaaloc(2,1,10,0L);
+#line 618 "bass1_export.sqc"
+  sqlaaloc(2,1,8,0L);
     {
       struct sqla_setdata_list sql_setdlist[1];
-#line 621 "bass1_export.sqc"
+#line 618 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 20;
-#line 621 "bass1_export.sqc"
+#line 618 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)in_Date;
-#line 621 "bass1_export.sqc"
+#line 618 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 621 "bass1_export.sqc"
+#line 618 "bass1_export.sqc"
       sqlasetdata(2,0,1,sql_setdlist,0L,0L);
     }
-#line 621 "bass1_export.sqc"
-  sqlaaloc(3,1,11,0L);
+#line 618 "bass1_export.sqc"
+  sqlaaloc(3,1,9,0L);
     {
       struct sqla_setdata_list sql_setdlist[1];
-#line 621 "bass1_export.sqc"
+#line 618 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 20;
-#line 621 "bass1_export.sqc"
+#line 618 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)out_Date;
-#line 621 "bass1_export.sqc"
+#line 618 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 621 "bass1_export.sqc"
+#line 618 "bass1_export.sqc"
       sqlasetdata(3,0,1,sql_setdlist,0L,0L);
     }
-#line 621 "bass1_export.sqc"
+#line 618 "bass1_export.sqc"
   sqlacall((unsigned short)24,6,2,3,0L);
-#line 621 "bass1_export.sqc"
+#line 618 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 621 "bass1_export.sqc"
+#line 618 "bass1_export.sqc"
 
      }else{
           
@@ -1112,41 +1071,41 @@ EXEC SQL  select  replace(char(date(:in_Date),ISO),'-','') into :out_Date from s
 */
 
 {
-#line 623 "bass1_export.sqc"
+#line 620 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 623 "bass1_export.sqc"
-  sqlaaloc(2,1,12,0L);
+#line 620 "bass1_export.sqc"
+  sqlaaloc(2,1,10,0L);
     {
       struct sqla_setdata_list sql_setdlist[1];
-#line 623 "bass1_export.sqc"
+#line 620 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 20;
-#line 623 "bass1_export.sqc"
+#line 620 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)in_Date;
-#line 623 "bass1_export.sqc"
+#line 620 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 623 "bass1_export.sqc"
+#line 620 "bass1_export.sqc"
       sqlasetdata(2,0,1,sql_setdlist,0L,0L);
     }
-#line 623 "bass1_export.sqc"
-  sqlaaloc(3,1,13,0L);
+#line 620 "bass1_export.sqc"
+  sqlaaloc(3,1,11,0L);
     {
       struct sqla_setdata_list sql_setdlist[1];
-#line 623 "bass1_export.sqc"
+#line 620 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 20;
-#line 623 "bass1_export.sqc"
+#line 620 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)out_Date;
-#line 623 "bass1_export.sqc"
+#line 620 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 623 "bass1_export.sqc"
+#line 620 "bass1_export.sqc"
       sqlasetdata(3,0,1,sql_setdlist,0L,0L);
     }
-#line 623 "bass1_export.sqc"
+#line 620 "bass1_export.sqc"
   sqlacall((unsigned short)24,7,2,3,0L);
-#line 623 "bass1_export.sqc"
+#line 620 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 623 "bass1_export.sqc"
+#line 620 "bass1_export.sqc"
 
      }          
      if ( sqlca.sqlcode!=0 ) 
@@ -1163,7 +1122,7 @@ int write_log(char *rsDate,char *rsUnitCode,int nCoarse,char *rsDataFileName,cha
 EXEC SQL BEGIN DECLARE SECTION;
 */
 
-#line 634 "bass1_export.sqc"
+#line 631 "bass1_export.sqc"
 
     char      in_ExportDate[20];   
     char      in_UnitCode[20];
@@ -1176,7 +1135,7 @@ EXEC SQL BEGIN DECLARE SECTION;
 EXEC SQL END DECLARE SECTION;
 */
 
-#line 641 "bass1_export.sqc"
+#line 638 "bass1_export.sqc"
 
      
     sprintf(in_ExportDate,rsDate);
@@ -1193,53 +1152,53 @@ EXEC SQL select count(*) into :nRowLog
 */
 
 {
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 651 "bass1_export.sqc"
-  sqlaaloc(2,3,14,0L);
+#line 648 "bass1_export.sqc"
+  sqlaaloc(2,3,12,0L);
     {
       struct sqla_setdata_list sql_setdlist[3];
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 20;
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)in_ExportDate;
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
       sql_setdlist[1].sqltype = 460; sql_setdlist[1].sqllen = 20;
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
       sql_setdlist[1].sqldata = (void*)in_UnitCode;
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
       sql_setdlist[1].sqlind = 0L;
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
       sql_setdlist[2].sqltype = 496; sql_setdlist[2].sqllen = 4;
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
       sql_setdlist[2].sqldata = (void*)&in_Coarse;
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
       sql_setdlist[2].sqlind = 0L;
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
       sqlasetdata(2,0,3,sql_setdlist,0L,0L);
     }
-#line 651 "bass1_export.sqc"
-  sqlaaloc(3,1,15,0L);
+#line 648 "bass1_export.sqc"
+  sqlaaloc(3,1,13,0L);
     {
       struct sqla_setdata_list sql_setdlist[1];
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 496; sql_setdlist[0].sqllen = 4;
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)&nRowLog;
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
       sqlasetdata(3,0,1,sql_setdlist,0L,0L);
     }
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
   sqlacall((unsigned short)24,8,2,3,0L);
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 651 "bass1_export.sqc"
+#line 648 "bass1_export.sqc"
 
     if ( sqlca.sqlcode==0 ){
          if ( nRowLog==0 ){
@@ -1250,52 +1209,52 @@ EXEC SQL insert into APP.G_RUNLOG(time_id,unit_code,coarse,export_time,export_nu
 */
 
 {
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 655 "bass1_export.sqc"
-  sqlaaloc(2,5,16,0L);
+#line 652 "bass1_export.sqc"
+  sqlaaloc(2,5,14,0L);
     {
       struct sqla_setdata_list sql_setdlist[5];
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 20;
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)in_ExportDate;
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
       sql_setdlist[1].sqltype = 460; sql_setdlist[1].sqllen = 20;
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
       sql_setdlist[1].sqldata = (void*)in_UnitCode;
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
       sql_setdlist[1].sqlind = 0L;
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
       sql_setdlist[2].sqltype = 496; sql_setdlist[2].sqllen = 4;
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
       sql_setdlist[2].sqldata = (void*)&in_Coarse;
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
       sql_setdlist[2].sqlind = 0L;
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
       sql_setdlist[3].sqltype = 460; sql_setdlist[3].sqllen = 1024;
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
       sql_setdlist[3].sqldata = (void*)in_DataFileName;
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
       sql_setdlist[3].sqlind = 0L;
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
       sql_setdlist[4].sqltype = 460; sql_setdlist[4].sqllen = 1024;
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
       sql_setdlist[4].sqldata = (void*)in_VerfFileName;
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
       sql_setdlist[4].sqlind = 0L;
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
       sqlasetdata(2,0,5,sql_setdlist,0L,0L);
     }
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
   sqlacall((unsigned short)24,9,2,0,0L);
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 655 "bass1_export.sqc"
+#line 652 "bass1_export.sqc"
   
                if ( sqlca.sqlcode!=0 )
                {
@@ -1313,52 +1272,52 @@ EXEC SQL  update APP.G_RUNLOG
 */
 
 {
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 666 "bass1_export.sqc"
-  sqlaaloc(2,5,17,0L);
+#line 663 "bass1_export.sqc"
+  sqlaaloc(2,5,15,0L);
     {
       struct sqla_setdata_list sql_setdlist[5];
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 1024;
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)in_DataFileName;
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
       sql_setdlist[1].sqltype = 460; sql_setdlist[1].sqllen = 1024;
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
       sql_setdlist[1].sqldata = (void*)in_VerfFileName;
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
       sql_setdlist[1].sqlind = 0L;
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
       sql_setdlist[2].sqltype = 460; sql_setdlist[2].sqllen = 20;
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
       sql_setdlist[2].sqldata = (void*)in_ExportDate;
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
       sql_setdlist[2].sqlind = 0L;
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
       sql_setdlist[3].sqltype = 460; sql_setdlist[3].sqllen = 20;
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
       sql_setdlist[3].sqldata = (void*)in_UnitCode;
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
       sql_setdlist[3].sqlind = 0L;
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
       sql_setdlist[4].sqltype = 496; sql_setdlist[4].sqllen = 4;
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
       sql_setdlist[4].sqldata = (void*)&in_Coarse;
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
       sql_setdlist[4].sqlind = 0L;
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
       sqlasetdata(2,0,5,sql_setdlist,0L,0L);
     }
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
   sqlacall((unsigned short)24,10,2,0,0L);
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 666 "bass1_export.sqc"
+#line 663 "bass1_export.sqc"
 
                if ( sqlca.sqlcode!=0 )
                {
@@ -1380,7 +1339,7 @@ int insert_alarm(char *rsDealCode,char *rsVal1,char *rsVal2,char *rsVal3,char *r
 EXEC SQL BEGIN DECLARE SECTION;
 */
 
-#line 682 "bass1_export.sqc"
+#line 679 "bass1_export.sqc"
 
      char in_ControlcCode[300];
      char in_CMDLine[300];
@@ -1390,7 +1349,7 @@ EXEC SQL BEGIN DECLARE SECTION;
 EXEC SQL END DECLARE SECTION;
 */
 
-#line 686 "bass1_export.sqc"
+#line 683 "bass1_export.sqc"
  
 
     sprintf(in_CMDLine,"%s %s",rsDealCode,rsVal1);
@@ -1404,41 +1363,41 @@ EXEC SQL select max(CONTROL_CODE) into :in_ControlcCode
 */
 
 {
-#line 693 "bass1_export.sqc"
+#line 690 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 693 "bass1_export.sqc"
-  sqlaaloc(2,1,18,0L);
+#line 690 "bass1_export.sqc"
+  sqlaaloc(2,1,16,0L);
     {
       struct sqla_setdata_list sql_setdlist[1];
-#line 693 "bass1_export.sqc"
+#line 690 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 300;
-#line 693 "bass1_export.sqc"
+#line 690 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)in_CMDLine;
-#line 693 "bass1_export.sqc"
+#line 690 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 693 "bass1_export.sqc"
+#line 690 "bass1_export.sqc"
       sqlasetdata(2,0,1,sql_setdlist,0L,0L);
     }
-#line 693 "bass1_export.sqc"
-  sqlaaloc(3,1,19,0L);
+#line 690 "bass1_export.sqc"
+  sqlaaloc(3,1,17,0L);
     {
       struct sqla_setdata_list sql_setdlist[1];
-#line 693 "bass1_export.sqc"
+#line 690 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 300;
-#line 693 "bass1_export.sqc"
+#line 690 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)in_ControlcCode;
-#line 693 "bass1_export.sqc"
+#line 690 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 693 "bass1_export.sqc"
+#line 690 "bass1_export.sqc"
       sqlasetdata(3,0,1,sql_setdlist,0L,0L);
     }
-#line 693 "bass1_export.sqc"
+#line 690 "bass1_export.sqc"
   sqlacall((unsigned short)24,11,2,3,0L);
-#line 693 "bass1_export.sqc"
+#line 690 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 693 "bass1_export.sqc"
+#line 690 "bass1_export.sqc"
 
     if ( sqlca.sqlcode!=0 ){
          printf("查询调度名称失败[%s %s %s]:%c%c%c%c%c\n",rsDealCode,rsVal1,rsVal2,sqlca.sqlstate[0],sqlca.sqlstate[1],sqlca.sqlstate[2],sqlca.sqlstate[3],sqlca.sqlstate[4]);
@@ -1453,41 +1412,11 @@ EXEC SQL insert into APP.SCH_CONTROL_ALARM(CONTROL_CODE,CMD_LINE,GRADE,CONTENT,A
              values(:in_ControlcCode,:in_CMDLine,1,:in_ErrorInfo,current timestamp,-1);
 */
 
-{
-#line 702 "bass1_export.sqc"
-  sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 702 "bass1_export.sqc"
-  sqlaaloc(2,3,20,0L);
-    {
-      struct sqla_setdata_list sql_setdlist[3];
-#line 702 "bass1_export.sqc"
-      sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 300;
-#line 702 "bass1_export.sqc"
-      sql_setdlist[0].sqldata = (void*)in_ControlcCode;
-#line 702 "bass1_export.sqc"
-      sql_setdlist[0].sqlind = 0L;
-#line 702 "bass1_export.sqc"
-      sql_setdlist[1].sqltype = 460; sql_setdlist[1].sqllen = 300;
-#line 702 "bass1_export.sqc"
-      sql_setdlist[1].sqldata = (void*)in_CMDLine;
-#line 702 "bass1_export.sqc"
-      sql_setdlist[1].sqlind = 0L;
-#line 702 "bass1_export.sqc"
-      sql_setdlist[2].sqltype = 460; sql_setdlist[2].sqllen = 600;
-#line 702 "bass1_export.sqc"
-      sql_setdlist[2].sqldata = (void*)in_ErrorInfo;
-#line 702 "bass1_export.sqc"
-      sql_setdlist[2].sqlind = 0L;
-#line 702 "bass1_export.sqc"
-      sqlasetdata(2,0,3,sql_setdlist,0L,0L);
-    }
-#line 702 "bass1_export.sqc"
-  sqlacall((unsigned short)24,12,2,0,0L);
-#line 702 "bass1_export.sqc"
-  sqlastop(0L);
-}
+/*
+SQL0101N  The statement is too long or too complex.  
+SQLSTATE=54001
 
-#line 702 "bass1_export.sqc"
+*/
 
     if ( sqlca.sqlcode!=0 ) printf("插入告警信息出错[%s]:%c%c%c%c%c\n",in_CMDLine,sqlca.sqlstate[0],sqlca.sqlstate[1],sqlca.sqlstate[2],sqlca.sqlstate[3],sqlca.sqlstate[4]);
     return sqlca.sqlcode;
@@ -1500,7 +1429,7 @@ int get_unit_info(char *rsTableName,char *OutUnitCode,char *OutFlag,int &OutCoar
 EXEC SQL BEGIN DECLARE SECTION;
 */
 
-#line 709 "bass1_export.sqc"
+#line 706 "bass1_export.sqc"
 
     char in_TableName[1024];
     char out_UnitCode[1024];
@@ -1514,7 +1443,7 @@ EXEC SQL BEGIN DECLARE SECTION;
 EXEC SQL END DECLARE SECTION;
 */
 
-#line 717 "bass1_export.sqc"
+#line 714 "bass1_export.sqc"
 
 
    sprintf(in_TableName,rsTableName);
@@ -1524,41 +1453,41 @@ EXEC SQL select count(*) into :nUnitRow from  APP.G_UNIT_INFO where upper(table_
 */
 
 {
-#line 720 "bass1_export.sqc"
+#line 717 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 720 "bass1_export.sqc"
-  sqlaaloc(2,1,21,0L);
+#line 717 "bass1_export.sqc"
+  sqlaaloc(2,1,18,0L);
     {
       struct sqla_setdata_list sql_setdlist[1];
-#line 720 "bass1_export.sqc"
+#line 717 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 1024;
-#line 720 "bass1_export.sqc"
+#line 717 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)in_TableName;
-#line 720 "bass1_export.sqc"
+#line 717 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 720 "bass1_export.sqc"
+#line 717 "bass1_export.sqc"
       sqlasetdata(2,0,1,sql_setdlist,0L,0L);
     }
-#line 720 "bass1_export.sqc"
-  sqlaaloc(3,1,22,0L);
+#line 717 "bass1_export.sqc"
+  sqlaaloc(3,1,19,0L);
     {
       struct sqla_setdata_list sql_setdlist[1];
-#line 720 "bass1_export.sqc"
+#line 717 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 496; sql_setdlist[0].sqllen = 4;
-#line 720 "bass1_export.sqc"
+#line 717 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)&nUnitRow;
-#line 720 "bass1_export.sqc"
+#line 717 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 720 "bass1_export.sqc"
+#line 717 "bass1_export.sqc"
       sqlasetdata(3,0,1,sql_setdlist,0L,0L);
     }
-#line 720 "bass1_export.sqc"
-  sqlacall((unsigned short)24,13,2,3,0L);
-#line 720 "bass1_export.sqc"
+#line 717 "bass1_export.sqc"
+  sqlacall((unsigned short)24,12,2,3,0L);
+#line 717 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 720 "bass1_export.sqc"
+#line 717 "bass1_export.sqc"
 
    if ( sqlca.sqlcode!=0 ){
        sprintf(OutErrorInfo,"查询导出表配置记录数出错:%c%c%c%c%c\n",sqlca.sqlstate[0],sqlca.sqlstate[1],sqlca.sqlstate[2],sqlca.sqlstate[3],sqlca.sqlstate[4]);
@@ -1577,65 +1506,65 @@ EXEC SQL select unit_code,substr(table_name,6+3,1),coarse,put_flag,put_zero
 */
 
 {
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 732 "bass1_export.sqc"
-  sqlaaloc(2,1,23,0L);
+#line 729 "bass1_export.sqc"
+  sqlaaloc(2,1,20,0L);
     {
       struct sqla_setdata_list sql_setdlist[1];
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 1024;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)in_TableName;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sqlasetdata(2,0,1,sql_setdlist,0L,0L);
     }
-#line 732 "bass1_export.sqc"
-  sqlaaloc(3,5,24,0L);
+#line 729 "bass1_export.sqc"
+  sqlaaloc(3,5,21,0L);
     {
       struct sqla_setdata_list sql_setdlist[5];
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 1024;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)out_UnitCode;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[1].sqltype = 460; sql_setdlist[1].sqllen = 1024;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[1].sqldata = (void*)out_Flag;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[1].sqlind = 0L;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[2].sqltype = 496; sql_setdlist[2].sqllen = 4;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[2].sqldata = (void*)&out_Coarse;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[2].sqlind = 0L;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[3].sqltype = 496; sql_setdlist[3].sqllen = 4;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[3].sqldata = (void*)&out_IfPut;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[3].sqlind = 0L;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[4].sqltype = 496; sql_setdlist[4].sqllen = 4;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[4].sqldata = (void*)&out_IfEmptyPut;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sql_setdlist[4].sqlind = 0L;
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
       sqlasetdata(3,0,5,sql_setdlist,0L,0L);
     }
-#line 732 "bass1_export.sqc"
-  sqlacall((unsigned short)24,14,2,3,0L);
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
+  sqlacall((unsigned short)24,13,2,3,0L);
+#line 729 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 732 "bass1_export.sqc"
+#line 729 "bass1_export.sqc"
 
         if ( sqlca.sqlcode!=0 ){
               sprintf(OutErrorInfo,"查询导出表配置出错:%c%c%c%c%c\n",sqlca.sqlstate[0],sqlca.sqlstate[1],sqlca.sqlstate[2],sqlca.sqlstate[3],sqlca.sqlstate[4]);
@@ -1754,7 +1683,7 @@ int Connect_DB(char* rsDBName,char* rsUserName,char* rsPassWD)
 EXEC SQL BEGIN DECLARE SECTION;
 */
 
-#line 845 "bass1_export.sqc"
+#line 842 "bass1_export.sqc"
 
     char dbname[20];
     char username[20];
@@ -1764,7 +1693,7 @@ EXEC SQL BEGIN DECLARE SECTION;
 EXEC SQL END DECLARE SECTION;
 */
 
-#line 849 "bass1_export.sqc"
+#line 846 "bass1_export.sqc"
 
      strcpy (dbname,rsDBName);
      strcpy (username,rsUserName );
@@ -1775,40 +1704,40 @@ EXEC SQL CONNECT TO :dbname USER :username USING :password ;
 */
 
 {
-#line 853 "bass1_export.sqc"
+#line 850 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 853 "bass1_export.sqc"
-  sqlaaloc(2,3,25,0L);
+#line 850 "bass1_export.sqc"
+  sqlaaloc(2,3,22,0L);
     {
       struct sqla_setdata_list sql_setdlist[3];
-#line 853 "bass1_export.sqc"
+#line 850 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 20;
-#line 853 "bass1_export.sqc"
+#line 850 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)dbname;
-#line 853 "bass1_export.sqc"
+#line 850 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 853 "bass1_export.sqc"
+#line 850 "bass1_export.sqc"
       sql_setdlist[1].sqltype = 460; sql_setdlist[1].sqllen = 20;
-#line 853 "bass1_export.sqc"
+#line 850 "bass1_export.sqc"
       sql_setdlist[1].sqldata = (void*)username;
-#line 853 "bass1_export.sqc"
+#line 850 "bass1_export.sqc"
       sql_setdlist[1].sqlind = 0L;
-#line 853 "bass1_export.sqc"
+#line 850 "bass1_export.sqc"
       sql_setdlist[2].sqltype = 460; sql_setdlist[2].sqllen = 20;
-#line 853 "bass1_export.sqc"
+#line 850 "bass1_export.sqc"
       sql_setdlist[2].sqldata = (void*)password;
-#line 853 "bass1_export.sqc"
+#line 850 "bass1_export.sqc"
       sql_setdlist[2].sqlind = 0L;
-#line 853 "bass1_export.sqc"
+#line 850 "bass1_export.sqc"
       sqlasetdata(2,0,3,sql_setdlist,0L,0L);
     }
-#line 853 "bass1_export.sqc"
+#line 850 "bass1_export.sqc"
   sqlacall((unsigned short)29,5,2,0,0L);
-#line 853 "bass1_export.sqc"
+#line 850 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 853 "bass1_export.sqc"
+#line 850 "bass1_export.sqc"
  
      return sqlca.sqlcode;
 }
@@ -1822,15 +1751,15 @@ EXEC SQL COMMIT WORK;
 */
 
 {
-#line 860 "bass1_export.sqc"
+#line 857 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 860 "bass1_export.sqc"
+#line 857 "bass1_export.sqc"
   sqlacall((unsigned short)21,0,0,0,0L);
-#line 860 "bass1_export.sqc"
+#line 857 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 860 "bass1_export.sqc"
+#line 857 "bass1_export.sqc"
 
      
 /*
@@ -1838,15 +1767,15 @@ EXEC SQL CONNECT RESET ;
 */
 
 {
-#line 861 "bass1_export.sqc"
+#line 858 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 861 "bass1_export.sqc"
+#line 858 "bass1_export.sqc"
   sqlacall((unsigned short)29,3,0,0,0L);
-#line 861 "bass1_export.sqc"
+#line 858 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 861 "bass1_export.sqc"
+#line 858 "bass1_export.sqc"
 
      return 0;
 }
@@ -1857,7 +1786,7 @@ int get_check_flag(char *rsDate,char *rsUnitCode,int nCoarse)
 EXEC SQL BEGIN DECLARE SECTION;
 */
 
-#line 866 "bass1_export.sqc"
+#line 863 "bass1_export.sqc"
 
     char      in_Date_1[1024];
     char      in_UnitCode_1[1024];
@@ -1868,7 +1797,7 @@ EXEC SQL BEGIN DECLARE SECTION;
 EXEC SQL END DECLARE SECTION;
 */
 
-#line 871 "bass1_export.sqc"
+#line 868 "bass1_export.sqc"
 
    
    strcpy(in_Date_1,rsDate);
@@ -1884,53 +1813,53 @@ EXEC SQL  select count(*)  into :out_row_count
 */
 
 {
-#line 880 "bass1_export.sqc"
+#line 877 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 880 "bass1_export.sqc"
-  sqlaaloc(2,3,26,0L);
+#line 877 "bass1_export.sqc"
+  sqlaaloc(2,3,23,0L);
     {
       struct sqla_setdata_list sql_setdlist[3];
-#line 880 "bass1_export.sqc"
+#line 877 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 460; sql_setdlist[0].sqllen = 1024;
-#line 880 "bass1_export.sqc"
+#line 877 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)in_Date_1;
-#line 880 "bass1_export.sqc"
+#line 877 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 880 "bass1_export.sqc"
+#line 877 "bass1_export.sqc"
       sql_setdlist[1].sqltype = 460; sql_setdlist[1].sqllen = 1024;
-#line 880 "bass1_export.sqc"
+#line 877 "bass1_export.sqc"
       sql_setdlist[1].sqldata = (void*)in_UnitCode_1;
-#line 880 "bass1_export.sqc"
+#line 877 "bass1_export.sqc"
       sql_setdlist[1].sqlind = 0L;
-#line 880 "bass1_export.sqc"
+#line 877 "bass1_export.sqc"
       sql_setdlist[2].sqltype = 496; sql_setdlist[2].sqllen = 4;
-#line 880 "bass1_export.sqc"
+#line 877 "bass1_export.sqc"
       sql_setdlist[2].sqldata = (void*)&in_Coarse_1;
-#line 880 "bass1_export.sqc"
+#line 877 "bass1_export.sqc"
       sql_setdlist[2].sqlind = 0L;
-#line 880 "bass1_export.sqc"
+#line 877 "bass1_export.sqc"
       sqlasetdata(2,0,3,sql_setdlist,0L,0L);
     }
-#line 880 "bass1_export.sqc"
-  sqlaaloc(3,1,27,0L);
+#line 877 "bass1_export.sqc"
+  sqlaaloc(3,1,24,0L);
     {
       struct sqla_setdata_list sql_setdlist[1];
-#line 880 "bass1_export.sqc"
+#line 877 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 496; sql_setdlist[0].sqllen = 4;
-#line 880 "bass1_export.sqc"
+#line 877 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)&out_row_count;
-#line 880 "bass1_export.sqc"
+#line 877 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 880 "bass1_export.sqc"
+#line 877 "bass1_export.sqc"
       sqlasetdata(3,0,1,sql_setdlist,0L,0L);
     }
-#line 880 "bass1_export.sqc"
-  sqlacall((unsigned short)24,15,2,3,0L);
-#line 880 "bass1_export.sqc"
+#line 877 "bass1_export.sqc"
+  sqlacall((unsigned short)24,14,2,3,0L);
+#line 877 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 880 "bass1_export.sqc"
+#line 877 "bass1_export.sqc"
 
    if ( sqlca.sqlcode==0 )
    {
@@ -1949,7 +1878,7 @@ int if_all_datafile_pass(int nCoarse)
 EXEC SQL BEGIN DECLARE SECTION;
 */
 
-#line 893 "bass1_export.sqc"
+#line 890 "bass1_export.sqc"
 
     sqlint32  in_coarse_day_mon;
     sqlint32  in_need_num;
@@ -1960,7 +1889,7 @@ EXEC SQL BEGIN DECLARE SECTION;
 EXEC SQL END DECLARE SECTION;
 */
 
-#line 898 "bass1_export.sqc"
+#line 895 "bass1_export.sqc"
 
 
     in_coarse_day_mon   = nCoarse ;
@@ -1984,65 +1913,65 @@ EXEC SQL  select need_num,fact_num  into :in_need_num,:in_fact_num
 */
 
 {
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
   sqlastrt(sqla_program_id, &sqla_rtinfo, &sqlca);
-#line 915 "bass1_export.sqc"
-  sqlaaloc(2,4,28,0L);
+#line 912 "bass1_export.sqc"
+  sqlaaloc(2,4,25,0L);
     {
       struct sqla_setdata_list sql_setdlist[4];
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 496; sql_setdlist[0].sqllen = 4;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)&in_coarse_day_mon;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[1].sqltype = 496; sql_setdlist[1].sqllen = 4;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[1].sqldata = (void*)&in_Coarse_day;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[1].sqlind = 0L;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[2].sqltype = 496; sql_setdlist[2].sqllen = 4;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[2].sqldata = (void*)&in_coarse_day_mon;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[2].sqlind = 0L;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[3].sqltype = 496; sql_setdlist[3].sqllen = 4;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[3].sqldata = (void*)&in_Coarse_day;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[3].sqlind = 0L;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sqlasetdata(2,0,4,sql_setdlist,0L,0L);
     }
-#line 915 "bass1_export.sqc"
-  sqlaaloc(3,2,29,0L);
+#line 912 "bass1_export.sqc"
+  sqlaaloc(3,2,26,0L);
     {
       struct sqla_setdata_list sql_setdlist[2];
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[0].sqltype = 496; sql_setdlist[0].sqllen = 4;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[0].sqldata = (void*)&in_need_num;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[0].sqlind = 0L;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[1].sqltype = 496; sql_setdlist[1].sqllen = 4;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[1].sqldata = (void*)&in_fact_num;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sql_setdlist[1].sqlind = 0L;
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
       sqlasetdata(3,0,2,sql_setdlist,0L,0L);
     }
-#line 915 "bass1_export.sqc"
-  sqlacall((unsigned short)24,16,2,3,0L);
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
+  sqlacall((unsigned short)24,15,2,3,0L);
+#line 912 "bass1_export.sqc"
   sqlastop(0L);
 }
 
-#line 915 "bass1_export.sqc"
+#line 912 "bass1_export.sqc"
 
    if ( sqlca.sqlcode!=0 ){
         printf("取上传并通过验证数失败:%c%c%c%c%c\n",sqlca.sqlstate[0],sqlca.sqlstate[1],sqlca.sqlstate[2],sqlca.sqlstate[3],sqlca.sqlstate[4]);
