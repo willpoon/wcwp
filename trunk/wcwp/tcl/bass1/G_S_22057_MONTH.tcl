@@ -12,7 +12,13 @@
 #编 写 人：panzw
 #编写时间：20110727
 #问题记录：
-#修改历史: 1. panzw 20110727	1.7.4 newly added
+#修改历史: 
+##~   1. panzw 20110727	1.7.4 newly added
+##~   1. panzw 20120331	1.7.9 
+##~   修改接口22057（疑似养卡渠道名单）：
+##~   1、	修改字段“预警模式”，增加分类“03：挖掘模型预警”；//西藏无挖掘模型数据，报0
+##~   2、	定义联合主键“月份”、“实体渠道标识”；
+
 #######################################################################################################   
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
 
@@ -72,6 +78,11 @@ chkzero2 $sql_buff "G_S_22057_MONTH has invalid channel_id! "
   #1.检查chkpkunique
 	set tabname "G_S_22057_MONTH"
 	set pk 			"OP_TIME||CHANNEL_ID||ALARM_TYPE||ALARM_LVL"
+	chkpkunique ${tabname} ${pk} ${op_month}
+
+  #1.定义联合主键“月份”、“实体渠道标识”；
+	set tabname "G_S_22057_MONTH"
+	set pk 			"OP_TIME||CHANNEL_ID"
 	chkpkunique ${tabname} ${pk} ${op_month}
 	
 	return 0

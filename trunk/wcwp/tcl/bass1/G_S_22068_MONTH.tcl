@@ -13,6 +13,7 @@
 #编写时间：2011-04-26
 #问题记录：1.
 #修改历史: 1. 1.7.2 规范
+##~   1.7.9 “托收”包括银行托收及银行代扣。（西藏无代扣这种业务）
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
 

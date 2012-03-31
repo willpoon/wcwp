@@ -74838,11 +74838,14 @@ select
                    
 
 
-   select time_id/100,sum(bigint(CANCEL_CNT)),sum(bigint(QRY_CNT)) , sum(bigint(CANCEL_CNT))*1.00/sum(bigint(QRY_CNT))
+select time_id/100 月份
+,sum(bigint(CANCEL_CNT)) 退订量
+,sum(bigint(QRY_CNT)) 查询量 
+, sum(bigint(CANCEL_CNT))*1.00/sum(bigint(QRY_CNT)) 退订率
 from G_S_22080_DAY
 group by time_id /100
 order by 1 desc 
-                   
+
                    
 
    select time_id,sum(bigint(CANCEL_CNT)),sum(bigint(QRY_CNT)) , sum(bigint(CANCEL_CNT))*1.00/sum(bigint(QRY_CNT))

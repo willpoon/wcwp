@@ -22,6 +22,7 @@ px6XK9Fp3nz9
 pzw.notes : zq3aW7vd3jd5
 svn checkout https://poonzref.googlecode.com/svn/trunk/ poonzref --username pzw.notes@gmail.com
 
+wlan lsw:1898998931
 
 When prompted, enter your generated googlecode.com password.
 Use this command to anonymously check out the latest project source code:
@@ -54,9 +55,15 @@ wlan:
 
 yingji_asiainfo
 gmcc@4889
+xunlei:
+`1qaz2wsx ID:640993650
 
 huangwei / ailknfjdbass!@#456
 
+
+select char(PEER_DATE),replace(substr(char(PEER_DATE),12,8),'.','')
+from  BASS2.dw_acct_payment_dm_201203  
+fetch first 10 rows only
 
 发短信冲QB
 50
@@ -163,7 +170,7 @@ select * from etl_task_log
 where	task_id	in	('I03013')	
 
  
-    nohup /bassapp/bihome/panzw/bass1_mon.sh >> bass1_mon.sh.out 2>&1 &
+nohup /bassapp/bihome/panzw/bass1_mon.sh >> bass1_mon.sh.out 2>&1 &
 
 nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 01005 201105 >> /bassapp/bihome/panzw/bass1_mon_one.sh.out 2>&1 &
 nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 22081 201106 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
@@ -255,6 +262,13 @@ db2 catalog tcpip node node48 remote 172.16.5.48 server 50000
 db2 catalog database bassdb as bassdb48 at node node48 authentication server
 db2 terminate
 
+
+
+db2 catalog tcpip node POONPC remote 127.0.0.1 server 50001
+db2 catalog database sample as sampledb at node POONPC authentication server
+db2 terminate
+db2 uncatalog database sampledb
+db2 uncatalog node POONPC
 
 --注册节点
 catalog tcpip node CQCRM remote 10.191.113.132 server 50000;
@@ -7485,7 +7499,7 @@ a.state in ('1','4','6','8','M','7','C','9')
 ,J-保号期
 ,K-有效期停主叫。
 
-nohup sh load_imei.sh > load_imei.201202.out 2>&1 &
+nohup sh load_imei.sh > load_imei.201203.out 2>&1 &
 
 zto 618159082802 pan
 zto 618158726217 wang
@@ -13315,7 +13329,9 @@ set   return_flag=0
 /bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_22063_MONTH 2011-12 &
 
            
-           
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_04008_DAY 2012-03-27
+
+
 select * from G_I_06032_DAY
 where time_id = 20120101
            
@@ -18448,3 +18464,106 @@ TNS_ADMIN                                            D:\oracle instantclient
 
 
 13811019618
+
+
+/bassapp/backapp/bin/bass1_report/bass1_report
+for dt in 25 26 27
+do
+echo "lt /bassapp/backapp/data/bass1/report/report_201203${dt}/r*|wc -l"
+lt /bassapp/backapp/data/bass1/report/report_201203${dt}/r*|wc -l
+done
+
+
+Embarcadero.Rapid.SQL.v7.6.0.3370(1)
+
+
+192.168.0.111
+255.255.255.0
+192.168.0.1
+202.98.224.69
+
+db2c_DB2
+50001
+要安装的产品：                             DB2 Server - DB2COPY1
+安装类型：                                 定制
+                                        
+DB2 副本名称：                             DB2COPY1
+设置为缺省 DB2 副本：                      是
+设置为缺省 IBM 数据库客户机接口副本：      是
+                                        
+所选功能部件：                          
+    XML Extender                           
+    DB2 WMI Provider                       
+    SQLJ Support                           
+    Sample database source                 
+    Replication tools                      
+    OLE DB Support                         
+    ODBC Support                           
+    MDAC 2.8                               
+    DB2 LDAP support                       
+    IBM Software Development Kit (SDK) for Java(TM)   
+    JDBC Support                           
+    Spatial Extender client                
+    First Steps                            
+    IBM Data Server Provider for .NET      
+    Control Center                         
+    Connect support                        
+    Configuration Assistant                
+    Base client support                    
+    Base application development tools     
+                                        
+语言：                                  
+    英语                                   
+    简体中文                               
+                                        
+目标目录：                                 C:\IBM\SQLLIB
+                                        
+需要的空间：                               569 MB
+特定于安装的驱动程序详细信息            
+用于 ODBC 和 CLI 的 IBM 数据服务器驱动程序的名称：   IBM DB2 ODBC DRIVER - DB2COPY1
+OLE DB 提供程序 GUID：                     {FC1E0A75-18EC-4C06-A963-05187E8D1295}
+                                        
+新建实例：                              
+    实例名：                               DB2
+        重新引导时启动实例：               否
+        TCP/IP 配置：                      
+            服务名称：                     db2c_DB2
+            端口号：                       50001
+        实例用户信息：                     
+            用户名：                       db2admin
+                                        
+DB2 管理服务器：                        
+    实例用户信息：                         
+        用户名：                           db2admin
+                                        
+                                        
+DB2 工具目录：                          
+    名称：                                 TOOLSDB
+    模式：                                 SYSTOOLS
+    实例：                                 DB2
+    位置：                                 本地
+                                        
+                                        
+响应文件名：                               C:\Users\Administrator\Documents\PROD_ESE.rsp
+必需步骤：
+
+可以使用端口号 "50001" 连接至 DB2 实例 "DB2"。请记录此端口号以供将来参考。
+
+
+可选步骤：
+
+要验证安装文件、实例和数据库功能，请运行验证工具 C:\IBM\SQLLIB\bin\db2val.exe。有关更多信息，请参阅 DB2 信息中心中的 "db2val"。
+
+应确保具有此机器上安装的 DB2 产品和功能部件的正确许可证使用权。随每个 DB2 产品或功能部件都附带提供了一张“激活 CD”，该 CD 上提供了许可证证书文件（又称为许可证密钥），同时还提供了有关应用许可证文件的指示信息。如果您购买了基本 DB2 产品以及另外单独计价的功能部件，那么可能需要安装多个许可证证书。如果 IBM 公司提供的物理介质包中没有适用于您的产品或功能部件的“激活 CD”，那么可以从 Passport Advantage 中下载该“激活 CD”。通过使用诸如“许可证发放”或 “db2licm”等术语搜索信息中心（http://publib.boulder.ibm.com/infocenter/db2luw/v9r7/index.jsp），就可以获取有关许可证发放的更多信息。
+
+根据您在此安装期间所作的选择，验证您是否能够访问 DB2 信息中心。如果执行典型安装或精简安装，那么验证您是否可以使用因特网来访问 IBM Web 站点。如果执行了定制安装，那么验证您是否可以访问在安装期间指定的 DB2 信息中心位置。
+
+查看在 C:\Users\Administrator\Documents\PROD_EXPC.rsp 创建的响应文件。在“DB2 的响应文件安装概述”下面的 DB2 文档中提供了有关响应文件安装的其他信息。
+
+请参阅 DB2 信息中心中的“新增内容”http://publib.boulder.ibm.com/infocenter/db2luw/v9r7/topic/com.ibm.db2.luw.wn.doc/doc/c0052035.html 以了解 DB2 V9.7 的新功能。
+
+
+
+默认的模式应该是登陆用户名--sras，命令行可以用 db2 set current schema abc。程序里没用过。
+
+

@@ -12,8 +12,11 @@
 #编 写 人：panzw
 #编写时间：20110922
 #问题记录：
-#修改历史: 1. panzw 20110922	1.7.5 newly added
-#修改历史: 2. panzw 20111125	对不在channel_info表的置失效 ('3')
+#修改历史: 
+##~   1. panzw 20110922	1.7.5 newly added
+##~   2. panzw 20111125	对不在channel_info表的置失效 ('3')
+##~   3.panzw 20120331修改接口06035（实体渠道基础信息（日增量））：1、	增加字段：“渠道联系电话”、“是否支持到店取货”、“是否提供VIP服务”、“是否支持终端销售”、“是否提供跨区服务”；
+
 #######################################################################################################   
 
 
@@ -56,7 +59,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		(	 	
 			CHANNEL_ID                      /**实体渠道标识:主键 **/
 			,CHANNEL_TYPE                    /**实体渠道类型:不允许为空 **/
-			,SELF_24_IND                     /**24小时自助营业厅合建营业厅渠道标识:对于实体渠道类型为1、2、3的记录该字段填空，对于4，如是独立设置，该项填空，否则填合建营业厅的渠道标识。 **/
+			,SELF_24_IND                     /**24小时自助营业厅合建营业厅渠道标识 **/
 			,CMCC_ID                         /**所属CMCC运营公司标识:不允许为空 **/
 			,COUNTY                          /**区县名称:不允许为空 **/
 			,REGION                          /**乡镇/片区名称:不允许为空 **/
@@ -64,11 +67,16 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			,CHANNEL_ADDR                    /**渠道地址:不允许为空 **/
 			,CHNL_MANAGER_NAME               /**渠道经理姓名:不允许为空 **/
 			,CHNL_MANAGER_PHONE              /**渠道经理联系电话:不允许为空 **/
+			,CHNL_PHONE			              /**渠道联系电话 1.7.9 **/
 			,GEO_ID                          /**地理位置类型:不允许为空 **/
 			,AREA_TYPE                       /**区域形态:不允许为空 **/
 			,CHANNEL_BASE_TYPE               /**渠道基础类型:不允许为空 **/
 			,IF_EX                           /**是否排他:不允许为空 **/
 			,IF_MOB_SALEHALL                 /**是否为手机卖场:不允许为空 **/
+			,IF_PICKUP			              /**是否提供到店取货 1.7.9 **/
+			,IF_SRV_VIP			              /**是否提供VIP服务 1.7.9 **/
+			,IF_SALE_TERM			          /**是否支持终端销售 1.7.9 **/
+			,IF_SRV_ACROSS			           /**是否提供跨区服务 1.7.9 **/			
 			,CHNL_STAR                       /**渠道星级:       **/
 			,CHNL_STATE                      /**渠道状态:不允许为空 **/
 			,OPEN_TIME                       /**营业起始时间:不允许为空 **/
@@ -84,23 +92,24 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			,SUBSIDY_FEE                     /**一次性门头补贴: **/
 		  )
 	SELECT
-		trim(char(a.channel_id))
+		trim(char(a.channel_id)) CHANNEL_ID
 		,case when a.channel_type_class=90105 and a.channel_type in (90196,90153,90154,90155,90156,90157,90158,90940,90941,90942,90943) then '1'
           else '3'
      end channel_type
 		,'' self_channel_id
-		,COALESCE(BASS1.FN_GET_ALL_DIM('BASS_STD1_0054',SUBSTR(A.REGION_CODE,2,3)),'13101')
-		,value(b.county_name,'未知')
-		,value(c.thorpe_name,'未知')
-		,value(a.channel_name,'未知')
-		,value(a.channel_address,'未知')
-		,'未知' CHNL_MANAGER_NAME
+		,COALESCE(BASS1.FN_GET_ALL_DIM('BASS_STD1_0054',SUBSTR(A.REGION_CODE,2,3)),'13101') CMCC_ID
+		,value(b.county_name,'未知') COUNTY
+		,value(c.thorpe_name,'未知') REGION
+		,value(a.channel_name,'未知') CHANNEL_NAME
+		,value(a.channel_address,'未知') CHANNEL_ADDR
+		,'未知' CHNL_MANAGER_NAME 
 		,value(a.TEL_NUMBER,'未知') CHNL_MANAGER_PHONE
+		,value(substr(replace(a.TEL_NUMBER,'-',''),1,11),'未知') CHNL_PHONE  /**渠道联系电话 1.7.9 **/
 		,case when a.geography_type in (1,2,3) then '1'
 			 		when a.geography_type in (4) then '2'
 			 		when a.geography_type in (5) then '3'
 			 		else '4'
-		 end  position
+		 end  GEO_ID
 		,case when a.geography_property=1 then '4'
 			 		when a.geography_property=2 then '2'
 			 		when a.geography_property=3 then '1'
@@ -111,16 +120,20 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			 		when a.geography_property=8 then '3'
 			 		when a.geography_property=9 then '3'
 			 		else '3'
-		 end region_info
+		 end AREA_TYPE
 		,case when a.channel_type_class=90105 and a.channel_type in (90153,90155,90157,90158,90196,90940,90942,90943) then '1'
 			 		when a.channel_type_class=90105 and a.channel_type in (90154,90941) then '2'
 			 		when a.channel_type_class=90105 and a.channel_type in (90156) then '3'
 			 		when a.channel_type_class=90102 and a.channel_type in (90881) then '5'
 			 		when a.channel_type_class=90102 and a.channel_type in (90885) then '6'
 			 		else '6'
-		 end channel_b_type
-		,case when a.is_exclude=1 then '1' else '0' end
+		 end CHANNEL_BASE_TYPE
+		,case when a.is_exclude=1 then '1' else '0' end IF_EX
 		,'0' is_phone_shop
+		,case when a.channel_type_class=90105 and a.channel_type in (90196,90153,90154,90155,90156,90157,90158,90940,90941,90942,90943) then '0' else '' end 	IF_PICKUP
+		,case when a.channel_type_class=90105 and a.channel_type in (90196,90153,90154,90155,90156,90157,90158,90940,90941,90942,90943) then '0' else '' end	IF_SRV_VIP
+		,case when a.channel_type_class=90105 and a.channel_type in (90196,90153,90154,90155,90156,90157,90158,90940,90941,90942,90943) then '0' else '' end	IF_SALE_TERM
+		,case when a.channel_type_class=90105 and a.channel_type in (90196,90153,90154,90155,90156,90157,90158,90940,90941,90942,90943) then '0' else '' end	IF_SRV_ACROSS
 		,case when a.channel_type_class=90105 and a.channel_type in (90196,90153,90154,90155,90156,90157,90158,90940,90941,90942,90943) then ''
 			    else case when value(trim(char(channel_level)),'6') > '6' then '6' else value(trim(char(channel_level)),'6')
 		 end end channel_star
@@ -194,11 +207,16 @@ select $timestamp time_id
         ,CHANNEL_ADDR
         ,CHNL_MANAGER_NAME
         ,CHNL_MANAGER_PHONE
+		,CHNL_PHONE
         ,GEO_ID
         ,AREA_TYPE
         ,CHANNEL_BASE_TYPE
         ,IF_EX
         ,IF_MOB_SALEHALL
+		,IF_PICKUP
+		,IF_SRV_VIP
+		,IF_SALE_TERM
+		,IF_SRV_ACROSS		
         ,CHNL_STAR
         ,CHNL_STATE
         ,OPEN_TIME
@@ -239,11 +257,16 @@ select distinct
         ,CHANNEL_ADDR
         ,CHNL_MANAGER_NAME
         ,CHNL_MANAGER_PHONE
+		,CHNL_PHONE		
         ,GEO_ID
         ,AREA_TYPE
         ,CHANNEL_BASE_TYPE
         ,IF_EX
         ,IF_MOB_SALEHALL
+		,IF_PICKUP
+		,IF_SRV_VIP
+		,IF_SALE_TERM
+		,IF_SRV_ACROSS				
         ,CHNL_STAR
         ,CHNL_STATE
         ,OPEN_TIME
@@ -281,11 +304,16 @@ select distinct
         ,CHANNEL_ADDR
         ,CHNL_MANAGER_NAME
         ,CHNL_MANAGER_PHONE
+		,CHNL_PHONE
         ,GEO_ID
         ,AREA_TYPE
         ,CHANNEL_BASE_TYPE
         ,IF_EX
         ,IF_MOB_SALEHALL
+		,IF_PICKUP
+		,IF_SRV_VIP
+		,IF_SALE_TERM
+		,IF_SRV_ACROSS				
         ,CHNL_STAR
         ,'3' CHNL_STATE
         ,OPEN_TIME
@@ -338,4 +366,203 @@ with ur
 
 	return 0
 }
+
+
+
+
+
+
+##~   rename bass1.G_A_06035_DAY_1 to G_A_06035_DAY_1_old20120331
+##~   CREATE TABLE "BASS1   "."G_A_06035_DAY_1"  (
+                  ##~   "CHANNEL_ID" CHAR(40) , 
+                  ##~   "CHANNEL_TYPE" CHAR(1) , 
+                  ##~   "SELF_24_IND" CHAR(25) , 
+                  ##~   "CMCC_ID" CHAR(5) , 
+                  ##~   "COUNTY" CHAR(30) , 
+                  ##~   "REGION" CHAR(50) , 
+                  ##~   "CHANNEL_NAME" CHAR(100) , 
+                  ##~   "CHANNEL_ADDR" CHAR(100) , 
+                  ##~   "CHNL_MANAGER_NAME" CHAR(40) , 
+                  ##~   "CHNL_MANAGER_PHONE" CHAR(40) , 
+                  ##~   "CHNL_PHONE" CHAR(15) , --渠道联系电话                  
+                  ##~   "GEO_ID" CHAR(1) , 
+                  ##~   "AREA_TYPE" CHAR(1) , 
+                  ##~   "CHANNEL_BASE_TYPE" CHAR(1) , 
+                  ##~   "IF_EX" CHAR(1) , 
+                  ##~   "IF_MOB_SALEHALL" CHAR(1) , 
+                  ##~   "IF_PICKUP" CHAR(1) , --是否提供到店取货
+                  ##~   "IF_SRV_VIP" CHAR(1) , --是否提供VIP服务
+                  ##~   "IF_SALE_TERM" CHAR(1) , --是否支持终端销售
+                  ##~   "IF_SRV_ACROSS" CHAR(1) , --是否提供跨区服务                  
+                  ##~   "CHNL_STAR" CHAR(1) , 
+                  ##~   "CHNL_STATE" CHAR(1) , 
+                  ##~   "OPEN_TIME" CHAR(4) , 
+                  ##~   "CLOSE_TIME" CHAR(4) , 
+                  ##~   "CONTRACT_EFF_DT" CHAR(8) , 
+                  ##~   "CONTRACT_END_DT" CHAR(8) , 
+                  ##~   "CO_OP_DUR" CHAR(4) , 
+                  ##~   "LONGTITUDE" CHAR(10) , 
+                  ##~   "LATITUDE" CHAR(10) , 
+                  ##~   "ZX_INVEST_FEE" CHAR(10) , 
+                  ##~   "SB_INVEST_FEE" CHAR(10) , 
+                  ##~   "OFFICE_INVEST_FEE" CHAR(10) , 
+                  ##~   "SUBSIDY_FEE" CHAR(10) )   
+                 ##~   DISTRIBUTE BY HASH("CHANNEL_ID")   
+                   ##~   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" ; 
+
+
+
+##~   rename bass1.G_A_06035_DAY_NEWEST to G_A_06035_DAY_NEWEST_old20120331
+##~   CREATE TABLE "BASS1   "."G_A_06035_DAY_NEWEST"  (
+                  ##~   "TIME_ID" INTEGER , 
+                  ##~   "CHANNEL_ID" CHAR(40) , 
+                  ##~   "CHANNEL_TYPE" CHAR(1) , 
+                  ##~   "SELF_24_IND" CHAR(25) , 
+                  ##~   "CMCC_ID" CHAR(5) , 
+                  ##~   "COUNTY" CHAR(30) , 
+                  ##~   "REGION" CHAR(50) , 
+                  ##~   "CHANNEL_NAME" CHAR(100) , 
+                  ##~   "CHANNEL_ADDR" CHAR(100) , 
+                  ##~   "CHNL_MANAGER_NAME" CHAR(40) , 
+                  ##~   "CHNL_MANAGER_PHONE" CHAR(40) , 
+                  ##~   "CHNL_PHONE" CHAR(15) , --渠道联系电话        				  
+                  ##~   "GEO_ID" CHAR(1) , 
+                  ##~   "AREA_TYPE" CHAR(1) , 
+                  ##~   "CHANNEL_BASE_TYPE" CHAR(1) , 
+                  ##~   "IF_EX" CHAR(1) , 
+                  ##~   "IF_MOB_SALEHALL" CHAR(1) , 
+                  ##~   "IF_PICKUP" CHAR(1) , --是否提供到店取货
+                  ##~   "IF_SRV_VIP" CHAR(1) , --是否提供VIP服务
+                  ##~   "IF_SALE_TERM" CHAR(1) , --是否支持终端销售
+                  ##~   "IF_SRV_ACROSS" CHAR(1) , --是否提供跨区服务    				  
+                  ##~   "CHNL_STAR" CHAR(1) , 
+                  ##~   "CHNL_STATE" CHAR(1) , 
+                  ##~   "OPEN_TIME" CHAR(4) , 
+                  ##~   "CLOSE_TIME" CHAR(4) , 
+                  ##~   "CONTRACT_EFF_DT" CHAR(8) , 
+                  ##~   "CONTRACT_END_DT" CHAR(8) , 
+                  ##~   "CO_OP_DUR" CHAR(4) , 
+                  ##~   "LONGTITUDE" CHAR(10) , 
+                  ##~   "LATITUDE" CHAR(10) , 
+                  ##~   "ZX_INVEST_FEE" CHAR(10) , 
+                  ##~   "SB_INVEST_FEE" CHAR(10) , 
+                  ##~   "OFFICE_INVEST_FEE" CHAR(10) , 
+                  ##~   "SUBSIDY_FEE" CHAR(10) )   
+                 ##~   DISTRIBUTE BY HASH("CHANNEL_ID")   
+                   ##~   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" ; 
+
+
+
+##~   RENAME "BASS1   "."G_A_06035_DAY" TO G_A_06035_DAY_OLD20120331
+##~   CREATE TABLE "BASS1   "."G_A_06035_DAY"  (
+                  ##~   "TIME_ID" INTEGER , 
+                  ##~   "CHANNEL_ID" CHAR(40) , 
+                  ##~   "CHANNEL_TYPE" CHAR(1) , 
+                  ##~   "SELF_24_IND" CHAR(25) , 
+                  ##~   "CMCC_ID" CHAR(5) , 
+                  ##~   "COUNTY" CHAR(30) , 
+                  ##~   "REGION" CHAR(50) , 
+                  ##~   "CHANNEL_NAME" CHAR(100) , 
+                  ##~   "CHANNEL_ADDR" CHAR(100) , 
+                  ##~   "CHNL_MANAGER_NAME" CHAR(40) , 
+                  ##~   "CHNL_MANAGER_PHONE" CHAR(40) , 
+                  ##~   "CHNL_PHONE" CHAR(15) , --渠道联系电话
+                  ##~   "GEO_ID" CHAR(1) , 
+                  ##~   "AREA_TYPE" CHAR(1) , 
+                  ##~   "CHANNEL_BASE_TYPE" CHAR(1) , 
+                  ##~   "IF_EX" CHAR(1) , 
+                  ##~   "IF_MOB_SALEHALL" CHAR(1) , 
+                  ##~   "IF_PICKUP" CHAR(1) , --是否提供到店取货
+                  ##~   "IF_SRV_VIP" CHAR(1) , --是否提供VIP服务
+                  ##~   "IF_SALE_TERM" CHAR(1) , --是否支持终端销售
+                  ##~   "IF_SRV_ACROSS" CHAR(1) , --是否提供跨区服务
+                  ##~   "CHNL_STAR" CHAR(1) , 
+                  ##~   "CHNL_STATE" CHAR(1) , 
+                  ##~   "OPEN_TIME" CHAR(4) , 
+                  ##~   "CLOSE_TIME" CHAR(4) , 
+                  ##~   "CONTRACT_EFF_DT" CHAR(8) , 
+                  ##~   "CONTRACT_END_DT" CHAR(8) , 
+                  ##~   "CO_OP_DUR" CHAR(4) , 
+                  ##~   "LONGTITUDE" CHAR(10) , 
+                  ##~   "LATITUDE" CHAR(10) , 
+                  ##~   "ZX_INVEST_FEE" CHAR(10) , 
+                  ##~   "SB_INVEST_FEE" CHAR(10) , 
+                  ##~   "OFFICE_INVEST_FEE" CHAR(10) , 
+                  ##~   "SUBSIDY_FEE" CHAR(10) )   
+                 ##~   DISTRIBUTE BY HASH("CHANNEL_ID")   
+                   ##~   IN "TBS_APP_BASS1" INDEX IN "TBS_INDEX" ; 
+
+##~   insert into G_A_06035_DAY
+##~   (
+		##~   TIME_ID
+        ##~   ,CHANNEL_ID
+        ##~   ,CHANNEL_TYPE
+        ##~   ,SELF_24_IND
+        ##~   ,CMCC_ID
+        ##~   ,COUNTY
+        ##~   ,REGION
+        ##~   ,CHANNEL_NAME
+        ##~   ,CHANNEL_ADDR
+        ##~   ,CHNL_MANAGER_NAME
+        ##~   ,CHNL_MANAGER_PHONE
+		##~   ,	 CHNL_PHONE
+        ##~   ,GEO_ID
+        ##~   ,AREA_TYPE
+        ##~   ,CHANNEL_BASE_TYPE
+        ##~   ,IF_EX
+        ##~   ,IF_MOB_SALEHALL
+		##~   ,	 IF_PICKUP
+		##~   ,	 IF_SRV_VIP
+		##~   ,	 IF_SALE_TERM
+		##~   ,	 IF_SRV_ACROSS
+        ##~   ,CHNL_STAR
+        ##~   ,CHNL_STATE
+        ##~   ,OPEN_TIME
+        ##~   ,CLOSE_TIME
+        ##~   ,CONTRACT_EFF_DT
+        ##~   ,CONTRACT_END_DT
+        ##~   ,CO_OP_DUR
+        ##~   ,LONGTITUDE
+        ##~   ,LATITUDE
+        ##~   ,ZX_INVEST_FEE
+        ##~   ,SB_INVEST_FEE
+        ##~   ,OFFICE_INVEST_FEE
+        ##~   ,SUBSIDY_FEE
+##~   )
+##~   select 
+		##~   TIME_ID
+        ##~   ,CHANNEL_ID
+        ##~   ,CHANNEL_TYPE
+        ##~   ,SELF_24_IND
+        ##~   ,CMCC_ID
+        ##~   ,COUNTY
+        ##~   ,REGION
+        ##~   ,CHANNEL_NAME
+        ##~   ,CHANNEL_ADDR
+        ##~   ,CHNL_MANAGER_NAME
+        ##~   ,CHNL_MANAGER_PHONE
+		##~   ,'' CHNL_PHONE		
+        ##~   ,GEO_ID
+        ##~   ,AREA_TYPE
+        ##~   ,CHANNEL_BASE_TYPE
+        ##~   ,IF_EX
+        ##~   ,IF_MOB_SALEHALL
+		##~   ,'0' IF_PICKUP
+		##~   ,'0' IF_SRV_VIP
+		##~   ,'0' IF_SALE_TERM
+		##~   ,'0' IF_SRV_ACROSS		
+        ##~   ,CHNL_STAR
+        ##~   ,CHNL_STATE
+        ##~   ,OPEN_TIME
+        ##~   ,CLOSE_TIME
+        ##~   ,CONTRACT_EFF_DT
+        ##~   ,CONTRACT_END_DT
+        ##~   ,CO_OP_DUR
+        ##~   ,LONGTITUDE
+        ##~   ,LATITUDE
+        ##~   ,ZX_INVEST_FEE
+        ##~   ,SB_INVEST_FEE
+        ##~   ,OFFICE_INVEST_FEE
+        ##~   ,SUBSIDY_FEE
+##~   from 	G_A_06035_DAY_OLD20120331
 

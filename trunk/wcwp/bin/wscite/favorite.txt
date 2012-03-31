@@ -4,3 +4,4 @@ C:\poon\poonzref\dev\gcc\testcase\win32c\poonapi.c
 C:\poon\wcwp\wcwp\sql\bass1\bass1_memo.sql
 C:\poon\poonzref\dev\myworks\win32\resource.h
 C:\poon\wcwp\wcwp\tcl\bass1\INT_CHECK_36_MONTH.tcl
+D:\bass1\中国移动一级经营分析系统省级数据接口规范(V1.7.9)\1.7.9\1.7.9.sql
