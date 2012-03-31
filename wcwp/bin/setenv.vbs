@@ -14,7 +14,7 @@ Set WshEnv = WshShell.Environment("SYSTEM")
 
 msgbox(WshEnv("LIB"))
 msgbox(WshEnv("path"))
-SYSPATH="C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\TortoiseSVN\bin;C:\Program Files\IBM\SQLLIB\BIN;C:\Program Files\IBM\SQLLIB\FUNCTION;d:\Soft_remove\instantclient_11_2"
+SYSPATH="C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\TortoiseSVN\bin;C:\Program Files\IBM\SQLLIB\BIN;C:\Program Files\IBM\SQLLIB\FUNCTION;d:\Soft_remove\instantclient_11_2;c:\IBM\SQLLIB\BIN"
 
 
 MYPATH=WCWP_PATH _
@@ -31,6 +31,7 @@ MYINC=WCWP_PATH & "\masm32\include" _
 & ";" & WCWP_PATH & "\VC6CMD\include" _
 & ";" & WCWP_PATH & "\VC6CMD\ATL\include" _
 & ";" & WCWP_PATH & "\VC6CMD\MFC\include" _
+& ";" & "c:\IBM\SQLLIB\include" _
 & ";" & SYSINC
 
 WshEnv("include") =  MYINC
@@ -39,6 +40,7 @@ SYSLIB=""
 MYLIB=WCWP_PATH &"\masm32\lib" _
 & ";" & WCWP_PATH & "\VC6CMD\lib" _
 & ";" & WCWP_PATH & "\VC6CMD\MFC\lib" _
+& ";" & "c:\IBM\SQLLIB\lib" _
 & ";" & SYSLIB
 
 WshEnv("lib") = MYLIB
@@ -51,6 +53,9 @@ WshEnv("LD_LIBRARY_PATH") = oracle_home
 WshEnv("NLS_LANG") = "SIMPLIFIED CHINESE_CHINA.ZHS16GBK"
 WshEnv("SQL_PATH") = oracle_home
 WshEnv("TNS_ADMIN") = oracle_home
+WshEnv("DB2CODEPAGE") = 1386
+WshEnv("DB2INSTANCE") = "db2inst1"
+'~ WshEnv("CLASSPATH") = DB2
 
 '~ if InstrRev(WshEnv("Path"),"wcwp") then
 '~ 'msgbox("wcwp already in path")

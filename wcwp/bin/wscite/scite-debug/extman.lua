@@ -1064,7 +1064,7 @@ end
 
 scite_Command('CopyFileNameExt|CopyFileNameExt|Ctrl+Shift+F')
 
-
+--~ http://lua-users.org/wiki/SciteDeleteBlankLines
 function del_empty_lines()
   local txt = editor:GetText()
   if #txt == 0 then return end

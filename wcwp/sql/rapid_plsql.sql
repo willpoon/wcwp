@@ -2608,3 +2608,23 @@ where a.user_id = b.user_id
 
 
 select * from product.up_product_item@dbl_ggdb where product_item_id in (191000000007);
+
+
+
+select time_id , count(0) 
+--,  count(distinct time_id ) 
+from G_S_22056_MONTH 
+group by  time_id 
+order by 1 
+
+
+select * from all_tables@dbl_jfdb where table_name like '%DR_WLAN%'
+
+select * from 
+ XZJF.DR_WLAN_L_20120326@dbl_jfdb
+ where  rownum < 10
+ 
+select auth_type,count(0) from 
+ XZJF.DR_WLAN_L_20120326@dbl_jfdb
+ group by auth_type
+ 
