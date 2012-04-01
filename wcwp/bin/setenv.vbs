@@ -54,7 +54,8 @@ WshEnv("NLS_LANG") = "SIMPLIFIED CHINESE_CHINA.ZHS16GBK"
 WshEnv("SQL_PATH") = oracle_home
 WshEnv("TNS_ADMIN") = oracle_home
 WshEnv("DB2CODEPAGE") = 1386
-WshEnv("DB2INSTANCE") = "db2inst1"
+'~ WshEnv("DB2INSTANCE") = "db2inst1"
+WshEnv("DB2INSTANCE") = "DB2"
 '~ WshEnv("CLASSPATH") = DB2
 
 '~ if InstrRev(WshEnv("Path"),"wcwp") then

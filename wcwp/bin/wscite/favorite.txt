@@ -1,3 +1,4 @@
+C:\poon\wcwp\wcwp\bin\setenv.vbs
 C:\poon\poonzref\dev\myworks\win32\Win32.mak
 C:\poon\poonzref\dev\mytools\ASCII×Ö·û±í.c
 C:\poon\poonzref\dev\gcc\testcase\win32c\poonapi.c
