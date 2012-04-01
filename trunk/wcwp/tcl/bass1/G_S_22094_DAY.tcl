@@ -56,7 +56,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			,case 
 				when CERTIFICATE_TYPE = '0' then '1'
 				when CERTIFICATE_TYPE = '1' then '2'
-				when opt_code = '4205' then '3'
+				when opt_code = '4205' then '3' else '1'
 			end CHRG_TYPE
 			,char(bigint(amount)) CHRG_AMT
 		from BASS2.dw_acct_payment_dm_$curr_month a

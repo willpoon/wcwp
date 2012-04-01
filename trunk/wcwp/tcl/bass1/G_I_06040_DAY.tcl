@@ -28,16 +28,33 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 	set sql_buff "
 	insert into bass1.g_i_06040_day
-	select  distinct
-			$timestamp time_id
-			,a.OTHER_INFO  CHRG_NBR
-			,b.REGION_CODE CMCC_ID
-			,char(a.CHANNEL_ID)   CHNL_ID
-			,case when PARTNER_CODE in ('00','01','02','03') then '2' else '1' end CHNL_TYPE
-	from bass2.Dw_channel_dealer_$timestamp a
-		,bass2.dim_channel_info b 
-	where a.CHANNEL_ID = b.CHANNEL_ID
-			and a.DEALER_STATE = 1
+	(
+         TIME_ID
+        ,CHRG_NBR
+        ,CMCC_ID
+        ,CHNL_ID
+        ,CHNL_TYPE	
+	)
+	select 
+	         TIME_ID
+        ,CHRG_NBR
+        ,CMCC_ID
+        ,CHNL_ID
+        ,CHNL_TYPE
+		from (
+				select 
+						$timestamp time_id
+						,a.OTHER_INFO  CHRG_NBR
+						,b.REGION_CODE CMCC_ID
+						,char(a.CHANNEL_ID)   CHNL_ID
+						,case when PARTNER_CODE in ('00','01','02','03') then '2' else '1' end CHNL_TYPE
+						,row_number()over(partition by a.OTHER_INFO order by a.OTHER_INFO) rn 
+				from bass2.Dw_channel_dealer_$timestamp a
+					,bass2.dim_channel_info b 
+				where a.CHANNEL_ID = b.CHANNEL_ID
+						and a.DEALER_STATE = 1
+						and a.OTHER_INFO is not null
+			) o where o.rn = 1
 	with ur 
 "
 	exec_sql $sql_buff
