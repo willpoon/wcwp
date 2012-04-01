@@ -48,14 +48,22 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 		set sql_buff "
 		insert into G_S_22093_DAY
+		(
+         TIME_ID
+        ,CHRG_DT
+        ,CHRG_TM
+        ,MSISDN
+        ,CHRG_TYPE
+        ,CHRG_AMT		
+		)
 		select 
 			$timestamp time_id
 			,'$timestamp'  CHRG_DT
 			,replace(substr(char(PEER_DATE),12,8),'.','')  CHRG_TM
 			,key_num MSISDN
 			,case 
-				when opt_code in ('4103','4144') then '01'
-				when opt_code in ('4115') then '03'
+				when opt_code in ('4103','4144') then '1'
+				when opt_code in ('4115') then '3'
 			end CHRG_TYPE
 			,char(bigint(AMOUNT)) CHRG_AMT
 		from BASS2.dw_acct_payment_dm_$curr_month a
