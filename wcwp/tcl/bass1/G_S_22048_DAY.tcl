@@ -60,9 +60,9 @@ insert into G_S_22048_DAY
 select 
 	$timestamp TIME_ID
 	,replace(char(OP_TIME),'-','') CHRG_DT
-	,replace(substr(char(d.PEER_DATE),12,8),'.','')  CHRG_TM
+	,replace(substr(char(c.PEER_DATE),12,8),'.','')  CHRG_TM
 	,a.mobile_id CHRG_NBR
-	,c.key_num PRODUCT_NO
+	,value(substr(c.remarks,1,11),c.key_num) PRODUCT_NO
 	,char(int(case when c.opt_code = 'GJFK' then c.balance+c.amount else 0 end )) CHRG_AMT
 	,char(int(case when d.opt_code = 'GTFG' then d.amount else 0 end )) CZ_AMT
 from bass2.dw_agent_acc_info_$timestamp a
