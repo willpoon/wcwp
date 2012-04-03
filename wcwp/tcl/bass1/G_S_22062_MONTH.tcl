@@ -91,6 +91,12 @@ with ur
   exec_sql $sql_buff
 
 #删除非法CHANNEL_ID
+##~   4.1割接前後數據不也一樣，用的表也不同
+if { $op_month == 201203 } {
+	set TAB06035 "G_A_06035_DAY_OLD20120331"
+} else {
+	set TAB06035 "G_A_06035_DAY"
+}
 
 set sql_buff "
 delete from G_S_22062_MONTH 
@@ -102,7 +108,7 @@ and channel_id  in (
 		from
 		(
 		select a.*,row_number()over(partition by channel_id order by time_id desc ) rn 
-		from G_A_06035_DAY a
+		from ${TAB06035} a
 		where time_id / 100 <= $op_month
 		) t where t.rn =1  and CHNL_STATE = '1'
 		) 
@@ -127,7 +133,7 @@ set sql_buff "
 		from
 		(
 		select a.*,row_number()over(partition by channel_id order by time_id desc ) rn 
-		from G_A_06035_DAY a
+		from ${TAB06035} a
 		where time_id / 100 <= $op_month
 		) t where t.rn =1  and CHNL_STATE = '1'
 	) o

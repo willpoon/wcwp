@@ -36,7 +36,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
     #本月最后一天 yyyy-mm-dd
     set this_month_last_day [string range $op_month 0 3][string range $op_time 4 4][string range $op_month 4 5][string range $op_time 4 4][GetThisMonthDays [string range $op_month 0 5]01]
     puts $this_month_last_day
-
+	global app_name
+	set app_name "G_I_06021_MONTH.tcl"    
     #删除正式表本月数据
     set sql_buff "delete from bass1.G_I_06021_MONTH where time_id=$op_month"
     puts $sql_buff
@@ -178,6 +179,13 @@ set channel_addr = trim(COUNTRY_NAME)||trim(CHANNEL_NAME)
 
 #2011.11.25 加入 06035 和 06021 channel_id 一致性校验
 
+##~   4.1割接前後數據不也一樣，用的表也不同
+if { $op_month == 201203 } {
+	set TAB06035 "G_A_06035_DAY_OLD20120331"
+} else {
+	set TAB06035 "G_A_06035_DAY"
+}
+
 set  sql_buff "
 select count(0)
 from (
@@ -185,8 +193,8 @@ select channel_id
 from
 (
 select a.*,row_number()over(partition by channel_id order by time_id desc ) rn 
-from G_A_06035_DAY a
-where time_id / 100 = $op_month
+from ${TAB06035} a
+where time_id / 100 <= $op_month
 ) t where t.rn =1 and CHNL_STATE = '1'
 except
 select channel_id
@@ -211,8 +219,8 @@ select channel_id
 from
 (
 select a.*,row_number()over(partition by channel_id order by time_id desc ) rn 
-from G_A_06035_DAY a
-where time_id / 100 = $op_month
+from ${TAB06035} a
+where time_id / 100 <= $op_month
 ) t where t.rn =1 and CHNL_STATE = '1'
 ) t
 with ur
