@@ -118,6 +118,7 @@ chkzero2 $sql_buff "02026 src data pk check not pass!"
 		from bass1.G_I_02026_MONTH_1
 	  with ur
   "     
+
   exec_sql $sql_buff
 
 

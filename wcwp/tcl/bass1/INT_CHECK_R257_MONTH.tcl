@@ -37,41 +37,48 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	  exec_sql $sqlbuf
 
 
+##~   R257	月	09_渠道积分	电子渠道缴费占比	"22048 空中充值点业务日汇总
+##~   22066 电子渠道关键数据日汇总
+##~   22068 银行代收代缴及酬金信息
+##~   22091 实体渠道业务办理日汇总"	电子渠道缴费占比 ≥ 5%	0.05	
 
-#有渠道标识的新增用户占比 ≥ 85%
 
    set RESULT_VAL1 0
    set RESULT_VAL2 0
    set RESULT_VAL3 0
 
+##~   4.1割接前後數據不也一樣，用的表也不同
+if { $op_month == 201203 } {
+	set TAB22048 "G_S_22048_DAY_bak20120331"
+} else {
+	set TAB22048 "G_S_22048_DAY"
+}
+
 set sql_buff "
-
-
-
-select fee1+fee2 val1,fee1+fee2+fee3+fee4+fee5 val2 ,(fee1+fee2)*1.00/(fee1+fee2+fee3+fee4+fee5) val3
-from 
-(
-select sum(bigint(CHRG_REC_FEE)) fee1 from G_S_22066_DAY
-where time_id / 100 = $op_month
-) a,
-(
-select sum(bigint(BNK_TS_FEE)) fee2 from G_S_22068_MONTH
-where time_id  = $op_month
-) b,
-(
-select sum(bigint(PAYMENT_REC_FEE)) fee3 from G_S_22091_DAY
-where time_id/100  = $op_month
-and DEAL_TYPE = '1'
-) c,
-(
-select sum(bigint(CHRG_AMT))  fee4 from G_S_22048_DAY
-where time_id/100  = $op_month
-) d,
-(
-select sum(bigint(COUNTER_REC_FEE)+bigint(EBANK_REC_FEE)+bigint(OTH_REC_FEE)) fee5 from G_S_22068_MONTH
-where time_id  = $op_month
-) e
-with ur
+		select fee1+fee2 val1,fee1+fee2+fee3+fee4+fee5 val2 ,(fee1+fee2)*1.00/(fee1+fee2+fee3+fee4+fee5) val3
+		from 
+		(
+		select sum(bigint(CHRG_REC_FEE)) fee1 from G_S_22066_DAY
+		where time_id / 100 = $op_month
+		) a,
+		(
+		select sum(bigint(BNK_TS_FEE)) fee2 from G_S_22068_MONTH
+		where time_id  = $op_month
+		) b,
+		(
+		select sum(bigint(PAYMENT_REC_FEE)) fee3 from G_S_22091_DAY
+		where time_id/100  = $op_month
+		and DEAL_TYPE = '1'
+		) c,
+		(
+		select sum(bigint(CHRG_AMT))  fee4 from $TAB22048
+		where time_id/100  = $op_month
+		) d,
+		(
+		select sum(bigint(COUNTER_REC_FEE)+bigint(EBANK_REC_FEE)+bigint(OTH_REC_FEE)) fee5 from G_S_22068_MONTH
+		where time_id  = $op_month
+		) e
+		with ur
 "
    set p_row [get_row $sql_buff]
    set RESULT_VAL1 [lindex $p_row 0]

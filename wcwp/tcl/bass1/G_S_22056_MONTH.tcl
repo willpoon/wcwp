@@ -72,18 +72,17 @@ coalesce(bass1.fn_get_all_dim('BASS_STD1_0054',char(substr(REGION_CODE,2))),'131
 ,case when operate_type in (0) then '2' 
 	when operate_type in (1) then '1'
 	end
-case when NOTES like '%自办%' or OPPONENT_NAME_CH like '%自办%' then '01'
+,case when NOTES like '%自办%' or OPPONENT_NAME_CH like '%自办%' then '01'
 		  when NOTES like '%专营%' or OPPONENT_NAME_CH like '%专营%' then '02'
 		  else '03' end	
 with ur
 "
   exec_sql $sql_buff
   
-  
 ##~   2、	定义联合主键“月份”、“所在地市标识”、“所在区域类型”、“竞争对手类型”、“竞争对手渠道类型”；	
   #1.检查chkpkunique
 	set tabname "G_S_22056_MONTH"
-	set pk 			"OP_TIME||CMCC_ID||AREA_TYPE||JINZHENTYPE||JINZHEN_CHNLTYPE"
+	set pk 			"STATMONTH||CMCC_ID||AREA_TYPE||JINZHENTYPE||JINZHEN_CHNLTYPE"
 	chkpkunique ${tabname} ${pk} ${op_month}
 	
 	
