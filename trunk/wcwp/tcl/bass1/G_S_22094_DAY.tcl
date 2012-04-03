@@ -47,12 +47,21 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 		set sql_buff "
 		insert into G_S_22094_DAY
+		(
+         TIME_ID
+        ,CHRG_DT
+        ,CHRG_TM
+        ,MSISDN
+        ,CHNL_ID
+        ,CHRG_TYPE
+        ,CHRG_AMT		
+		)
 		select 
 			$timestamp time_id
 			,'$timestamp'  CHRG_DT
 			,replace(substr(char(PEER_DATE),12,8),'.','')  CHRG_TM
-			,case when opt_code = '4464' then 'BASS1_ST' else char(staff_org_id) end channel_id
 			,key_num MSISDN
+			,case when opt_code = '4464' then 'BASS1_ST' else char(staff_org_id) end channel_id
 			,case 
 				when CERTIFICATE_TYPE = '0' then '1'
 				when CERTIFICATE_TYPE = '1' then '2'
@@ -66,6 +75,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 					,'4101'	--营业厅前台缴费
 					,'4464' --自助服务终端现金缴费
 					)
+		and key_num not like lower('d%')
+		and length(key_num)  = 11 
 		with ur
 		"
 	
