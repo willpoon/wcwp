@@ -1,8 +1,21 @@
+http://zetcode.com/tutorials/winapi/
+http://www.youku.com/playlist_show/id_1267850.html Visual C++清华版17讲
+http://www.winprog.org/tutorial/
+http://www.tudou.com/programs/view/KqwTRULU82s/
+http://www.tudou.com/programs/view/4U0S2t4jQ-I/?fr=rec1
+http://www.tenouk.com/ModuleA.html
+http://www.pellesc.de/index.php?page=source&lang=en
+http://www.apitalk.com/
+http://v.youku.com/v_playlist/f5567428o1p13.html 从零开始学Visual C++
+http://v.youku.com/v_playlist/f3489076o1p11.html 21天学通vc++
+http://showmedo.com
+http://files.jmpeip.com/ultrasound/src/
+http://deviatedhacking.com
+D:\bass1\中国移动一级经营分析系统省级数据接口规范(V1.7.9)\1.7.9\1.7.9.sql
+C:\poon\wcwp\wcwp\tcl\bass1\INT_CHECK_36_MONTH.tcl
+C:\poon\wcwp\wcwp\sql\bass1\bass1_memo.sql
 C:\poon\wcwp\wcwp\bin\setenv.vbs
+C:\poon\poonzref\dev\myworks\win32\resource.h
 C:\poon\poonzref\dev\myworks\win32\Win32.mak
 C:\poon\poonzref\dev\mytools\ASCII字符表.c
 C:\poon\poonzref\dev\gcc\testcase\win32c\poonapi.c
-C:\poon\wcwp\wcwp\sql\bass1\bass1_memo.sql
-C:\poon\poonzref\dev\myworks\win32\resource.h
-C:\poon\wcwp\wcwp\tcl\bass1\INT_CHECK_36_MONTH.tcl
-D:\bass1\中国移动一级经营分析系统省级数据接口规范(V1.7.9)\1.7.9\1.7.9.sql

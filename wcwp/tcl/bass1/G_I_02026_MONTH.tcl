@@ -12,7 +12,10 @@
 #编 写 人：panzw
 #编写时间：20120112
 #问题记录：
-#修改历史: 1. panzw 20120112	统一资费管理v1.1 
+#修改历史: 
+1. panzw 20120112	统一资费管理v1.1 
+2. panzw 20120406	统一资费管理v1.2 经和市场部确认，上网套餐只有158以下的档次，158及以上没有。wlan套餐没有；幸福卡有，取一个促销ID即可。故本次修订只需要添加一个幸福卡的套餐。
+
 #######################################################################################################   
 
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
@@ -54,7 +57,9 @@ chkzero2 $sql_buff "02026 src data pk check not pass!"
 #	select * from   BASS1.ALL_DIM_LKP 
 #	where bass1_tbid = 'BASS_STD1_0114'
 #	
-
+##~   '111090001716'
+##~   ,'999914311440009001'
+##~   ,'神州行幸福卡亲情号码促销'
 
 	set sql_buff "
 	insert into bass1.G_I_02026_MONTH_1
@@ -131,10 +136,10 @@ chkzero2 $sql_buff "02026 src data pk check not pass!"
 
 ## 直接告警提示数据装载！
 
-                set grade 2
-                set alarmcontent "请检查本月02026统一资费编码更新情况"
-                puts ${alarmcontent}            
-                WriteAlarm $app_name $op_time $grade ${alarmcontent}
+                ##~   set grade 2
+                ##~   set alarmcontent "请检查本月02026统一资费编码更新情况"
+                ##~   puts ${alarmcontent}            
+                ##~   WriteAlarm $app_name $op_time $grade ${alarmcontent}
 
 
 

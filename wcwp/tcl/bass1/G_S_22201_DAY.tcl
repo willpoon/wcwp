@@ -235,7 +235,9 @@ where userstatus_id in (1,2,3,6,8)
   and bigint(product_no) not between 14734500000 and 14734999999
 )
   
-);"
+)
+with ur
+;"
                         
   puts $sql_buff
   exec_sql $sql_buff
