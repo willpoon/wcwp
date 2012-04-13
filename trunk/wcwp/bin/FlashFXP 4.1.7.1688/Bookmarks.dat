@@ -1,10 +1,6 @@
 [My Computer]
 tcl=C:\poon\wcwp\wcwp\tcl\bass1\
 
-[44_bass1]
-pzwbin=/bassapp/bihome/panzw/bin/
-bass1_tcl=/bassapp/bass1/tcl/
-
 [43]
 bass1_tcl=/bassapp/bass1/tcl/
 pzwbin=/bassapp/bihome/panzw/bin/
@@ -15,4 +11,9 @@ pzwbin=/bassapp/bihome/panzw/bin/
 
 [27]
 bass1_tcl=/bassapp/bass1/tcl/
+pzwbin=/bassapp/bihome/panzw/bin/
+
+[44_bass1]
+bass1_tcl=/bassapp/bass1/tcl/
+panzw_tmp=/bassapp/bihome/panzw/tmpd:\bass1\
 pzwbin=/bassapp/bihome/panzw/bin/

@@ -2628,3 +2628,166 @@ select auth_type,count(0) from
  XZJF.DR_WLAN_L_20120326@dbl_jfdb
  group by auth_type
  
+ 
+ 
+ A05019	XZJF	DR_GGPRS_L	YYYYMMDD		GPRS清单（本地内容计费）
+A05020	XZJF	DR_GPRS_L	YYYYMMDD		GPRS清单（本地用户出国）
+
+ DR_GGPRS_L
+ 
+ select count(0) from XZJF.DR_GGPRS_L_20120331@dbl_jfdb
+ 5740528
+ 
+ select count(0) from XZJF.DR_GGPRS_L_20120107@dbl_jfdb
+ 5441064
+ select count(0) from XZJF.DR_GGPRS_L_20120108@dbl_jfdb
+ 4367270
+ select count(0) from XZJF.DR_GGPRS_L_20120109@dbl_jfdb
+ 
+ 6542184
+ 
+ select * from  XZJF.DR_GGPRS_L_20120109@dbl_jfdb where row_id < 10;
+ $                              
+$ desc  bass2.cdr_wlan_20120331 |grep -i time
+START_TIME                     SYSIBM    TIMESTAMP                10     0 Yes   
+STOP_TIME                      SYSIBM    TIMESTAMP                10     0 Yes   
+PROCESS_TIME                   SYSIBM    TIMESTAMP                10     0 Yes   
+INPUT_TIME                     SYSIBM    TIMESTAMP                10     0 Yes   
+
+ 
+ select COUNT(0) from  XZJF.DR_GGPRS_L_20120109@dbl_jfdb
+ where to_char(START_TIME,'yyyymmdd') = 20120108
+ 1159325
+ 
+  select COUNT(0) from  XZJF.DR_GGPRS_L_20120108@dbl_jfdb
+ where to_char(START_TIME,'yyyymmdd') = 20120107
+ 88581
+ 
+   select COUNT(0) from  XZJF.DR_GGPRS_L_20120107@dbl_jfdb
+ where to_char(START_TIME,'yyyymmdd') = 20120106
+ 83924
+ 
+ 
+ 
+ select table_name from all_tables where table_name like '%GGPRS%'
+ 
+ select * from  XZJF.DR_GGPRS_L_20120109@dbl_jfdb
+ where rownum < 10
+ 
+ 
+START_TIME	通话起始时间
+DEAL_DATETIME	原始话单处理日期时间
+BEGIN_TIME1	分话单开始时间
+BEGIN_TIME2	分话单开始时间2
+PROCESS_TIME	批价处理时间
+BACKUP_DATE	备份日期
+INPUT_TIME	入库时间
+
+
+ select COUNT(0) from  XZJF.DR_GGPRS_L_20120109@dbl_jfdb
+ where to_char(START_TIME,'yyyymmdd') = 20120108
+ 
+  select START_TIME,DEAL_DATETIME,BEGIN_TIME1,BEGIN_TIME2,PROCESS_TIME,BACKUP_DATE,INPUT_TIME
+  from  XZJF.DR_GGPRS_L_20120109@dbl_jfdb
+ where rownum < 10
+ 
+ select 
+  to_char(START_TIME,'yyyymmdd') START_TIME
+ --,to_char(DEAL_DATETIME,'yyyymmdd') DEAL_DATETIME
+ --,to_char(BEGIN_TIME1,'yyyymmdd') BEGIN_TIME1
+-- ,to_char(BEGIN_TIME2,'yyyymmdd') BEGIN_TIME2
+ ,to_char(PROCESS_TIME,'yyyymmdd') PROCESS_TIME
+ , BACKUP_DATE
+ ,to_char(INPUT_TIME,'yyyymmdd') INPUT_TIME
+ ,count(0) cnt
+ from  XZJF.DR_GGPRS_L_20120109@dbl_jfdb
+ group by 
+   to_char(START_TIME,'yyyymmdd') 
+ --,to_char(DEAL_DATETIME,'yyyymmdd') 
+ --,to_char(BEGIN_TIME1,'yyyymmdd') 
+ --,to_char(BEGIN_TIME2,'yyyymmdd') 
+ ,to_char(PROCESS_TIME,'yyyymmdd') 
+ ,BACKUP_DATE
+ ,to_char(INPUT_TIME,'yyyymmdd') 
+ 
+ 
+ 
+ 
+ 
+ select 
+  to_char(START_TIME,'yyyymmdd') START_TIME
+  ,to_char(START_TIME,'hh24') START_TIME
+ --,to_char(DEAL_DATETIME,'yyyymmdd') DEAL_DATETIME
+ --,to_char(BEGIN_TIME1,'yyyymmdd') BEGIN_TIME1
+-- ,to_char(BEGIN_TIME2,'yyyymmdd') BEGIN_TIME2
+ ,to_char(PROCESS_TIME,'yyyymmdd') PROCESS_TIME
+ , BACKUP_DATE
+ ,to_char(INPUT_TIME,'yyyymmdd') INPUT_TIME
+ ,count(0) cnt
+ --,sum(RATING_RES) RATING_RES
+ ,sum(data_flow_up1+data_flow_up2) UP
+ ,sum(data_flow_down1+data_flow_down2) DOWN
+ from  XZJF.DR_GGPRS_L_20120109@dbl_jfdb
+ group by 
+   to_char(START_TIME,'yyyymmdd') 
+   ,to_char(START_TIME,'hh24')
+ --,to_char(DEAL_DATETIME,'yyyymmdd') 
+ --,to_char(BEGIN_TIME1,'yyyymmdd') 
+ --,to_char(BEGIN_TIME2,'yyyymmdd') 
+ ,to_char(PROCESS_TIME,'yyyymmdd') 
+ ,BACKUP_DATE
+ ,to_char(INPUT_TIME,'yyyymmdd') 
+ order by 1,2
+ 
+ 
+ 
+ 
+ 
+ 
+                 select 
+                        20120331 time_id
+                        ,'20120331'  CHRG_DT
+                        ,replace(substr(char(PEER_DATE),12,8),'.','')  CHRG_TM
+                        ,key_num MSISDN
+                        ,case 
+                                when opt_code in ('4103','4144') then '01'
+                                when opt_code in ('4115') then '03'
+                        end CHRG_TYPE
+                        ,char(bigint(AMOUNT)) CHRG_AMT
+                from BASS2.dw_acct_payment_dm_201203 a
+                where  replace(char(a.OP_TIME),'-','') = '20120331' 
+                and OPT_CODE in ('4103','4144','4115')
+                order by 1,2
+                with ur
+
+
+                
+
+
+ 
+ select 
+  to_char(START_TIME,'yyyymmdd') START_TIME
+  ,to_char(START_TIME,'hh24') START_TIME
+ --,to_char(DEAL_DATETIME,'yyyymmdd') DEAL_DATETIME
+ --,to_char(BEGIN_TIME1,'yyyymmdd') BEGIN_TIME1
+-- ,to_char(BEGIN_TIME2,'yyyymmdd') BEGIN_TIME2
+ ,to_char(PROCESS_TIME,'yyyymmdd') PROCESS_TIME
+ , BACKUP_DATE
+ ,to_char(INPUT_TIME,'yyyymmdd') INPUT_TIME
+ ,count(0) cnt
+ --,sum(RATING_RES) RATING_RES
+ ,sum(data_flow_up1+data_flow_up2) UP_flow
+ ,sum(data_flow_down1+data_flow_down2) DOWN_flow
+ from  XZJF.DR_GGPRS_L_20120108@dbl_jfdb
+ group by 
+   to_char(START_TIME,'yyyymmdd') 
+   ,to_char(START_TIME,'hh24')
+ --,to_char(DEAL_DATETIME,'yyyymmdd') 
+ --,to_char(BEGIN_TIME1,'yyyymmdd') 
+ --,to_char(BEGIN_TIME2,'yyyymmdd') 
+ ,to_char(PROCESS_TIME,'yyyymmdd') 
+ ,BACKUP_DATE
+ ,to_char(INPUT_TIME,'yyyymmdd') 
+ order by 1,2
+ 
+                

@@ -489,6 +489,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 				,(select  int(TEL_MOBILE_NEW_ADD_CNT) val3
 					from bass1.G_S_22073_DAY
 					where time_id=$last_day ) N 
+			    with ur
     "
    set p_row [get_row $sqlbuf]
    set RESULT_VAL1 [lindex $p_row 0]
