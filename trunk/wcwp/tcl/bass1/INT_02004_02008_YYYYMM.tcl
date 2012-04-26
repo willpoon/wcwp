@@ -17,6 +17,16 @@
 ###20091126 用 dw_product_bass1_ 替换原来的用户表
 #  20100125 修改在网用户口径userstatus_id in (1,2,3,6,8)
 #  20100128 修改口径 when userstatus_id=9 then '1033'为 when userstatus_id=9 then '2030' 归为冷冻期
+
+##~   20120426：处理新增客户数一致性：
+##~   1.处理重入网引起的不一致：
+##~   对于02004：用户重入网当天，不加入02004，尤其是 create_date=重入网当日的。
+即加入条件：and not (recreate_mark=1) 。 recreate_mark 只在重入网当日才打标。
+##~   对于02008：照常取增量，将重入网用户状态更新。以防止到达数不一致。
+##~   2.处理当日入网，当日离网引起的不一致：
+##~   比较麻烦，处理方案待定。
+
+
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
 
@@ -92,6 +102,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                        where 
                          userstatus_id in (1,2,3,6,8)
                          and usertype_id in (1,2,9)
+						 and not (recreate_mark=1)
                        except
                        select a.user_id,a.brand_id,usertype_id from $db_user.g_a_02004_day a,
                            (
@@ -100,7 +111,9 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                              group by user_id
                             )b
                             where a.user_id = b.user_id and a.time_id=b.time_id
-                     )aa"
+                     )aa
+					 with ur
+					 "
         puts $sql_buff
 	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
 		WriteTrace "$errmsg" 2020

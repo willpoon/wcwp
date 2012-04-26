@@ -114,6 +114,9 @@ proc main_tcl { p_optime p_timestamp } {
 		,test_mark
 		,free_mark
 		,enterprise_mark
+		,recreate_mark
+		,VALID_DATE
+		,EXPIRE_DATE
 	)
 	select
 		 a.user_id
@@ -132,7 +135,7 @@ proc main_tcl { p_optime p_timestamp } {
 	                        when Locate('1',a.os_sts)=31    then 31 when Locate('1',a.os_sts)=32    then 32
 	                        when Locate('1',a.os_sts)=33    then 33 else 0 end as stopstatus_id
 		,a.product_no
-		,a.sphone_id imsi
+		,value(g.imsi,a.sphone_id) imsi
 		,a.city_id
 		,a.channel_id
 		,date(a.create_date) create_date
@@ -140,7 +143,10 @@ proc main_tcl { p_optime p_timestamp } {
 		,case when d.user_id is not null then 1 else 0 end test_mark
 		,case when e.user_id is not null then 1 else 0 end free_mark
 		,case when f.cust_id is not null and a.user_type in (1,2,9) and a.userstatus_id in (1,2,3,6,8) then 1 else 0 end enterprise_mark
-	from
+		,case when a.user_type in (1,2,9) and h.userstatus_id not in (1,2,3,6,8) and a.userstatus_id in (1,2,3,6,8) and d.user_id is null then 1 else 0 end as recreate_mark
+		,date(a.valid_date) valid_date
+		,date(a.expire_date) expire_date
+from
 		${db_user}.dwd_product_$p_timestamp a
 	left join
 		${db_user}.map_pub_brand b on a.plan_id = b.plan_id
@@ -152,6 +158,10 @@ proc main_tcl { p_optime p_timestamp } {
 		(select user_id from ${db_user}.dw_product_free_ds where op_time = '${p_optime}' and valid_date < '${nextday}' and expire_date >= '${nextday}' group by user_id) e on a.user_id = e.user_id
 	left join
 		(select cust_id,level_def_mode from ${db_user}.dw_enterprise_member_ds where op_time = '${p_optime}' group by cust_id,level_def_mode) f on a.cust_id = f.cust_id
+	left join
+		${db_user}.DW_PRODUCT_INS_PROD_RES_IMSI_DS g on a.user_id = g.user_id
+	left join
+		${db_user}.Dw_product_bass1_${lastday} h on a.user_id = h.user_id
 	where
 		a.plan_id <> 0"
 	puts ${sql_buf}

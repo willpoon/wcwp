@@ -11,6 +11,8 @@
 #编写时间：2010-11-9
 #问题记录：
 #修改历史:1.6.9规范删除'次要联网方式'字段
+
+##~   20120419 : 渠道相关数据核查：201203：对于核查中STORE_AREA为空或零的渠道，STORE_AREA置为20
 #######################################################################################################
 
 
@@ -75,7 +77,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		,trim(char(a.channel_id))
 		,value(char(b.BUILD_AREA/100),'') BUILD_AREA
 		,'' USE_AREA
-		,value(char(b.STORE_AREA/100),'') STORE_AREA
+		,value(char(b.STORE_AREA/100),'20') STORE_AREA
 		,value(char(b.SEAT_NUM),'') SEAT_NUM
 		,value(char(b.EMPLOYEE_NUM),'') STORE_EMPLOYE
 		,value(char(b.ENSURE_NUM),'') GUARD_EMPLOYE

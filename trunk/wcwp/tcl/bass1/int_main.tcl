@@ -1486,6 +1486,50 @@ proc createtb {table_template part_key space_tb space_ind data_time} {
 	}
 
 }
+
+
+
+#################################################################
+# 函数名称: ChnRatio
+# 功能描述: 指标环比异常告警
+# 输入参数: MySQL : sql串1 sql串2
+# 输出参数: 
+# 返回值:   0成功；-1失败
+#################################################################
+proc ChnRatio {MySQL1 MySQL2} {
+	
+	global app_name
+	global op_time
+
+	puts "SQL-STATEMENT  ChnRatio:"	
+	
+	
+  set DEC_RESULT_VAL1 [get_single $MySQL1]
+  set DEC_RESULT_VAL2 [get_single $MySQL2]
+	set DEC_RESULT_VAL1 [format "%.3f" [expr ${DEC_RESULT_VAL1} /1.00]]
+	set DEC_RESULT_VAL2 [format "%.3f" [expr ${DEC_RESULT_VAL2} /1.00]]
+	
+	puts $DEC_RESULT_VAL1
+	puts $DEC_RESULT_VAL2
+	
+	set DEC_RESULT_VAL3 [format %.3f [expr abs(${DEC_RESULT_VAL1} / ${DEC_RESULT_VAL2} - 1) ]]
+	puts [format %.3f [expr (${DEC_RESULT_VAL1} / ${DEC_RESULT_VAL2} - 1) ]]
+	puts $DEC_RESULT_VAL3
+	if {  ${DEC_RESULT_VAL3} > 0.30 } {
+		set grade 2
+	        set alarmcontent "exception:指标环比异常"
+	        WriteAlarm $app_name $op_time $grade ${alarmcontent}
+	   			return -1
+	} else {
+	 	puts "ChnRatio pass!"	
+	 	return 0
+	}
+
+}
+
+################self defined functions end#################################################
+
+
 #################################################################
 #	主程序部分
 #################################################################
