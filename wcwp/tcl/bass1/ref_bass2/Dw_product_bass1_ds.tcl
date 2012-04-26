@@ -139,7 +139,9 @@ proc main_tcl { p_optime p_timestamp } {
 		,coalesce(c.accttype_id,0) accttype_id
 		,case when d.user_id is not null then 1 else 0 end test_mark
 		,case when e.user_id is not null then 1 else 0 end free_mark
-		,case when f.cust_id is not null and a.user_type in (1,2,9) and a.userstatus_id in (1,2,3,6,8) then 1 else 0 end enterprise_mark
+		,case when f.cust_id is not null and a.user_type in (1,2,9) and a.userstatus_id in (1,2,3,6,8) then 1 else 0 end enterprise_mark
+		
+		,case when a.user_type in (1,2,9) and h.userstatus_id not in (1,2,3,6,8) and a.userstatus_id in (1,2,3,6,8) and d.user_id is null then 1 else 0 end as day_recreate_mark
 	from
 		${db_user}.dwd_product_$p_timestamp a
 	left join
@@ -154,7 +156,9 @@ proc main_tcl { p_optime p_timestamp } {
 		(select cust_id,level_def_mode from ${db_user}.dw_enterprise_member_ds where op_time = '${p_optime}' group by cust_id,level_def_mode) f on a.cust_id = f.cust_id
 	left join
 		${db_user}.DW_PRODUCT_INS_PROD_RES_IMSI_DS g on a.user_id = g.user_id
-
+	left join
+
+		${db_user}.Dw_product_bass1_${lastday} h on a.user_id = h.user_id	
 	where
 		a.plan_id <> 0"
 	puts ${sql_buf}

@@ -27,7 +27,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
     #set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
     set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
     puts $op_month
-
+	set last_month [GetLastMonth [string range $op_month 0 5]]
     #本月第一天 yyyy-mm-dd
     set this_month_first_day [string range $op_month 0 3][string range $op_time 4 4][string range $op_month 4 5][string range $op_time 4 4]01
     puts $this_month_first_day
@@ -238,8 +238,20 @@ where channel_id not in
 		        set alarmcontent "06021中正常运营的委托经营厅和社会代理网点渠道的标识必须存在于22063"
 		        WriteAlarm $app_name $optime $grade ${alarmcontent}
 		   }
-    
-  
+
+    set sql_buff1 "
+	select sum(bigint(FH_REWARD)) 
+	from G_S_22063_MONTH where time_id = $op_month
+	with ur
+	"
+    set sql_buff2 "
+	select sum(bigint(FH_REWARD)) 
+	from G_S_22063_MONTH where time_id = $last_month
+	with ur
+	"
+
+	ChnRatio $sql_buff1 $sql_buff2
+	
 	return 0
 }
 

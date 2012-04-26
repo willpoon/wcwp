@@ -149,8 +149,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 # 2011-10-21 
 source /bassapp/bass1/tcl/INT_FIX_TMP.tcl
 Deal_fixchewutong $op_time $optime_month
-
-
+# 2012-04-24
+Deal_fix02062 $op_time $optime_month
 
 set sql_buff "ALTER TABLE G_A_02062_DAY_STAGE ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
 	exec_sql $sql_buff
