@@ -24,19 +24,23 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 	#当天 yyyymmdd
         set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]       
-        
-        #删除本期数据
-        set handle [aidb_open $conn]
-	set sql_buff "delete from bass1.g_s_04004_day where time_id=$timestamp"
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
-       
-             
+
+	set sql_buff "values ( int(replace(char(current date - 118 days),'-','')) )"
+   exec_sql $sql_buff
+   set DeletedDate [get_single $sql_buff]
+   puts $DeletedDate
+	set sql_buff "delete from  bass1.G_S_04004_DAY_STORE2  where time_id= int(replace(char(current date - 118 days),'-',''))"
+   exec_sql $sql_buff
+
+	set sql_buff "insert into  bass1.G_S_04004_DAY_STORE2  select * from  bass1.G_S_04004_DAY where time_id= int(replace(char(current date - 118 days),'-','')) "
+   exec_sql $sql_buff
+
+	set sql_buff "delete from bass1.g_s_04004_day where time_id= int(replace(char(current date - 118 days),'-','')) "
+   exec_sql $sql_buff
+
+	set sql_buff "delete from bass1.g_s_04004_day where time_id=$timestamp" 
+	exec_sql $sql_buff            
+	
         set handle [aidb_open $conn]
 	set sql_buff "insert into bass1.G_S_04004_DAY
                            (
@@ -120,5 +124,6 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	aidb_commit $conn
 	aidb_close $handle
 
+aidb_runstats bass1.g_s_04004_day 3
 	return 0
 }

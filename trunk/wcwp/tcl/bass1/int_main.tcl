@@ -1149,8 +1149,15 @@ proc exec_sql {MySQL} {
 	global handle
 
 	set handle [aidb_open $conn]
+
 	set sql_buff $MySQL
+	
 	puts $sql_buff
+	
+	##~   抓取开始时间
+	set BeginTime [clock format [clock seconds] -format "%Y-%m-%d %H:%M:%S"]
+	puts ${BeginTime}
+
 	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
 		WriteTrace "$errmsg" 2005
 		aidb_close $handle
@@ -1158,7 +1165,16 @@ proc exec_sql {MySQL} {
 		exit -1
 	}
 	aidb_commit $conn
+
 	aidb_close $handle
+
+	##~   抓取结束时间
+	set EndTime [clock format [clock seconds] -format "%Y-%m-%d %H:%M:%S"]
+	puts ${EndTime}
+	
+	##~   计算耗时：
+	set elapsedSec [expr {([clock scan "${EndTime}"] - [clock scan "${BeginTime}"]) }]
+	puts "elapsedSec: ${elapsedSec} "		
 	return 0
 }
 
@@ -1180,11 +1196,22 @@ proc get_single {MySQL} {
 	set handle [aidb_open $conn]
 	set sql_buff $MySQL
 	puts $sql_buff
+	##~   抓取开始时间
+	set BeginTime [clock format [clock seconds] -format "%Y-%m-%d %H:%M:%S"]
+	puts ${BeginTime}
+	
   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
 		WriteTrace $errmsg 1001
 		puts $errmsg
 		exit -1
 	}
+	##~   抓取结束时间
+	set EndTime [clock format [clock seconds] -format "%Y-%m-%d %H:%M:%S"]
+	puts ${EndTime}
+	##~   计算耗时：
+	set elapsedSec [expr {([clock scan "${EndTime}"] - [clock scan "${BeginTime}"]) }]
+	puts "elapsedSec: ${elapsedSec} "
+
 	if [catch {set result [lindex [aidb_fetch $handle] 0]} errmsg ] {
 		WriteTrace $errmsg 1002
 		puts $errmsg
@@ -1377,8 +1404,12 @@ proc get_row {MySQL} {
 
         set handle [aidb_open $conn]
         set sql_buff $MySQL
+
         puts $sql_buff
         puts "----------------------------------------------------------------------------------- "
+		##~   抓取开始时间
+		set BeginTime [clock format [clock seconds] -format "%Y-%m-%d %H:%M:%S"]
+		puts ${BeginTime}				
         if [catch { aidb_sql $handle $sql_buff } errmsg ] {
                 WriteTrace"$errmsg" 2005
                 aidb_close $handle
@@ -1388,6 +1419,12 @@ proc get_row {MySQL} {
         set p_row [aidb_fetch $handle]
         aidb_commit $conn
         aidb_close $handle
+	##~   抓取结束时间
+	set EndTime [clock format [clock seconds] -format "%Y-%m-%d %H:%M:%S"]
+	puts ${EndTime}
+	##~   计算耗时：
+	set elapsedSec [expr {([clock scan "${EndTime}"] - [clock scan "${BeginTime}"]) }]
+	puts "elapsedSec: ${elapsedSec} "		
         return $p_row
 }
 
@@ -1410,12 +1447,21 @@ proc get_rows {MySQL n} {
         set handle [aidb_open $conn]
         set i 0
         set sql_buff $MySQL
+		##~   抓取开始时间
+		set BeginTime [clock format [clock seconds] -format "%Y-%m-%d %H:%M:%S"]
+		puts ${BeginTime}						
         if [catch { aidb_sql $handle $sql_buff } errmsg ] {
                 WriteTrace"$errmsg" 2005
                 aidb_close $handle
                 puts $errmsg
                 exit -1
         }
+	##~   抓取结束时间
+	set EndTime [clock format [clock seconds] -format "%Y-%m-%d %H:%M:%S"]
+	puts ${EndTime}
+	##~   计算耗时：
+	set elapsedSec [expr {([clock scan "${EndTime}"] - [clock scan "${BeginTime}"]) }]
+	puts "elapsedSec: ${elapsedSec} "
         while {[set p_row [aidb_fetch $handle ]] != "" } {
         set res($i) $p_row
         incr i

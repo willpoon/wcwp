@@ -165,7 +165,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	}
 	aidb_commit $conn
 	aidb_close $handle
-
+aidb_runstats bass1.G_S_04017_DAY 3
 	return 0
 }
 #################################################################

@@ -443,33 +443,36 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 # R140	日	汇总接口“使用TD网络的客户数”与通过详单统计的使用TD网络客户数的偏差在5%以内
    set sqlbuf " 
-						select M.val1
-									,N.val2
-									,decimal(round(M.val1/1.00/N.val2-1,4),9,4) rate 
-					  from 
-								( select int(TD_CUSTOMER_CNT) val1
-									from bass1.G_S_22201_DAY
-									where time_id=$timestamp ) M
-								,
-								( select count(distinct a.product_no) val2
-									from  
-									(	
-									 select distinct product_no
-										from bass1.g_s_04017_day
-										where mns_type='1' and time_id=$timestamp
-											union
-										select distinct product_no
-										from bass1.g_s_04002_day
-										where mns_type='1' and time_id=$timestamp
-											union
-										select product_no
-										from bass1.g_s_04018_day
-										where mns_type='1' and time_id=$timestamp
-										) a,session.int_check_td_day_tmp1 b 
-										where a.product_no = b.product_no 
-										  and b.usertype_id  not IN ('2010','2020','2030','9000') 
-										  and b.test_flag='0'
-									) N
+		select M.val1
+					,N.val2
+					,decimal(round(M.val1/1.00/N.val2-1,4),9,4) rate 
+	  from 
+				( select int(TD_CUSTOMER_CNT) val1
+					from bass1.G_S_22201_DAY
+					where time_id=$timestamp 
+				) M
+				,
+				( select count(distinct a.product_no) val2
+					from  
+					(	
+					 select  product_no
+						from bass1.g_s_04017_day
+						where mns_type='1' and time_id=$timestamp
+							union
+						select  product_no
+						from bass1.g_s_04002_day
+						where mns_type='1' and time_id=$timestamp
+							union
+						select product_no
+						from bass1.g_s_04018_day
+						where mns_type='1' and time_id=$timestamp
+						) a
+						,session.int_check_td_day_tmp1 b 
+						where a.product_no = b.product_no 
+						  and b.usertype_id  not IN ('2010','2020','2030','9000') 
+						  and b.test_flag='0'
+					) N
+	with ur
     "    
    set p_row [get_row $sqlbuf]
    set RESULT_VAL1 [lindex $p_row 0]
@@ -571,7 +574,9 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 							,
 							(	select int(td_tnet_data_flux) val2
 								from bass1.g_s_22203_day 
-								where time_id=$timestamp ) N
+								where time_id=$timestamp 
+							) N
+						with ur
     "    
    set p_row [get_row $sqlbuf]
    set RESULT_VAL1 [lindex $p_row 0]
@@ -595,53 +600,3 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 
 
-
-
-
-#------------------------内部函数部分--------------------------#	
-#  get_row 返回 SQL的行徝
-proc get_row {MySQL} {
-
-	global env
-
-	global conn
-
-	global handle
-
-	set handle [aidb_open $conn]
-	set sql_buff $MySQL
-	puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		puts $errmsg
-		exit -1
-	}
-	set p_row [aidb_fetch $handle]
-	aidb_commit $conn
-	aidb_close $handle
-	return $p_row
-}
-
-#   exec_sql 执行SQL
-proc exec_sql {MySQL} {
-
-	global env
-
-	global conn
-
-	global handle
-
-	set handle [aidb_open $conn]
-	set sql_buff $MySQL
-	puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		puts $errmsg
-		exit -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
-	return 0
-}
