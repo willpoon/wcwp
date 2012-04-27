@@ -43,55 +43,95 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	exec_sql $sqlbuf  
 
 	set sqlbuf "	insert into session.int_check_gprs_day_tmp1 (
-												 user_id    
-												,product_no 
-												,test_flag  
-												,sim_code   
-												,usertype_id  )
-									select e.user_id
-												,e.product_no  
-												,case when e.usertype_id in ('1','2') then '0' else '1' end  test_flag
-												,e.sim_code
-												,f.usertype_id           
-									from (select user_id , create_date ,product_no,sim_code,usertype_id
-												 			,row_number() over(partition by user_id order by time_id desc ) row_id   
-									      from bass1.g_a_02004_day
-									      where time_id<=$timestamp ) e 
-									inner join ( select user_id , usertype_id ,row_number() over(partition by user_id order by time_id desc ) row_id   
-												       from bass1.g_a_02008_day
-												       where time_id<=$timestamp ) f on f.user_id=e.user_id 
-									where e.row_id=1 and f.row_id=1   "
+				 user_id    
+				,product_no 
+				,test_flag  
+				,sim_code   
+				,usertype_id  )
+			select e.user_id
+				,e.product_no  
+				,case when e.usertype_id in ('1','2') then '0' else '1' end  test_flag
+				,e.sim_code
+				,f.usertype_id           
+	from (select user_id , create_date ,product_no,sim_code,usertype_id
+							,row_number() over(partition by user_id order by time_id desc ) row_id   
+		  from bass1.g_a_02004_day
+		  where time_id<=$timestamp ) e 
+	inner join ( select user_id , usertype_id ,row_number() over(partition by user_id order by time_id desc ) row_id   
+					   from bass1.g_a_02008_day
+					   where time_id<=$timestamp ) f on f.user_id=e.user_id 
+	where e.row_id=1 and f.row_id=1   
+	and f.usertype_id not IN ('2010','2020','2030','9000') 
+	and  e.usertype_id in ('1','2')
+	with ur"
 	exec_sql $sqlbuf  
 
+set sql_buff "create index session.idxgprsflowcheck  on session.int_check_gprs_day_tmp1(product_no)"
 
-
+exec_sql $sql_buff  
 
  puts "R173	日	GPRS上行流量日变动率<= 50%  "
+   ##~   set sqlbuf " 
+				##~   select val1
+							##~   ,val3
+							##~   ,decimal(1.00*(val1-val3)/val3,9,4) rate 
+				##~   from 
+				 ##~   (select sum(bigint(a.UP_FLOWS)) val1
+					##~   from bass1.G_S_04002_DAY a,
+					     ##~   session.int_check_gprs_day_tmp1 b 
+					##~   where a.product_no = b.product_no 
+						##~   and b.usertype_id not IN ('2010','2020','2030','9000') 
+						##~   and b.test_flag='0'
+					  ##~   and a.time_id=$timestamp ) M
+				##~   ,(select sum(bigint(c.UP_FLOWS)) val3
+					##~   from bass1.G_S_04002_DAY c,
+					     ##~   session.int_check_gprs_day_tmp1 d 
+					##~   where c.product_no = d.product_no 
+						##~   and d.usertype_id not IN ('2010','2020','2030','9000') 
+						##~   and d.test_flag='0'
+					  ##~   and c.time_id=$last_day ) N 
+    ##~   "
+   ##~   set p_row [get_row $sqlbuf]
+   ##~   set RESULT_VAL1 [lindex $p_row 0]
+	 ##~   set RESULT_VAL2 [lindex $p_row 1]
+	 ##~   set RESULT_VAL3 [lindex $p_row 2]  
    set sqlbuf " 
-				select val1
-							,val3
-							,decimal(1.00*(val1-val3)/val3,9,4) rate 
-				from 
-				 (select sum(bigint(a.UP_FLOWS)) val1
-					from bass1.G_S_04002_DAY a,
-					     session.int_check_gprs_day_tmp1 b 
-					where a.product_no = b.product_no 
-						and b.usertype_id not IN ('2010','2020','2030','9000') 
-						and b.test_flag='0'
-					  and a.time_id=$timestamp ) M
-				,(select sum(bigint(c.UP_FLOWS)) val3
-					from bass1.G_S_04002_DAY c,
-					     session.int_check_gprs_day_tmp1 d 
-					where c.product_no = d.product_no 
-						and d.usertype_id not IN ('2010','2020','2030','9000') 
-						and d.test_flag='0'
-					  and c.time_id=$last_day ) N 
-    "
-   set p_row [get_row $sqlbuf]
-   set RESULT_VAL1 [lindex $p_row 0]
-	 set RESULT_VAL2 [lindex $p_row 1]
-	 set RESULT_VAL3 [lindex $p_row 2]  
+				 select  sum(bigint(a.UP_FLOWS)) val1
+						,sum(bigint(a.DOWN_FLOWS)) val2
+					from ( select product_no,UP_FLOWS,DOWN_FLOWS from  bass1.G_S_04002_DAY a where a.time_id=$timestamp )  a
+					     ,session.int_check_gprs_day_tmp1 b 
+						where a.product_no = b.product_no 
+			"											  
+	set p_row [get_row $sqlbuf]
+	set RESULT_VAL1 [lindex $p_row 0]
+	set RESULT_VAL11 [lindex $p_row 1]
 
+
+   set sqlbuf " 
+				 select  sum(bigint(a.UP_FLOWS)) val1
+						,sum(bigint(a.DOWN_FLOWS)) val2
+					from ( select product_no,UP_FLOWS,DOWN_FLOWS from  bass1.G_S_04002_DAY a where a.time_id=$last_day )  a
+					     ,session.int_check_gprs_day_tmp1 b 
+						where a.product_no = b.product_no 
+			"											  
+	set p_row [get_row $sqlbuf]
+	set RESULT_VAL2 [lindex $p_row 0]
+	set RESULT_VAL22 [lindex $p_row 1]
+
+   set sqlbuf " 
+			values decimal(1.00*($RESULT_VAL1-$RESULT_VAL2)/$RESULT_VAL2,9,4)
+			"
+			
+set RESULT_VAL3 [get_single $sqlbuf]
+
+   set sqlbuf " 
+			values decimal(1.00*($RESULT_VAL11-$RESULT_VAL22)/$RESULT_VAL22,9,4)
+			"
+			
+set RESULT_VAL33 [get_single $sqlbuf]
+
+
+					  
  puts " 将校验值插入校验表里 "   
 	  set sqlbuf "INSERT INTO BASS1.G_RULE_CHECK VALUES ($timestamp,'R173',$RESULT_VAL1,$RESULT_VAL2,$RESULT_VAL3,0) "        
 	  exec_sql $sqlbuf  
@@ -107,38 +147,71 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
  puts "R174	日	GPRS下行流量日变动率<= 50% "
 
-   set sqlbuf " 
-				select val1
-							,val3
-							,decimal(1.00*(val1-val3)/val3,9,4) rate 
-				from 
-				 (select sum(bigint(a.DOWN_FLOWS)) val1
-					from bass1.G_S_04002_DAY a,
-					     session.int_check_gprs_day_tmp1 b 
-					where a.product_no = b.product_no 
-						and b.usertype_id not IN ('2010','2020','2030','9000') 
-						and b.test_flag='0'
-					  and a.time_id=$timestamp ) M
-				,(select sum(bigint(c.DOWN_FLOWS)) val3
-					from bass1.G_S_04002_DAY c,
-					     session.int_check_gprs_day_tmp1 d 
-					where c.product_no = d.product_no 
-						and d.usertype_id not IN ('2010','2020','2030','9000') 
-						and d.test_flag='0'
-					  and c.time_id=$last_day ) N 
-    "
+   ##~   set sqlbuf " 
+				##~   select val1
+							##~   ,val3
+							##~   ,decimal(1.00*(val1-val3)/val3,9,4) rate 
+				##~   from 
+				 ##~   (select sum(bigint(a.DOWN_FLOWS)) val1
+					##~   from bass1.G_S_04002_DAY a,
+					     ##~   session.int_check_gprs_day_tmp1 b 
+					##~   where a.product_no = b.product_no 
+						##~   and b.usertype_id not IN ('2010','2020','2030','9000') 
+						##~   and b.test_flag='0'
+					  ##~   and a.time_id=$timestamp ) M
+				##~   ,(select sum(bigint(c.DOWN_FLOWS)) val3
+					##~   from bass1.G_S_04002_DAY c,
+					     ##~   session.int_check_gprs_day_tmp1 d 
+					##~   where c.product_no = d.product_no 
+						##~   and d.usertype_id not IN ('2010','2020','2030','9000') 
+						##~   and d.test_flag='0'
+					  ##~   and c.time_id=$last_day ) N 
+    ##~   "
 
-   set p_row [get_row $sqlbuf]
-   set RESULT_VAL1 [lindex $p_row 0]
-	 set RESULT_VAL2 [lindex $p_row 1]
-	 set RESULT_VAL3 [lindex $p_row 2]  
+   ##~   set p_row [get_row $sqlbuf]
+   ##~   set RESULT_VAL1 [lindex $p_row 0]
+	 ##~   set RESULT_VAL2 [lindex $p_row 1]
+	 ##~   set RESULT_VAL3 [lindex $p_row 2]  
+
+
+
+   ##~   set sqlbuf " 
+				 ##~   select sum(bigint(a.UP_FLOWS)) val1
+					##~   from ( select product_no,UP_FLOWS from  bass1.G_S_04002_DAY a where a.time_id=$timestamp )  a
+					     ##~   ,(select distinct product_no from session.int_check_gprs_day_tmp1 b
+								##~   where b.usertype_id not IN ('2010','2020','2030','9000') 
+									##~   and b.test_flag='0'
+						  ##~   ) b 
+						##~   where a.product_no = b.product_no 
+			##~   "											  
+##~   set RESULT_VAL1 [get_single $sqlbuf]
+
+
+   ##~   set sqlbuf " 
+				 ##~   select sum(bigint(a.UP_FLOWS)) val1
+					##~   from ( select product_no,UP_FLOWS from  bass1.G_S_04002_DAY a where a.time_id=$last_day )  a
+					     ##~   ,(select distinct product_no from session.int_check_gprs_day_tmp1 b
+								##~   where b.usertype_id not IN ('2010','2020','2030','9000') 
+									##~   and b.test_flag='0'
+						  ##~   ) b 
+						##~   where a.product_no = b.product_no 
+			##~   "											  
+##~   set RESULT_VAL2 [get_single $sqlbuf]
+
+   ##~   set sqlbuf " 
+			##~   values decimal(1.00*($RESULT_VAL1-$RESULT_VAL2)/$RESULT_VAL2,9,4)
+			##~   "
+##~   set RESULT_VAL3 [get_single $sqlbuf]
+
+
+
 
  puts " 将校验值插入校验表里 "   
-	  set sqlbuf "INSERT INTO BASS1.G_RULE_CHECK VALUES ($timestamp,'R174',$RESULT_VAL1,$RESULT_VAL2,$RESULT_VAL3,0) "        
+	  set sqlbuf "INSERT INTO BASS1.G_RULE_CHECK VALUES ($timestamp,'R174',$RESULT_VAL11,$RESULT_VAL22,$RESULT_VAL33,0) "        
 	  exec_sql $sqlbuf  
 
  # 校验值超标时告警	
-	if {$RESULT_VAL3>0.45||$RESULT_VAL3<-0.45 } {
+	if {$RESULT_VAL33>0.45||$RESULT_VAL33<-0.45 } {
 		set grade 2
 	  set alarmcontent "R174校验不通过"
 	  WriteAlarm $app_name $optime $grade ${alarmcontent}
@@ -147,58 +220,5 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 
 
-	return 0
-}
-
-
-
-
-#------------------------内部函数部分--------------------------#	
-#  get_row 返回 SQL的行徝
-proc get_row {MySQL} {
-
-	global env
-
-	global conn
-
-	global handle
-
-	set handle [aidb_open $conn]
-	set sql_buff $MySQL
-	puts $sql_buff
-	puts "----------------------------------------------------------------------------------- "
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		puts $errmsg
-		exit -1
-	}
-	set p_row [aidb_fetch $handle]
-	aidb_commit $conn
-	aidb_close $handle
-	return $p_row
-}
-
-#   exec_sql 执行SQL
-proc exec_sql {MySQL} {
-
-	global env
-
-	global conn
-
-	global handle
-
-	set handle [aidb_open $conn]
-	set sql_buff $MySQL
-	puts $sql_buff
-	puts "----------------------------------------------------------------------------------- "
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		puts $errmsg
-		exit -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
 	return 0
 }

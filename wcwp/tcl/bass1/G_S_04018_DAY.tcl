@@ -80,59 +80,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		"
    puts $sql_buff
    exec_sql $sql_buff
-
+aidb_runstats bass1.G_S_04018_DAY 3
 	return 0
 }
 
-
-
-
-#内部函数部分
-proc exec_sql {MySQL} {
-
-	global env
-
-	global conn
-
-	global handle
-
-	set handle [aidb_open $conn]
-	set sql_buff $MySQL
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		puts $errmsg
-		exit -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
-	return 0
-}
-
-proc get_single {MySQL} {
-
-	global env
-
-	global conn
-
-	global handle
-
-	set handle [aidb_open $conn]
-	set sql_buff $MySQL
-  if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace $errmsg 1001
-		puts $errmsg
-		exit -1
-	}
-	if [catch {set result [lindex [aidb_fetch $handle] 0]} errmsg ] {
-		WriteTrace $errmsg 1002
-		puts $errmsg
-		exit -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
-
-
-	return $result
-}
 

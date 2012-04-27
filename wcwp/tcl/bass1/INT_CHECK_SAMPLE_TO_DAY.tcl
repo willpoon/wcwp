@@ -54,26 +54,18 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 
 #删除本期数据
-        set handle [aidb_open $conn]
 	set sql_buff "
 		DELETE FROM $db_user.G_RULE_CHECK WHERE TIME_ID=$p_timestamp
-    	              AND RULE_CODE IN ('R107','R108') "
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
-
+    	              AND RULE_CODE IN ('R107','R108') 
+				"
+exec_sql $sql_buff
 ###################################R107：人均通话费##########################
         if { $today_dd<25 } {
             puts "今天 $today_dd 号，未到25号，暂不处理"
             return 0
         }
         #抽样详单人均通话费
-	set handle [aidb_open $conn]
-	set sqlbuf "\
+	set sql_buff "\
                       SELECT 
             	        SUM(T.JB+T.CT+T.CF) AS FY,
             	        COUNT(DISTINCT T.PRODUCT_NO) AS RS
@@ -97,21 +89,14 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                                BASS1.G_S_04009_DAY
                              WHERE TIME_ID/100=$this_month
                              GROUP BY PRODUCT_NO
-                           )T"
-    puts $sqlbuf
-	     if [catch {aidb_sql $handle $sqlbuf} errmsg] {
-		WriteTrace $errmsg 001
-		return -1
-	      }
-	      while { [set p_row [aidb_fetch $handle]] != "" } {
-		set CHECK_VAL1 [lindex $p_row 0]
-		set CHECK_VAL2 [lindex $p_row 1]
+                           )T
+						with ur"
+						
+   set p_row [get_row $sql_buff]
+   set CHECK_VAL1 [lindex $p_row 0]
+   set CHECK_VAL2 [lindex $p_row 1]
 
-	      }
-	      aidb_commit $conn
-	      aidb_close $handle
-	     puts $CHECK_VAL2
-	     set RESULT_VAL1 [format "%.2f" [expr (${CHECK_VAL1}/100.00000/${CHECK_VAL2})]]
+   set RESULT_VAL1 [format "%.2f" [expr (${CHECK_VAL1}/100.00000/${CHECK_VAL2})]]
 	     puts $RESULT_VAL1
 	     
              #数据清零
@@ -119,8 +104,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
              set CHECK_VAL2 0.00
              	    
              #汇总数据
-	     set handle [aidb_open $conn]
-	     set sqlbuf "\	
+	     set sql_buff "\	
                    SELECT 
                      SUM(T.JB+T.CT) AS FY,
                      COUNT(DISTINCT T.PRODUCT_NO) AS RS
@@ -136,16 +120,9 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                          GROUP BY PRODUCT_NO
                        ) T"
 
-	     if [catch {aidb_sql $handle $sqlbuf} errmsg] {
-		WriteTrace $errmsg 001
-		return -1
-	      }
-	      while { [set p_row [aidb_fetch $handle]] != "" } {
-		set CHECK_VAL1 [lindex $p_row 0]
-		set CHECK_VAL2 [lindex $p_row 1]
-	      }
-	      aidb_commit $conn
-	      aidb_close $handle
+   set p_row [get_row $sql_buff]
+   set CHECK_VAL1 [lindex $p_row 0]
+   set CHECK_VAL2 [lindex $p_row 1]
 	      
 	     set RESULT_VAL2 [format "%.2f" [expr (${CHECK_VAL1}/100.00000/${CHECK_VAL2})]]
 	     puts $RESULT_VAL2
@@ -156,21 +133,16 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	     puts $RESULT
 	     
              #将校验值插入校验结果表
-             set handle [aidb_open $conn]
-             set sqlbuf "INSERT INTO bass1.G_RULE_CHECK VALUES
+             set sql_buff "INSERT INTO bass1.G_RULE_CHECK VALUES
              		($p_timestamp ,
              		'R107',
              		cast ($RESULT_VAL1 as  DECIMAL(18, 5) ),
              		cast ($RESULT_VAL2 as  DECIMAL(18, 5) ),
              		cast ($RESULT as  DECIMAL(18, 5) ),
              		0.05)"
-             if [catch { aidb_sql $handle $sqlbuf } errmsg ] {
-             	WriteTrace $errmsg 003
-             	return -1
-             }
-             aidb_commit $conn
-             aidb_close $handle
+
              
+			exec_sql $sql_buff
              
              
              #判断R107：|抽样详单人均通话费/汇总数据人均通话费 - 1| ≤ 5%，且人均通话费＞0超标
@@ -186,123 +158,9 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	          
 	    }                 
     
-##############################R141：人均漫游通话次数#####################
-##        #抽样详单人均漫游通话次数
-##	set handle [aidb_open $conn]
-##	set sqlbuf "\
-##            SELECT 
-##            	SUM(T.CS),
-##            	COUNT(DISTINCT T.PRODUCT_NO)
-##            FROM (
-##                  SELECT COUNT(*) AS CS , PRODUCT_NO		  
-##                  FROM BASS1.G_S_04008_DAY
-##                  WHERE TIME_ID/100=$this_month
-##                        AND ROAM_TYPE_ID NOT IN ('0','500','122','202','302','401')
-##                  GROUP BY PRODUCT_NO
-##                  UNION 
-##                  SELECT COUNT(*) AS CS, PRODUCT_NO 
-##                  FROM BASS1.G_S_04009_DAY
-##                  WHERE TIME_ID/100=$this_month
-##                       AND ROAM_TYPE_ID NOT IN ('0','500','122','202','302','401')
-##                  GROUP BY PRODUCT_NO
-##                  )T"
-##
-##	     if [catch {aidb_sql $handle $sqlbuf} errmsg] {
-##		WriteTrace $errmsg 001
-##		return -1
-##	      }
-##	      while { [set p_row [aidb_fetch $handle]] != "" } {
-##		set CHECK_VAL1 [lindex $p_row 0]
-##		set CHECK_VAL2 [lindex $p_row 1]
-##
-##	      }
-##	      aidb_commit $conn
-##	      aidb_close $handle
-##	      
-##	     set RESULT_VAL1 [format "%.2f" [expr (${CHECK_VAL1}/1.00000/${CHECK_VAL2})]]
-##	     puts $RESULT_VAL1
-##	     
-##             #数据清零
-##             set CHECK_VAL1 0.00
-##             set CHECK_VAL2 0.00
-##             
-##             #汇总数据人均漫游通话次数
-##	set handle [aidb_open $conn]
-##        set sqlbuf "\
-##                SELECT 
-##            	   SUM(T.CS),
-##            	   COUNT(DISTINCT T.PRODUCT_NO)
-##                FROM (
-##                        SELECT SUM(BIGINT(CALL_COUNTS)) AS CS,PRODUCT_NO	  
-##                        FROM BASS1.G_S_21003_TO_DAY
-##                        WHERE TIME_ID/100=$this_month
-##                              AND ROAM_TYPE_ID NOT IN ('0','500','122','202','302','401')
-##                        GROUP BY PRODUCT_NO
-##                        UNION 
-##                        SELECT SUM(BIGINT(CALL_COUNTS)) AS CS,PRODUCT_NO	  
-##                        FROM BASS1.G_S_21006_TO_DAY
-##                        WHERE TIME_ID/100=$this_month
-##                              AND ROAM_TYPE_ID NOT IN ('0','500','122','202','302','401')
-##                        GROUP BY PRODUCT_NO
-##                      )T"	     
-##             puts $sqlbuf
-##	     if [catch {aidb_sql $handle $sqlbuf} errmsg] {
-##		WriteTrace $errmsg 001
-##		return -1
-##	      }
-##	      while { [set p_row [aidb_fetch $handle]] != "" } {
-##		set CHECK_VAL1 [lindex $p_row 0]
-##		set CHECK_VAL2 [lindex $p_row 1]
-##
-##	      }
-##	      aidb_commit $conn
-##	      aidb_close $handle
-##	      
-##	      puts $CHECK_VAL1
-##	      puts $CHECK_VAL2
-##	     set RESULT_VAL2 [format "%.2f" [expr (${CHECK_VAL1}/1.00000/${CHECK_VAL2})]]
-##	     puts $RESULT_VAL2
-##
-##             #(抽样值/汇总值-1)     
-###	     set RESULT [format "%.2f" [expr ($RESULT_VAL1/1.00/$RESULT_VAL2-1.00)]]
-##	     set RESULT [format "%.5f" [expr (${RESULT_VAL1}/1.00000/${RESULT_VAL2}-1)]]
-##	     puts $RESULT
-##	     
-##             #将校验值插入校验结果表
-##             set handle [aidb_open $conn]
-##             set sqlbuf "INSERT INTO bass1.G_RULE_CHECK VALUES
-##             		($p_timestamp ,
-##             		'R141',
-##             		cast ($RESULT_VAL1 as  DECIMAL(18, 5) ),
-##             		cast ($RESULT_VAL2 as  DECIMAL(18, 5) ),
-##             		cast ($RESULT as  DECIMAL(18, 5) ),
-##             		0.05)"
-##             if [catch { aidb_sql $handle $sqlbuf } errmsg ] {
-##             	WriteTrace $errmsg 003
-##             	return -1
-##             }
-##             aidb_commit $conn
-##             aidb_close $handle
-##             
-##             
-##             
-##             #判断R141：|抽样详单人均漫游通话次数/汇总数据人均漫游通话次数 - 1| ≤ 5％，且人均漫游通话次数＞0超标
-##	     if { $RESULT_VAL1<=0 || $RESULT_VAL2<=0 || ($RESULT>0.05 ||$RESULT<-0.05 ) } {
-##	     	set grade 2
-##	        set alarmcontent "准确性指标R141超出集团考核范围"
-##	        WriteAlarm $app_name $p_optime $grade ${alarmcontent}		
-##	     	     		
-##	     } elseif { ($RESULT>0.04 ||$RESULT<-0.04 ) } {	
-##	           set grade 3
-##	           set alarmcontent "准确性指标R141接近集团考核范围5%,达到${RESULT}"
-##	           WriteAlarm $app_name $p_optime $grade ${alarmcontent}
-##	          
-##	    } 	  	    	  
-
 #############################R108：人均计费时长#################
         #抽样详单人均计费时长
-	set handle [aidb_open $conn]
-	set sqlbuf "\
+	set sql_buff "\
 	            SELECT 
 	            	SUM(T.SC),
 	            	COUNT(DISTINCT T.PRODUCT_NO)AS RS
@@ -317,18 +175,10 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	                  WHERE TIME_ID/100=$this_month
 	                  GROUP BY PRODUCT_NO
 	                  )T"
-            puts $sqlbuf
-	     if [catch {aidb_sql $handle $sqlbuf} errmsg] {
-		WriteTrace $errmsg 001
-		return -1
-	      }
-	      while { [set p_row [aidb_fetch $handle]] != "" } {
-		set CHECK_VAL1 [lindex $p_row 0]
-		set CHECK_VAL2 [lindex $p_row 1]
 
-	      }
-	      aidb_commit $conn
-	      aidb_close $handle
+   set p_row [get_row $sql_buff]
+   set CHECK_VAL1 [lindex $p_row 0]
+   set CHECK_VAL2 [lindex $p_row 1]
 	      
 	     set RESULT_VAL1 [format "%.2f" [expr (${CHECK_VAL1}/1.00000/${CHECK_VAL2})]]
 	     puts $RESULT_VAL1
@@ -338,8 +188,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
              set CHECK_VAL2 0.00
              	    
              #汇总数据人均计费时长
-	     set handle [aidb_open $conn]
-	     set sqlbuf "\	
+	     set sql_buff "\	
 	            SELECT 
 	            	SUM(T.SC),
 	            	COUNT(DISTINCT T.PRODUCT_NO) 
@@ -354,17 +203,9 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	                  WHERE TIME_ID/100=$this_month
 	                  GROUP BY PRODUCT_NO
 	                  )T"
-              puts $sqlbuf
-	     if [catch {aidb_sql $handle $sqlbuf} errmsg] {
-		WriteTrace $errmsg 001
-		return -1
-	      }
-	      while { [set p_row [aidb_fetch $handle]] != "" } {
-		set CHECK_VAL1 [lindex $p_row 0]
-		set CHECK_VAL2 [lindex $p_row 1]
-	      }
-	      aidb_commit $conn
-	      aidb_close $handle
+   set p_row [get_row $sql_buff]
+   set CHECK_VAL1 [lindex $p_row 0]
+   set CHECK_VAL2 [lindex $p_row 1]
 	      
 	     set RESULT_VAL2 [format "%.2f" [expr (${CHECK_VAL1}/1.00000/${CHECK_VAL2})]]
 	     puts $RESULT_VAL2
@@ -375,20 +216,14 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	     puts $RESULT
 	     
              #将校验值插入校验结果表
-             set handle [aidb_open $conn]
-             set sqlbuf "INSERT INTO bass1.G_RULE_CHECK VALUES
+             set sql_buff "INSERT INTO bass1.G_RULE_CHECK VALUES
              		($p_timestamp ,
              		'R108',
              		cast ($RESULT_VAL1 as  DECIMAL(18, 5) ),
              		cast ($RESULT_VAL2 as  DECIMAL(18, 5) ),
              		cast ($RESULT as  DECIMAL(18, 5) ),
              		0.05)"
-             if [catch { aidb_sql $handle $sqlbuf } errmsg ] {
-             	WriteTrace $errmsg 003
-             	return -1
-             }
-             aidb_commit $conn
-             aidb_close $handle
+			 exec_sql $sql_buff
              
              
              
@@ -404,117 +239,5 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	           WriteAlarm $app_name $p_optime $grade ${alarmcontent}
 	          
 	    } 	  
-#############################################R140：人均长途计费时长##########
-##        #抽样详单人均长途计费时长
-##	set handle [aidb_open $conn]
-##	set sqlbuf "\
-##	            SELECT 
-##	            	SUM(T.SC),
-##	            	COUNT(DISTINCT T.PRODUCT_NO)
-##	            FROM (
-##	                  SELECT SUM(BIGINT(BASE_BILL_DURATION)) AS SC,PRODUCT_NO	  
-##	                  FROM BASS1.G_S_04008_DAY
-##	                  WHERE TIME_ID/100=$this_month
-##	                        AND TOLL_TYPE_ID<>'010'
-##	                  GROUP BY PRODUCT_NO
-##	                  UNION 
-##	                  SELECT SUM(CEIL(BIGINT(CALL_DURATION)/60.0)) AS SC,PRODUCT_NO
-##	                  FROM BASS1.G_S_04009_DAY
-##	                  WHERE TIME_ID/100=$this_month
-##	                        AND TOLL_TYPE_ID<>'010'
-##	                  GROUP BY PRODUCT_NO
-##	                  )T"
-##
-##	     if [catch {aidb_sql $handle $sqlbuf} errmsg] {
-##		WriteTrace $errmsg 001
-##		return -1
-##	      }
-##	      while { [set p_row [aidb_fetch $handle]] != "" } {
-##		set CHECK_VAL1 [lindex $p_row 0]
-##		set CHECK_VAL2 [lindex $p_row 1]
-##
-##	      }
-##	      aidb_commit $conn
-##	      aidb_close $handle
-##	      
-##	     set RESULT_VAL1 [format "%.2f" [expr (${CHECK_VAL1}/1.00000/${CHECK_VAL2})]]
-##	     puts $RESULT_VAL1
-##	     
-##             #数据清零
-##             set CHECK_VAL1 0.00
-##             set CHECK_VAL2 0.00
-##             	    
-##             #汇总数据人均长途计费时长
-##	     set handle [aidb_open $conn]
-##	     set sqlbuf "\	
-##		            SELECT 
-##		            	SUM(T.SC),
-##		            	COUNT(DISTINCT T.PRODUCT_NO)
-##		            FROM (
-##		                  SELECT  SUM(BIGINT(BASE_BILL_DURATION)) AS SC,PRODUCT_NO
-##		                  FROM BASS1.G_S_21003_TO_DAY
-##		                  WHERE TIME_ID/100=$this_month
-##		                        AND TOLL_TYPE_ID<>'010'
-##		                  GROUP BY PRODUCT_NO
-##		                  UNION 
-##		                  SELECT SUM(BIGINT(BASE_BILL_DURATION)) AS SC,PRODUCT_NO
-##		                  FROM BASS1.G_S_21006_TO_DAY
-##		                  WHERE TIME_ID/100=$this_month
-##		                        AND TOLL_TYPE_ID<>'010'
-##		                  GROUP BY PRODUCT_NO
-##		                  )T"
-##
-##	     if [catch {aidb_sql $handle $sqlbuf} errmsg] {
-##		WriteTrace $errmsg 001
-##		return -1
-##	      }
-##	      while { [set p_row [aidb_fetch $handle]] != "" } {
-##		set CHECK_VAL1 [lindex $p_row 0]
-##		set CHECK_VAL2 [lindex $p_row 1]
-##	      }
-##	      aidb_commit $conn
-##	      aidb_close $handle
-##	      
-##	     set RESULT_VAL2 [format "%.2f" [expr (${CHECK_VAL1}/1.00000/${CHECK_VAL2})]]
-##	     puts $RESULT_VAL2
-##
-##             #(抽样值/汇总值-1)     
-###	     set RESULT [format "%.2f" [expr ($RESULT_VAL1/1.00/$RESULT_VAL2-1.00)]]
-##	     set RESULT [format "%.5f" [expr (${RESULT_VAL1}/1.00000/${RESULT_VAL2}-1)]]
-##	     puts $RESULT
-##	     
-##             #将校验值插入校验结果表
-##             set handle [aidb_open $conn]
-##             set sqlbuf "INSERT INTO bass1.G_RULE_CHECK VALUES
-##             		($p_timestamp ,
-##             		'R140',
-##             		cast ($RESULT_VAL1 as  DECIMAL(18, 5) ),
-##             		cast ($RESULT_VAL2 as  DECIMAL(18, 5) ),
-##             		cast ($RESULT as  DECIMAL(18, 5) ),
-##             		0.05)"
-##             if [catch { aidb_sql $handle $sqlbuf } errmsg ] {
-##             	WriteTrace $errmsg 003
-##             	return -1
-##             }
-##             aidb_commit $conn
-##             aidb_close $handle
-##             
-##             
-##             
-##             #判断R140：|抽样详单人均长途计费时长/汇总数据人均长途计费时长 - 1| ≤ 5％，且人均长途计费时长＞0超标
-##	     if { $RESULT_VAL1<=0 || $RESULT_VAL2<=0 || ($RESULT>0.05 ||$RESULT<-0.05 ) } {
-##	     	set grade 2
-##	        set alarmcontent "准确性指标R140超出集团考核范围"
-##	        WriteAlarm $app_name $p_optime $grade ${alarmcontent}		
-##	     	     		
-##	     } elseif { ($RESULT>0.04 ||$RESULT<-0.04 ) } {	
-##	           set grade 3
-##	           set alarmcontent "准确性指标R140接近集团考核范围5%,达到${RESULT}"
-##	           WriteAlarm $app_name $p_optime $grade ${alarmcontent}
-##	          
-##	    }           
-##
-####################################  END  #######################	    
-	    
 	return 0
 }	    	    
