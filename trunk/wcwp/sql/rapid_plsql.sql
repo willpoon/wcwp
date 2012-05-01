@@ -13,6 +13,9 @@ commit;
 select * from 
 xzjf.DR_GPRS_L_20110121@dbl_jfdb
 
+select count(0) from xzjf.DR_MMS_L_20120429@dbl_jfdb
+
+
 select * from    kf.Kf_Sms_Cmd_Receive_201104
 where cmd_id =405003
  and sts=4 

@@ -10,6 +10,12 @@
 	. /bassapp/bihome/panzw/config/cds
 
 
+27-1
+192.168.0.124
+255.255.255.0
+192.168.0.1
+202.98.224.69
+
 
 Command-line access
 If you plan to make changes, use this command to check out the code as yourself using HTTPS:
@@ -39,7 +45,7 @@ code.page=936
 character.set=134
 LC_CTYPE=en_US.UTF-8
 output.code.page=936
-
+150-01-21-31-22
 BB : 79707927
 
 http://www.zto.cn/CheckB.aspx?bill_ID=680102655698&hname=hvalue
@@ -171,6 +177,7 @@ where	task_id	in	('I03013')
 
  
 nohup /bassapp/bihome/panzw/bass1_mon.sh >> bass1_mon.sh.out 2>&1 &
+nohup /bassapp/bihome/panzw/bass1_mon.sh  >> /bassapp/bihome/panzw/tmp/bass1_mon.sh.out 2>&1 &
 
 nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 01005 201105 >> /bassapp/bihome/panzw/bass1_mon_one.sh.out 2>&1 &
 nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 22081 201106 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
@@ -182,6 +189,11 @@ substr(product_no,1,3) in ('135','136','138','139','147','150','152','157','158'
 and length(rtrim(ltrim(product_no)))=11
 
 	
+db2 alter table bass2.dw_product_bass1_yyyymmdd add column  RECREATE_MARK SMALLINT
+
+
+db2 reorg table bass2.dw_product_bass1_yyyymmdd
+
 
 db2 => select * from DIM_FEETYPE_ITEM
 
@@ -6618,6 +6630,7 @@ zcat I1700220110308000000.AVL.Z | sed -n '12,13p'
 
 
 db2 runstats on table bass1.g_i_02021_month_temp1 with distribution and detailed indexes all
+db2 runstats on table bass1.G_S_04004_DAY with distribution and detailed indexes all
 
 
 db2 list application
@@ -7070,8 +7083,11 @@ G_I_02023_DAY
 !
 drwxr-xr-x    2 500      503          4096 Apr 01 09:13 sample
 
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_04015_DAY 2012-04-21 &
 
 
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_I_77780_DAY 2012-03-31 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_I_77781_DAY 2012-03-31 &
 
 /bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_02007_MONTH 2011-01 &
 /bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_02007_MONTH 2011-02 &
@@ -7499,7 +7515,7 @@ a.state in ('1','4','6','8','M','7','C','9')
 ,J-保号期
 ,K-有效期停主叫。
 
-nohup sh load_imei.sh > load_imei.201203.out 2>&1 &
+nohup sh load_imei.sh > load_imei.201204.out 2>&1 &
 
 zto 618159082802 pan
 zto 618158726217 wang
@@ -8610,5 +8626,167 @@ INT_CHECK_R030_MONTH.tcl
 INT_CHECK_R054_MONTH.tcl
 !
             
+89202999666640
+89201560001120
+
+
+
+完备强大的知识链体系：
+Unix操作系统->C语言->Unix内核开发-> C++语言 ->数据结构与算法->STL&Boost->Win32内核开发->Winsock网络开发->MFC->ATL->COM/DCOM->Oracle/SQL->ADO数据库连接->DirectD3D->DirectShow->Symbian手机开发->3G->实战项目
+
+详细的课程介绍请查阅：http://www.sdtarena.com/class_c.asp
+
+本期视频主讲老师为：陈宗权
+陈宗权：原就职于书生国际，现达内金牌讲师，C++软件专家
+
+本视频版权归北京达内科技有限公司所有，任何人不得以赢利为目的进行传播，违者必究！
+
+
+21天学会C++达内C++视频教程
+21个视频从入门到精通，回复后可下载全部。
+视频教程下载地址：
+http://u.115.com/file/t853b8cf4b#
+c＋＋.day01.rar
+http://u.115.com/file/t8c0914961#
+该隐藏帖已被自动取消隐藏！
+c＋＋.day02.rar
+http://u.115.com/file/t8bd655da1#
+c＋＋.day03.rar
+http://u.115.com/file/t8429c1370#
+c＋＋.day04.rar
+http://u.115.com/file/t865f3c4bd#
+c＋＋.day05.rar
+http://u.115.com/file/t8e64b0466#
+c＋＋.day06.rar
+http://u.115.com/file/t816a4e075#
+c＋＋.day07.rar
+http://u.115.com/file/t87894578d#
+c＋＋.day08.rar
+http://u.115.com/file/t84e5dc9d4#
+c＋＋.day09.rar
+http://u.115.com/file/t8d514d89b#
+c＋＋.day10.rar
+http://u.115.com/file/t8e696050b#
+dao11.rar
+http://u.115.com/file/t8615961ab#
+day12.rar
+http://u.115.com/file/t8103e0a20#
+day13.rar
+http://u.115.com/file/t8257997b0#
+day14.rar
+http://u.115.com/file/t8cfeeef35#
+day15.rar
+http://u.115.com/file/t84ce3cc7c#
+day16.rar
+http://u.115.com/file/t8667f6b92#
+day17.rar
+http://u.115.com/file/t84ca8c536#
+day18.rar
+http://u.115.com/file/t8ff81e5f5#
+day19.rar
+http://u.115.com/file/t89df01cbd#
+day20.rar
+http://u.115.com/file/t82ca352e0#
+day21.rar
+
+
+
+http://u.115.com/file/t853b8cf4b#
+http://u.115.com/file/t8c0914961#
+http://u.115.com/file/t8bd655da1#
+http://u.115.com/file/t8429c1370#
+http://u.115.com/file/t865f3c4bd#
+http://u.115.com/file/t8e64b0466#
+http://u.115.com/file/t816a4e075#
+http://u.115.com/file/t87894578d#
+http://u.115.com/file/t84e5dc9d4#
+http://u.115.com/file/t8d514d89b#
+http://u.115.com/file/t8e696050b#
+http://u.115.com/file/t8615961ab#
+http://u.115.com/file/t8103e0a20#
+http://u.115.com/file/t8257997b0#
+http://u.115.com/file/t8cfeeef35#
+http://u.115.com/file/t84ce3cc7c#
+http://u.115.com/file/t8667f6b92#
+http://u.115.com/file/t84ca8c536#
+http://u.115.com/file/t8ff81e5f5#
+http://u.115.com/file/t89df01cbd#
+http://u.115.com/file/t82ca352e0#
+
+融智技术学院21168249
+
+
+http://115.com/file/e6yaum7w#
+　　孙鑫C--教程20.rar
+　　http://115.com/file/e6yau9bm#
+　　孙鑫C--教程19.rar
+　　http://115.com/file/bhzk5jer#
+　　孙鑫C--教程18.rar
+　　http://115.com/file/dn68cnys#
+　　孙鑫C--教程17.rar
+　　http://115.com/file/dn68c7q1#
+　　孙鑫C--教程16.rar
+　　http://115.com/file/e6ya2gl2#
+　　孙鑫C--教程15.rar
+　　http://115.com/file/aqzxbxe1#
+　　孙鑫C--教程14.rar
+　　http://115.com/file/clg1vfm6#
+　　孙鑫C--教程13.rar
+　　http://115.com/file/bhzkai2a#
+　　孙鑫C--教程12.rar
+　　http://115.com/file/dn68s662#
+　　孙鑫C--教程11.rar
+　　http://115.com/file/bhzka1qp#
+　　孙鑫C--教程10.rar
+　　http://115.com/file/dn6v8joo#
+　　孙鑫C--教程09.rar
+　　http://115.com/file/e6y8awtm#
+　　孙鑫C--教程08.rar
+　　http://115.com/file/dn6vekp1#
+　　孙鑫C--教程07.rar
+　　http://115.com/file/bhzcqz1i#
+　　孙鑫C--教程06.zip
+　　http://115.com/file/aqz06eht#
+　　孙鑫C--教程05.rar
+　　http://115.com/file/dn6v732o#
+　　孙鑫C--教程04.rar
+　　http://115.com/file/e6y8bblm#
+　　孙鑫C--教程03.rar
+　　http://115.com/file/e6y8bhv4#
+　　孙鑫C--教程02.rar
+　　http://115.com/file/aqz0sfnk#
+　　孙鑫C--教程01.rar
+
+
+
+
+and not ( replace(char(create_date),'-','') = '${Timestamp}'  and create_date = VALID_DATE and VALID_DATE = EXPIRE_DATE )
+and not ( replace(char(create_date),'-','') = '${Timestamp}' and recreate_mark=1)
+
+
+and not ( replace(char(create_date),'-','') = '${Timestamp}'  and create_date = VALID_DATE and VALID_DATE = EXPIRE_DATE )
+and not ( replace(char(create_date),'-','') = '${Timestamp}' and recreate_mark=1)
+
+db2 alter table bass2.dw_product_bass1_yyyymmdd add column  VALID_DATE DATE
+db2 alter table bass2.dw_product_bass1_yyyymmdd add column  EXPIRE_DATE DATE
+
+
+
+
+select user_id from   bass1.g_a_02004_02008_stage 
+                        where USERSTATUS IN ('2010','2020','2030','9000')
+                          and test_flag='0'
+                          and time_id=20120425
+except
+select user_id 
+from bass2.dw_product_20120425
+where usertype_id in (1,2,9) 
+ and day_off_mark = 1 
+ and userstatus_id not in (1,2,3,6,8)
+ and test_mark<>1
+
+
+grep -in 11072 nohup.out
+nawk '{ if ( FNR > 116646 ) print }' nohup.out|more 
 
 

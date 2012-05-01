@@ -1,8 +1,8 @@
 #替换：
-#1.DIM_TERM_TAC_20120331BAK
+#1.DIM_TERM_TAC_20120429BAK
 #2.i_30000_201108_91005_001
 ---------------处理91005接口数据问题------------------------------
-RENAME TABLE BASS2.DIM_TERM_TAC TO DIM_TERM_TAC_20120331BAK;
+RENAME TABLE BASS2.DIM_TERM_TAC TO DIM_TERM_TAC_20120429BAK;
 CREATE TABLE BASS2.DIM_TERM_TAC
  (ID             INTEGER,
   TAC_NUM        VARCHAR(15),
@@ -71,7 +71,7 @@ echo ${DB2_SQLCOMM}|sed -e 's/ $//g'
 
 db2 connect to bassdb user bass2 using bass2
 
-db2 "load client from /bassapp/bihome/panzw/tmp/i_30000_201201_91005_001.dat of asc \
+db2 "load client from /bassapp/bihome/panzw/tmp/i_30000_201204_91005_001.dat of asc \
  modified by timestampformat=\"YYYYMMDDHHMMSS\" dateformat=\"YYYYMMDD\" \
  timeformat=\"HHMMSS\" \
  method L (1 8,9 23,24 33,34 83,84 93,94 293,294 294,295 295) \
@@ -79,10 +79,10 @@ db2 "load client from /bassapp/bihome/panzw/tmp/i_30000_201201_91005_001.dat of 
  replace into bass2.DIM_TERM_TAC_MID nonrecoverable"
  
  
-delete from BASS2.DIM_TERM_TAC 
+delete from BASS2.DIM_TERM_TAC; 
 insert into BASS2.DIM_TERM_TAC
 select * from BASS2.DIM_TERM_TAC_MID
-
+;
  insert into BASS2.DIM_TERM_TAC
 select 
 ID,
@@ -92,7 +92,7 @@ TERM_MODEL,
 TERMPROD_ID,
 TERMPROD_NAME,
 NET_TYPE,
-TERM_TYPE from BASS2.DIM_TERM_TAC_20120331BAK
+TERM_TYPE from BASS2.DIM_TERM_TAC_20120429BAK
 where net_type <>'2';
 
 
@@ -101,7 +101,7 @@ group by tac_nuM
 having count(*)>1
 2012.02:35805102       	2
 2012.03:
-select tac_nuM,count(*) from BASS2.DIM_TERM_TAC_20120331BAK
+select tac_nuM,count(*) from BASS2.DIM_TERM_TAC_20120429BAK
 group by tac_nuM
 having count(*)>1
 0
@@ -115,7 +115,7 @@ ID	TAC_NUM	TERM_ID	TERM_MODEL	TERMPROD_ID	TERMPROD_NAME	NET_TYPE	TERM_TYPE
 567	35805102       	26000     	Best sonny TD902                                  	006010119 	华森                                                                                                                                                                                                    	2	1
 18774	35805102	25208	SM V530	006010119	华森	1	0
 
-select * from BASS2.DIM_TERM_TAC_20120331BAK
+select * from BASS2.DIM_TERM_TAC_20120429BAK
 where tac_nuM='35805102'
 
 ID	TAC_NUM	TERM_ID	TERM_MODEL	TERMPROD_ID	TERMPROD_NAME	NET_TYPE	TERM_TYPE
@@ -150,7 +150,8 @@ sh load_imei.sh > load_imei.201105.out 2>&1 &
 select count(0) from    BASS2.DIM_TERM_TAC
  27790
  2012.03 27802
- select count(0) from    bass2.DIM_TERM_TAC_20120331BAK
+ 2012.04 27823
+ select count(0) from    bass2.DIM_TERM_TAC_20120429BAK
  27776
  2012.02 27790
  
