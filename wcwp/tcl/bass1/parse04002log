@@ -1,0 +1,1 @@
+tail -1 /bassapp/bass1/log/G_S_04002_DAY.log |awk -F"," '{print $3}' > /bassapp/bass1/tcl/log/G_S_04002_DAY.runstat

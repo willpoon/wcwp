@@ -460,7 +460,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 						where mns_type='1' and time_id=$timestamp
 							union
 						select  product_no
-						from bass1.g_s_04002_day
+						from bass1.G_S_04002_DAY_THIS
 						where mns_type='1' and time_id=$timestamp
 							union
 						select product_no
@@ -567,7 +567,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 												where mns_type='1' and  time_id=$timestamp
 														union all
 												select product_no,bigint(UP_FLOWS)+bigint(DOWN_FLOWS) DATA_FLOW
-												from bass1.g_s_04002_day
+												from bass1.G_S_04002_DAY_THIS
 												where mns_type='1' and time_id=$timestamp ) A
 								inner join session.int_check_td_day_tmp1 B on a.product_no=b.product_no
 								where b.usertype_id  NOT IN ('2010','2020','2030','9000') and b.test_flag='0'  ) M

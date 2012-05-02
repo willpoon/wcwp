@@ -98,7 +98,7 @@ exec_sql $sql_buff
    set sqlbuf " 
 				 select  sum(bigint(a.UP_FLOWS)) val1
 						,sum(bigint(a.DOWN_FLOWS)) val2
-					from ( select product_no,UP_FLOWS,DOWN_FLOWS from  bass1.G_S_04002_DAY a where a.time_id=$timestamp )  a
+					from ( select product_no,UP_FLOWS,DOWN_FLOWS from  bass1.G_S_04002_DAY_THIS a where a.time_id=$timestamp )  a
 					     ,session.int_check_gprs_day_tmp1 b 
 						where a.product_no = b.product_no 
 			"											  
@@ -110,7 +110,7 @@ exec_sql $sql_buff
    set sqlbuf " 
 				 select  sum(bigint(a.UP_FLOWS)) val1
 						,sum(bigint(a.DOWN_FLOWS)) val2
-					from ( select product_no,UP_FLOWS,DOWN_FLOWS from  bass1.G_S_04002_DAY a where a.time_id=$last_day )  a
+					from ( select product_no,UP_FLOWS,DOWN_FLOWS from  bass1.G_S_04002_DAY_PREV a where a.time_id=$last_day )  a
 					     ,session.int_check_gprs_day_tmp1 b 
 						where a.product_no = b.product_no 
 			"											  
