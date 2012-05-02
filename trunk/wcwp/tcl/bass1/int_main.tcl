@@ -1285,11 +1285,69 @@ switch $flag {
                set  sqlbuf "runstats on table $tablename on all columns and indexes all " 
              }
  }
+	##~   抓取开始时间
+	set BeginTime [clock format [clock seconds] -format "%Y-%m-%d %H:%M:%S"]
+	puts ${BeginTime}
 
 exec db2 connect to bassdb user bass1 using bass1  > /dev/null
 puts "$sqlbuf"
 exec db2 $sqlbuf
 exec db2 terminate > /dev/null
+
+	##~   抓取结束时间
+	set EndTime [clock format [clock seconds] -format "%Y-%m-%d %H:%M:%S"]
+	puts ${EndTime}
+	
+	##~   计算耗时：
+	set elapsedSec [expr {([clock scan "${EndTime}"] - [clock scan "${BeginTime}"]) }]
+	puts "elapsedSec: ${elapsedSec} "
+	
+}
+
+
+#################################################################
+# 函数名称: exec_nolog
+# 功能描述: 返回一条查询结果
+# 输入参数: MySQL 
+# 输出参数: 
+# 返回值:   0成功；-1失败
+#################################################################
+proc exec_nolog { SchName MySQL} {
+	set db2str "connect to bassdb user bass1 using bass1"
+	puts $db2str
+	exec db2 $db2str
+	set db2str "update command options using c off"
+	puts $db2str
+	exec db2 $db2str
+	set db2str "alter table $SchName  activate not logged initially"
+	puts $db2str
+	exec db2 $db2str
+	set db2str $MySQL
+	puts $db2str
+	
+	##~   抓取开始时间
+	set BeginTime [clock format [clock seconds] -format "%Y-%m-%d %H:%M:%S"]
+	puts ${BeginTime}
+	
+	exec db2 $db2str
+	
+	puts "commit"
+	exec db2 commit
+
+	set db2str "update command options using c on"
+	puts $db2str
+	exec db2 $db2str
+	##~   抓取结束时间
+	set EndTime [clock format [clock seconds] -format "%Y-%m-%d %H:%M:%S"]
+	puts ${EndTime}
+	
+	##~   计算耗时：
+	set elapsedSec [expr {([clock scan "${EndTime}"] - [clock scan "${BeginTime}"]) }]
+	puts "elapsedSec: ${elapsedSec} "
+	
+	exec db2 terminate
+	return 0
+
 }
 
 

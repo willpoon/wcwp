@@ -189,7 +189,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                         bass1.g_user_lst b 
                       where
                         b.time_id=${op_month}
-                        and a.user_id=b.user_id and length(OPP_NUMBER) <= 24"
+                        and a.user_id=b.user_id and length(OPP_NUMBER) <= 24
+						and brand_id is not null"
         puts $sql_buff
 	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
 		WriteTrace "$errmsg" 2020

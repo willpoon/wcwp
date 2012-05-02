@@ -46,7 +46,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	               $timestamp
 	               ,brand_id
 	               ,user_id
-                from bass2.cdr_call_dtl_$timestamp"
+                from bass2.cdr_call_dtl_$timestamp
+				where brand_id is not null"
   puts $sql_buff
 	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
 		WriteTrace "$errmsg" 2020
@@ -121,3 +122,11 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 	return 0
 }	
+
+
+##~   1           BRAND_ID             USER_ID             
+##~   ----------- -------------------- --------------------
+   ##~   20120429                    - 89157331480719      
+   ##~   20120429                    - 89160002010025      
+   ##~   20120429                    - 89101110131978  
+   

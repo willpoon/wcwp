@@ -76,7 +76,7 @@ exec_sql $sql_buff
                                SUM(BIGINT(TOLL_CALL_FEE)) AS CT,  
                                SUM(BIGINT(callfw_toll_fee)) AS CF
                              FROM 
-                               BASS1.G_S_04008_DAY
+                               BASS1.int_0400810_$this_month
                              WHERE TIME_ID/100=$this_month and roam_type_id not in ('122','202','302','401')
                              GROUP BY PRODUCT_NO
                              UNION ALL
@@ -166,7 +166,7 @@ exec_sql $sql_buff
 	            	COUNT(DISTINCT T.PRODUCT_NO)AS RS
 	            FROM (
 	                  SELECT PRODUCT_NO,SUM(BIGINT(BASE_BILL_DURATION)) AS SC		  
-	                  FROM BASS1.G_S_04008_DAY
+	                  FROM BASS1.int_0400810_$this_month
 	                  WHERE TIME_ID/100=$this_month
 	                  GROUP BY PRODUCT_NO
 	                  UNION 

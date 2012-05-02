@@ -20,7 +20,7 @@
 ##~   3、	修改字段"业务标识"，删除其字段描述内容"01：WLAN业务标识"，增加备注说明业务标识分类；
 ##~   4、	修改字段"WLAN认证类型编码"，增加"03：PEAP认证"、"04：客户端认证"，具体参见话单分类规范中的BASS_STD2_0006；
 ##~   5、	修改字段"热点地区标识"，增加属性描述格式填写说明，并修改备注内容；	1.7.9	2012-03-20	自数据日期20120401起生效
-
+		##~  20120430 FN_CHANGE_DTOH --> FN_CHANGE_DTOH2
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
 
@@ -99,8 +99,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                         ,case when AUTH_TYPE=1 THEN '01' else '02' end WLAN_ATTESTATION_CODE
 						,'01' WLAN_ATTESTATION_TYPE --认证平台类型 /*1.7.9：西藏尚未实现，无法区分,按 01：集团统一认证平台接入 上报*/
                         ,HOSTSPOT_ID
-                        ,COALESCE(FN_CHANGE_DTOH(AS_ADDRESS),' ') AS_IP
-                        ,COALESCE(FN_CHANGE_DTOH(AC_ADDRESS),' ') ATTESTATION_AS_IP
+                        ,COALESCE(FN_CHANGE_DTOH2(AS_ADDRESS),' ') AS_IP
+                        ,COALESCE(FN_CHANGE_DTOH2(AC_ADDRESS),' ') ATTESTATION_AS_IP
 						,'' USER_TERM_TYPE /*用户终端类型 西藏尚未实现，无法区分;报空*/
 						,'' USER_MAC_ADDR	--用户MAC地址/* 西藏尚未实现，无法提取;报空*/
 						,'' AP_MAC	--AP的MAC地址/* 西藏尚未实现，无法提取;报空*/
