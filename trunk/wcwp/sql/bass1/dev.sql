@@ -231,3 +231,98 @@ select  'xxxxx',count(0)
 
 select * from table(bass1.fn_dn_flret_cnt()) a;
 
+
+
+drop FUNCTION bass1.getallbefore;
+CREATE FUNCTION bass1.getallbefore(v_CONTROL_CODE VARCHAR(50))
+RETURNS
+TABLE (
+        CONTROL_CODE            VARCHAR(50)         
+        ,ALL_BEFORES             VARCHAR(50)  
+        ,BEGINTIME               TIMESTAMP   
+        ,ENDTIME                 TIMESTAMP       
+        ,RUNTIME                 INTEGER          
+        ,FLAG                    INTEGER     		
+        ,DEAL_TIME               INTEGER          
+        ,PRIORITY_VAL            INTEGER          
+        ,TIME_VALUE              INTEGER          
+        ,FUNCTION_DESC           VARCHAR(200)
+        ,CC_FLAG                 INTEGER
+      )
+BEGIN ATOMIC      
+RETURN
+WITH n(control_code, before_control_code) AS 
+          (SELECT control_code, before_control_code 
+             FROM app.sch_control_before
+             WHERE control_code = v_CONTROL_CODE
+           UNION ALL
+           SELECT b.control_code,b.before_control_code 
+             FROM app.sch_control_before as b, n
+             WHERE b.control_code = n.before_control_code
+             )
+SELECT distinct 
+         n.CONTROL_CODE            
+        ,n.BEFORE_CONTROL_CODE ALL_BEFORES
+        ,d.BEGINTIME              
+        ,d.ENDTIME                
+        ,d.RUNTIME                
+        ,d.FLAG                   	
+        ,c.DEAL_TIME              
+        ,c.PRIORITY_VAL           
+        ,c.TIME_VALUE             
+        ,c.FUNCTION_DESC          
+        ,c.CC_FLAG 
+FROM n ,app.sch_control_task c
+,app.sch_control_runlog d 
+where 	  n.before_control_code = c.control_code
+	  and n.before_control_code = d.control_code;
+END
+
+
+
+drop FUNCTION bass1.getallafter;
+CREATE FUNCTION bass1.getallafter(v_CONTROL_CODE VARCHAR(50))
+RETURNS
+TABLE (
+         ALL_AFTERS              VARCHAR(50)         
+        ,BEFORE_CONTROL_CODE     VARCHAR(50)  
+        ,BEGINTIME               TIMESTAMP   
+        ,ENDTIME                 TIMESTAMP       
+        ,RUNTIME                 INTEGER          
+        ,FLAG                    INTEGER     		
+        ,DEAL_TIME               INTEGER          
+        ,PRIORITY_VAL            INTEGER          
+        ,TIME_VALUE              INTEGER          
+        ,FUNCTION_DESC           VARCHAR(200)
+        ,CC_FLAG                 INTEGER
+      )
+BEGIN ATOMIC      
+RETURN
+WITH n (control_code, before_control_code) AS 
+          (
+			  SELECT control_code, before_control_code 
+				 FROM app.sch_control_before
+				 WHERE before_control_code = v_CONTROL_CODE 
+				 UNION ALL
+			   SELECT b.control_code,b.before_control_code 
+				 FROM app.sch_control_before as b, n
+				 WHERE b.before_control_code = n.control_code
+		   )
+SELECT distinct 
+         n.CONTROL_CODE       ALL_AFTERS     
+        ,n.BEFORE_CONTROL_CODE    
+        ,d.BEGINTIME              
+        ,d.ENDTIME                
+        ,d.RUNTIME                
+        ,d.FLAG                   	
+        ,c.DEAL_TIME              
+        ,c.PRIORITY_VAL           
+        ,c.TIME_VALUE             
+        ,c.FUNCTION_DESC          
+        ,c.CC_FLAG 
+FROM n
+,app.sch_control_task c
+,app.sch_control_runlog d 
+where  n.control_code=d.CONTROL_CODE
+and    n.control_code=c.CONTROL_CODE;
+END
