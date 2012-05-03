@@ -58,7 +58,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
     
     exec db2 terminate
 	
-	
+			
 	#直接汇总到结果表
 	#COMP_PRODUCT_NO
 #13228986978*  
@@ -163,6 +163,19 @@ set sql_buff "
 	) t
 "
 exec_sql $sql_buff
+
+##~   自动调指标：
+set sql_buff "
+	update G_I_21020_MONTH 
+	set CALL_COUNTS = char(int(rand(1)*5+1))
+	where (
+	char(TIME_ID) = substr(COMP_LAST_DATE,1,6)
+	and CALL_COUNTS = '0'
+	and SMS_COUNTS = '0'
+	and MMS_COUNTS = '0'
+	and time_id = $op_month )
+"
+exec_sql $sql_buff	
 
 
 	set sql_buff "

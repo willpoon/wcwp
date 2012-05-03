@@ -107,6 +107,16 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	aidb_commit $conn
 	aidb_close $handle
 
+set sql_buff "
+update BASS1.G_I_02005_MONTH
+set CHG_VIP_TIME = '20110629'
+where user_id = '89160001048760'
+and time_id = $op_month
+and CHG_VIP_TIME<'20110629'
+"
+
+exec_sql $sql_buff
+
 	return 0
 }
 

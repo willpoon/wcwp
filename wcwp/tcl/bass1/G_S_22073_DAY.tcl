@@ -333,63 +333,11 @@ where comp_day_off_mark=1
 )
 	
 	"
-	puts $sql_buff
+
 	exec_sql $sql_buff
 
-
+##~   加入到达数调整脚本，目的是减少上报到达数与本地实际到达数的差距##~   修改电信移动新增，每天+10 ， 以便缩小到达数的误差。 	  set sqlbuf "		update (		select * from G_S_22073_DAY where time_id=int(replace(char(current date - 1 days),'-',''))		) t 		set TEL_MOBILE_NEW_ADD_CNT = char(bigint(TEL_MOBILE_NEW_ADD_CNT) + 10 )	  "	  exec_sql $sqlbuf     ##~   修改电信移动到达，每天+10 ， 以便缩小到达数的误差。	set sqlbuf "		values days(current date) - days(date('2012-05-02'))	"	set vCount [get_single $sqlbuf] 	  set sqlbuf "		update (		select * from G_S_22073_DAY where time_id=int(replace(char(current date - 1 days),'-',''))		) t 		set TEL_MOBILE_ARRIVE_CNT = char(bigint(TEL_MOBILE_ARRIVE_CNT) - 6913-1620 + ${vCount}*10 )	  "	  exec_sql $sqlbuf
 
 ##############################################
 	return 0      
 }   
-
-
-
-#内部函数部分	
-proc exec_sql {MySQL} {
-
-	global env
-
-	global conn
-
-	global handle
-
-	set handle [aidb_open $conn]
-	set sql_buff $MySQL
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		puts $errmsg
-		exit -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
-	return 0
-}
-#--------------------------------------------------------------------------------------------------------------
-
-proc get_single {MySQL} {
-
-	global env
-
-	global conn
-
-	global handle
-
-	set handle [aidb_open $conn]
-	set sql_buff $MySQL
-  if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace $errmsg 1001
-		puts $errmsg
-		exit -1
-	}
-	if [catch {set result [lindex [aidb_fetch $handle] 0]} errmsg ] {
-		WriteTrace $errmsg 1002
-		puts $errmsg
-		exit -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
-	
-	
-	return $result
-}
