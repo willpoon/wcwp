@@ -29,6 +29,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
         set app_name "INT_CHECK_R230_MONTH.tcl"
 
 
+			##~   WriteTrace "set alarm intentionally" 2020
 
 
 ###########################################################
@@ -148,7 +149,9 @@ set sql_buff "
 "
 exec_sql $sql_buff 
 
-
+##~   第一步：从号码汇总计算某日的"联通移动离网用户数"：
+##~   Step1:取存在于上月接口中，但不在当月接口中的运营商品牌为联通移动的号码及其末次通信时间，取其中末次通信时间距统计日等于90天的记录数；
+##~   
 set sql_buff "
 
  				select count(distinct COMP_PRODUCT_NO)  from    
@@ -173,7 +176,9 @@ set sql_buff "
   set RESULT_VAL1 0
   set RESULT_VAL1 [get_single $sql_buff]
  
-
+##~   Step2:取同时存在于上月和当月接口中的运营商品牌为联通移动的号码及其在上月中末次通信时间和当月的首次通信时间，取其中上月末次通信时间距统计日等于90天，且当月首次通信时间晚于统计日的记录数；
+##~   Step3:汇总第一步和第二步结果，即为统计日联通移动离网用户数。
+##~   第二步：将从21020中计算出的统计月的每一天的联通移动离网用户数汇总，与22073中汇总的统计月的每一天的联通移动离网用户数进行比较。
 
 set sql_buff "
 			 

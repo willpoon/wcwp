@@ -20,7 +20,6 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
    #当天 yyyymmdd
     set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
-
     #当天 yyyy-mm-dd
     set optime $op_time
     #本月 yyyymm
