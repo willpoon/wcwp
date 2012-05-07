@@ -1,0 +1,1 @@
+select *from   table( bass1.chk_same(0) ) a order by 2;

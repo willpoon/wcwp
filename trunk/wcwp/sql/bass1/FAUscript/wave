@@ -1,0 +1,2 @@
+select TIME_ID,SEQ,RULE_CODE,THRESHOLD,WAVE_RATE,IF_OK from   table( bass1.chk_wave(0) ) a order by 2;
+

@@ -6,6 +6,16 @@ and control_code like 'BASS1%'
 order by alarmtime desc
 
 
+
+BASS2_Regioncell_snapshotmonth_ms.tcl
+
+
+select * from  app.sch_control_alarm 
+where 
+ control_code like '%snapshotmonth%'
+order by alarmtime desc
+
+
 BASS2_Dim_channel_info_ds.tcl
 
 select * from  app.sch_control_alarm 
@@ -899,7 +909,7 @@ select count(distinct a.user_id),
                       
                       
 
-select * from bass1.ALL_DIM_LKP_160 where bass1_tbid='BASS_STD1_0108'
+select * from bass1.ALL_DIM_LKP where bass1_tbid='BASS_STD1_0114'
                       
                       
 
@@ -1377,8 +1387,8 @@ select
  ' *'||b.interface_code||'*dat \' 
 ) list
  from   bass1.MON_ALL_INTERFACE b where 
-deadline  in (11)
-and type = 'd'
+deadline  in (3)
+and type = 'm'
 and sts = 1
 
 PRIORITY_VAL
@@ -1942,7 +1952,7 @@ syscat
 select * from syscat.tables where tabname like '%77780%'
 
 
-select * from bass2.dim_prod_up_product_item where name like '%幸福卡%'
+select * from bass2.dim_prod_up_product_item where name like '%WLAN自动认证%'
 
 
 select * from BASS1.DIM_QW_QQT_PKGID
@@ -3146,6 +3156,14 @@ order by 1
 
 
 
+select TIME_ID 
+,sum(bigint(FH_REWARD))
+from G_S_22063_MONTH_B20120423 
+group by  TIME_ID 
+order by 1 
+
+
+
 西藏	79.8087	81.9608	87.6846	90.7335
 201202	6701	907335	   
 201201	6874	876846	   
@@ -3440,7 +3458,7 @@ from (
 WITH n(control_code, before_control_code) AS 
           (SELECT control_code, before_control_code 
              FROM app.sch_control_before
-             WHERE control_code = 'BASS1_EXP_G_S_04005_DAY'
+             WHERE control_code = 'BASS1_EXP_G_S_22073_DAY'
            UNION ALL
            SELECT b.control_code,b.before_control_code 
              FROM app.sch_control_before as b, n
@@ -3450,7 +3468,7 @@ SELECT distinct n.*,d.flag FROM n
 ,app.sch_control_task c
 ,app.sch_control_runlog d 
 where n.control_code = c.control_code
-and c.control_code = d.CONTROL_CODE
+and n.before_control_code = d.CONTROL_CODE
 and c.control_code like 'BASS1%'
 --and c.deal_time = 1
 --and n.before_control_code  not like '%INT_CHECK%' 
@@ -3971,8 +3989,8 @@ select
  ' *'||b.interface_code||'*dat \' 
 ) list
  from   bass1.MON_ALL_INTERFACE b where 
-deadline  in (9)
-and type = 'd'
+deadline  in (5)
+and type = 'm'
 and sts = 1
 
 
@@ -4427,3 +4445,666 @@ SELECT * FROM APP.SCH_CONTROL_TASK WHERE CONTROL_CODE = 'TR1_L_11072'
 select count(0) from 
 ODS_UP_RES_TIEM_201203
     
+    
+select count(0) from (
+select 20120430
+
+                         ,b.ext_holds5
+
+                         ,a.product_no
+
+                         ,a.apn_ni
+
+                         ,char(sum(a.upflow))
+
+                         ,char(sum(a.downflow))
+
+                         ,replace(char(date(a.start_time)),'-','')||replace(char(time(a.start_time)),'.','')
+
+                         ,char(sum(a.duration))
+
+                         ,value(char(a.mns_type),'0')
+
+                         ,value(a.imei,'0')
+
+                    from bass2.CDR_GPRS_LOCAL_20120430 a ,
+
+                         (select ext_holds5
+
+                                ,id_value
+
+                                ,valid_date
+
+                                ,sts  
+
+                                ,row_number() over(partition by ext_holds5 order by valid_date desc ) row_id
+
+                                        from bass2.dwd_product_regsp_20120430
+
+                                   where busi_type='737' and ext_holds5 is not null ) b 
+
+                    where a.product_no=b.id_value
+
+                      and a.drtype_id in (8307)
+
+                      and a.apn_ni<>'CMLAP'
+
+                      and b.row_id=1     
+
+                    group by b.ext_holds5
+
+                                ,a.product_no
+
+                                ,a.apn_ni
+
+                                ,a.start_time
+
+                                ,value(char(a.mns_type),'0')
+
+                                ,value(a.imei,'0')
+
+                ) t
+                
+
+
+
+select count(0) from (
+          select 20120430
+
+                         ,b.ext_holds5
+
+                         ,a.product_no
+
+                         ,a.apn_ni
+
+                         ,char(sum(a.upflow))
+
+                         ,char(sum(a.downflow))
+
+                         ,replace(char(date(a.start_time)),'-','')||replace(char(time(a.start_time)),'.','')
+
+                         ,char(sum(a.duration))
+
+                         ,value(char(a.mns_type),'0')
+
+                         ,value(a.imei,'0')
+
+                    from bass2.CDR_GPRS_LOCAL_20120430 a ,
+
+                         (select ext_holds5
+
+                                ,id_value
+
+                                ,valid_date
+
+                                ,sts  
+
+                                ,row_number() over(partition by ext_holds5 order by valid_date desc ) row_id
+
+                                        from bass2.dwd_product_regsp_20120430
+
+                                   where busi_type='737' and ext_holds5 is not null ) b 
+
+                    where a.product_no=b.id_value
+
+                      and a.drtype_id in (8307)
+
+                      and a.apn_ni<>'CMLAP'
+
+                      and b.row_id=1     
+
+                    group by b.ext_holds5
+
+                                ,a.product_no
+
+                                ,a.apn_ni
+
+                                ,a.start_time
+
+                                ,value(char(a.mns_type),'0')
+
+                                ,value(a.imei,'0')
+) t
+
+
+select * from app.sch_control_task where control_code like '%product_regsp%'
+                
+
+select count(0) 
+from bass2.dwd_product_regsp_20120430
+
+                                   where busi_type='737' and ext_holds5 is not null                 
+select count(0)                                    
+from bass2.dwd_product_regsp_20120501
+
+                                   where busi_type='737' and ext_holds5 is not null 
+                                   
+                                   
+
+
+
+select TIME_ID ,substr(START_TIME,1,8), count(0) 
+,count(distinct PRODUCT_NO)
+,sum(bigint(UP_FLOWS))/1024/1024
+,sum(bigint(DOWN_FLOWS))/1024/1024
+--,  count(distinct TIME_ID ) 
+from G_S_04018_DAY 
+where time_id / 100 in (201204,201205)
+group by  TIME_ID ,substr(START_TIME,1,8)
+order by 1 
+
+
+
+WITH n(control_code, before_control_code) AS 
+          (SELECT control_code, before_control_code 
+             FROM app.sch_control_before
+             WHERE control_code = 'BASS1_EXP_G_S_22073_DAY'
+           UNION ALL
+           SELECT b.control_code,b.before_control_code 
+             FROM app.sch_control_before as b, n
+             WHERE b.control_code = n.before_control_code
+             )
+SELECT distinct n.*,d.flag FROM n
+,app.sch_control_task c
+,app.sch_control_runlog d 
+where n.control_code = c.control_code
+and n.before_control_code = d.CONTROL_CODE
+and c.control_code like 'BASS1%'
+
+
+
+
+drop FUNCTION bass1.getallbefore
+CREATE FUNCTION bass1.getallbefore(v_CONTROL_CODE VARCHAR(50))
+RETURNS
+TABLE (
+        CONTROL_CODE            VARCHAR(50)         
+        ,BEFORE_CONTROL_CODE     VARCHAR(50)  
+        ,BEGINTIME               TIMESTAMP   
+        ,ENDTIME                 TIMESTAMP       
+        ,RUNTIME                 INTEGER          
+        ,FLAG                    INTEGER     		
+        ,DEAL_TIME               INTEGER          
+        ,PRIORITY_VAL            INTEGER          
+        ,TIME_VALUE              INTEGER          
+        ,FUNCTION_DESC           VARCHAR(200)
+        ,CC_FLAG                 INTEGER
+      )
+BEGIN ATOMIC      
+RETURN
+WITH n(control_code, before_control_code) AS 
+          (SELECT control_code, before_control_code 
+             FROM app.sch_control_before
+             WHERE control_code = v_CONTROL_CODE
+           UNION ALL
+           SELECT b.control_code,b.before_control_code 
+             FROM app.sch_control_before as b, n
+             WHERE b.control_code = n.before_control_code
+             )
+SELECT distinct 
+         n.CONTROL_CODE            
+        ,n.BEFORE_CONTROL_CODE    
+        ,d.BEGINTIME              
+        ,d.ENDTIME                
+        ,d.RUNTIME                
+        ,d.FLAG                   	
+        ,c.DEAL_TIME              
+        ,c.PRIORITY_VAL           
+        ,c.TIME_VALUE             
+        ,c.FUNCTION_DESC          
+        ,c.CC_FLAG 
+FROM n ,app.sch_control_task c
+,app.sch_control_runlog d 
+where n.control_code = c.control_code
+and n.before_control_code = d.control_code;
+END
+		 
+         
+select * from 
+
+select * from   table( bass1.getallbefore('BASS1_EXP_G_S_22073_DAY') ) a 
+order by endtime desc
+
+
+CREATE FUNCTION bass1.getallbefore(v_CONTROL_CODE VARCHAR(50))
+RETURNS
+TABLE (
+        CONTROL_CODE            VARCHAR(50)         
+        ,BEFORE_CONTROL_CODE     VARCHAR(50)  
+        ,BEGINTIME               TIMESTAMP   
+        ,ENDTIME                 TIMESTAMP       
+        ,RUNTIME                 INTEGER          
+        ,FLAG                    INTEGER     		
+        ,DEAL_TIME               INTEGER          
+        ,PRIORITY_VAL            INTEGER          
+        ,TIME_VALUE              INTEGER          
+        ,FUNCTION_DESC           VARCHAR(200)
+        ,CC_FLAG                 INTEGER
+      )
+BEGIN ATOMIC      
+RETURN
+WITH n(control_code, before_control_code) AS 
+          (SELECT control_code, before_control_code 
+             FROM app.sch_control_before
+             WHERE control_code = v_CONTROL_CODE
+           UNION ALL
+           SELECT b.control_code,b.before_control_code 
+             FROM app.sch_control_before as b, n
+             WHERE b.control_code = n.before_control_code
+             )
+SELECT distinct 
+         n.CONTROL_CODE            
+        ,n.BEFORE_CONTROL_CODE    
+        ,d.BEGINTIME              
+        ,d.ENDTIME                
+        ,d.RUNTIME                
+        ,d.FLAG                   	
+        ,c.DEAL_TIME              
+        ,c.PRIORITY_VAL           
+        ,c.TIME_VALUE             
+        ,c.FUNCTION_DESC          
+        ,c.CC_FLAG 
+FROM n ,app.sch_control_task c
+,app.sch_control_runlog d 
+where n.control_code = c.control_code
+and n.before_control_code = d.control_code;
+END
+
+
+
+
+WITH n(control_code, before_control_code) AS 
+          (SELECT control_code, before_control_code 
+             FROM app.sch_control_before
+             WHERE control_code = 'BASS1_G_A_02004_DAY.tcl'
+           UNION ALL
+           SELECT b.control_code,b.before_control_code 
+             FROM app.sch_control_before as b, n
+             WHERE b.control_code = n.before_control_code
+             )
+SELECT distinct n.* FROM n
+,app.sch_control_task c
+where n.control_code = c.control_code
+and c.control_code like 'BASS1%'
+
+
+
+
+WITH n(control_code, before_control_code) AS 
+          (SELECT control_code, before_control_code 
+             FROM app.sch_control_before
+             WHERE before_control_code  IN ('BASS1_G_I_06021_MONTH.tcl')        
+			 UNION ALL
+           SELECT b.control_code,b.before_control_code 
+             FROM app.sch_control_before as b, n
+             WHERE b.before_control_code = n.control_code
+      )
+SELECT distinct n.*,d.* FROM n , APP.SCH_CONTROL_RUNLOG D
+where  n.control_code=D.CONTROL_CODE
+
+
+
+and c.deal_time = 1
+and D.control_code like 'BASS1%DAY%'
+
+
+
+
+select message_id, send_time,mobile_num,message_content from   APP.SMS_SEND_INFO
+where message_content like '%snapshotmonth%'
+and send_time >=  current timestamp - 5 days
+order by send_time desc
+;
+
+
+
+
+
+
+
+drop FUNCTION bass1.getallbefore;
+CREATE FUNCTION bass1.getallbefore(v_CONTROL_CODE VARCHAR(50))
+RETURNS
+TABLE (
+        CONTROL_CODE            VARCHAR(50)         
+        ,ALL_BEFORES             VARCHAR(50)  
+        ,BEGINTIME               TIMESTAMP   
+        ,ENDTIME                 TIMESTAMP       
+        ,RUNTIME                 INTEGER          
+        ,FLAG                    INTEGER     		
+        ,DEAL_TIME               INTEGER          
+        ,PRIORITY_VAL            INTEGER          
+        ,TIME_VALUE              INTEGER          
+        ,FUNCTION_DESC           VARCHAR(200)
+        ,CC_FLAG                 INTEGER
+      )
+BEGIN ATOMIC      
+RETURN
+WITH n(control_code, before_control_code) AS 
+          (SELECT control_code, before_control_code 
+             FROM app.sch_control_before
+             WHERE control_code = v_CONTROL_CODE
+           UNION ALL
+           SELECT b.control_code,b.before_control_code 
+             FROM app.sch_control_before as b, n
+             WHERE b.control_code = n.before_control_code
+             )
+SELECT distinct 
+         n.CONTROL_CODE            
+        ,n.BEFORE_CONTROL_CODE ALL_BEFORES
+        ,d.BEGINTIME              
+        ,d.ENDTIME                
+        ,d.RUNTIME                
+        ,d.FLAG                   	
+        ,c.DEAL_TIME              
+        ,c.PRIORITY_VAL           
+        ,c.TIME_VALUE             
+        ,c.FUNCTION_DESC          
+        ,c.CC_FLAG 
+FROM n ,app.sch_control_task c
+,app.sch_control_runlog d 
+where 	  n.before_control_code = c.control_code
+	  and n.before_control_code = d.control_code;
+END
+G_S_22063_MONTH
+
+select * from   table( bass1.getallafter('BASS1_G_I_21020_MONTH.tcl') ) a 
+order by BEGINTIME 
+
+
+
+
+
+drop FUNCTION bass1.getallafter;
+CREATE FUNCTION bass1.getallafter(v_CONTROL_CODE VARCHAR(50))
+RETURNS
+TABLE (
+         ALL_AFTERS              VARCHAR(50)         
+        ,BEFORE_CONTROL_CODE     VARCHAR(50)  
+        ,BEGINTIME               TIMESTAMP   
+        ,ENDTIME                 TIMESTAMP       
+        ,RUNTIME                 INTEGER          
+        ,FLAG                    INTEGER     		
+        ,DEAL_TIME               INTEGER          
+        ,PRIORITY_VAL            INTEGER          
+        ,TIME_VALUE              INTEGER          
+        ,FUNCTION_DESC           VARCHAR(200)
+        ,CC_FLAG                 INTEGER
+      )
+BEGIN ATOMIC      
+RETURN
+WITH n (control_code, before_control_code) AS 
+          (
+			  SELECT control_code, before_control_code 
+				 FROM app.sch_control_before
+				 WHERE before_control_code = v_CONTROL_CODE 
+				 UNION ALL
+			   SELECT b.control_code,b.before_control_code 
+				 FROM app.sch_control_before as b, n
+				 WHERE b.before_control_code = n.control_code
+		   )
+SELECT distinct 
+         n.CONTROL_CODE       ALL_AFTERS     
+        ,n.BEFORE_CONTROL_CODE    
+        ,d.BEGINTIME              
+        ,d.ENDTIME                
+        ,d.RUNTIME                
+        ,d.FLAG                   	
+        ,c.DEAL_TIME              
+        ,c.PRIORITY_VAL           
+        ,c.TIME_VALUE             
+        ,c.FUNCTION_DESC          
+        ,c.CC_FLAG 
+FROM n
+,app.sch_control_task c
+,app.sch_control_runlog d 
+where  n.control_code=d.CONTROL_CODE
+and    n.control_code=c.CONTROL_CODE;
+END
+
+
+select ROAM_TYPE_ID
+from G_S_21003_TO_DAY
+fetch first 10 rows only
+
+
+
+select * from bass1.ALL_DIM_LKP where bass1_tbid in ('BASS_STD2_0001')
+
+
+
+---------------------------------------------------------------------------------
+select * from  app.sch_control_alarm 
+where content like '%准确性指标56超出集团考核范围%'
+
+
+
+
+
+
+  select * from
+                (select * from 
+                (
+                select user_id,chg_vip_time,row_number()over(partition by user_id order by time_id desc) row_id from BASS1.G_I_02005_MONTH
+                where time_id=201204
+                ) k
+                where k.row_id =1) a
+                left outer join 
+                (
+                select * from
+                (
+                select user_id,create_date,row_number()over(partition by user_id order by time_id desc) row_id 
+                from BASS1.G_A_02004_DAY
+                where time_id<=20120430
+                ) k
+                where k.row_id=1) b
+                on a.user_id=b.user_id
+                where bigint(chg_vip_time)<bigint(create_date)
+                with ur
+
+89160001048760      
+                
+
+update BASS1.G_I_02005_MONTH
+set CHG_VIP_TIME = '20110629'
+where user_id = '89160001048760'
+and time_id = 201204
+and CHG_VIP_TIME<'20110629'
+                
+select *                
+from  BASS1.G_RULE_CHECK 
+ 	  				where  rule_code in ('R233') 
+order by time_id desc 
+                 
+
+                
+select *                
+from  BASS1.G_RULE_CHECK 
+ 	  				where  rule_code in ('R234') 
+order by time_id desc 
+                                     
+                                     
+
+select * from BASS1.G_I_21020_MONTH_calendar
+                                     
+
+
+select date2, count(distinct COMP_PRODUCT_NO)  from    
+table (
+select COMP_PRODUCT_NO,COMP_LAST_DATE
+from         G_I_21020_MONTH
+where COMP_BRAND_ID = '021000' 
+and time_id = 201203
+and  COMP_PRODUCT_NO not in (
+select COMP_PRODUCT_NO
+from         G_I_21020_MONTH
+where COMP_BRAND_ID = '021000' 
+and time_id = 201204
+)
+) a , (select * from  BASS1.G_I_21020_MONTH_calendar where date_seq like '201204%') b 
+where 
+(days(date(date2))-
+days(date(substr(COMP_LAST_DATE,1,4)||'-'
+||substr(COMP_LAST_DATE,5,2)||'-'
+||substr(COMP_LAST_DATE,7,2))))=90      
+group by date2
+                                     
+                                     
+
+		 select time_id, sum(bigint(UNION_MOBILE_LOST_CNT))
+from bass1.G_S_22073_DAY
+where time_id/100 = 201204
+group by time_id
+order by 1 desc 
+                                     
+                                     
+
+select distinct comp_product_no 
+from bass2.Dw_comp_cust_20120408
+where comp_day_off_mark=1  and comp_brand_id in(3,4)                                     
+except
+select distinct COMP_PRODUCT_NO  from    
+table (
+select COMP_PRODUCT_NO,COMP_LAST_DATE
+from         G_I_21020_MONTH
+where COMP_BRAND_ID = '021000' 
+and time_id = 201203
+and  COMP_PRODUCT_NO not in (
+select COMP_PRODUCT_NO
+from         G_I_21020_MONTH
+where COMP_BRAND_ID = '021000' 
+and time_id = 201204
+)
+) a , (select * from  BASS1.G_I_21020_MONTH_calendar where date_seq = '20120408') b 
+where 
+(days(date(date2))-
+days(date(substr(COMP_LAST_DATE,1,4)||'-'
+||substr(COMP_LAST_DATE,5,2)||'-'
+||substr(COMP_LAST_DATE,7,2))))=90      
+
+
+select * from G_I_21020_MONTH where time_id = 201204                                     
+and COMP_PRODUCT_NO in 
+('13228902902'
+,'13228909897'   
+,'13228922688'
+,'13228925676'
+,'13228926217'
+,'13228934733'
+,'13228939003'   
+,'13228947966'
+,'13228950022'
+,'13228950083'
+,'13228953985'
+,'13228955919'
+,'13228958230'
+,'13228959792'   
+,'13228975778'
+,'13228990351'
+,'13298917147'
+,'13298926446'
+,'13298945070'
+,'13298953928'
+,'13298962108'   
+,'13298980193'   
+,'15608923366'
+,'15608923545'
+,'15608926577'
+,'15608930552'
+,'15608936988'
+,'15608956558'
+,'15608983553'
+,'15692621870'
+,'15692628237')
+
+
+select *  
+from bass2.Dw_comp_cust_20120409
+where COMP_PRODUCT_NO in 
+('13228902902'
+,'13228909897'   
+,'13228922688'
+,'13228925676'
+,'13228926217'
+,'13228934733'
+,'13228939003'   
+,'13228947966'
+,'13228950022'
+,'13228950083'
+,'13228953985'
+,'13228955919'
+,'13228958230'
+,'13228959792'   
+,'13228975778'
+,'13228990351'
+,'13298917147'
+,'13298926446'
+,'13298945070'
+,'13298953928'
+,'13298962108'   
+,'13298980193'   
+,'15608923366'
+,'15608923545'
+,'15608926577'
+,'15608930552'
+,'15608936988'
+,'15608956558'
+,'15608983553'
+,'15692621870'
+,'15692628237')
+
+
+
+
+
+                         select * from   
+                        ( 
+                         select COMP_PRODUCT_NO,COMP_LAST_DATE
+                         from G_I_21020_MONTH where time_id = 201203 and  COMP_BRAND_ID = '021000' 
+                        ) a 
+                        ,
+                        (
+                         select COMP_PRODUCT_NO,COMP_BEGIN_DATE
+                         from G_I_21020_MONTH where time_id = 201204 and  COMP_BRAND_ID = '021000' 
+                        ) b 
+                        ,BASS1.G_I_21020_MONTH_calendar c
+                        where a.COMP_PRODUCT_NO  = b.COMP_PRODUCT_NO 
+                        and 
+                        (days(date(date2))-
+                         days(date(substr(COMP_LAST_DATE,1,4)||'-'||substr(COMP_LAST_DATE,5,2)||'-'||substr(COMP_LAST_DATE,7,2))))=90
+                         and  char(COMP_BEGIN_DATE  ) > char(date_seq)
+                          and c.date_seq like '201204%'
+                          
+                          
+
+update (
+select * from app.g_runlog where unit_code = '22063'
+and time_id = 201203
+) set RETURN_FLAG = 0
+where RETURN_FLAG = 1
+
+       RETURN_FLAG
+1
+                   
+select *
+from BASS1.G_S_21007_DAY                   
+order by time_id desc 
+
+select TIME_ID ,SVC_TYPE_ID,CDR_TYPE_ID, count(0) 
+--,  count(distinct TIME_ID ) 
+,sum(bigint(SMS_COUNTS))
+from G_S_21007_DAY 
+group by  TIME_ID ,SVC_TYPE_ID,CDR_TYPE_ID
+order by 1 desc,2,3 
+
+
+
+
+---------------------------------------------------------------------------------
+select * from  app.sch_control_alarm 
+where alarmtime >=  current timestamp - 3 days
+and flag = -1
+and control_code like 'BASS1%'
+order by alarmtime desc
+
+
