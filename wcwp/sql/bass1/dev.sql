@@ -309,7 +309,7 @@ WITH n (control_code, before_control_code) AS
 				 WHERE b.before_control_code = n.control_code
 		   )
 SELECT distinct 
-         n.CONTROL_CODE       ALL_AFTERS     
+         n.CONTROL_CODE       ALL_AFTERS
         ,n.BEFORE_CONTROL_CODE    
         ,d.BEGINTIME              
         ,d.ENDTIME                

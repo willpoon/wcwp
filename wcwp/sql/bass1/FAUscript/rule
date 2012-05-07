@@ -1,0 +1,30 @@
+ select *from  bass1.G_RULE_CHECK where rule_code = 'C1' and time_id / 100 = 201205
+ order by 1 desc 
+
+
+ select *from  bass1.G_RULE_CHECK where rule_code = 'R139'
+ AND TIME_ID / 100 = 201205
+ order by 1 desc 
+
+select * from bass1.G_RULE_CHECK where 
+ time_id=int(replace(char(current date - 1 days),'-','')) 
+ and rule_code in  ('R172','R171','R170','R169','R166','R164','R156','R155') order by 1 
+
+
+select * from   table( bass1.getallbefore('BASS1_EXP_G_S_22073_DAY') ) a 
+order by begintime 
+
+select * from   table( bass1.getallafter('BASS1_INT_CHECK_R192_MONTH.tcl') ) a 
+order by BEGINTIME 
+
+
+select ALL_AFTERS,BEFORE_CONTROL_CODE,BEGINTIME,FLAG
+from   table( bass1.getallafter('BASS1_G_I_02032_MONTH.tcl') ) a 
+where date(BEGINTIME) = '2012-05-03'
+order by BEGINTIME 
+
+
+select distinct ALL_AFTERS
+from   table( bass1.getallafter('BASS1_G_I_02032_MONTH.tcl') ) a 
+where date(BEGINTIME) = '2012-05-03'
+

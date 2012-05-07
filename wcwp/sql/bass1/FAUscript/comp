@@ -1,0 +1,5 @@
+update (
+select * from G_S_22073_DAY where time_id=int(replace(char(current date - 1 days),'-',''))
+) t 
+set TEL_MOBILE_ARRIVE_CNT = char(bigint(TEL_MOBILE_ARRIVE_CNT) - 6913-1620)
+;

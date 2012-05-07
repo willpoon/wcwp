@@ -96,7 +96,9 @@ order by 1,2
 
 
 select count(0) from G_S_04002_DAY_THIS where time_id = 20120429
-select count(0) from G_S_04002_DAY_PREV 
+select count(0) from G_S_04002_DAY_PREV where time_id = 20120501
+
+
 
 
 

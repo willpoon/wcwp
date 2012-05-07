@@ -7093,7 +7093,26 @@ drwxr-xr-x    2 500      503          4096 Apr 01 09:13 sample
 /bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_02007_MONTH 2011-02 &
 /bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_02007_MONTH 2011-03 &
 
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_22063_MONTH 2012-03 &
 
+
+update (
+select * from app.g_runlog where unit_code = '22063'
+and time_id = 201203
+) set RETURN_FLAG = 0
+where RETURN_FLAG = 1
+
+
+update (
+select * from app.g_runlog where unit_code = '22063'
+and time_id = 201203
+) set RETURN_FLAG = 1
+where RETURN_FLAG = 0
+
+
+
+select * from app.g_runlog where unit_code = '22063'
+and time_id = 201203
 
 
 db2 connect to bassdb user bass2 using bass2
