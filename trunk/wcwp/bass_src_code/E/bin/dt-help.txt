@@ -1,0 +1,477 @@
+                                          DBF Tools 帮助说明
+
+☆更新历史☆
+v2.2
+    1) 增加支持执行单条SQL命令，支持SELECT；
+    2) 增加支持执行SQL列表文件，文件中的SQL语句用;隔开，同一行不能有两条SQL语句，不支持SELECT；
+    3) 修正执行命令文件时出现的bug；
+    4) 支持定义宏、执行宏；
+    5) 支持DBF文件的拆分；
+    6) 优化数据库导出数据到DBF，导出速度提高80%；
+
+v2.1
+    1) 增加两种命令行操作方式，一种为带-f "commandfile"参数，-f后接命令文件；另一种为-c
+       "commandlist"，-c后接命令列表，用;或;;分开各个命令，用;分隔如果前一命令出错则下一命令不
+       会执行，用;;分隔则会继续执行后一命令；
+    2) 增加从数据库表结构来创建DBF的功能；
+    3) 增加从DBF文件结构创建数据库表的功能；
+    4) 增加导出数据库表的记录到DBF文件的功能；
+    5) 增加从DBF文件中导出记录到数据库表的功能；
+    6) 增加查看DBF结构信息功能；
+    7) 支持条件表达式带或的关系；
+    8) 增加一个函数trim；
+    9) 增加对DBF结构的操作，具体为对字段的增、删、改、移；
+   10) 增加关联两个DBF文件进行Update；
+
+v2.0
+    1) 实现对DBF文件常用操作，基于Unix和Windows平台。
+
+
+1.功能概述
+    本程序主要是对DataBase III 格式的文件提供一些基本的操作功能，目的是为了提高在Unix上操作DBF
+文件的可操作性和方便性。程序以交互式的方式工作，用户输入命令后就可执行相应操作。利用Unix的Shell
+特性可以方便的将交互式的工作方式改为自动运行一批命令。
+
+
+2.命令和参数详述
+2.1 操作模式
+    ★  在命令提示符为 '-' 下输入指定命令后就可以执行，以行为单位，回车后就开始执行，不支持跨行
+        操作；
+    ★  大多数命令执行的前提条件是要加载工作DBF文件，在工作DBF中执行操作，所以要用 load 加载一
+        个DBF文件，执行每条命令前打开DBF，执行完后立即关闭；
+    ★  符号 '|' 是管道符操作，将前一命令的输出作为下一命令的输入，这些命令是在同一行的；
+    ★  符号 ';' 是顺序执行操作，执行完前一命令后，紧接着执行下一命令，与分两次输入效果相同；
+    ★  符号 ' 用于引起一个字串，在这个程序中，最后会解析掉，所以如 'string' 与string是等同的，
+        除非特别说明；
+    ★  空格符在程序中是识别为分隔符，所以如果一个串中有空格因将先将空格替换成%20，然后再执行命
+        令；
+    ★  命令可以只输入开始一个或几个字符，程序会确定是哪个命令，当有多个命令符合条件时，以字母
+        顺序取第一个命令。命令和关键字不分大小写；
+    ★  条件表达式中(where语句)可以用'&'带多个条件，每个条件是与的关系，支持用|连接多个值，如
+        field1=value1|value2等，是或的关系。语句左边,如where exp oper value中的exp支持五个函数
+        left,mid,right,length,trim只是这儿支持。如
+             where left(file_name,2)='PA' & Mid(merge_file,3,2)='10'
+
+    注：以下参数中没有说明的单词都是关键字，由程序解释
+
+2.2 about
+2.2.1 用法一
+    参数: 无
+    功能：显示当前程序的版本号和版权等信息。
+
+2.3 alter
+2.3.1 用法一
+    参数: [modify col C|D|L|N length][,rename col newcol][,move col pos]
+          [,add col C|D|L|N length pos [default]][,delete col]
+          col           为字段名
+          C|D|L|N       为字段类型
+          length        为字段长度
+          pos           为字段位置
+          newcol        为新字段名
+          default       为缺省值
+    功能：更改DBF文件结构，并同步数据，具体操作功能如下-
+          modify col C|D|L|N length             更改字段长度或类型
+          rename col newcol                     更改字段名
+          move col pos                          更改字段所在位置
+          add col C|D|L|N length pos [default]  在某个位置增加一个字段
+          delete col                            删除一个字段
+
+2.4 chdir
+2.4.1 用法一
+    参数: 无
+    功能：显示当前工作目录
+
+2.4.2 用法二
+    参数: new-directory
+          new-directory 新的工作目录路径
+    功能：设置新的工作目录
+
+2.5 create
+2.5.1 用法一
+    参数：filename(col1 C|D|L|N length,...coln C|D|L|N length)
+          filename      新的DBF文件名，这个文件原来就是不存在的
+          col1..coln    字段名，10位以内的字符串
+          C|D|L|N       为字段类型
+          length        字段长度
+    功能：创建一个新的DBF文件，但不加载
+
+2.5.2 用法二
+    参数：filename from oldfilename
+          filename      新的DBF文件名，这个文件原来就是不存在的
+          oldfilename   旧的DBF文件名，这个文件要存在
+    功能：从一个存在的DBF文件中读出字段信息来创建一个新的DBF文件，但不加载
+
+2.5.3 用法三
+    参数：filename by database user/password@servername tablename
+          filename      新的DBF文件名，如果存在则判断字段名是否一致
+          user          数据库用户名
+          password      数据库密码
+          servername    数据库服务名
+          tablename     数据库表，必须存在
+    功能：根据数据库表的结构来创建DBF文件，不加载
+
+2.5.4 用法四
+    参数：into database user/password@servername tablename
+          user          数据库用户名
+          password      数据库密码
+          servername    数据库服务名
+          tablename     数据库表，如果存在则判断字段名是否一致
+    功能：根据DBF结构信息来创建数据库表，必须有DBF文件加载
+
+2.6 delete
+2.6.1 用法一
+    参数：No1[,No2[No1-Non]]
+          No1..Non      要删除的记录行号，从1开始，以','分开可以带多个
+          No1-Non       要删除的记录行号范围，从No1到Non，以','分开可以带多个
+    功能：删除当前DBF文件中的指定的一条或多条记录
+
+2.6.2 用法二
+    参数：where expression
+          expression    以这个条件表达式来判断记录行是否要被删除
+    功能：删除当前DBF文件中符合条件表达式的所有记录
+
+2.7 divide
+2.7.1 用法一
+    参数：by size file-size
+          file-size     拆分后的每个文件字节大小，不能小于10240字节
+    功能：按文件大小来拆分DBF文件
+
+2.7.2 用法二
+    参数：by record record-count
+          record-count  拆分后的每个文件记录数，不能小于1条
+    功能：按记录数来拆分DBF文件
+
+2.7.3 用法三
+    参数：by field fieldname[,fieldname...]
+          fieldname     用于拆分的字段名列表
+    功能：按一个或多个字段值来拆分DBF文件，想当于分组
+
+2.8 execute
+2.8.1 用法一
+    参数：system system-command
+          system-command    系统命令，即Unix下的Shell命令
+    功能：执行一条外部的Shell命令
+
+2.8.2 用法二
+    参数：file filename
+          filename      当前程序可用的命令列表文件
+    功能：调入一个命令列表文件，读取每一行命令顺序执行
+
+2.8.3 用法三
+    参数：sql on database user/password@servername sql-command
+          user          数据库用户名
+          password      数据库密码
+          servername    数据库服务名
+          sql-command   SQL语句
+    功能：执行一条SQL语句
+
+2.8.4 用法四
+    参数：sql file on database user/password@servername filename
+          user          数据库用户名
+          password      数据库密码
+          servername    数据库服务名
+          filename      有一条或多条SQL语句的文本文件，每条语句用;分开
+    功能：调入一个SQL语句列表文件，读取每一条SQL语句顺序执行
+
+2.8.5 用法五
+    参数：macro macro-name [parameter [parameter...]]
+          macro-name    宏名称
+          parameter     参数列表，可以没有
+    功能：执行宏命令
+
+2.9 find
+2.9.1 用法一
+    参数：where expression
+          expression    以这个条件表达式来查找记录行
+    功能：查找符合条件的记录行，返回记录行号，如有多条，返回第一条记录行号
+
+2.9.2 用法二
+    参数：无
+    功能：在使用用法一后，得到下一条记录行号
+
+2.10 help
+2.10.1 用法一
+    参数：无
+    功能：显示程序可用的命令列表
+
+2.10.2 用法二
+    参数：commmand
+          commmand      可用的命令
+    功能：显示command命令的帮助说明
+
+2.11 insert
+2.11.1 用法一
+    参数：values(val1,...valn)
+          val1...valn   字段值
+    功能：将各字段值作为一条记录插入到当前DBF尾部，多余字段被截掉，少的字段用空
+          串代替
+
+2.11.2 用法二
+    参数：from file filename[(IgnoreHeadLine,IgnoreTailLine)][with 'separator']
+          filename          存有要插入记录的文件
+          IgnoreHeadLine
+          IgnoreTailLine    要忽略的头部和尾部行数，不加缺省是无头部和尾部
+          separator         记录字段分隔符，一定要用'引起来，不加缺省是 ','，支持转义符，如
+                            \x09或\t表示TAB键
+    功能：将一个文本文件中的每行作为一条记录插入到当前DBF文件中,空行被忽略。多余字段被截掉，少
+          的字段用空串代替
+
+2.11.3 用法三
+    参数：from file filename(IgnoreHeadLines,IgnoreTailLines,field1len[,...]
+          filename          存有要插入记录的文件
+          IgnoreHeadLine    要忽略的头部行数
+          IgnoreTailLine    要忽略的尾部行数
+          field1len         是每个字段的长度
+    功能：将一个文本文件中的每行作为一条记录插入到当前DBF文件中,空行被忽略。多余字段被截掉，少
+          的字段用空串代替
+
+2.11.4 用法四
+    参数：from dbf dbfname [where expression]
+          dbfname           插入记录的数据来源DBF文件
+          expression        只插入符合此条件的记录，不加缺省是所有记录行
+    功能：将一个DBF文件中的符合条件的行或所有行插入到当前DBF文件中,多余字段被截掉，少的字段用
+          空串代替
+
+2.11.5 用法五
+    参数：insert from database user/password@servername tablename
+          user          数据库用户名
+          password      数据库密码
+          servername    数据库服务名
+          tablename     数据库表，必须存在，且字段数必须一致
+    功能：导出数据库表的所有记录到DBF文件中
+
+2.11.5 用法六
+    参数：insert into database user/password@servername tablename
+          user          数据库用户名
+          password      数据库密码
+          servername    数据库服务名
+          tablename     数据库表，不存在就创建，否则判断一致性
+    功能：导出DBF文件的所有记录到数据库表中
+
+2.12 load
+2.12.1 用法一
+    参数：filename
+          filename      要加载的DBF文件名
+    功能：加载一个DBF文件
+
+2.13 log
+2.13.1 用法一
+    参数：on [file=filename]
+          filename      日志记录的文件名，不加缺省是用以前设置的日志文件
+    功能：打开日志记录，执行命令的输出直接写到日志文件不再在屏幕显示
+
+2.13.2 用法二
+    参数：off
+    功能：关闭日志记录，执行命令的输出直接在屏幕显示
+
+2.13.4 用法三
+    参数：file=filename
+          filename      日志记录的文件名
+    功能：设置日志记录文件，日志记录状态不变
+
+2.13.5 用法四
+    参数：logstring
+          logstring     要写到日志记录文件中的字符串
+    功能：将字符串写到日志记录文件中
+
+2.14 merge
+2.14.1 用法一
+    参数：filename[...,filenamen]
+          filename      要合并的DBF文件名，以','来分隔多个要合并的文件，支持通配符*?
+    功能：将一个或多个DBF文件全并到当前DBF文件中,多余字段被截掉，少的字段用空串代替
+
+2.15 macro
+2.15.1 用法一
+    参数：无
+    功能：列出加载的所有宏名称
+
+2.15.2 用法二
+    参数：macro-name
+          macro-name    宏名称
+    功能：列出当前宏的定义体
+
+2.15.3 用法三
+    参数：add macro-name macro-body
+          macro-name    宏名称
+          macro-body    宏定义体，里面可以加上%1,%2等来代替几个参数，执行此宏时就要
+                        加上参数了
+    功能：定义并加载一个宏，如存在同名的宏，则替换
+
+2.15.4 用法四
+    参数：clear
+    功能：清除所有加载的宏
+
+2.15.5 用法五
+    参数：delete macro-name
+          macro-name    宏名称
+    功能：删除一个宏
+
+2.15.6 用法六
+    参数：load macro-file-name
+          macro-file-name    宏文件
+    功能：调入一个宏文件并加载
+
+2.15.7 用法七
+    参数：save macro-file-name
+          macro-file-name    宏文件
+    功能：将加载的宏写入文件
+
+2.16 pack
+2.16.1 用法一
+    参数：无
+    功能：打包当前DBF文件，真正删除已打上删除标志的记录行
+
+2.17 quit
+2.17.1 用法一
+    参数：无
+    功能：退出当前程序
+
+2.18 rowcount
+2.18.1 用法一
+    参数：[where expression]
+          expression    计算符合此条件的记录数
+    功能：得到当前DBF符合条件或所有的记录数
+
+2.19 save
+2.19.1 用法一
+    参数：file [where expression] into filename
+          expression    计算符合此条件的记录，不加缺省是所有记录
+          filename      要写入记录的文件名
+    功能：将当前DBF符合条件或所有的记录写入文件，每条记录一行，字段之间用','分隔
+
+2.19.2 用法二
+    参数：sql [header] [where expression] into filename
+          expression    计算符合此条件的记录，不加缺省是所有记录
+          filename      要写入记录的文件名
+    功能：将当前DBF符合条件或所有的记录的SQL语句写入文件
+
+2.20 sort
+2.20.1 用法一
+    参数：fieldname [N|C [asc|desc]][,...fieldnamen [N|C [asc|desc]]]
+          fieldname...fieldnamen    要排序的字段名
+          N|C                       排序类型，N-数字、C-字符，不加缺省为字符型
+          asc|desc                  排序方式，asc-升序,desc-降序，不加缺省为升序
+    功能：多字段排序当前DBF文件
+
+2.21 sum
+2.21.1 用法一
+    参数：fieldname [N][,...fieldnamen [N]]] [where expression]
+          fieldname...fieldnamen    要计算和的字段名列表
+          N                         要显示的宽度，不加缺省为15
+          expression                计算符合此条件的记录，不加缺省是所有记录
+    功能：计算当前DBF文件中符合条件或所有记录的某些字段的和，并显示
+
+2.21.2 用法二
+    参数：fieldname[,...fieldnamen] [where expression]
+                    group by gfieldname,[...gfieldnamen] into filename
+          fieldname...fieldnamen    要计算和的字段名列表
+          expression                计算符合此条件的记录，不加缺省是所有记录
+          gfieldname...gfieldnamen  分组的字段名列表
+          filename                  分组的数据保存的DBF文件名，存在就追加
+    功能：计算当前DBF文件中符合条件或所有记录的分组和并将结果保存在DBF文件中，其中自动加入
+          SheetCount字段，保存当前分组的记录数
+
+2.22 undelete
+2.22.1 用法一
+    参数：No1[,No2[No1-Non]]
+          No1..Non      要恢复删除的记录行号，从1开始，以','分开可以带多个
+          No1-Non       要恢复删除的记录范围，从No1到Non，以','分开可以带多个
+    功能：恢复删除当前DBF文件中的指定的一条或多条记录
+
+2.22.2 用法二
+    参数：where expression
+          expression    以这个条件表达式来判断记录行是否要恢复删除
+    功能：恢复删除当前DBF文件中符合条件表达式的所有记录
+
+2.23 update
+2.23.1 用法一
+    参数：fieldname=newvalue[&...fieldnamen=newvalue][where expression]
+          fieldname     要更改值的字段名
+          newvalue      更改的新值，支持加减乘除取余表达式
+          expression    更改符合此条件的记录，不加缺省是所有记录，不支持表达式
+    功能：更改当前DBF文件中的指定的一条或多条记录的某些字段值
+
+2.23.2 用法二
+    参数：fieldname=newvalue[&...fieldnamen=newvalue] from dbfname where expression
+          fieldname     要更改值的字段名
+          newvalue      支持加减乘除取余表达式，第二个DBF表中的字段前面要加:
+          expression    更改符合此条件的记录，第二个DBF表中的字段前面要加:，支持表达式
+    功能：关联一个DBF来更改当前DBF文件中的符合条件的记录
+
+2.24 view
+2.24.1 用法一
+    参数：[recstart [fieldstart [count]]] [where expression]
+          recstart      开始记录行号，不加缺省是1
+          fieldstart    开始字段序号，不加缺省是1
+          count         要查看的行数，不加缺省是20
+          expression    更改符合此条件的记录，不加缺省是所有记录
+    功能：查看当前DBF文件中的指定的一条或多条记录
+
+2.24.2 用法二
+    参数：desc
+    功能：查看当前DBF文件的结构信息
+
+2.25 which
+2.25.1 用法一
+    参数：无
+    功能：显示当前工作DBF文件名
+
+3.使用例子
+3.1 启动DBF Tool 2.0
+    在Unix命令提示符下
+    $ dt
+    或
+    $ dt dbf-file-name  # 启动程序并加载工作DBF
+    或
+    $ dt -f commandfile # 启动程序并加载执行一个命令文件
+    或
+    $ dt -c "commandlist" # 启动程序并加载执行一个命令列表
+
+3.2 加载工作DBF文件
+    $ dt
+    - load test.dbf
+    ...
+
+3.3 多个命令在一行上执行
+    $ dt
+    - load test.dbf
+    - rowcount|del;rowcount|v    # 删除最后一条记录，然后显示最后一条记录
+    ...
+
+3.4 在启动时带命令列表参数运行
+    $ dt -c "load test.dbf;rowcount|v;;quit"
+
+3.5 关联DBF修改某些记录
+    $ dt
+    - load test.dbf
+    - update fee1=fee1+:fee1&fee2=:fee2 from tj.dbf where msisdn=:msisdn&deal_date="200301"+"01"
+    ...
+
+3.6 自动在Shell中执行
+    (
+      sleep 1
+      echo "load pds.dbf"
+      sleep 1
+      echo "sum cfee,lfee,total_fee,sheet_cnt group by home_prov into ret.dbf"
+      sleep 2
+      ....
+      echo "quit"
+    )|dt
+
+    或
+
+    (
+      sleep 1
+      echo "sum cfee,lfee,total_fee,sheet_cnt group by home_prov into ret.dbf"
+      sleep 2
+      ....
+      echo "quit"
+    )|dt pds.dbf
+
+
+
+
+
+----------------------------------------------------------------------------------------------
+                                      Copyright 2002-2003
+                                          Edwardy Chan
