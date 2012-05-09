@@ -1,4 +1,0 @@
-0,5,10,15,20,25,30,35,40,45,50,55 * * * * . .profile;$HOME/bin/boot_crm.sh > $HOME/bin/boot_crm.log
-0 1 * * * . .profile;$HOME/bin/load_boss_cdr.sh > $HOME/bin/load_boss_cdr.log
-0 21 * * * . .profile;$HOME/bin/record_num_info.sh
-0 * * * * . .profile;$HOME/bin/if_load_start.sh
