@@ -1,0 +1,45 @@
+bass2
+日期：20100625;月份:201006;
+patternfilename:DR_GSM_GP_20100625*.dat.ok,filename:DR_GSM_GP_20100625.AVL
+table_name=CDR_CALL_20100625
+filename=DR_GSM_GP_20100625.AVL
+control_code:TR1_L_05001,table_name:CDR_CALL_20100625
+CATING ...
+rec_cnt:6194870
+2010-06-26
+2010
+06
+26
+20100626
+<<<<<<开始判断接文件>>>>>>
+task_id=A05001
+time=01:00
+rec_cnt=6194870
+avl_byte=4042895563
+conn is ok
+insert is ok
+LOADING ...
+load_cnt:6194870
+接口文件DR_GSM_GP_20100625.AVL处理完毕。
+patternfilename:DR_SMS_L_20100625*.dat.ok,filename:DR_SMS_L_20100625.AVL
+table_name=CDR_SMS_20100625
+filename=DR_SMS_L_20100625.AVL
+control_code:TR1_L_05002,table_name:CDR_SMS_20100625
+CATING ...
+rec_cnt:3382286
+2010-06-26
+2010
+06
+26
+20100626
+<<<<<<开始判断接文件>>>>>>
+task_id=A05002
+time=01:04
+rec_cnt=3382286
+avl_byte=1636364833
+conn is ok
+insert is ok
+LOADING ...
+load_cnt:3382286
+接口文件DR_SMS_L_20100625.AVL处理完毕。
+程序正常结束！

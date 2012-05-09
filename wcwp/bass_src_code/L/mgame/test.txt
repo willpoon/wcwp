@@ -1,0 +1,4 @@
+create index bass2.i_sprom_201001_1 on bass2.DW_PRODUCT_SPROM_201001 (user_id);
+create index bass2.i_nb_call_201001_1 on DW_NEWBUSI_CALL_201001(user_id);
+create index bass2.i_nb_gprs_201001_1 on dw_newbusi_gprs_201001(user_id);
+create index bass2.i_p_func_201001_1 on dw_product_func_201001(user_id);
