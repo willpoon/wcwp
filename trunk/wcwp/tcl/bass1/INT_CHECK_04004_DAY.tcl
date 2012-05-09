@@ -30,45 +30,64 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
         #前一天 yyyymmdd
         set last_day [GetLastDay [string range $timestamp 0 7]]
         #程序名
-        set app_name "INT_CHECK_R063_DAY.tcl"
+        set app_name "INT_CHECK_04004_DAY.tcl"
 
 
 
    #--R085 点对点彩信的信息费为零；且上行只有通信费用，下行无通信费用
-   set sqlbuf " select count(*)
+   ##~   set sqlbuf " select count(*)
+                ##~   from BASS1.G_S_04004_DAY
+                ##~   where time_id= $timestamp
+                ##~   and BUS_SRV_ID in('4','1')
+                ##~   and bigint(info_fee)>0
+                ##~   and MM_KIND='1'
+               ##~   "
+   ##~   puts $sqlbuf               
+   ##~   set RESULT_VAL1 [get_single $sqlbuf]
+   ##~   puts $RESULT_VAL1
+   ##~   set sqlbuf " select value(sum(bigint(info_fee)),0) from BASS1.G_S_04004_DAY
+                ##~   where time_id= $timestamp
+                ##~   and BUS_SRV_ID in('4','1')
+                ##~   and MM_BILL_TYPE='00'
+               ##~   "
+   ##~   puts $sqlbuf
+   ##~   set RESULT_VAL2 [get_single $sqlbuf]
+
+   ##~   puts $RESULT_VAL2
+   ##~   set sqlbuf " select value(sum(bigint(call_fee)),0) from BASS1.G_S_04004_DAY
+                ##~   where time_id= $timestamp
+                ##~   and BUS_SRV_ID in('4','1')
+                ##~   and MM_BILL_TYPE='03'
+               ##~   "
+   ##~   puts $sqlbuf                
+   ##~   set RESULT_VAL3 [get_single $sqlbuf]
+   
+   ##~   puts $RESULT_VAL3
+   
+set sqlbuf "
+select 
+sum(case when BUS_SRV_ID in('4','1') and  bigint(info_fee)>0 and MM_KIND='1' then 1 else 0 end) val1
+,sum(bigint(case when BUS_SRV_ID in ('4','1') and MM_BILL_TYPE='00' then  bigint(info_fee) else 0 end )) val2
+,sum(bigint(case when BUS_SRV_ID in('4','1') and MM_BILL_TYPE='03' then  bigint(call_fee) else 0 end )) val3
+,sum(bigint(case when  BUS_SRV_ID ='2' and MM_BILL_TYPE='00' then  bigint(info_fee) else 0 end )) val11
+,sum(bigint(case when  BUS_SRV_ID ='2' and MM_BILL_TYPE in ('02','03') then  bigint(call_fee) else 0 end )) val22
                 from BASS1.G_S_04004_DAY
                 where time_id= $timestamp
-                and BUS_SRV_ID in('4','1')
-                and bigint(info_fee)>0
-                and MM_KIND='1'
-               "
-   puts $sqlbuf               
-   set RESULT_VAL1 [get_single $sqlbuf]
-   puts $RESULT_VAL1
-   set sqlbuf " select value(sum(bigint(info_fee)),0) from BASS1.G_S_04004_DAY
-                where time_id= $timestamp
-                and BUS_SRV_ID in('4','1')
-                and MM_BILL_TYPE='00'
-               "
-   puts $sqlbuf
-   set RESULT_VAL2 [get_single $sqlbuf]
 
-   puts $RESULT_VAL2
-   set sqlbuf " select value(sum(bigint(call_fee)),0) from BASS1.G_S_04004_DAY
-                where time_id= $timestamp
-                and BUS_SRV_ID in('4','1')
-                and MM_BILL_TYPE='03'
-               "
-   puts $sqlbuf                
-   set RESULT_VAL3 [get_single $sqlbuf]
-   
-   puts $RESULT_VAL3
+"
+
+   set p_row [get_row $sqlbuf]
+   set RESULT_VAL1 [lindex $p_row 0]
+   set RESULT_VAL2 [lindex $p_row 1]
+   set RESULT_VAL3 [lindex $p_row 2]
+   set RESULT_VAL11 [lindex $p_row 3]
+   set RESULT_VAL22 [lindex $p_row 4]
+
    set sqlbuf "INSERT INTO BASS1.G_RULE_CHECK VALUES ($timestamp,'R085',$RESULT_VAL1,$RESULT_VAL2,0,0) " 
-   puts $sqlbuf      
    exec_sql $sqlbuf
 
-   puts $RESULT_VAL1
-   puts $RESULT_VAL2
+   ##~   puts $RESULT_VAL1
+   ##~   puts $RESULT_VAL2
 	if {$RESULT_VAL1>0 || $RESULT_VAL2 > 0 || $RESULT_VAL3 > 0 } {
 		set grade 2
 	        set alarmcontent "R085校验不通过"
@@ -80,28 +99,28 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 
    #--R086 梦网彩信 梦网彩信的上行只有通信费；下行只有信息费和包月费
-   set sqlbuf "select value(sum(bigint(info_fee)),0) from BASS1.G_S_04004_DAY
-               where time_id=$timestamp
-               and BUS_SRV_ID ='2'
-               and MM_BILL_TYPE='00'
-              "
-   puts $sqlbuf               
-   set RESULT_VAL1 [get_single $sqlbuf]
+   ##~   set sqlbuf "select value(sum(bigint(info_fee)),0) from BASS1.G_S_04004_DAY
+               ##~   where time_id=$timestamp
+               ##~   and BUS_SRV_ID ='2'
+               ##~   and MM_BILL_TYPE='00'
+              ##~   "
+   ##~   puts $sqlbuf               
+   ##~   set RESULT_VAL1 [get_single $sqlbuf]
    
-   set sqlbuf " select value(sum(bigint(call_fee)),0) from BASS1.G_S_04004_DAY
-                where time_id=$timestamp
-                and BUS_SRV_ID ='2'
-                and MM_BILL_TYPE in ('02','03')
-               "
-   puts $sqlbuf                
-   set RESULT_VAL2 [get_single $sqlbuf]
+   ##~   set sqlbuf " select value(sum(bigint(call_fee)),0) from BASS1.G_S_04004_DAY
+                ##~   where time_id=$timestamp
+                ##~   and BUS_SRV_ID ='2'
+                ##~   and MM_BILL_TYPE in ('02','03')
+               ##~   "
+   ##~   puts $sqlbuf                
+   ##~   set RESULT_VAL2 [get_single $sqlbuf]
      
-   set sqlbuf "INSERT INTO BASS1.G_RULE_CHECK VALUES ($timestamp,'R086',$RESULT_VAL1,$RESULT_VAL2,0,0) "        
+   set sqlbuf "INSERT INTO BASS1.G_RULE_CHECK VALUES ($timestamp,'R086',$RESULT_VAL11,$RESULT_VAL22,0,0) "        
    exec_sql $sqlbuf
 
-  puts $RESULT_VAL1
-  puts $RESULT_VAL2
-	if {$RESULT_VAL1>0 || $RESULT_VAL2 > 0 } {
+  ##~   puts $RESULT_VAL1
+  ##~   puts $RESULT_VAL2
+	if {$RESULT_VAL11>0 || $RESULT_VAL22 > 0 } {
 		set grade 2
 	        set alarmcontent "R086校验不通过"
 	        WriteAlarm $app_name $optime $grade ${alarmcontent}

@@ -1152,6 +1152,50 @@ proc stat_market_0135_a {p_optime} {
         return -1
     }
 
+### 20110803 新增中间表供一经调用 
+
+set sql_buf "
+	    delete from bass1.G_S_22059_MONTH_MRKT_0135A where OP_TIME = $year$month
+	    "
+    puts $sql_buf
+    if [catch {aidb_sql $handle $sql_buf} errmsg] {
+        trace_sql $errmsg 2050
+        puts "errmsg:$errmsg"
+        return -1
+    }
+
+set sql_buf "    
+    insert into bass1.G_S_22059_MONTH_MRKT_0135A 
+    (
+     OP_TIME
+    ,CHANNEL_ID
+    ,BRAND_ID
+    ,USER_CNT
+    )
+    select  $year$month
+	   ,a.channel_id
+	   ,case 
+	    when b.brand_id in (1) then '1'
+	    when b.brand_id in (0,3,5,6,7,9999) then '2'
+	    when b.brand_id in (4) then '3'
+	    else '2' end brand_id
+           ,count(0) user_cnt
+      from $stat_market_0135_a_t7 a
+        ,  $dw_product_yyyymm b 
+    where a.user_id = b.user_id 
+    group by a.channel_id
+	    ,case 
+	    when b.brand_id in (1) then '1'
+	    when b.brand_id in (0,3,5,6,7,9999) then '2'
+	    when b.brand_id in (4) then '3'
+	    else '2' end 
+"
+    puts $sql_buf
+    if [catch {aidb_sql $handle $sql_buf} errmsg] {
+        trace_sql $errmsg 2050
+        puts "errmsg:$errmsg"
+        return -1
+    }
     #Step5.清空临时表
     set sql_buf "drop table $stat_market_0135_a_t1;"
     puts $sql_buf

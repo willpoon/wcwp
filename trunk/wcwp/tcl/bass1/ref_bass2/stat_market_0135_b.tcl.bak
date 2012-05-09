@@ -1060,44 +1060,6 @@ proc stat_market_0135_b {p_optime} {
         return -1
     }
 
-
-### 20120508 新增中间表供一经调用 
-
-set sql_buf "
-	    delete from BASS1.G_S_02039_MONTH_RPT0135B where TIME_ID = $year$month
-	    "
-    puts $sql_buf
-    if [catch {aidb_sql $handle $sql_buf} errmsg] {
-        trace_sql $errmsg 2050
-        puts "errmsg:$errmsg"
-        return -1
-    }
-
-set sql_buf "    
-    insert into BASS1.G_S_02039_MONTH_RPT0135B 
-    (
-         TIME_ID
-        ,USER_ID
-        ,CHANNEL_ID
-        ,FACT_FEE
-        ,CALL_DURATION_M
-    )
-    select  
-		$year$month
-        ,a.USER_ID
-        ,a.CHANNEL_ID
-        ,a.FACT_FEE
-        ,a.CALL_DURATION_M
-      from $stat_market_0135_b_t2 a
-with ur
-"
-    puts $sql_buf
-    if [catch {aidb_sql $handle $sql_buf} errmsg] {
-        trace_sql $errmsg 2050
-        puts "errmsg:$errmsg"
-        return -1
-    }
-	
     #Step6.清空临时表
     set sql_buf "drop table $stat_market_0135_b_t1;"
     puts $sql_buf
