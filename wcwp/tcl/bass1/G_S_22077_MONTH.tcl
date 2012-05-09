@@ -62,15 +62,15 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		)
 	,case when 
 	(
-	select char(bigint(sum(BASE_FEE+INFO_FEE+MONTH_FEE+FUNC_FEE))) from  bass2.dw_newbusi_gprs_$op_month 
-	where ROAMTYPE_ID in ( 5,9 )
+	select char(bigint(1.0*sum(CHARGE1+CHARGE2+CHARGE3+CHARGE4)/100)) from  bass2.dw_gprs_l_dm_$op_month 
+	where ROAM_TYPE in ( 5,9 )
 	) is null then '0' else 
 (
-	select char(bigint(sum(BASE_FEE+INFO_FEE+MONTH_FEE+FUNC_FEE))) from  bass2.dw_newbusi_gprs_$op_month 
-	where ROAMTYPE_ID in ( 5,9 )
+	select char(bigint(1.0*sum(CHARGE1+CHARGE2+CHARGE3+CHARGE4)/100)) from  bass2.dw_gprs_l_dm_$op_month 
+	where ROAM_TYPE in ( 5,9 )
 	) end 
-	
 from bass2.dual
+with ur
 	"
 	exec_sql $sql_buff
 

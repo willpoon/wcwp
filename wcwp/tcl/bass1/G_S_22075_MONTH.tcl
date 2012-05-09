@@ -59,24 +59,24 @@ select	$op_month,'$op_month'
 					)) ROAMIN_CALL_CNT
  	                            ,char(sum(case
  	                                 when OPPOSITE_ID in (72,12,32,60,61,62,63,64,65,83,91,101,102,103,104,109,122,259000,258600,2586,259010,259200,259150,259100,259090,259080,259070,259060,259050,259040,259030,78) 
-					 and  CALLTYPE_ID in (0,2,3) then call_duration_m else 0 end 
-					)) ROAMIN_CALL_DUR
+					 and  CALLTYPE_ID in (0,2,3) and BASECALL_FEE+TOLL_FEE+INFO_FEE > 0 then call_duration_m else 0 end 
+					)) ROAMIN_CALL_DUR 
  	                            ,char(sum(case
  	                                 when OPPOSITE_ID in (72,12,32,60,61,62,63,64,65,83,91,101,102,103,104,109,122,259000,258600,2586,259010,259200,259150,259100,259090,259080,259070,259060,259050,259040,259030,78) 
-					 and  CALLTYPE_ID in (0,2,3) and BASECALL_FEE+TOLL_FEE+INFO_FEE > 0 then call_duration_m else 0 end 
-					)) ROAMIN_BILL_DUR
-				    ,char(sum(case when OPPOSITE_ID in (3,13,115,2,1,4,116,14) and  CALLTYPE_ID in (0,2,3) then CALL_COUNTS else 0 end )) ROAMIN_OCALL_CNT
-				    ,char(sum(case when OPPOSITE_ID in (3,13,115,2,1,4,116,14) and  CALLTYPE_ID in (0,2,3) then call_duration_m else 0 end )) ROAMIN_OCALL_DUR
-				    ,char(sum(case when OPPOSITE_ID in (3,13,115,2,1,4,116,14) and  CALLTYPE_ID in (0,2,3) and BASECALL_FEE+TOLL_FEE+INFO_FEE > 0 then call_duration_m else 0 end )) ROAMIN_OBILL_DUR
+					 and  CALLTYPE_ID in (0,2,3) then call_duration_m else 0 end 
+					)) ROAMIN_BILL_DUR					
+				    ,char(sum(case when OPPOSITE_ID in (3,13,115,2,1,4,116,14) and  CALLTYPE_ID in (0,2,3) then CALL_COUNTS else 0 end )) ROAMIN_OCALL_CNT					
+				    ,char(sum(case when OPPOSITE_ID in (3,13,115,2,1,4,116,14) and  CALLTYPE_ID in (0,2,3) and BASECALL_FEE+TOLL_FEE+INFO_FEE > 0 then call_duration_m else 0 end )) ROAMIN_OCALL_DUR 
+				    ,char(sum(case when OPPOSITE_ID in (3,13,115,2,1,4,116,14) and  CALLTYPE_ID in (0,2,3) then call_duration_m else 0 end ))  ROAMIN_OBILL_DUR										
 				    ,char(sum(case
  	                                 when  CALLTYPE_ID in (1) then CALL_COUNTS else 0 end 
 					)) ROAMIN_BYCALL_CNT
  	                            ,char(sum(case
- 	                                 when CALLTYPE_ID in (1) then call_duration_m else 0 end 
+ 	                                 when CALLTYPE_ID in (1) and BASECALL_FEE+TOLL_FEE+INFO_FEE > 0  then call_duration_m else 0 end 
 					)) ROAMIN_BYCALL_DUR
  	                            ,char(sum(case
- 	                                 when CALLTYPE_ID in (1) and BASECALL_FEE+TOLL_FEE+INFO_FEE > 0  then call_duration_m else 0 end 
-					)) ROAMIN_BYCALL_DUR					
+ 	                                 when CALLTYPE_ID in (1) then call_duration_m else 0 end 
+					)) ROAMIN_BYBILL_DUR 					
                  from bass2.DW_CALL_ROAMIN_DM_$op_month
                  where  roamtype_id in (2,7)  and TOLLTYPE_ID < 100
 	"
