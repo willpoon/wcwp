@@ -476,17 +476,17 @@ goexp2(){
 }
 
 day9(){
-cd ${exp_dir}
-ls -arlth \
-*01002*dat \
-*01004*dat \
-*02004*dat \
-*02008*dat \
-*02011*dat \
-*02053*dat \
-*06031*dat \
-*06032*dat
-cd $HOME
+	cd ${exp_dir}
+	ls -arlth \
+	*01002*dat \
+	*01004*dat \
+	*02004*dat \
+	*02008*dat \
+	*02011*dat \
+	*02053*dat \
+	*06031*dat \
+	*06032*dat
+	cd $HOME
 }
 
 ###########################
