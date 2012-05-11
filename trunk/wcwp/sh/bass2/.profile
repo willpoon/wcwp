@@ -279,6 +279,7 @@ m_on10_cnt=17
 m_on15_cnt=10
 m_all_cnt=84
 
+#subroutine for cms  cmd
 getlist(){
 if [ $# -ne 1 ];then
 echo $0 yyyymm
@@ -440,7 +441,7 @@ getxlsdata(){
 }
 
 ###########################
-fmt:将excel字段 格式化成文本代码
+#fmt:将excel字段 格式化成文本代码
 ###########################
 fmttbs(){
 if [ $# -ne 0 ];then
@@ -450,3 +451,79 @@ fi
 nawk -F"\t" '{ printf "\t,%-20s\t%-20s--%-20s\n", $1,$2,$3 }' fmt.txt
 }
 
+###########################
+#fmt:将excel字段 格式化成文本代码
+###########################
+tbsu(){
+	today=`date '+%Y%m%d'`
+	deal_date=`yesterday ${today}`
+	logFile09="/bassapp/bass2/check_db/check_bassdb_day_${today}09.log"
+	logFile17="/bassapp/bass2/check_db/check_bassdb_day_${today}17.log"
+	if [ -f ${logFile09} -o -f ${logFile17} ];then
+		cat ${logFile09} ${logFile17} |grep -i bass1|grep NORMAL
+	else
+		logFile09="/bassapp/bass2/check_db/check_bassdb_day_${deal_date}09.log"
+		logFile17="/bassapp/bass2/check_db/check_bassdb_day_${deal_date}17.log"
+		cat ${logFile09} ${logFile17} |grep -i bass1|grep NORMAL
+	fi
+}
+
+goexp2(){
+	today=`date '+%Y%m%d'`
+	deal_date=`yesterday ${today}`
+	exp_dir="/bassapp/backapp/data/bass1/export/export_${deal_date}"
+	cd ${exp_dir}
+}
+
+day9(){
+cd ${exp_dir}
+ls -arlth \
+*01002*dat \
+*01004*dat \
+*02004*dat \
+*02008*dat \
+*02011*dat \
+*02053*dat \
+*06031*dat \
+*06032*dat
+cd $HOME
+}
+
+###########################
+#viewlog:find a log segment for  a large logfile
+###########################
+
+viewlog(){
+	
+	if [ $# -ne 3 ];then
+		echo "usage:viewlog Mode[g/a] logFile Arg3[ContentPatern/FileNum]"
+		return 1
+	fi
+
+	mode=$1
+	logFile=$2
+	if [ ! -f $logFile ]; then
+		echo $2 not exist!
+		return 1
+	fi	
+	##Arg3 can be ContentPatern or FileNum
+	Arg3=$3 
+
+	if [ $mode = "g" ];then
+		echo "grep -in $Arg3 $logFile |more "
+		grep -in $Arg3 $logFile |more 
+		return 0
+	else
+	##http://www.unix.com/shell-programming-scripting/8820-check-if-argument-passed-integers.html
+		echo $Arg3 | egrep '^(\+|-)?[0-9]+$'
+		retcode=$?
+		if [ $retcode -ne 0 ];then
+			echo "$3 is invalid !"
+			return 1
+		fi	
+		echo "nawk -v vFileNum=$Arg3 '{ if ( FNR > $vFileNum ) print }' $logFile|more"
+		nawk -v vFileNum=$Arg3 '{ if ( FNR >= vFileNum ) print FNR,$0 }' $logFile|more
+		return 0
+	fi
+
+}
