@@ -112,7 +112,8 @@ inner join  (select distinct user_id from bass2.dw_product_td_$timestamp
     on a.user_id=b.user_id
  )   
                  
-                  );"
+                  )
+with ur;"
                         
   puts $sql_buff
   exec_sql $sql_buff

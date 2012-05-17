@@ -65,6 +65,17 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		"
 exec_sql $sql_buff
 
+##~   删除 a.channel_type = 90886 的渠道
+  set sql_buff "
+delete from 
+(select * from bass1.g_s_22092_day where  TIME_ID = $timestamp and channel_id in (
+                        select char(a.channel_id)
+                from bass2.dim_channel_info a
+                 where  a.channel_type = 90886
+	    )
+) t
+  "
+exec_sql $sql_buff
 
   #进行结果数据检查
   #1.检查chkpkunique

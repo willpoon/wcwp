@@ -56,7 +56,11 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
         #puts $today_dd
 
         #程序名称
-        set app_name "INT_CHECK_F0_TO_DAY.tcl"
+        ##~   set app_name "INT_CHECK_F0_TO_DAY.tcl"
+		
+		source /bassapp/bass1/tcl/TMP_TEST.tcl
+		getUserList $op_time $optime_month
+		
 ####
 ####
 #####删除本期数据
