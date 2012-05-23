@@ -21,6 +21,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
         set last_day [GetLastDay [string range $timestamp 0 7]]
         #程序名
         set app_name "INT_CHECK_COMP_KPI_DAY.tcl"
+		set p_timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]		
+        set today_dd [format "%.0f" [string range $p_timestamp 6 7]]
 
  puts " 删除旧数据"
  	  set sqlbuf "delete from  BASS1.G_RULE_CHECK where time_id=$timestamp 
@@ -415,7 +417,25 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	  WriteAlarm $app_name $optime $grade ${alarmcontent}
 	} 
 
+##~   20120523 2012新版校验！
+ 
+if { $today_dd == 1 || $today_dd == 2 || $today_dd == 30 || $today_dd == 31 } { 
+	if {$RESULT_VAL3>0.55||$RESULT_VAL3<-0.55 } {
+		set grade 2
+	  set alarmcontent "R169校验达到临界值"
+	  WriteAlarm $app_name $optime $grade ${alarmcontent}
+	} 
+} else {
 
+	if {$RESULT_VAL3>0.25||$RESULT_VAL3<-0.25 } {
+		set grade 2
+	  set alarmcontent "R169校验达到临界值"
+	  WriteAlarm $app_name $optime $grade ${alarmcontent}
+	} 
+
+}
+
+##~   -----------------------------------------------------------------------------------------------------------
  puts "R170	日	电信新增客户数日变动率≤ 50%  "
    set sqlbuf " 
 				select val1
@@ -444,8 +464,29 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	  set alarmcontent "R170校验不通过"
 	  WriteAlarm $app_name $optime $grade ${alarmcontent}
 	} 
+##~   -----------------------------------------------------------------------------------------------------------
 
 
+##~   20120523 2012新版校验！
+ 
+if { $today_dd == 1 || $today_dd == 2 || $today_dd == 30 || $today_dd == 31 } { 
+	if {$RESULT_VAL3>0.55||$RESULT_VAL3<-0.55 } {
+		set grade 2
+	  set alarmcontent "R170校验达到临界值"
+	  WriteAlarm $app_name $optime $grade ${alarmcontent}
+	} 
+} else {
+
+	if {$RESULT_VAL3>0.25||$RESULT_VAL3<-0.25 } {
+		set grade 2
+	  set alarmcontent "R170校验达到临界值"
+	  WriteAlarm $app_name $optime $grade ${alarmcontent}
+	} 
+
+}
+
+##~   -----------------------------------------------------------------------------------------------------------
+ 
  puts "R171	日	联通移动新增客户数日变动率≤ 50%  "
    set sqlbuf " 
 				select val1
@@ -475,7 +516,29 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	  WriteAlarm $app_name $optime $grade ${alarmcontent}
 	} 
 
+##~   -----------------------------------------------------------------------------------------------------------
 
+
+##~   20120523 2012新版校验！
+ 
+if { $today_dd == 1 || $today_dd == 2 || $today_dd == 30 || $today_dd == 31 } { 
+	if {$RESULT_VAL3>0.55||$RESULT_VAL3<-0.55 } {
+		set grade 2
+	  set alarmcontent "R171校验达到临界值"
+	  WriteAlarm $app_name $optime $grade ${alarmcontent}
+	} 
+} else {
+
+	if {$RESULT_VAL3>0.25||$RESULT_VAL3<-0.25 } {
+		set grade 2
+	  set alarmcontent "R171校验达到临界值"
+	  WriteAlarm $app_name $optime $grade ${alarmcontent}
+	} 
+
+}
+
+##~   -----------------------------------------------------------------------------------------------------------
+ 
 
  puts "R172	日	电信移动新增客户数日变动率≤ 50%  "
    set sqlbuf " 
@@ -509,59 +572,30 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 
 
+##~   -----------------------------------------------------------------------------------------------------------
+
+
+##~   20120523 2012新版校验！
+ 
+if { $today_dd == 1 || $today_dd == 2 || $today_dd == 30 || $today_dd == 31 } { 
+	if {$RESULT_VAL3>0.55||$RESULT_VAL3<-0.55 } {
+		set grade 2
+	  set alarmcontent "R172校验达到临界值"
+	  WriteAlarm $app_name $optime $grade ${alarmcontent}
+	} 
+} else {
+
+	if {$RESULT_VAL3>0.25||$RESULT_VAL3<-0.25 } {
+		set grade 2
+	  set alarmcontent "R172校验达到临界值"
+	  WriteAlarm $app_name $optime $grade ${alarmcontent}
+	} 
+
+}
+
+##~   -----------------------------------------------------------------------------------------------------------
+ 
 
 	return 0
 }
 
-
-
-
-#------------------------内部函数部分--------------------------#	
-#  get_row 返回 SQL的行徝
-proc get_row {MySQL} {
-
-	global env
-
-	global conn
-
-	global handle
-
-	set handle [aidb_open $conn]
-	set sql_buff $MySQL
-	puts $sql_buff
-	puts "----------------------------------------------------------------------------------- "
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		puts $errmsg
-		exit -1
-	}
-	set p_row [aidb_fetch $handle]
-	aidb_commit $conn
-	aidb_close $handle
-	return $p_row
-}
-
-#   exec_sql 执行SQL
-proc exec_sql {MySQL} {
-
-	global env
-
-	global conn
-
-	global handle
-
-	set handle [aidb_open $conn]
-	set sql_buff $MySQL
-	puts $sql_buff
-	puts "----------------------------------------------------------------------------------- "
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		puts $errmsg
-		exit -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
-	return 0
-}
