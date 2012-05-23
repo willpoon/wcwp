@@ -36,175 +36,175 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
         set app_name "INT_CHECK_Z345_DAY.tcl"
 
 
-#########################################################################################
-#一个电话号码不能同时对应多个非离网的用户ID校验	 add by zhanght on 2009.05.18
+##~   #########################################################################################
+##~   #一个电话号码不能同时对应多个非离网的用户ID校验	 add by zhanght on 2009.05.18
 	
 	
-	set handle [aidb_open $conn]
-	set sql_buff "ALTER TABLE PRODUCT_XHX3 ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
-        puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
+	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "ALTER TABLE PRODUCT_XHX3 ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
+        ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle
 
  
 
-	set handle [aidb_open $conn]
-	set sql_buff "ALTER TABLE CHECK_0200402008_DAY_1 ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
-        puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
+	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "ALTER TABLE CHECK_0200402008_DAY_1 ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
+        ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle
  
  
-	set handle [aidb_open $conn]
-	set sql_buff "insert into CHECK_0200402008_DAY_1
-select user_id,product_no,usertype_id,sim_code from
- (
- select user_id,product_no,usertype_id,sim_code,row_number()over(partition by user_id order by time_id desc) row_id from G_A_02004_DAY
- where time_id<=$timestamp
- ) k
- where k.row_id=1 
- and k.usertype_id <> '3'
- with ur"
-        puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle 
+	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "insert into CHECK_0200402008_DAY_1
+##~   select user_id,product_no,usertype_id,sim_code from
+ ##~   (
+ ##~   select user_id,product_no,usertype_id,sim_code,row_number()over(partition by user_id order by time_id desc) row_id from G_A_02004_DAY
+ ##~   where time_id<=$timestamp
+ ##~   ) k
+ ##~   where k.row_id=1 
+ ##~   and k.usertype_id <> '3'
+ ##~   with ur"
+        ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle 
  
 
-	set handle [aidb_open $conn]
-	set sql_buff "ALTER TABLE CHECK_0200402008_DAY_2 ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
-        puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle 
+	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "ALTER TABLE CHECK_0200402008_DAY_2 ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
+        ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle 
 
-	set handle [aidb_open $conn]
-	set sql_buff "insert into CHECK_0200402008_DAY_2
-   select user_id,usertype_id from
-   (
-   select user_id,usertype_id,row_number()over(partition by user_id order by time_id desc) row_id from G_A_02008_DAY
-   where time_id<=$timestamp
-   ) k
-   where k.row_id=1 
-   and k.usertype_id not in ('2010','2020','2030','9000') with ur"
-        puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
+	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "insert into CHECK_0200402008_DAY_2
+   ##~   select user_id,usertype_id from
+   ##~   (
+   ##~   select user_id,usertype_id,row_number()over(partition by user_id order by time_id desc) row_id from G_A_02008_DAY
+   ##~   where time_id<=$timestamp
+   ##~   ) k
+   ##~   where k.row_id=1 
+   ##~   and k.usertype_id not in ('2010','2020','2030','9000') with ur"
+        ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle
  
 
  
- 	set handle [aidb_open $conn]
-	set sql_buff "ALTER TABLE CHECK_0200402008_DAY_4 ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
-        puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle 
+ 	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "ALTER TABLE CHECK_0200402008_DAY_4 ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
+        ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle 
 
 
 
- 	set handle [aidb_open $conn]
-	set sql_buff "insert into CHECK_0200402008_DAY_4
-	select a.product_no from CHECK_0200402008_DAY_1 a,
-         CHECK_0200402008_DAY_2 b
-         where a.user_id=b.user_id
-  with ur       
+ 	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "insert into CHECK_0200402008_DAY_4
+	##~   select a.product_no from CHECK_0200402008_DAY_1 a,
+         ##~   CHECK_0200402008_DAY_2 b
+         ##~   where a.user_id=b.user_id
+  ##~   with ur       
 	
-	"
-        puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle 
+	##~   "
+        ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle 
 	
-	set handle [aidb_open $conn]
-	set sql_buff " 
- insert into  PRODUCT_XHX3
-  select product_no
-   from  CHECK_0200402008_DAY_4
-   group by product_no
-   having count(*) >=2 
-   with ur"
+	##~   set handle [aidb_open $conn]
+	##~   set sql_buff " 
+ ##~   insert into  PRODUCT_XHX3
+  ##~   select product_no
+   ##~   from  CHECK_0200402008_DAY_4
+   ##~   group by product_no
+   ##~   having count(*) >=2 
+   ##~   with ur"
  
  
-  puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
+  ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle
 
 
-	set handle [aidb_open $conn]
-	set sql_buff "ALTER TABLE product_xhx4 ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
-        puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
+	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "ALTER TABLE product_xhx4 ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
+        ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle
 	
 
-	set handle [aidb_open $conn]
-	set sql_buff "insert into product_xhx4  select distinct k.user_id from
-(
-select user_id,row_number()over(partition by product_no order by int(create_date) desc) row_id from G_A_02004_DAY 
-where product_no in (select product_no from PRODUCT_XHX3) 
-) k
-where k.row_id<>1 with ur"
-        puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
+	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "insert into product_xhx4  select distinct k.user_id from
+##~   (
+##~   select user_id,row_number()over(partition by product_no order by int(create_date) desc) row_id from G_A_02004_DAY 
+##~   where product_no in (select product_no from PRODUCT_XHX3) 
+##~   ) k
+##~   where k.row_id<>1 with ur"
+        ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle
 
 
-	set handle [aidb_open $conn]
-	set sql_buff "insert into G_A_02008_DAY select distinct $timestamp,user_id,'2020' from G_A_02004_DAY where user_id in(select user_id from product_xhx4) with ur"
-        puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
+	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "insert into G_A_02008_DAY select distinct $timestamp,user_id,'2020' from G_A_02004_DAY where user_id in(select user_id from product_xhx4) with ur"
+        ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle
 
 
 

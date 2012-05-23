@@ -30,10 +30,20 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
         set db_user $env(DB_USER)
 
 	set sql_buff "\
-		DELETE FROM $db_user.G_A_02008_DAY where time_id=$Timestamp"
-        exec_sql $sql_buff
-
-
+	DELETE FROM $db_user.G_A_02008_DAY where time_id=$Timestamp"
+	exec_sql $sql_buff
+	##~   #temp process ! 20120519: 相同号码对应不同再网user_id!删除一条！
+	set sql_buff "
+		delete from (
+		select * from 
+		$db_user.INT_02004_02008_${op_month}
+		where
+		op_time=$Timestamp
+		and usertype_flag=1
+		and user_id = '89160002171967'
+		) t						   
+	" 
+	exec_sql $sql_buff
 
 
 
@@ -184,6 +194,7 @@ select user_id,product_no,usertype_id,sim_code from
 #	aidb_close $handle
 	
 
+
 	set sql_buff "insert into product_xhx4  select distinct k.user_id from
 (
 select user_id,row_number()over(partition by product_no order by int(create_date) desc) row_id from G_A_02004_DAY 
@@ -192,7 +203,10 @@ where product_no in (select product_no from PRODUCT_XHX3)
 where k.row_id<>1 with ur"
         exec_sql $sql_buff
 
+##为了更好地甄别哪个用户有效，暂不删除原来的状态。
+##~   set sql_buff "delete from G_A_02008_DAY where user_id in (select distinct user_id from product_xhx4) and time_id = $Timestamp with ur"
 
+        exec_sql $sql_buff
 	set sql_buff "insert into G_A_02008_DAY select distinct $Timestamp,user_id,'2020' from G_A_02004_DAY where user_id in(select user_id from product_xhx4) with ur"
         exec_sql $sql_buff
 

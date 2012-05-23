@@ -1,6 +1,6 @@
 ######################################################################################################
 #程序名称：INT_CHECK_TD_MONTH.tcl
-#校验接口：TD月校验 'R144','R145','R146','R147','R148','R149','R150','R151','R152'
+#校验接口：TD月校验 'R144','R145','R146','R149','R150','R151','R152'
 #运行粒度: 月
 #输入参数: 
 #输出参数: 返回值:0 成功;-1 失败
@@ -9,6 +9,7 @@
 #问题记录：
 #修改历史: 20100127 修改在网用户口径 usertype_id not in ('2010','2020','2030','9000')
 #          20100322 取消接口22204、22205、22206、22207涉及到的校验规则，22204中的R147/R148
+##~   20120523 根据2012年新版校验，重写R147,R148校验，将此2校验从本程序删除语句中 移除。
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
         
@@ -32,8 +33,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
         set app_name "INT_CHECK_TD_MONTH.tcl"
 
  puts " 删除旧数据"
- 	  set sqlbuf "delete from  BASS1.G_RULE_CHECK where time_id=$op_month and rule_code in ('R144','R145','R146','R147','R148','R149','R150','R151','R152') "        
-	  exec_sql $sqlbuf     
+ 	  set sqlbuf "delete from  BASS1.G_RULE_CHECK where time_id=$op_month and rule_code in ('R144','R145','R146','R149','R150','R151','R152') "        
+	  exec_sql $sqlbuf
 
 
  puts "R144	月	TD话单中的号码数量与月汇总中无线网络类型为TD网络的号码数量的偏差5%内"
