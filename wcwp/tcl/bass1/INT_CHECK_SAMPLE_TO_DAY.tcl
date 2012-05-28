@@ -77,7 +77,7 @@ exec_sql $sql_buff
                                SUM(BIGINT(callfw_toll_fee)) AS CF
                              FROM 
                                BASS1.int_0400810_$this_month
-                             WHERE TIME_ID/100=$this_month and roam_type_id not in ('122','202','302','401')
+                             WHERE OP_TIME/100=$this_month and roam_type_id not in ('122','202','302','401')
                              GROUP BY PRODUCT_NO
                              UNION ALL
                              SELECT 
@@ -167,7 +167,7 @@ exec_sql $sql_buff
 	            FROM (
 	                  SELECT PRODUCT_NO,SUM(BIGINT(BASE_BILL_DURATION)) AS SC		  
 	                  FROM BASS1.int_0400810_$this_month
-	                  WHERE TIME_ID/100=$this_month
+	                  WHERE OP_TIME/100=$this_month
 	                  GROUP BY PRODUCT_NO
 	                  UNION 
 	                  SELECT PRODUCT_NO,SUM(CEIL(BIGINT(CALL_DURATION)/60.0)) AS SC

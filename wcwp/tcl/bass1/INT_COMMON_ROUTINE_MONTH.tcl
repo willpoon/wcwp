@@ -117,14 +117,43 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 	#and f.usertype_id NOT IN ('2010','2020','2030','9000')
 
+
+	#--抓取用户资料入表
+	set sql_buff "
+		insert into bass1.INT_02004_02008_MONTH_$op_month (
+		     user_id    
+		    ,product_no 
+		    ,test_flag  
+		    ,sim_code   
+		    ,usertype_id  
+		    ,create_date
+		    ,brand_id
+		    ,time_id )
+		select          
+		USER_ID
+        ,PRODUCT_NO
+        ,TEST_FLAG
+        ,SIM_CODE
+        ,USERTYPE_ID
+        ,CREATE_DATE
+        ,BRAND_ID
+        ,TIME_ID     
+		from bass1.int_02004_02008_month_stage
+		with ur
+"
+	exec_sql $sql_buff
+
 	aidb_runstats bass1.int_02004_02008_month_stage 3
+	aidb_runstats bass1.INT_02004_02008_MONTH_$op_month 3
+	
 	#建中间表
 	createtb INT_02004_02008_YYYYMM "OP_TIME,USER_ID" TBS_APP_BASS1 TBS_INDEX $curr_month
 	createtb INT_21007_YYYYMM       "OP_TIME,PRODUCT_NO,BRAND_ID,SVC_TYPE_ID,CDR_TYPE_ID" TBS_APP_BASS1 TBS_INDEX $curr_month
 	createtb INT_22038_YYYYMM       "OP_TIME,USER_ID" TBS_APP_BASS1 TBS_INDEX $curr_month
 	createtb INT_0400810_YYYYMM     "OP_TIME,PRODUCT_NO" TBS_APP_BASS1 TBS_INDEX $curr_month
 	createtb INT_210012916_YYYYMM   "OP_TIME,USER_ID,PRODUCT_NO" TBS_APP_BASS1 TBS_INDEX $curr_month
-	createtb INT_22401_YYYYMM   "TIME_ID,USER_ID,CELL_ID,LAC_ID" TBS_APP_BASS1 TBS_INDEX $curr_month
+	createtb INT_22401_YYYYMM   	"TIME_ID,USER_ID,CELL_ID,LAC_ID" TBS_APP_BASS1 TBS_INDEX $curr_month
+	createtb INT_02004_02008_MONTH_YYYYMM   "USER_ID" TBS_APP_BASS1 TBS_INDEX $curr_month
 	
 	
         } else { 

@@ -22,7 +22,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
         #本月 yyyymm
         #set op_time 2008-10-01
-        #set optime_month 2008-10
+        set optime_month 2012-01
         set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
         
         set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
@@ -46,23 +46,28 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	
 	set sql_buff "alter table bass1.g_i_02006_month_1 activate not logged initially with empty table"
 	exec_sql $sql_buff
-	
+
+
+##~   1.非全球通品牌的客户-包含品牌奖励积分 
+##~   2-3月全球通、动感地带2品牌“专项转移积分”均存在数据；
+##~   1-3月神州行品牌“专项转移积分”均存在数据；
 	set sql_buff "
 		insert into G_I_02006_MONTH_1
 		select
 			product_instance_id  as user_id
 			,sum( case when  count_cycle_id=$op_month and scrtype=1 then orgscr+adjscr else 0 end )   as month_points
-			,sum( case when  count_cycle_id=$op_month and scrtype=24 then orgscr+adjscr else 0 end )   as month_qqt_points
+			,sum( case when  count_cycle_id=$op_month and scrtype=24 and b.brand_id = '1' then orgscr+adjscr else 0 end )   as month_qqt_points
 			,sum( case when  count_cycle_id=$op_month and scrtype=25 then orgscr+adjscr else 0 end )   as month_age_points
-			,sum( case when  scrtype=5 then orgscr+adjscr else 0 end )   as trans_points
+			,sum( case when  count_cycle_id<=$op_month and $op_month <= 201201 and scrtype=5  and b.brand_id in ('1','3') then orgscr+adjscr else 0 end )   as trans_points --只有全/动才有转移积分 而且 应该放到一月份中，后续月份没有转移积分。
 			,sum(  CURSCR )   as convertible_points
 			,sum( orgscr+adjscr )   as all_points
-			,sum( case when scrtype=1 then orgscr+adjscr else 0 end )   as all_consume_points
+			,sum( case when  scrtype=1 then orgscr+adjscr else 0 end )   as all_consume_points
 			,sum( USRSCR )   as all_converted_points
 			,0 LEAVE_CLEAR_POINTS
 			,0 OTHER_CLEAR_POINTS
-		from bass2.dwd_product_sc_scorelist_$op_month
+		from bass2.dwd_product_sc_scorelist_$op_month  a ,  bass1.INT_02004_02008_MONTH_$op_month  b
 		where   actflag='1' and count_cycle_id <= $op_month
+		and a.PRODUCT_INSTANCE_ID = b.user_id
 		group by product_instance_id
 		with ur
 	"
@@ -127,6 +132,8 @@ set sql_buff "
 #		exec_sql $sql_buff
 #		
 
+##~   20120524       为满足校验，修改口径：  ,char(sum(value(case when b.brand_id = 1 then a.MONTH_QQT_POINTS else 0 end ,0)))
+##~   R282	月	10_积分计划	非全球通品牌的客户不应上传品牌奖励积分	02006 用户积分情况	非全球通品牌的客户不应上传品牌奖励积分	0.05	
 
 
 
@@ -150,7 +157,7 @@ set sql_buff "
         $op_month TIME_ID
         ,a.USER_ID
         ,char(sum(value(a.MONTH_POINTS,0)))
-        ,char(sum(value(a.MONTH_QQT_POINTS,0)))
+        ,char(sum(value(case when b.brand_id = 1 then a.MONTH_QQT_POINTS else 0 end ,0)))
         ,char(sum(value(a.MONTH_AGE_POINTS,0)))
         ,char(sum(value(a.TRANS_POINTS,0)))
         ,char(sum(value(a.CONVERTIBLE_POINTS,0)))
@@ -169,6 +176,20 @@ set sql_buff "
 	with ur
        "
 	exec_sql $sql_buff
+
+##~   20120524
+##~   --~   R283	月	10_积分计划	当前可兑换积分不能为负值	02006 用户积分情况	当前可兑换积分不能为负值	0.05	
+
+
+##~   2.当前可兑换积分为负值
+set sql_buff "
+	delete from ( select * from G_I_02006_MONTH where time_id = $op_month and  bigint(CONVERTIBLE_POINTS) < 0 ) t 
+       "
+	exec_sql $sql_buff
+
+
+
+
 
 #	
 #	
@@ -244,4 +265,6 @@ chkzero2 $sql_buff "总积分<>已兑换+可兑换"
 }
 
 
-
+##~   20120524:
+##~   rules:
+##~   CONVERTIBLE_POINTS+ALL_CONVERTED_POINTS= ALL_POINTS

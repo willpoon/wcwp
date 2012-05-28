@@ -35,7 +35,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	set sql_buff "delete from bass1.G_S_22088_MONTH where time_id=$op_month"
 	exec_sql $sql_buff
 	
- 
+##~   G_S_22083_MONTH_3  是 sp 信息表！
 
 set sql_buff "
 	insert into bass1.G_S_22088_MONTH
