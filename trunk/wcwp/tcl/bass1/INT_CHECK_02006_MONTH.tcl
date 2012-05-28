@@ -11,46 +11,46 @@
 #          20100120 在网客户口径修改 usertype_id not in ('2010','2020','2030','9000') ##~   20120118 panzw 根据2011版校验，屏蔽老积分校验
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
-
-        ##~   #本月 yyyymm
-        ##~   set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
+		set optime_month 2012-01
+        #本月 yyyymm
+        set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
             
-        ##~   #上月  yyyymm
-        ##~   set last_month [GetLastMonth [string range $op_month 0 5]]
+        #上月  yyyymm
+        set last_month [GetLastMonth [string range $op_month 0 5]]
         
-        ##~   #自然月第一天 yyyymmdd
-        ##~   set timestamp [string range $op_time 0 3][string range $op_time 5 6]01
+        #自然月第一天 yyyymmdd
+        set timestamp [string range $op_time 0 3][string range $op_time 5 6]01
         
-        ##~   #本月第一天 yyyymmdd
-        ##~   set l_timestamp [string range $optime_month 0 3][string range $optime_month 5 6]01
+        #本月第一天 yyyymmdd
+        set l_timestamp [string range $optime_month 0 3][string range $optime_month 5 6]01
         
-        ##~   #当天 yyyymmdd
-        ##~   set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
+        #当天 yyyymmdd
+        set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
         
-        ##~   #当天 yyyy-mm-dd
-        ##~   set optime $op_time
+        #当天 yyyy-mm-dd
+        set optime $op_time
         
-        ##~   #前一天 yyyymmdd
-        ##~   set last_day [GetLastDay [string range $timestamp 0 7]]
+        #前一天 yyyymmdd
+        set last_day [GetLastDay [string range $timestamp 0 7]]
         
-        ##~   #程序名
-        ##~   set app_name "INT_CHECK_02006_MONTH.tcl"
+        #程序名
+        set app_name "INT_CHECK_02006_MONTH.tcl"
 
-        ##~   #本月最后一天 yyyy-mm-dd
-        ##~   set this_month_last_day [string range $op_month 0 3][string range $op_time 4 4][string range $op_month 4 5][string range $op_time 4 4][GetThisMonthDays [string range $op_month 0 5]01]
+        #本月最后一天 yyyy-mm-dd
+        set this_month_last_day [string range $op_month 0 3][string range $op_time 4 4][string range $op_month 4 5][string range $op_time 4 4][GetThisMonthDays [string range $op_month 0 5]01]
         
-        ##~   puts $this_month_last_day
+        puts $this_month_last_day
 
-        ##~   #本月最后一天,格式 yyyymmdd
-        ##~   set last_month_day [GetLastDay [string range $timestamp 0 5]01]
+        #本月最后一天,格式 yyyymmdd
+        set last_month_day [GetLastDay [string range $timestamp 0 5]01]
         
-        ##~   puts $last_month_day
+        puts $last_month_day
         
-        ##~   #上月最后一天 yyyymmdd
+        #上月最后一天 yyyymmdd
         
-        ##~   set last_month_last_day [GetLastDay [string range $op_month 0 5]01]
+        set last_month_last_day [GetLastDay [string range $op_month 0 5]01]
         
-        ##~   puts $last_month_last_day
+        puts $last_month_last_day
 
 	##~   set handle [ aidb_open $conn ]
 	##~   set sqlbuf "delete from bass1.g_rule_check where time_id = $op_month 
@@ -540,58 +540,131 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	##~   } 
 	##~   puts "R079 参与兑换客户数≤上一个月月底的有兑换资格客户数"
 
-
+##~   通报问题校验：
+##~   1.非全球通品牌的客户-包含品牌奖励积分 
+
+set RESULT_VAL 0
+
+set sql_buff "
+	select sum(bigint(MONTH_QQT_POINTS)) MONTH_QQT_POINTS
+	from ( select user_id,brand_id  from  bass1.INT_02004_02008_MONTH_$op_month ) a 
+	, (select * from G_I_02006_MONTH where TIME_ID  = $op_month ) b 
+	where a.user_id = b.user_id 
+	and a.brand_id <> '1'
+	with ur
+"
+
+   set p_row [get_row $sql_buff]
+   set RESULT_VAL [lindex $p_row 0]
+   puts $RESULT_VAL
+   
+
+	if {$RESULT_VAL > 0 } {
+
+		set grade 2
+
+	        set alarmcontent "通报规则问题：非全球通品牌的客户-包含品牌奖励积分 "
+
+	        WriteAlarm $app_name $optime $grade ${alarmcontent}
+
+	} 
+
+
+
+##~   通报问题校验：
+##~   2.当前可兑换积分为负值
+
+set RESULT_VAL 0
+
+set sql_buff "
+	select count(0)
+	 from G_I_02006_MONTH 
+	where bigint(CONVERTIBLE_POINTS) < 0                
+	and time_id = $op_month
+	with ur
+"
+
+   set p_row [get_row $sql_buff]
+   set RESULT_VAL [lindex $p_row 0]
+   puts $RESULT_VAL
+   
+
+	if {$RESULT_VAL > 0 } {
+
+		set grade 2
+
+	        set alarmcontent "通报规则问题：当前可兑换积分为负值"
+
+	        WriteAlarm $app_name $optime $grade ${alarmcontent}
+
+	} 
+
+
+
+
+
+
+##~   通报问题校验：
+##~   3. 2-3月全球通、动感地带2品牌“专项转移积分”均存在数据 , 201201月可以存在数据
+set RESULT_VAL 0
+
+set sql_buff "
+		select sum(bigint(TRANS_POINTS))
+		from G_I_02006_MONTH a ,  ( select user_id,brand_id  from bass1.INT_02004_02008_MONTH_$op_month ) b 
+		where a.user_id = b.user_id 
+		and time_id = $op_month
+		and b.brand_id in ('1','3')
+		with ur
+"
+
+   set p_row [get_row $sql_buff]
+   set RESULT_VAL [lindex $p_row 0]
+   puts $RESULT_VAL
+   
+
+	if {$RESULT_VAL > 0 } {
+
+		set grade 2
+
+	        set alarmcontent "通报规则问题：201201月后全球通、动感地带2品牌“专项转移积分”均存在数据！201201月可以存在数据"
+
+	        WriteAlarm $app_name $optime $grade ${alarmcontent}
+
+	} 
+
+
+##~   通报问题校验：
+##~   4. 1-3月神州行品牌“专项转移积分”均存在数据
+set RESULT_VAL 0
+
+set sql_buff "
+		select sum(bigint(TRANS_POINTS))
+		from G_I_02006_MONTH a ,  ( select user_id,brand_id  from bass1.INT_02004_02008_MONTH_$op_month ) b 
+		where a.user_id = b.user_id 
+		and time_id = $op_month
+		and b.brand_id = '2'
+		with ur
+"
+
+   set p_row [get_row $sql_buff]
+   set RESULT_VAL [lindex $p_row 0]
+   puts $RESULT_VAL
+   
+
+	if {$RESULT_VAL > 0 } {
+
+		set grade 2
+
+	        set alarmcontent "通报规则问题： 神州行品牌“专项转移积分”均存在数据"
+
+	        WriteAlarm $app_name $optime $grade ${alarmcontent}
+
+	} 
+
+
+
 	return 0
 }
-
-
-#内部函数部分	
-proc exec_sql {MySQL} {
-
-	global env
-
-	global conn
-
-	global handle
-
-	set handle [aidb_open $conn]
-	set sql_buff $MySQL
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		puts $errmsg
-		exit -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
-	return 0
-}
-
-proc get_single {MySQL} {
-
-	global env
-
-	global conn
-
-	global handle
-
-	set handle [aidb_open $conn]
-	set sql_buff $MySQL
-  if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace $errmsg 1001
-		puts $errmsg
-		exit -1
-	}
-	if [catch {set result [lindex [aidb_fetch $handle] 0]} errmsg ] {
-		WriteTrace $errmsg 1002
-		puts $errmsg
-		exit -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
-	
-
-
-	
-	return $result
-}
+
+
+

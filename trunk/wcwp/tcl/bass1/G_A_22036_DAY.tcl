@@ -62,22 +62,22 @@ set curr_month [string range $op_time 0 3][string range $op_time 5 6]
                 from
                 (
 select distinct 
- $timestamp   TIME_ID,
-'$curr_month'          BILL_MONTH,
-'0'                  CUST_TYPE,
-cust_id            EC_CODE,
-''                   SINAME,        
+ $timestamp   			TIME_ID,
+'$curr_month'         	 BILL_MONTH,
+'0'                  	CUST_TYPE,
+cust_id            		EC_CODE,
+''                   	SINAME,        
 case 
 when ATTR_3 like 'QXZ%' then '1'
 when ATTR_3 like 'M%' then '1'
 else '2'
-end as OPERATE_TYPE,
-ATTR_2      APP_LENCODE,
-'' APNCODE
-,name SERVICE_NAME
+end as 					OPERATE_TYPE,
+ATTR_2      			APP_LENCODE,
+'' 						APNCODE
+,name 					SERVICE_NAME
 ,replace(char(date(VALID_DATE)),'-','') open_date
 ,case when replace(char(date(EXPIRE_DATE)),'-','') > '$timestamp' then '1' 
-	else '2' end  sts
+	else '2' end  		sts
 from 
 (select a.*,b.name,c.cust_id
 ,row_number()over(partition by a.ATTR_2 order by a.EXPIRE_DATE desc , a.VALID_DATE desc ) rn 

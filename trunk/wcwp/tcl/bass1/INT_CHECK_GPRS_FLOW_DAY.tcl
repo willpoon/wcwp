@@ -16,6 +16,9 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
         set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
         #当天 yyyy-mm-dd
         set optime $op_time
+		set p_timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]		
+        set today_dd [format "%.0f" [string range $p_timestamp 6 7]]
+		
         #前一天 yyyymmdd
         set last_day [GetLastDay [string range $timestamp 0 7]]
         #程序名
@@ -145,6 +148,32 @@ set RESULT_VAL33 [get_single $sqlbuf]
 
 
 
+##~   -----------------------------------------------------------------------------------------------------------
+
+
+##~   20120523 2012新版校验！
+ 
+if { $today_dd == 1 || $today_dd == 2 || $today_dd == 30 || $today_dd == 31 } { 
+	if {$RESULT_VAL3>0.55||$RESULT_VAL3<-0.55 } {
+		set grade 2
+	  set alarmcontent "R173校验达到临界值"
+	  WriteAlarm $app_name $optime $grade ${alarmcontent}
+	} 
+} else {
+
+	if {$RESULT_VAL3>0.30||$RESULT_VAL3<-0.30 } {
+		set grade 2
+	  set alarmcontent "R173校验达到临界值"
+	  WriteAlarm $app_name $optime $grade ${alarmcontent}
+	} 
+
+}
+
+##~   -----------------------------------------------------------------------------------------------------------
+ 
+
+
+
  puts "R174	日	GPRS下行流量日变动率<= 50% "
 
    ##~   set sqlbuf " 
@@ -218,6 +247,31 @@ set RESULT_VAL33 [get_single $sqlbuf]
 	} 
 
 
+
+
+##~   -----------------------------------------------------------------------------------------------------------
+
+
+##~   20120523 2012新版校验！
+ 
+if { $today_dd == 1 || $today_dd == 2 || $today_dd == 30 || $today_dd == 31 } { 
+	if {$RESULT_VAL33>0.55||$RESULT_VAL33<-0.55 } {
+		set grade 2
+	  set alarmcontent "R174校验达到临界值"
+	  WriteAlarm $app_name $optime $grade ${alarmcontent}
+	} 
+} else {
+
+	if {$RESULT_VAL33>0.30||$RESULT_VAL33<-0.30 } {
+		set grade 2
+	  set alarmcontent "R174校验达到临界值"
+	  WriteAlarm $app_name $optime $grade ${alarmcontent}
+	} 
+
+}
+
+##~   -----------------------------------------------------------------------------------------------------------
+ 
 
 
 	return 0

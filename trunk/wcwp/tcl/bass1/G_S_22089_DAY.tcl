@@ -24,7 +24,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 
   #删除本期数据
-	set sql_buff "delete from bass1.G_S_22087_DAY where time_id=$timestamp"
+	set sql_buff "delete from bass1.G_S_22089_DAY where time_id=$timestamp"
 	exec_sql $sql_buff
 	
 
@@ -35,43 +35,27 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
   #更新业务退订量CANCEL_BUSI_CNT（可能不是很准，规范指的是每次查询后，发起所退订的业务量?）
   #CANCEL_CNT口径也要重新确认。
 	set sql_buff "
-	insert into bass1.G_S_22087_DAY
+	insert into bass1.G_S_22089_DAY
 		  (
 			 TIME_ID
 			,OP_TIME
-			,SMS_QUERY_CNT
-			,SMS_REPLY_CNT
-			,ORDER_FAIL_CNT
-			,ORDER_CNT
+			,TUIFEI_CNT
+			,TUIFEI
 		  )
- select      $timestamp TIME_ID
-             ,'$timestamp' op_time
-             ,char(a.TYCX_QUERY)             qry_cnt
-             ,'${RESULT_VAL}'                cancel_cnt
-             ,char(a.TYCX_TUIDING_FAIL)      cancel_fail_cnt
-             ,char(a.TYCX_TOUSU_LIANG)       complaint_cnt
-             ,char( case when (${RESULT_VAL} - a.TYCX_TUIDING_FAIL) < 0 
-			then 0 else (${RESULT_VAL} - a.TYCX_TUIDING_FAIL) 
-		   end 
-		  ) CANCEL_BUSI_CNT
-        from  bass2.DW_THREE_ITEM_STAT_DM_$op_month a ,
-              (select  replace(char(date(a.create_date)),'-','') op_time
-              					,count(0) CANCEL_BUSI_CNT
-                       from   
-                       	BASS2.DW_PRODUCT_UNITE_CANCEL_ORDER_DM_$op_month a
-                        where replace(char(date(a.create_date)),'-','') =  '$timestamp'  
-                        group by replace(char(date(a.create_date)),'-','')
-                    ) b 
-        where replace(char(date(a.create_date)),'-','') = '$timestamp' 
-and    replace(char(date(a.create_date)),'-','') = b.op_time
-with ur
+		select 
+			$timestamp 	time_id		
+			,'$timestamp' 	OP_TIME
+			,'0' TUIFEI_CNT	
+			,'0' TUIFEI  
+	from sysibm.sysdummy1 a
+	with ur
   "
 	exec_sql $sql_buff
 
 
   #进行结果数据检查
   #1.检查chkpkunique
-  set tabname "G_S_22087_DAY"
+  set tabname "G_S_22089_DAY"
 	set pk 			"OP_TIME"
 	chkpkunique ${tabname} ${pk} ${timestamp}
 	#
