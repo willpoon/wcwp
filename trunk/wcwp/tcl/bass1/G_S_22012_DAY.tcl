@@ -269,30 +269,55 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 #3.集团短信
 #4.移动秘书、全球呼呼转短信、语音短信
     set handle [aidb_open $conn]
+    ##~   set sql_buff "
+		    ##~   select sum(cnts) from 
+		    ##~   (
+						##~   select value(sum(counts),0) cnts from bass2.dw_newbusi_ismg_$timestamp  a,bass2.dw_product_$timestamp b 
+						##~   where a.user_id=b.user_id
+						  ##~   and b.usertype_id in (1,2,9)
+						  ##~   and b.test_mark <>1 
+						  ##~   and b.userstatus_id not in (4,5,7,9)
+						  ##~   and a.calltype_id in (0,1,10,11)
+						  ##~   and a.send_state='0'
+						  ##~   and a.drtype_id<>61102 
+						  ##~   and substr(a.sp_code,1,12) is not null
+						  ##~   and a.svcitem_id in (300001,300002,300003,300004)
+					##~   union all		
+					 ##~   select value(sum(counts),0) cnts from bass2.dw_newbusi_sms_$timestamp  a,bass2.dw_product_$timestamp b 
+						##~   where a.user_id=b.user_id
+						  ##~   and b.usertype_id in (1,2,9)
+						  ##~   and b.test_mark <>1
+						  ##~   and b.userstatus_id not in (4,5,7,9)
+						  ##~   and  a.calltype_id in (0)
+						  ##~   and  a.final_state=1
+					##~   ) as aa
+           ##~   "	               
+    ##~   20120530
     set sql_buff "
-		    select sum(cnts) from 
-		    (
-						select value(sum(counts),0) cnts from bass2.dw_newbusi_ismg_$timestamp  a,bass2.dw_product_$timestamp b 
-						where a.user_id=b.user_id
-						  and b.usertype_id in (1,2,9)
-						  and b.test_mark <>1 
-						  and b.userstatus_id not in (4,5,7,9)
-						  and a.calltype_id in (0,1,10,11)
-						  and a.send_state='0'
-						  and a.drtype_id<>61102 
-						  and substr(a.sp_code,1,12) is not null
-						  and a.svcitem_id in (300001,300002,300003,300004)
-					union all		
-					 select value(sum(counts),0) cnts from bass2.dw_newbusi_sms_$timestamp  a,bass2.dw_product_$timestamp b 
-						where a.user_id=b.user_id
-						  and b.usertype_id in (1,2,9)
-						  and b.test_mark <>1
-						  and b.userstatus_id not in (4,5,7,9)
-						  and  a.calltype_id in (0)
-						  and  a.final_state=1
-					) as aa
-           "	               
-    puts $sql_buff
+
+select (
+		select count(0) from   (
+				select  PRODUCT_NO  from bass1.g_s_04005_day 
+				where time_id =$timestamp
+				and calltype_id in ('00','01','10','11')
+				and sms_status='0'
+		) a
+		inner join (
+		 select * from bass1.g_a_02004_02008_stage a
+				where USERSTATUS NOT IN ('2010','2020','2030','9000')
+				  and a.test_flag='0'
+		) b
+		on  a.PRODUCT_NO = b.PRODUCT_NO
+) + (
+	select sum(bigint(SMS_COUNTS)) from bass1.g_s_21007_day
+	where time_id =$timestamp
+	  and SVC_TYPE_ID in ('11','12','13','70')
+	  and END_STATUS='0'
+	  and CDR_TYPE_ID in ('00','10','21')
+ ) from bass2.dual
+ with ur
+           "	 
+	puts $sql_buff
     if [catch { aidb_sql $handle $sql_buff } errmsg ] {
 		WriteTrace $errmsg 1001
 		return -1
