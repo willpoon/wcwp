@@ -106,7 +106,7 @@ a.user_id
 ,a.AMOUNT
 from  bass2.dw_product_sc_payment_dm_$op_month a
 where exists 
- (select 1 from  bass2.ODS_SC_SCRD_ORD_INFO_$op_month  b where op_time like '$op_month%'  and a.peer_seq = b.ORD_SEQ and  a.PRODUCT_NO = b.MOB_NUM )
+ (select 1 from  bass2.Dw_sc_scrd_ord_info_$op_month  b where op_time like '$op_month%'  and a.peer_seq = b.ORD_SEQ and  a.PRODUCT_NO = b.MOB_NUM )
  and exists 
  (select 1 from  bass2.dwd_product_sc_payout_$op_month  c where a.SC_PAYMENT_ID = c.SC_PAYMENT_ID and a.user_id = c.USER_ID)
 			 with ur
@@ -165,7 +165,7 @@ select
 	,ITEM_TYPE
 from 
 ( select a.* , row_number()over(partition by ORD_SEQ order by ORDER_SUM_POINT desc  ) rn 
- from (select ORD_SEQ,ITEM_TYPE,type1,sum(ORDER_SUM_POINT) ORDER_SUM_POINT  from bass2.ODS_SC_SCRD_ORD_INFO_$op_month
+ from (select ORD_SEQ,ITEM_TYPE,type1,sum(ORDER_SUM_POINT) ORDER_SUM_POINT  from bass2.Dw_sc_scrd_ord_info_$op_month
   where op_time like '$op_month%' 
   group by  ORD_SEQ,ITEM_TYPE,type1
  )  a

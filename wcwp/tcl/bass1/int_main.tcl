@@ -1509,7 +1509,7 @@ proc get_rows {MySQL n} {
 		set BeginTime [clock format [clock seconds] -format "%Y-%m-%d %H:%M:%S"]
 		puts ${BeginTime}						
         if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-                WriteTrace"$errmsg" 2005
+                WriteTrace "$errmsg" 2005
                 aidb_close $handle
                 puts $errmsg
                 exit -1

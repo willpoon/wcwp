@@ -539,7 +539,10 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	        ##~   WriteAlarm $app_name $optime $grade ${alarmcontent}
 	##~   } 
 	##~   puts "R079 参与兑换客户数≤上一个月月底的有兑换资格客户数"
-
+##~   20120524       为满足校验，修改口径：  ,char(sum(value(case when b.brand_id = 1 then a.MONTH_QQT_POINTS else 0 end ,0)))
+##~   R282	月	10_积分计划	非全球通品牌的客户不应上传品牌奖励积分	02006 用户积分情况	非全球通品牌的客户不应上传品牌奖励积分	0.05	
+
+
 ##~   通报问题校验：
 ##~   1.非全球通品牌的客户-包含品牌奖励积分 
 
@@ -573,6 +576,9 @@ set sql_buff "
 
 ##~   通报问题校验：
 ##~   2.当前可兑换积分为负值
+##~   20120524
+##~   --~   R283	月	10_积分计划	当前可兑换积分不能为负值	02006 用户积分情况	当前可兑换积分不能为负值	0.05	
+
 
 set RESULT_VAL 0
 
@@ -600,6 +606,10 @@ set sql_buff "
 	} 
 
 
+
+   set sqlbuf "INSERT INTO BASS1.G_RULE_CHECK VALUES ($op_month,'R283',$RESULT_VAL,0,0,0) "        
+
+   exec_sql $sqlbuf
 
 
 
