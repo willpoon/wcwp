@@ -54,6 +54,23 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
   "
 	exec_sql $sql_buff
 
+##~   （订购率=客户订购业务数量/客户短信查询量；订购失败率=订购失败量/短信回复量）。
+
+set sql_buff "
+select sum(val) from (
+	select case when  bigint(SMS_QUERY_CNT)  < bigint(ORDER_CNT) then 1 else 0 end val from bass1.G_S_22087_DAY where time_id = $timestamp
+) t
+"
+chkzero2 $sql_buff "数据不合逻辑"
+
+
+set sql_buff "
+select sum(val) from (
+	select case when  bigint(SMS_REPLY_CNT)  < bigint(ORDER_FAIL_CNT) then 1 else 0 end val from bass1.G_S_22087_DAY where time_id = $timestamp
+) t
+"
+chkzero2 $sql_buff "数据不合逻辑"
+
 
   #进行结果数据检查
   #1.检查chkpkunique

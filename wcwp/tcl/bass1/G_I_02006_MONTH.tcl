@@ -22,7 +22,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
         #本月 yyyymm
         #set op_time 2008-10-01
-        set optime_month 2012-01
+        set optime_month 2012-02
         set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
         
         set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
@@ -34,8 +34,9 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
         puts $op_time
         puts $op_month
         puts $last_month
-
-
+		
+        global app_name
+        set app_name "G_I_02006_MONTH.tcl"
       set ThisMonthFirstDay [string range $op_month 0 3][string range $op_time 4 4][string range $op_month 4 5][string range $op_time 4 4]01
       puts $ThisMonthFirstDay
 
@@ -59,10 +60,10 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			,sum( case when  count_cycle_id=$op_month and scrtype=24 and b.brand_id = '1' then orgscr+adjscr else 0 end )   as month_qqt_points
 			,sum( case when  count_cycle_id=$op_month and scrtype=25 then orgscr+adjscr else 0 end )   as month_age_points
 			,sum( case when  count_cycle_id<=$op_month and $op_month <= 201201 and scrtype=5  and b.brand_id in ('1','3') then orgscr+adjscr else 0 end )   as trans_points --只有全/动才有转移积分 而且 应该放到一月份中，后续月份没有转移积分。
-			,sum(  CURSCR )   as convertible_points
-			,sum( orgscr+adjscr )   as all_points
+			,sum(  CURSCR )   as convertible_points --此算法没有踢除负数，如果碰到负的，也计算了。故在所有已转换的积分中加上|-的积分|
+			,sum( case when  (orgscr+adjscr) < 0 and scrtype = 99 then 0 else orgscr+adjscr end )   as all_points --剔除积分为负的。因为负的是活动透支积分，非正常消费获得。这里只计算正常获得的积分。负的在这里表示：用户还需要返回这么多积分。表中的标识为 scrtype = 99 and orgscr+adjscr < 0 
 			,sum( case when  scrtype=1 then orgscr+adjscr else 0 end )   as all_consume_points
-			,sum( USRSCR )   as all_converted_points
+			,sum( case when CURSCR < 0 then USRSCR+abs(CURSCR) else USRSCR end )   as all_converted_points --与convertible_points 相应
 			,0 LEAVE_CLEAR_POINTS
 			,0 OTHER_CLEAR_POINTS
 		from bass2.dwd_product_sc_scorelist_$op_month  a ,  bass1.INT_02004_02008_MONTH_$op_month  b
@@ -73,6 +74,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	"
 	exec_sql $sql_buff
 
+##~   注意：1.可兑换+已兑换 应= 全部积分
+##~   2.如果可兑换为负，那么就把负的转成0，同时把已兑换的置成： 已兑换 = 全部积分
 
 	set sql_buff "
 	insert into G_I_02006_MONTH_1
@@ -157,13 +160,13 @@ set sql_buff "
         $op_month TIME_ID
         ,a.USER_ID
         ,char(sum(value(a.MONTH_POINTS,0)))
-        ,char(sum(value(case when b.brand_id = 1 then a.MONTH_QQT_POINTS else 0 end ,0)))
+        ,char(sum(value(a.MONTH_QQT_POINTS,0)))
         ,char(sum(value(a.MONTH_AGE_POINTS,0)))
         ,char(sum(value(a.TRANS_POINTS,0)))
-        ,char(sum(value(a.CONVERTIBLE_POINTS,0)))
+        ,char(sum(value(case when a.CONVERTIBLE_POINTS < 0 then 0 else a.CONVERTIBLE_POINTS end ,0)))
         ,char(sum(value(a.ALL_POINTS,0)))
         ,char(sum(value(a.ALL_CONSUME_POINTS,0)))
-        ,char(sum(value(a.ALL_CONVERTED_POINTS,0)))
+        ,char(sum(value(case when a.CONVERTIBLE_POINTS < 0 then a.ALL_POINTS else a.ALL_CONVERTED_POINTS end ,0)))
         ,char(sum(value(a.LEAVE_CLEAR_POINTS,0)))
         ,char(sum(value(a.OTHER_CLEAR_POINTS,0)))
 	from G_I_02006_MONTH_1 a
@@ -180,12 +183,15 @@ set sql_buff "
 ##~   20120524
 ##~   --~   R283	月	10_积分计划	当前可兑换积分不能为负值	02006 用户积分情况	当前可兑换积分不能为负值	0.05	
 
+##~   注意：1.可兑换+已兑换 应= 全部积分
+##~   2.如果可兑换为负，那么就把负的转成0，同时把已兑换的置成： 已兑换 = 全部积分
+##~   不用delete ， 以免影响积分客户数
 
 ##~   2.当前可兑换积分为负值
-set sql_buff "
-	delete from ( select * from G_I_02006_MONTH where time_id = $op_month and  bigint(CONVERTIBLE_POINTS) < 0 ) t 
-       "
-	exec_sql $sql_buff
+##~   set sql_buff "
+	##~   delete from ( select * from G_I_02006_MONTH where time_id = $op_month and  bigint(CONVERTIBLE_POINTS) < 0 ) t 
+       ##~   "
+	##~   exec_sql $sql_buff
 
 
 

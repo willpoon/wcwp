@@ -302,12 +302,6 @@ select (
 				and calltype_id in ('00','01','10','11')
 				and sms_status='0'
 		) a
-		inner join (
-		 select * from bass1.g_a_02004_02008_stage a
-				where USERSTATUS NOT IN ('2010','2020','2030','9000')
-				  and a.test_flag='0'
-		) b
-		on  a.PRODUCT_NO = b.PRODUCT_NO
 ) + (
 	select sum(bigint(SMS_COUNTS)) from bass1.g_s_21007_day
 	where time_id =$timestamp
@@ -413,7 +407,7 @@ select (
 
   #指标全部入库
   set handle [aidb_open $conn]
-	set sql_buff "insert into bass1.g_s_	_day values
+	set sql_buff "insert into bass1.g_s_22012_day values
 	             (
 	              $timestamp
 	              ,'$timestamp'

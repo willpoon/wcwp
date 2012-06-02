@@ -41,7 +41,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	set sql_buff "
 	
 insert into bass1.G_S_02024_DAY_1
-select 
+select distinct 
 	$timestamp time_id
 	,a.PRODUCT_INSTANCE_ID USER_ID
 	,char(a.offer_id) BASE_PKG_ID
