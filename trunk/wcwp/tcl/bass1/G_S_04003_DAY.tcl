@@ -95,7 +95,10 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                         ,char(DATA_FLOW_UP)
                         ,char(DATA_FLOW_DOWN)
                         ,'03'
-                        ,'01'	SERVICE_CODE /*1.7.9：西藏尚未实现，无法区分，保持原口径*/
+                        ,case  when RESERVE1  = '01' then '01'
+							   when RESERVE1 = '02' then '02'
+							   when RESERVE1 = '03' then '03'
+						else '01' end SERVICE_CODE /*1.7.9：西藏尚未实现，无法区分，保持原口径*/
                         ,case when AUTH_TYPE=1 THEN '01' else '02' end WLAN_ATTESTATION_CODE
 						,'01' WLAN_ATTESTATION_TYPE --认证平台类型 /*1.7.9：西藏尚未实现，无法区分,按 01：集团统一认证平台接入 上报*/
                         ,HOSTSPOT_ID

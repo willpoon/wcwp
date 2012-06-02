@@ -34,6 +34,7 @@
 #输出参数:
 # 返回值:   0 成功; -1 失败
 # liuzhilong 20090910 修改校验规则编码 R138->R107 R139->R108 去掉R140 R141校验，修改时间25日再告警
+##~   不能用 int 表代替 G_S_04008_DAY
 #################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
 
@@ -76,8 +77,8 @@ exec_sql $sql_buff
                                SUM(BIGINT(TOLL_CALL_FEE)) AS CT,  
                                SUM(BIGINT(callfw_toll_fee)) AS CF
                              FROM 
-                               BASS1.int_0400810_$this_month
-                             WHERE OP_TIME/100=$this_month and roam_type_id not in ('122','202','302','401')
+                               BASS1.G_S_04008_DAY
+                             WHERE TIME_ID/100=$this_month and roam_type_id not in ('122','202','302','401')
                              GROUP BY PRODUCT_NO
                              UNION ALL
                              SELECT 
@@ -166,8 +167,8 @@ exec_sql $sql_buff
 	            	COUNT(DISTINCT T.PRODUCT_NO)AS RS
 	            FROM (
 	                  SELECT PRODUCT_NO,SUM(BIGINT(BASE_BILL_DURATION)) AS SC		  
-	                  FROM BASS1.int_0400810_$this_month
-	                  WHERE OP_TIME/100=$this_month
+	                  FROM BASS1.G_S_04008_DAY
+	                  WHERE TIME_ID/100=$this_month
 	                  GROUP BY PRODUCT_NO
 	                  UNION 
 	                  SELECT PRODUCT_NO,SUM(CEIL(BIGINT(CALL_DURATION)/60.0)) AS SC

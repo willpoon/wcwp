@@ -115,8 +115,13 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 "
 	exec_sql $sql_buff
 
+	aidb_runstats bass1.int_02004_02008_month_stage 3
+
+
 	#and f.usertype_id NOT IN ('2010','2020','2030','9000')
 
+
+	createtb INT_02004_02008_MONTH_YYYYMM   "USER_ID" TBS_APP_BASS1 TBS_INDEX $op_month
 
 	#--抓取用户资料入表
 	set sql_buff "
@@ -143,7 +148,6 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 "
 	exec_sql $sql_buff
 
-	aidb_runstats bass1.int_02004_02008_month_stage 3
 	aidb_runstats bass1.INT_02004_02008_MONTH_$op_month 3
 	
 	#建中间表
@@ -153,7 +157,6 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	createtb INT_0400810_YYYYMM     "OP_TIME,PRODUCT_NO" TBS_APP_BASS1 TBS_INDEX $curr_month
 	createtb INT_210012916_YYYYMM   "OP_TIME,USER_ID,PRODUCT_NO" TBS_APP_BASS1 TBS_INDEX $curr_month
 	createtb INT_22401_YYYYMM   	"TIME_ID,USER_ID,CELL_ID,LAC_ID" TBS_APP_BASS1 TBS_INDEX $curr_month
-	createtb INT_02004_02008_MONTH_YYYYMM   "USER_ID" TBS_APP_BASS1 TBS_INDEX $curr_month
 	
 	
         } else { 

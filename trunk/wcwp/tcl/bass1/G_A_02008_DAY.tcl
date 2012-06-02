@@ -33,17 +33,18 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	DELETE FROM $db_user.G_A_02008_DAY where time_id=$Timestamp"
 	exec_sql $sql_buff
 	##~   #temp process ! 20120519: 相同号码对应不同再网user_id!删除一条！
-	set sql_buff "
-		delete from (
-		select * from 
-		$db_user.INT_02004_02008_${op_month}
-		where
-		op_time=$Timestamp
-		and usertype_flag=1
-		and user_id = '89160002171967'
-		) t						   
-	" 
-	exec_sql $sql_buff
+	##~  20120531  boss已经修复，可以把代码屏蔽
+	##~   set sql_buff "
+		##~   delete from (
+		##~   select * from 
+		##~   $db_user.INT_02004_02008_${op_month}
+		##~   where
+		##~   op_time=$Timestamp
+		##~   and usertype_flag=1
+		##~   and user_id = '89160002171967'
+		##~   ) t						   
+	##~   " 
+	##~   exec_sql $sql_buff
 
 
 

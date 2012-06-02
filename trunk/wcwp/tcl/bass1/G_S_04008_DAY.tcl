@@ -158,5 +158,7 @@ source /bassapp/bass1/tcl/INT_FIX_TMP.tcl
 ADJ_04008_R107 $op_time $optime_month
 #ADJ_04008_R108 $op_time $optime_month
 
+ aidb_runstats bass1.G_S_04008_DAY 3
+ 
 	return 0
 }

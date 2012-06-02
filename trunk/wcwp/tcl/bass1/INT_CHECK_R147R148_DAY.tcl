@@ -10,7 +10,7 @@
 #修改历史:  
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
-
+		##~   set op_time 2012-05-27
         #当天 yyyymmdd
         set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]      
 				puts $timestamp
@@ -19,6 +19,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 				puts $op_time 
         set curr_month [string range $op_time 0 3][string range $op_time 5 6]
 				puts $curr_month
+	set last_day [GetLastDay [string range $timestamp 0 7]]
         
         #程序名
         set app_name "INT_CHECK_R147R148_DAY.tcl"
