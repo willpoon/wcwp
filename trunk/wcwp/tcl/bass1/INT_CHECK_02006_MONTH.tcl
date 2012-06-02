@@ -11,7 +11,7 @@
 #          20100120 在网客户口径修改 usertype_id not in ('2010','2020','2030','9000') ##~   20120118 panzw 根据2011版校验，屏蔽老积分校验
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
-		set optime_month 2012-02
+		##~   set optime_month 2012-04
         #本月 yyyymm
         set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
             
