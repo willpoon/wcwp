@@ -281,15 +281,15 @@ where k.row_id<>1 with ur"
 
 ##----------------end------------------
 
-	set sql_buff "
-delete from (
-select * from                     
- bass1.g_a_02008_day
- where user_id = '89160000184970'
- and time_id = $Timestamp
-) t 
-	"
- exec_sql $sql_buff
+	##~   set sql_buff "
+##~   delete from (
+##~   select * from                     
+ ##~   bass1.g_a_02008_day
+ ##~   where user_id = '89160000184970'
+ ##~   and time_id = $Timestamp
+##~   ) t 
+	##~   "
+ ##~   exec_sql $sql_buff
 
   ##~   #1.¼ì²échkpkunique
   ##~   set tabname "G_S_22080_DAY"

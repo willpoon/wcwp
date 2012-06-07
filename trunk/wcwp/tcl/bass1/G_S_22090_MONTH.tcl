@@ -46,17 +46,28 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			)
 			 
 select 
-				 $op_month TIME_ID
-				,'$op_month' OP_MONTH
-				,'700002614000' BUSI_CODE
-				,'魔戒传说T' BUSI_NAME
-				,BILLING_TYPE
-				,'701167' SP_CODE
-				,'福州卓龙天讯信息技术有限公司' SP_NAME
-				,ONLINE_CNT
-				,TUIFEI_CNT
-				,TUIFEI
-		from bass2.dual with ur 
+				   $op_month TIME_ID
+				,	'$op_month' OP_TIME        
+				,	EXTEND_ID2 BUSI_CODE
+				,	b.name		BUSI_NAME
+				,	'10' BILLING_TYPE
+				,	' ' SP_CODE
+				,	' ' SP_NAME
+				,	char(count(distinct a.product_instance_id)) ONLINE_CNT
+				,	'0' TUIFEI_CNT
+				,	'0' TUIFEI
+from bass2.Dw_product_ins_off_ins_prod_$op_month a 
+,bass2.dim_prod_up_product_item  b
+, bass2.DIM_DATA_OFFER c
+where  a.state =1     
+    and  substr(replace(char(date(a.VALID_DATE)),'-',''),1,6)  <= '$op_month'
+    and  substr(replace(char(date(a.expire_date)),'-',''),1,6) >= '$op_month' 
+    and a.offer_id = b.PRODUCT_ITEM_ID
+    and b.PRODUCT_ITEM_ID = c.OFFER_ID
+    and SUPPLIER_ID is not null
+    and a.offer_id  in (113110166392,113110146314,113090000006)
+	group by  EXTEND_ID2,b.name,SUPPLIER_ID			
+with ur 
 	"
 	exec_sql $sql_buff
 

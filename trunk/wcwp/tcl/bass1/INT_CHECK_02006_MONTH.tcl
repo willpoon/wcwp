@@ -636,7 +636,8 @@ set sql_buff "
 
 		set grade 2
 
-	        set alarmcontent "通报规则问题：201201月后全球通、动感地带2品牌“专项转移积分”均存在数据！201201月可以存在数据"
+	        ##~   set alarmcontent "通报规则问题：201201月后全球通、动感地带2品牌“专项转移积分”均存在数据！201201月可以存在数据"
+	        set alarmcontent "通报规则问题：201201月后全球通、动感地带2品牌“专项转移积分”均存在数据！201112月可以存在数据"
 
 	        WriteAlarm $app_name $optime $grade ${alarmcontent}
 
