@@ -13,6 +13,7 @@
 #编写时间：20110922
 #问题记录：
 #修改历史: 1. panzw 20110922	1.7.5 newly added
+##~   修改为left join ，保证 R280	月	09_渠道运营	实体渠道资源配置信息日月关系 通过！
 #######################################################################################################   
 
 
@@ -78,9 +79,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		,'' MAIN_NET_TYPE
 		,'' IF_CZ
 	FROM BASS2.Dim_CHANNEL_INFO A
-	,bass2.Dwd_channel_selfsite_info_$timestamp b
-	where a.channel_id = b.channel_id
-	and A.CHANNEL_TYPE_CLASS IN (90105,90102)
+	left join bass2.Dwd_channel_selfsite_info_$timestamp b on a.channel_id = b.channel_id
+	where A.CHANNEL_TYPE_CLASS IN (90105,90102)
 with ur
 "
     exec_sql $sql_buff

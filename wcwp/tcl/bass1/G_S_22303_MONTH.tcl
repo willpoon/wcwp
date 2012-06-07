@@ -301,6 +301,70 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	puts "插入到session.tmp22303_temp2表中的计费时长指标信息完成"	
 
 
+  ##~   #统计上行、下行短信条数
+	##~   set sql_buff "insert into session.tmp22303_temp2
+	        ##~   (
+						  ##~   user_id,
+						  ##~   ent_busi_id,
+						  ##~   manage_mod,
+							##~   bill_duration,
+							##~   upmessage,
+							##~   downmessage,
+							##~   upflow,
+							##~   downflow,
+							##~   mms_busi_nums,
+							##~   accept_mail_nums,
+							##~   send_mail_nums,
+							##~   wap_busi_nums,
+							##~   web_busi_nums,
+							##~   ussd_counts,
+							##~   guoji_flows,
+							##~   guonei_flows,
+							##~   use_cust_nums,
+							##~   bill_cust_nums,
+							##~   leiji_cust_nums,
+							##~   nzt_phone_counts
+            ##~   )
+						##~   select 
+							##~   a.user_id      as user_id,
+							##~   b.bass1_value  as ent_busi_id,
+							##~   case
+								##~   when upper(b.config_value)='MAS' then '1'
+								##~   when upper(b.config_value)='ADC' then '2'
+								##~   else '3'
+							##~   end as manage_mod,
+							##~   0 as bill_duration,
+							##~   sum(case when calltype_id=0 then counts else 0 end) as upmessage,
+							##~   sum(case when calltype_id=1 then counts else 0 end) as downmessage,
+							##~   0 as upflow,
+							##~   0 as downflow,
+							##~   0 as mms_busi_nums,
+							##~   0 as accept_mail_nums,
+							##~   0 as send_mail_nums,
+							##~   0 as wap_busi_nums,
+							##~   0 as web_busi_nums,
+							##~   0 as ussd_counts,
+							##~   0 as guoji_flows,
+							##~   0 as guonei_flows,
+							##~   0 as use_cust_nums,
+							##~   0 as bill_cust_nums,
+							##~   0 as leiji_cust_nums,
+							##~   0 as nzt_phone_counts
+						##~   from bass2.dw_newbusi_ismg_${op_month} a,
+						     ##~   session.tmp22303_temp1 b
+						##~   where a.plan_id = b.plan_id
+					 ##~   group by a.user_id,b.bass1_value,
+					 		##~   case
+								##~   when upper(b.config_value)='MAS' then '1'
+								##~   when upper(b.config_value)='ADC' then '2'
+								##~   else '3'
+							##~   end"
+          
+  ##~   puts $sql_buff        
+	##~   exec_sql $sql_buff
+	##~   puts "插入到session.tmp22303_temp2表中的上行、下行短信条数指标信息完成"	
+		
+
   #统计上行、下行短信条数
 	set sql_buff "insert into session.tmp22303_temp2
 	        (
@@ -327,12 +391,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
             )
 						select 
 							a.user_id      as user_id,
-							b.bass1_value  as ent_busi_id,
-							case
-								when upper(b.config_value)='MAS' then '1'
-								when upper(b.config_value)='ADC' then '2'
-								else '3'
-							end as manage_mod,
+							b.BASS1_VALUE ent_busi_id,
+					 		b.TYPE manage_mod,
 							0 as bill_duration,
 							sum(case when calltype_id=0 then counts else 0 end) as upmessage,
 							sum(case when calltype_id=1 then counts else 0 end) as downmessage,
@@ -350,15 +410,13 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 							0 as bill_cust_nums,
 							0 as leiji_cust_nums,
 							0 as nzt_phone_counts
-						from bass2.dw_newbusi_ismg_${op_month} a,
-						     session.tmp22303_temp1 b
+						from bass2.dw_newbusi_ismg_${op_month} a,DIM_GRP_PLANID b
 						where a.plan_id = b.plan_id
-					 group by a.user_id,b.bass1_value,
-					 		case
-								when upper(b.config_value)='MAS' then '1'
-								when upper(b.config_value)='ADC' then '2'
-								else '3'
-							end"
+					 group by a.user_id
+							,b.BASS1_VALUE
+					 		,b.TYPE
+						with ur
+						"
           
   puts $sql_buff        
 	exec_sql $sql_buff

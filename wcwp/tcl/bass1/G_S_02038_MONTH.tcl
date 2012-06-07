@@ -48,7 +48,7 @@ select
         ,a.HIS_USER_ID
         ,a.HIS_USER_NUMBER
 from 	bass2.dmrn_user_ms  a , bass2.dw_product_$op_month b
-where substr(replace(char(RN_DATE),'-',''),1,6) =  '$last_month'
+where substr(replace(char(a.RN_DATE),'-',''),1,6) =  '$last_month'
 and a.RN_USER_ID = b.user_id 
 and b.usertype_id in (1,2,9) 
 and b.userstatus_id in (1,2,3,6,8)

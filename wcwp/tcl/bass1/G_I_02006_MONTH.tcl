@@ -22,7 +22,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
         #本月 yyyymm
         #set op_time 2008-10-01
-        ##~   set optime_month 2012-04
+        ##~   set optime_month 2011-12
         set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
         
         set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
@@ -59,7 +59,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			,sum( case when  count_cycle_id=$op_month and scrtype=1 then orgscr+adjscr else 0 end )   as month_points
 			,sum( case when  count_cycle_id=$op_month and scrtype=24 and b.brand_id = '1' then orgscr+adjscr else 0 end )   as month_qqt_points
 			,sum( case when  count_cycle_id=$op_month and scrtype=25 then orgscr+adjscr else 0 end )   as month_age_points
-			,sum( case when  count_cycle_id<=$op_month and $op_month <= 201201 and scrtype=5  and b.brand_id in ('1','3') then orgscr+adjscr else 0 end )   as trans_points --只有全/动才有转移积分 而且 应该放到一月份中，后续月份没有转移积分。
+			,sum( case when  count_cycle_id<=$op_month and $op_month <= 201112 and scrtype=5  and b.brand_id in ('1','3') then orgscr+adjscr else 0 end )   as trans_points --只有全/动才有转移积分 而且 应该放到一月份中，后续月份没有转移积分。
 			,sum(  CURSCR )   as convertible_points --此算法没有踢除负数，如果碰到负的，也计算了。故在所有已转换的积分中加上|-的积分|
 			,sum( case when  (orgscr+adjscr) < 0 and scrtype = 99 then 0 else orgscr+adjscr end )   as all_points --剔除积分为负的。因为负的是活动透支积分，非正常消费获得。这里只计算正常获得的积分。负的在这里表示：用户还需要返回这么多积分。表中的标识为 scrtype = 99 and orgscr+adjscr < 0 
 			,sum( case when  scrtype=1 then orgscr+adjscr else 0 end )   as all_consume_points
@@ -72,6 +72,35 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		group by product_instance_id
 		with ur
 	"
+	
+##~   针对12月数据做临时处理，把dwd_product_sc_scorelist_201201 scrtype=5    合到  bass2.dwd_product_sc_scorelist_201112 中
+	##~   set sql_buff "
+		##~   insert into G_I_02006_MONTH_1
+		##~   select
+			##~   product_instance_id  as user_id
+			##~   ,sum( case when  count_cycle_id=$op_month and scrtype=1 then orgscr+adjscr else 0 end )   as month_points
+			##~   ,sum( case when  count_cycle_id=$op_month and scrtype=24 and b.brand_id = '1' then orgscr+adjscr else 0 end )   as month_qqt_points
+			##~   ,sum( case when  count_cycle_id=$op_month and scrtype=25 then orgscr+adjscr else 0 end )   as month_age_points
+			##~   ,sum( case when  b.brand_id in ('1','3') then trans_points else 0 end )   as trans_points --只有全/动才有转移积分 而且 应该放到12月份中，后续月份没有转移积分。
+			##~   ,sum(  CURSCR )   as convertible_points --此算法没有踢除负数，如果碰到负的，也计算了。故在所有已转换的积分中加上|-的积分|
+			##~   ,sum( case when  (orgscr+adjscr) < 0 and scrtype = 99 then 0 else orgscr+adjscr end )   as all_points --剔除积分为负的。因为负的是活动透支积分，非正常消费获得。这里只计算正常获得的积分。负的在这里表示：用户还需要返回这么多积分。表中的标识为 scrtype = 99 and orgscr+adjscr < 0 
+			##~   ,sum( case when  scrtype=1 then orgscr+adjscr else 0 end )   as all_consume_points
+			##~   ,sum( case when CURSCR < 0 then USRSCR+abs(CURSCR) else USRSCR end )   as all_converted_points --与convertible_points 相应
+			##~   ,0 LEAVE_CLEAR_POINTS
+			##~   ,0 OTHER_CLEAR_POINTS
+		##~   from bass2.dwd_product_sc_scorelist_$op_month  a ,  bass1.INT_02004_02008_MONTH_$op_month  b
+			##~   ,   (  select product_instance_id user_id, sum( case when  count_cycle_id<=201112   then orgscr+adjscr else 0 end )   as trans_points
+					##~   from (
+							##~   select * from bass2.dwd_product_sc_scorelist_201201   where  scrtype  = 5 		
+				##~   ) t group by product_instance_id 
+			##~   ) c
+		##~   where   actflag='1' and count_cycle_id <= $op_month
+		##~   and a.PRODUCT_INSTANCE_ID = b.user_id
+		##~   and b.user_id = c.user_id
+		##~   group by product_instance_id
+		##~   with ur
+	##~   "
+	
 	exec_sql $sql_buff
 
 ##~   注意：1.可兑换+已兑换 应= 全部积分
