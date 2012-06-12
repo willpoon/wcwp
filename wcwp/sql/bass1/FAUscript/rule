@@ -1,6 +1,11 @@
  select *from  bass1.G_RULE_CHECK where rule_code = 'C1' and time_id / 100 = 201205
  order by 1 desc 
 
+select date(START_TIME),hour(START_TIME) , count(0) 
+--,  count(distinct date(START_TIME),hour(START_TIME) ) 
+from bass2.cdr_sms_dtl_20120514 
+group by  date(START_TIME),hour(START_TIME) 
+order by 1 ,2
 
  select *from  bass1.G_RULE_CHECK where rule_code = 'R139'
  AND TIME_ID / 100 = 201205
@@ -8,7 +13,7 @@
 
 select * from bass1.G_RULE_CHECK where 
  time_id=int(replace(char(current date - 1 days),'-','')) 
- and rule_code in  ('R172','R171','R170','R169','R166','R164','R156','R155') order by 1 
+ and rule_code in  ('R172','R171','R170','R169','R166','R164','R156','R155') order by 2 
 
 
 select * from   table( bass1.getallbefore('BASS1_EXP_G_S_22073_DAY') ) a 
@@ -27,4 +32,22 @@ order by BEGINTIME
 select distinct ALL_AFTERS
 from   table( bass1.getallafter('BASS1_G_I_02032_MONTH.tcl') ) a 
 where date(BEGINTIME) = '2012-05-03'
+
+
+delete from 
+(
+select *
+from bass1.g_s_22092_day where TIME_ID = 20120508
+) t
+where channel_id = '94000093'
+
+  select *
+from bass1.g_s_22092_day where TIME_ID = 20120508
+and  channel_id not in 
+			(
+                        select char(a.channel_id)
+                from bass2.dim_channel_info a
+                 where a.channel_type_class in (90105,90102)
+		 and a.channel_type <> 90886
+	    )
 

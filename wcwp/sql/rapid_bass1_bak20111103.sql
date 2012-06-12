@@ -23776,8 +23776,9 @@ select
  ' *'||b.interface_code||'*dat \' 
 ) list
  from   bass1.MON_ALL_INTERFACE b where 
-deadline  in (5)
+deadline  in (3)
 and type = 'm'
+and sts = 1
 
 
 
@@ -89004,3 +89005,5 @@ select
 
  select *from  table( bass1.get_after('BASS2_Cdr_call_dtl_ds')) a 
 where control_code like 'BASS1%'
+
+

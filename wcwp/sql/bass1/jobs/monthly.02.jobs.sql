@@ -189,7 +189,7 @@ USER_ID	CHG_VIP_TIME	ROW_ID	USER_ID	CREATE_DATE	ROW_ID
                 (select * from 
                 (
                 select user_id,chg_vip_time,row_number()over(partition by user_id order by time_id desc) row_id from BASS1.G_I_02005_MONTH
-                where time_id=201106
+                where time_id=201205
                 ) k
                 where k.row_id =1) a
                 left outer join 
@@ -198,7 +198,7 @@ USER_ID	CHG_VIP_TIME	ROW_ID	USER_ID	CREATE_DATE	ROW_ID
                 (
                 select user_id,create_date,row_number()over(partition by user_id order by time_id desc) row_id 
                 from BASS1.G_A_02004_DAY
-                where time_id<=20110630
+                where time_id<=20120531
                 ) k
                 where k.row_id=1) b
                 on a.user_id=b.user_id
