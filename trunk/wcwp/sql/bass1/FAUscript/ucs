@@ -1,4 +1,4 @@
-update bass1.g_s_22012_day set m_off_users='96'
+update bass1.g_s_22012_day set m_off_users='79'
 where time_id=int(replace(char(current date - 1 days),'-',''))
 ;
 select *from g_s_22012_day where time_id=int(replace(char(current date - 1 days),'-',''));

@@ -1,0 +1,4 @@
+select * from app.g_runlog 
+where time_id=int(replace(char(current date - 1 days),'-',''))
+and return_flag=1
+;

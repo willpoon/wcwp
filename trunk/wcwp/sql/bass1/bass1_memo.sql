@@ -1,4 +1,7 @@
-	cd /bassapp/bass1/tcl
+my user_id : 89160001196765
+
+
+cd /bassapp/bass1/tcl
 
 
 	yingji_asiainfo3
@@ -181,8 +184,16 @@ nohup /bassapp/bihome/panzw/bass1_mon.sh  >> /bassapp/bihome/panzw/tmp/bass1_mon
 
 nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 01005 201105 >> /bassapp/bihome/panzw/bass1_mon_one.sh.out 2>&1 &
 nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 22081 201106 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 02006 201201 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 02006 201201 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 02006 201201 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 02006 201202 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 02006 201204 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
 
-	set ip_num ('17950','17951')
+
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 21003 201205 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+
+set ip_num ('17950','17951')
 	
 移动话段
 substr(product_no,1,3) in ('135','136','138','139','147','150','152','157','158','182','187','188')
@@ -7096,6 +7107,12 @@ drwxr-xr-x    2 500      503          4096 Apr 01 09:13 sample
 /bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_22063_MONTH 2012-03 &
 
 
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_I_02006_MONTH 2012-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_I_02006_MONTH 2012-02 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_I_02006_MONTH 2012-03 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_I_02006_MONTH 2012-04 &
+
+
 update (
 select * from app.g_runlog where unit_code = '22063'
 and time_id = 201203
@@ -7534,7 +7551,7 @@ a.state in ('1','4','6','8','M','7','C','9')
 ,J-保号期
 ,K-有效期停主叫。
 
-nohup sh load_imei.sh > load_imei.201204.out 2>&1 &
+nohup sh load_imei.sh > load_imei.201205.out 2>&1 &
 
 zto 618159082802 pan
 zto 618158726217 wang
@@ -8577,7 +8594,7 @@ MODULE	PROGRAM_NAME	CONTROL_CODE
 		
 		
 
-for logfile in `ls -1 *201204`
+for logfile in `ls -1 *CHECK*201206`
 do
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>start: $logfile"
 tail -20 $logfile
@@ -8808,4 +8825,325 @@ where usertype_id in (1,2,9)
 grep -in 11072 nohup.out
 nawk '{ if ( FNR > 116646 ) print }' nohup.out|more 
 
+
+
+/bassapp/backapp/bin/bass1_export/bass1_export_lite.sh g_s_04002_day_this
+
+3101406 s_13100_20120514_04016_00_001.dat
+7448550 a_13100_20120514_01004_00_001.dat
+8012644 i_13100_20120514_02022_00_001.dat
+9043936 s_13100_20120514_04011_00_001.dat
+12513688 s_13100_20120514_04006_00_001.dat
+15010760 a_13100_20120514_02053_00_001.dat
+40183748 s_13100_20120514_04008_00_001.dat
+94230332 s_13100_20120514_04017_00_001.dat
+133001634 s_13100_20120514_04004_00_001.dat
+287915817 s_13100_20120514_04005_00_001.dat
+957860806 s_13100_20120514_04002_00_001.dat
+
+
+集团客户数
+集团成员数
+整体收入
+信息化收入
+离网率
+
+http://218.206.191.179/public/cmschema/N11_New_WXKH/WXKH_ViewMonth_YiJing_Pre_ZQX.asp?Date=2012-4&BranchCode=351&BranchDec=
+
+
+
+select * from 
+(
+select '01002' a from bass2.dual union all
+select '01004' a from bass2.dual union all
+select '01006' a from bass2.dual union all
+select '01007' a from bass2.dual union all
+select '02004' a from bass2.dual union all
+select '02008' a from bass2.dual union all
+select '02011' a from bass2.dual union all
+select '02013' a from bass2.dual union all
+select '02022' a from bass2.dual union all
+select '02023' a from bass2.dual union all
+select '02024' a from bass2.dual union all
+select '02025' a from bass2.dual union all
+select '02028' a from bass2.dual union all
+select '02036' a from bass2.dual union all
+select '02037' a from bass2.dual union all
+select '02048' a from bass2.dual union all
+select '02053' a from bass2.dual union all
+select '02054' a from bass2.dual union all
+select '02055' a from bass2.dual union all
+select '02056' a from bass2.dual union all
+select '02057' a from bass2.dual union all
+select '02058' a from bass2.dual union all
+select '02059' a from bass2.dual union all
+select '02060' a from bass2.dual union all
+select '02061' a from bass2.dual union all
+select '02062' a from bass2.dual union all
+select '02063' a from bass2.dual union all
+select '02064' a from bass2.dual union all
+select '02065' a from bass2.dual union all
+select '02066' a from bass2.dual union all
+select '04002' a from bass2.dual union all
+select '04003' a from bass2.dual union all
+select '04004' a from bass2.dual union all
+select '04005' a from bass2.dual union all
+select '04006' a from bass2.dual union all
+select '04015' a from bass2.dual union all
+select '04016' a from bass2.dual union all
+select '04017' a from bass2.dual union all
+select '04018' a from bass2.dual union all
+select '04019' a from bass2.dual union all
+select '06031' a from bass2.dual union all
+select '06032' a from bass2.dual union all
+select '06035' a from bass2.dual union all
+select '06036' a from bass2.dual union all
+select '06037' a from bass2.dual union all
+select '06038' a from bass2.dual union all
+select '06039' a from bass2.dual union all
+select '06040' a from bass2.dual union all
+select '21001' a from bass2.dual union all
+select '21002' a from bass2.dual union all
+select '21004' a from bass2.dual union all
+select '21005' a from bass2.dual union all
+select '21007' a from bass2.dual union all
+select '21009' a from bass2.dual union all
+select '21016' a from bass2.dual union all
+select '22012' a from bass2.dual union all
+select '22038' a from bass2.dual union all
+select '22073' a from bass2.dual union all
+select '22047' a from bass2.dual union all
+select '22048' a from bass2.dual union all
+select '22066' a from bass2.dual union all
+select '22091' a from bass2.dual union all
+select '22092' a from bass2.dual union all
+select '22093' a from bass2.dual union all
+select '22094' a from bass2.dual union all
+select '22095' a from bass2.dual union all
+select '22096' a from bass2.dual union all
+select '22102' a from bass2.dual union all
+select '22104' a from bass2.dual union all
+select '22201' a from bass2.dual union all
+select '22202' a from bass2.dual union all
+select '22203' a from bass2.dual union all
+select '22301' a from bass2.dual union all
+select '22302' a from bass2.dual union all
+select '22036' a from bass2.dual union all
+select '22080' a from bass2.dual union all
+select '22082' a from bass2.dual union all
+select '22084' a from bass2.dual union all
+select '22087' a from bass2.dual union all
+select '22089' a from bass2.dual union all
+select '04008' a from bass2.dual union all
+select '04009' a from bass2.dual union all
+select '04010' a from bass2.dual union all
+select '04011' a from bass2.dual union all
+select '04012' a from bass2.dual union all
+select '22420' a from bass2.dual union all
+select '22421' a from bass2.dual 
+) o 
+
+
+
+1
+02036
+02037
+22087
+22089
+22095
+22096
+
+
+
+select a from (
+select '01005' a from bass2.dual union all
+select '02005' a from bass2.dual union all
+select '02006' a from bass2.dual union all
+select '02007' a from bass2.dual union all
+select '02014' a from bass2.dual union all
+select '02015' a from bass2.dual union all
+select '02016' a from bass2.dual union all
+select '02018' a from bass2.dual union all
+select '02019' a from bass2.dual union all
+select '02020' a from bass2.dual union all
+select '02021' a from bass2.dual union all
+select '02031' a from bass2.dual union all
+select '02032' a from bass2.dual union all
+select '02033' a from bass2.dual union all
+select '02034' a from bass2.dual union all
+select '02035' a from bass2.dual union all
+select '02038' a from bass2.dual union all
+select '02039' a from bass2.dual union all
+select '02047' a from bass2.dual union all
+select '02049' a from bass2.dual union all
+select '02052' a from bass2.dual union all
+select '02053' a from bass2.dual union all
+select '02067' a from bass2.dual union all
+select '03001' a from bass2.dual union all
+select '03002' a from bass2.dual union all
+select '03003' a from bass2.dual union all
+select '03004' a from bass2.dual union all
+select '03005' a from bass2.dual union all
+select '03007' a from bass2.dual union all
+select '03012' a from bass2.dual union all
+select '03015' a from bass2.dual union all
+select '03016' a from bass2.dual union all
+select '03017' a from bass2.dual union all
+select '03018' a from bass2.dual union all
+select '03019' a from bass2.dual union all
+select '06001' a from bass2.dual union all
+select '06002' a from bass2.dual union all
+select '06003' a from bass2.dual union all
+select '06011' a from bass2.dual union all
+select '06012' a from bass2.dual union all
+select '06021' a from bass2.dual union all
+select '06022' a from bass2.dual union all
+select '06023' a from bass2.dual union all
+select '06029' a from bass2.dual union all
+select '06034' a from bass2.dual union all
+select '21003' a from bass2.dual union all
+select '21006' a from bass2.dual union all
+select '21008' a from bass2.dual union all
+select '21010' a from bass2.dual union all
+select '21011' a from bass2.dual union all
+select '21012' a from bass2.dual union all
+select '21013' a from bass2.dual union all
+select '21014' a from bass2.dual union all
+select '21015' a from bass2.dual union all
+select '21020' a from bass2.dual union all
+select '21021' a from bass2.dual union all
+select '21022' a from bass2.dual union all
+select '05001' a from bass2.dual union all
+select '05002' a from bass2.dual union all
+select '05003' a from bass2.dual union all
+select '22009' a from bass2.dual union all
+select '22013' a from bass2.dual union all
+select '22021' a from bass2.dual union all
+select '22025' a from bass2.dual union all
+select '22032' a from bass2.dual union all
+select '22033' a from bass2.dual union all
+select '22039' a from bass2.dual union all
+select '22041' a from bass2.dual union all
+select '22042' a from bass2.dual union all
+select '22043' a from bass2.dual union all
+select '22074' a from bass2.dual union all
+select '22075' a from bass2.dual union all
+select '22076' a from bass2.dual union all
+select '22077' a from bass2.dual union all
+select '22049' a from bass2.dual union all
+select '22050' a from bass2.dual union all
+select '22052' a from bass2.dual union all
+select '22055' a from bass2.dual union all
+select '22056' a from bass2.dual union all
+select '22057' a from bass2.dual union all
+select '22058' a from bass2.dual union all
+select '22059' a from bass2.dual union all
+select '22060' a from bass2.dual union all
+select '22061' a from bass2.dual union all
+select '22062' a from bass2.dual union all
+select '22063' a from bass2.dual union all
+select '22067' a from bass2.dual union all
+select '22068' a from bass2.dual union all
+select '22069' a from bass2.dual union all
+select '22101' a from bass2.dual union all
+select '22103' a from bass2.dual union all
+select '22105' a from bass2.dual union all
+select '22106' a from bass2.dual union all
+select '22204' a from bass2.dual union all
+select '22040' a from bass2.dual union all
+select '22072' a from bass2.dual union all
+select '22303' a from bass2.dual union all
+select '22304' a from bass2.dual union all
+select '22305' a from bass2.dual union all
+select '22306' a from bass2.dual union all
+select '22307' a from bass2.dual union all
+select '22081' a from bass2.dual union all
+select '22083' a from bass2.dual union all
+select '22085' a from bass2.dual union all
+select '22086' a from bass2.dual union all
+select '22088' a from bass2.dual union all
+select '22090' a from bass2.dual union all
+select '22403' a from bass2.dual union all
+select '22404' a from bass2.dual union all
+select '22405' a from bass2.dual union all
+select '22406' a from bass2.dual union all
+select '22422' a from bass2.dual ) o
+
+
+
+1
+02038
+02039
+02067
+21021 ？
+21022 ？
+22088
+22090
+
+
+DNS:
+202.98.224.69
+
+ 73	10.233.20.188	ASIAINFO-CAIQ	MSHOME	No	00-23-AE-08-D9-D8	N/A	
+
+admin
+admin123
+
+
+ nawk '{print substr($0,1,9),substr($0,10,20),substr($0,30,1),substr($0,31,5) }' 13100_01007_20110626.dat|head
+ 
+ nawk  'BEGIN{OFS="$"}{print substr($0,1,9),substr($0,10,20),substr($0,30,1),substr($0,31,5) }' 13100_01007_20110626.dat > 13100_01007_20110626_load.dat
+ 
+ 
+ 00	联合主键	01～09,24字段做联合主键	21003001	联合主键唯一性错误
+
+
+13931981414 亚信接口
+
+
+
+
+----------------------------------------------------------------------------------- 
+2012-06-08 18:17:48
+[IBM][CLI Driver][DB2/SUN64] SQL0420N  Invalid character found in a character string argument of the function "BIGINT".  SQLSTATE=22018
+
+    while executing
+"db2_fetchrow $handle"
+    (procedure "aidb_fetch" line 2)
+    invoked from within
+"aidb_fetch $handle"
+    (procedure "get_row" line 23)
+    invoked from within
+"get_row $sql_buff"
+    (procedure "Deal" line 72)
+    invoked from within
+"Deal $op_time $optime_month $province_id $redo_number $trace_fd $bass1_dir $temp_data_dir $semi_data_dir $final_data_dir $conn $conn_ctl $src_data $ob..."
+    (file "/bassapp/bass1/tcl/int_main.tcl" line 1)
+########################
+
+
+
+乃琼寺,哲蚌寺,罗布林卡,大昭寺,小昭寺,仓姑寺,扎基寺,色拉小寺 
+蔡巴寺,  贡唐寺
+甘丹寺
+2）色拉小寺 
+3）三佑寺 
+4）策门林寺 
+5）巴拉康寺 
+
+
+藏族谣谚曰："西藏灵地在拉萨，拉萨灵地在耶巴""到了拉萨不去耶巴，等于做件新衣忘了做领子。"可以看出扎耶巴在藏传佛教信徒心目中的地位。
+
+
+哲蚌寺-乃琼寺
+在拉萨市郊约8公里的根培乌孜山的南山坳里有一片白色的建筑群，远远望去，好象堆积在山坳里的一堆雪白的大米，因而叫做哲蚌寺，在藏语里的意思是积米寺，它是西藏佛教格鲁派在拉萨的三大寺院的首寺。在藏语中“乃”即“地方”意思，而“琼”是“小”的意思，乃琼寺意即哲蚌寺下的一个“小地方”，一个小的不需要人们注意。但这乃琼寺，是历史上西藏著名的佛教高等学府，每年考中格西学位的喇嘛多出于此，现在仍是西藏的佛学院。
+
+
+
+02059
+失效订购关系历史数据！
+
+
+
+!done检查校验阈值。
 

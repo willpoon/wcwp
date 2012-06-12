@@ -73,10 +73,10 @@ select count(distinct user_id) from   bass1.g_a_02004_02008_stage
 select user_id from   bass1.g_a_02004_02008_stage 
                         where USERSTATUS IN ('2010','2020','2030','9000')
                           and test_flag='0'
-                          and time_id=20120428
+                          and time_id=20120531
 except
 select user_id 
-from bass2.dw_product_20120428
+from bass2.dw_product_20120531
 where usertype_id in (1,2,9) 
  and day_off_mark = 1 
  and userstatus_id not in (1,2,3,6,8)

@@ -1,0 +1,61 @@
+
+select distinct substr(a.filename,16,5)
+FROM 
+(select t.*
+    from 
+    (
+    select  a.* ,row_number()over(partition by  substr(filename,16,5) order by deal_time desc ) rn 
+    from APP.G_FILE_REPORT a
+    where substr(filename,9,6) = substr(replace(char(current date - 2 month),'-',''),1,6)
+    and err_code='00'
+    and length(filename)=length('s_13100_201002_03014_01_001.dat')
+    ) t where rn = 1
+) a 
+left join 
+(
+select * from app.g_runlog 
+where time_id= int(substr(replace(char(current date - 2 month),'-',''),1,6))
+and return_flag=1
+) b on substr(a.filename,16,5) = b.unit_code 
+left join bass1.mon_all_interface c on substr(a.filename,16,5) = c.INTERFACE_CODE 
+except
+select distinct substr(a.filename,16,5)
+FROM 
+(select t.*
+    from 
+    (
+    select  a.* ,row_number()over(partition by  substr(filename,16,5) order by deal_time desc ) rn 
+    from APP.G_FILE_REPORT a
+    where substr(filename,9,6) = substr(replace(char(current date - 1 month),'-',''),1,6)
+    and err_code='00'
+    and length(filename)=length('s_13100_201002_03014_01_001.dat')
+    ) t where rn = 1
+) a 
+left join 
+(
+select * from app.g_runlog 
+where time_id= int(substr(replace(char(current date - 1 month),'-',''),1,6))
+and return_flag=1
+) b on substr(a.filename,16,5) = b.unit_code 
+left join bass1.mon_all_interface c on substr(a.filename,16,5) = c.INTERFACE_CODE 
+except
+select distinct substr(a.filename,16,5)
+FROM 
+(select t.*
+    from 
+    (
+    select  a.* ,row_number()over(partition by  substr(filename,16,5) order by deal_time desc ) rn 
+    from APP.G_FILE_REPORT a
+    where substr(filename,9,6) = substr(replace(char(current date - 2 month),'-',''),1,6)
+    and err_code='00'
+    and length(filename)=length('s_13100_201002_03014_01_001.dat')
+    ) t where rn = 1
+) a 
+left join 
+(
+select * from app.g_runlog 
+where time_id= int(substr(replace(char(current date - 2 month),'-',''),1,6))
+and return_flag=1
+) b on substr(a.filename,16,5) = b.unit_code 
+left join bass1.mon_all_interface c on substr(a.filename,16,5) = c.INTERFACE_CODE 
+with ur;

@@ -2794,3 +2794,19 @@ INPUT_TIME	»Îø‚ ±º‰
  order by 1,2
  
                 
+                
+select * from so.INS_OFF_INS_PROD_0891
+where offer_id in (113500001225,113500001225)
+
+select * from all_tables@dbl_jfdb where table_name like '%ALL_DR_TYPE_DEF%'   
+
+select * from NG_JF.ALL_DR_TYPE_DEF@dbl_jfdb 
+
+ALL_DR_TYPE_DEF
+
+
+
+
+
+
+select * from ams.sc_scorelist_0891_2012@lnk_Zwdb where product_instance_id = '89157331445795'
