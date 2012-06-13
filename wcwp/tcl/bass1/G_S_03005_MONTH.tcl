@@ -70,6 +70,14 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 
 
+source /bassapp/bass1/tcl/INT_FIX_TMP.tcl
+
+ADJ_R235_MONTH1  $op_time $optime_month
+ADJ_R235_MONTH2  $op_time $optime_month
+
+
+
+
 
 #删除历史离网用户本月账单 add by zhanght on 20090530
 

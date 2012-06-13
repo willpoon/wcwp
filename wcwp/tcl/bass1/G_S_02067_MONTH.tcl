@@ -19,7 +19,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
       set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]      
       set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
       puts $op_month
-      #set this_month_last_day [string range $op_month 0 5][GetThisMonthDays [string range $op_month 0 5]01] 
+      set this_month_last_day [string range $op_month 0 5][GetThisMonthDays [string range $op_month 0 5]01] 
       set last_month [GetLastMonth [string range $op_month 0 5]]
       #set curr_month_first_day [string range $timestamp 0 5]01
       #puts $curr_month_first_day
@@ -36,6 +36,13 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 #
 	set sql_buf "ALTER TABLE BASS1.G_S_02067_MONTH_1 ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
 	exec_sql $sql_buf
+	set sql_buf "ALTER TABLE BASS1.G_S_02067_MONTH_2 ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
+	exec_sql $sql_buf
+
+	set sql_buf "ALTER TABLE BASS1.G_S_02067_MONTH_3 ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
+	exec_sql $sql_buf
+
+
 
 #此字段仅取以下分类：
 #01:门户网站
@@ -50,24 +57,56 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 #这里用二经的代码，代码有误：dw_product_ 不能用号码直接关联 光限制  a.userstatus_id>0 是不够的 , 这里改成 a.userstatus_id in (1,2,3,6,8)
 
     set sql_buff "
-	    insert into G_S_02067_MONTH_1
-					  (
-							e_product_no
-							,type
-						)
-				select distinct 
-				  b.login_product_no,
-				  '01'
-             from  bass2.dw_product_$op_month a,bass2.dw_wcc_user_action_$op_month b
-             where b.login_product_no=a.product_no and b.login_type=1 and b.is_success=1
-                   and a.userstatus_id in (1,2,3,6,8)
-		   and replace(char(date(b.login_time)),'-','') like '$op_month%'
+			insert into G_S_02067_MONTH_1
+			select product_item_id,EXTEND_ID,name,NUMERATOR  from table(
+			select a.product_item_id,EXTEND_ID ,a.name
+			from bass2.DIM_PROD_UP_PRODUCT_ITEM a 
+			,bass2.DIM_PROD_UP_PLAN_PLAN_REL b 
+			where a.product_item_id = b.relat_product_item_id 
+			and extend_attr_g='0'
+			) a,(
+
+			select c.prod_id,d.priority,a.numerator/100 NUMERATOR,a.base_item,a.expr_id 
+			from bass2.DW_PROD_PM_ADJUST_SEGMENT_$this_month_last_day a ,bass2.DW_PROD_PM_ADJSCHEME_DETAILS_$this_month_last_day b 
+			,bass2.DW_PROD_PM_PROD_PKGS_$this_month_last_day c, bass2.DW_PROD_PM_PROM_PRIORITY_$this_month_last_day d
+			where a.formula_id=89070001
+			and a.adjustrate_id=b.adjustrate_id
+			and b.scheme_id=c.scheme_id 
+			and c.prod_id=d.prod_id
+			) b where a.EXTEND_ID = b.prod_id
+			with ur
 	    "
 
     exec_sql $sql_buff    
 
+
+
     set sql_buff "
-	    insert into G_S_02067_MONTH
+
+			insert into G_S_02067_MONTH_2
+			 select a.product_item_id
+			 ,times 
+			 ,c.fee_value 
+			 ,d.rule_code from 
+			 bass2.ODS_PROD_UP_ITEM_RELAT_$this_month_last_day  a
+			 , bass2.ODS_PROD_UP_ITEM_RELAT_PRICE_$this_month_last_day b 
+			 , bass2.ODS_PROD_UP_PRICE_PLAN_$this_month_last_day c 
+			 , bass2.DW_PROD_UP_APPORT_RULE_$this_month_last_day d
+			 where a.item_relat_id=b.item_relat_id
+			 and c.price_plan_type_cd like '%APPORT%'
+			 and  b.PRICE_PLAN_ID = c.PRICE_PLAN_ID
+			 and c.apport_rule = d.rule_id								 
+			with ur
+	    "
+
+    exec_sql $sql_buff    
+
+
+ 
+ 
+ 
+    set sql_buff "
+	    insert into G_S_02067_MONTH_3
 					  (
 						 TIME_ID
 						,USER_ID
@@ -88,11 +127,11 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 						,a.COND_NAME PLAN_DESC
 						, substr(replace(char(date(a.VALID_DATE)),'-',''),1,8) EFF_DT
 						,char((year(date(EXPIRE_DATE))-year(date(VALID_DATE)))*12+(month(date(EXPIRE_DATE))-month(date(VALID_DATE))) + 1) PLAN_DUR
-						,MIN_CONSUME
-						,char(PROM_APPOR) PREPAY_FEE
-						,char(RES_FEE) PHONE_COST
-						,GIFT_FEE
-						,GIFT_DUR
+						,value(char(d.NUMERATOR),'0')MIN_CONSUME
+						,char(b.PROM_APPOR) PREPAY_FEE
+						,char(b.RES_FEE) PHONE_COST
+						,value(char(case when e.TIMES = 1 then 0 else bigint(FEE_VALUE/TIMES) end ),'0') GIFT_FEE
+						,value(char(e.times),'1') GIFT_DUR
 					from bass2.dw_product_user_promo_$op_month a 
 					join bass2.ods_up_res_tiem_$op_month b  on  a.cond_id = bigint(b.prom_id)
 					left join (					
@@ -103,7 +142,9 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 						and a.imei is not null
 						group by user_id 
 					) c on a.user_id = c.user_id
- 					where  substr(replace(char(date(a.VALID_DATE)),'-',''),1,6)  = '$op_month'					
+					left join G_S_02067_MONTH_1 d on a.cond_id = d.product_item_id
+					left join G_S_02067_MONTH_2 e on a.cond_id = e.product_item_id
+ 					where  substr(replace(char(date(a.VALID_DATE)),'-',''),1,6)  <= '$op_month'					
 					with ur
 	    "
 
@@ -111,10 +152,48 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 
 
+    set sql_buff "
+	    insert into G_S_02067_MONTH
+					  (
+						 TIME_ID
+						,USER_ID
+						,IMEI
+						,PLAN_DESC
+						,EFF_DT
+						,PLAN_DUR
+						,MIN_CONSUME
+						,PREPAY_FEE
+						,PHONE_COST
+						,GIFT_FEE
+						,GIFT_DUR
+						)
+		select 
+		TIME_ID
+        ,USER_ID
+        ,IMEI
+        ,PLAN_DESC
+        ,EFF_DT
+        ,PLAN_DUR
+        ,MIN_CONSUME
+        ,PREPAY_FEE
+        ,PHONE_COST
+        ,GIFT_FEE
+        ,GIFT_DUR
+		from (
+			select i.*
+			,row_number()over(partition by USER_ID ,IMEI order by PLAN_DUR desc ) rn 
+			from G_S_02067_MONTH_3 i 
+		) o where o.rn= 1
+	with ur
+	    "
+
+    exec_sql $sql_buff 
+
+
   #进行结果数据检查
   #1.检查chkpkunique
   set tabname "G_S_02067_MONTH"
-  set pk   "OP_MONTH||E_CHANNEL_TYPE"
+  set pk   "USER_ID||IMEI"
         chkpkunique ${tabname} ${pk} ${op_month}
         #
         
@@ -123,3 +202,5 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 	return 0
 }
+
+

@@ -996,7 +996,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
    #48.主题名称：详单汇总数据 编号：21011 接口名称：移动沙龙业务使用 
    #   规则描述：移动沙龙业务使用中的SP企业代码对应的 SP企业代码表中SP业务类型编码分类统计各类型的SP企业数。         
  
-  puts "48:移动沙龙业务使用中的SP企业代码对应的 SP企业代码表中SP业务类型编码分类统计各类型的SP企业数 0"
+  puts "48:移动沙龙业务使用中的SP企业代码对应的SP企业代码表中SP业务类型编码分类统计各类型的SP企业数 0"
    	set sql_buff "INSERT INTO bass1.G_REPORT_CHECK(TIME_ID,RULE_ID,FLAG,RET_VAL) VALUES
 		(                                             
 			$op_month,
