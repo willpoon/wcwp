@@ -272,6 +272,14 @@ puts G_S_22068_MONTH_2
 exec_sql $sql_buf
 
 		set sql_buf "
+		update G_S_22068_MONTH_4
+		set BNK_TS_FEE = '0'
+		where BNK_TS_FEE is null
+"
+
+exec_sql $sql_buf
+
+		set sql_buf "
 		select BNK_TS_CNT, BNK_TS_FEE from  G_S_22068_MONTH_4
 		 where op_month = '$op_month'
 		 with ur

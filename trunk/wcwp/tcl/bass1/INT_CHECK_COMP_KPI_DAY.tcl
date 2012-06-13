@@ -429,7 +429,7 @@ if { $today_dd == 1 || $today_dd == 2 || $today_dd == 30 || $today_dd == 31 } {
 
 	if {$RESULT_VAL3>0.25||$RESULT_VAL3<-0.25 } {
 		set grade 2
-	  set alarmcontent "R169校验达到临界值"
+	  set alarmcontent "R169校验达到临界值2"
 	  WriteAlarm $app_name $optime $grade ${alarmcontent}
 	} 
 
@@ -479,7 +479,7 @@ if { $today_dd == 1 || $today_dd == 2 || $today_dd == 30 || $today_dd == 31 } {
 
 	if {$RESULT_VAL3>0.25||$RESULT_VAL3<-0.25 } {
 		set grade 2
-	  set alarmcontent "R170校验达到临界值"
+	  set alarmcontent "R170校验达到临界值2"
 	  WriteAlarm $app_name $optime $grade ${alarmcontent}
 	} 
 
@@ -531,7 +531,7 @@ if { $today_dd == 1 || $today_dd == 2 || $today_dd == 30 || $today_dd == 31 } {
 
 	if {$RESULT_VAL3>0.25||$RESULT_VAL3<-0.25 } {
 		set grade 2
-	  set alarmcontent "R171校验达到临界值"
+	  set alarmcontent "R171校验达到临界值2"
 	  WriteAlarm $app_name $optime $grade ${alarmcontent}
 	} 
 
@@ -587,7 +587,7 @@ if { $today_dd == 1 || $today_dd == 2 || $today_dd == 30 || $today_dd == 31 } {
 
 	if {$RESULT_VAL3>0.25||$RESULT_VAL3<-0.25 } {
 		set grade 2
-	  set alarmcontent "R172校验达到临界值"
+	  set alarmcontent "R172校验达到临界值2"
 	  WriteAlarm $app_name $optime $grade ${alarmcontent}
 	} 
 

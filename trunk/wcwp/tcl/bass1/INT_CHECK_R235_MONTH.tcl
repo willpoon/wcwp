@@ -59,10 +59,10 @@ exec_sql $sql_buff
 aidb_runstats bass1.G_S_21003_MONTH_mobile 3
 
 
-source /bassapp/bass1/tcl/INT_FIX_TMP.tcl
+##~   source /bassapp/bass1/tcl/INT_FIX_TMP.tcl
 
-ADJ_R235_MONTH1  $op_time $optime_month
-ADJ_R235_MONTH2  $op_time $optime_month
+##~   ADJ_R235_MONTH1  $op_time $optime_month
+##~   ADJ_R235_MONTH2  $op_time $optime_month
 
 
 

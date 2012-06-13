@@ -56,28 +56,28 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
     insert into BASS1.G_A_06037_DAY_1
 	SELECT  distinct 
 		trim(char(a.channel_id))
-		,char(b.BUILD_AREA/100) BUILD_AREA
-		,'' USE_AREA
-		,value(char(b.STORE_AREA/100),'') STORE_AREA
-		,value(char(b.SEAT_NUM),'') SEAT_NUM
-		,value(char(b.EMPLOYEE_NUM),'') STORE_EMPLOYE
-		,value(char(b.ENSURE_NUM),'') GUARD_EMPLOYE
-		,value(char(b.CLEAN_NUM),'') CLEAR_EMPLOYE
-		,value(char(b.HAVE_QUEUE),'') IF_WAIT_MARK
-		,value(char(b.HAVE_POS),'') IF_POS_MARK
-		,value(char(b.HAVE_VIPLINE),'') IF_VIP_SEAT
-		,value(char(b.HAVE_VIPROOM),'') IF_VIP_ROOM
-		,value(char(b.PRINTER_NUM),'') PRINT_NUM
-		,value(char(b.GENERALATM_NUM),'') TERM_NUM
-		,value(char(b.TASTE_AREA),'') G3_AREA
-		,value(char(b.TVSCREEN_NUM),'') TV_NUM
-		,value(char(b.NEWBUSI_PLATFORM_NUM),'') NEW_BUSITERM_NUM
-		,value(char(b.HEART_PLATFORM_NUM),'') HEART_TERM_NUM
-		,value(char(b.ONLINE_NUM),'') NET_TERM_NUM
-		,'' AREA
-		,'' ACCEPT_AREA
-		,'' MAIN_NET_TYPE
-		,'' IF_CZ
+		,value(char(b.BUILD_AREA/100),'20') BUILD_AREA
+		,' ' USE_AREA
+		,value(char(b.STORE_AREA/100),'20') STORE_AREA
+		,value(char(b.SEAT_NUM),'1') SEAT_NUM
+		,value(char(b.EMPLOYEE_NUM),'1') STORE_EMPLOYE
+		,value(char(b.ENSURE_NUM),'0') GUARD_EMPLOYE
+		,value(char(b.CLEAN_NUM),'1') CLEAR_EMPLOYE
+		,value(char(b.HAVE_QUEUE),'0') IF_WAIT_MARK
+		,value(char(b.HAVE_POS),'0') IF_POS_MARK
+		,value(char(b.HAVE_VIPLINE),'0') IF_VIP_SEAT
+		,value(char(b.HAVE_VIPROOM),'0') IF_VIP_ROOM
+		,value(char(b.PRINTER_NUM),'0') PRINT_NUM
+		,value(char(b.GENERALATM_NUM),'0') TERM_NUM
+		,value(char(b.TASTE_AREA),'0') G3_AREA
+		,value(char(b.TVSCREEN_NUM),'0') TV_NUM
+		,value(char(b.NEWBUSI_PLATFORM_NUM),'0') NEW_BUSITERM_NUM
+		,value(char(b.HEART_PLATFORM_NUM),'0') HEART_TERM_NUM
+		,value(char(b.ONLINE_NUM),'0') NET_TERM_NUM
+		,'0' AREA
+		,'0' ACCEPT_AREA
+		,'0' MAIN_NET_TYPE
+		,'0' IF_CZ
 	FROM BASS2.Dim_CHANNEL_INFO A
 	left join bass2.Dwd_channel_selfsite_info_$timestamp b on a.channel_id = b.channel_id
 	where A.CHANNEL_TYPE_CLASS IN (90105,90102)

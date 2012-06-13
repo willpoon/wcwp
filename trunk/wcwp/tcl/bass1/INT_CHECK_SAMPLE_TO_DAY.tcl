@@ -40,7 +40,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 	global env
 	
-  #set op_time  2008-05-31
+  ##~   set op_time  2012-05-31
 	set p_optime $op_time
 	set p_timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
 	set this_month [string range $op_time 0 3][string range $op_time 5 6]
