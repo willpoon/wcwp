@@ -74,13 +74,13 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		  SELECT
 			   $op_month
 			 	,'$op_month'
-			 	,trim(char(a.CHANNEL_ID))
-				,char(bigint( sum(case when t_index_id in (1,2,3,4,5,6) then result else 0 end )                 ))
-				,char(bigint( sum(case when t_index_id in (10,11,12,13,19,20,21,22,23) then result else 0 end )   ))
-				,char(bigint( sum(case when t_index_id in (7,8,9) then result else 0 end )                      ))
-				,'0'
-				,'0'
-				,'0'
+			 	,trim(char(a.CHANNEL_ID)) CHANNEL_ID
+				,char(bigint( sum(case when t_index_id in (1,2,3,4,5,6) then result else 0 end )                 )) FH_REWARD
+				,char(bigint( sum(case when t_index_id in (10,11,12,13,19,20,21,22,23) then result else 0 end )   )) BASIC_REWARD
+				,char(bigint( sum(case when t_index_id in (7,8,9) then result else 0 end )                      )) INCR_REWARD
+				,'0' INSPIRE_REWARD
+				,'0' TERM_REWARD
+				,'0' RENT_CHARGE
 			FROM BASS2.DW_CHANNEL_INFO_$op_month A
 			inner join bass2.stat_channel_reward_0002 b on a.channel_id=b.channel_id
 			WHERE A.CHANNEL_TYPE_CLASS IN (90105,90102) 
@@ -128,7 +128,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
     
 
 
-## 通过代码自动调：
+## 通过代码自动调：22063渠道应该在06021中
    set sql_buff "
 				delete from (select * from bass1.g_s_22063_month  where time_id =$op_month) t 
 				where channel_id not in (select distinct channel_id from bass1.g_i_06021_month where time_id =$op_month and channel_type<>'1')

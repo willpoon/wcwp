@@ -46,6 +46,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
     set sql_buff "delete from bass1.G_S_22093_DAY where time_id=$timestamp"
     exec_sql $sql_buff
 
+##~   CHRG_TYPE 增加4468 无托收，删除OPT_CODE in ('4103','4144','4115','4468') 4115！
 		set sql_buff "
 		insert into G_S_22093_DAY
 		(
@@ -62,17 +63,26 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			,replace(substr(char(PEER_DATE),12,8),'.','')  CHRG_TM
 			,key_num MSISDN
 			,case 
-				when opt_code in ('4103','4144') then '1'
+				when opt_code in ('4103','4144','4468') then '1'
 				when opt_code in ('4115') then '3'
 			end CHRG_TYPE
 			,char(bigint(AMOUNT)) CHRG_AMT
 		from BASS2.dw_acct_payment_dm_$curr_month a
 		where  replace(char(a.OP_TIME),'-','') = '$timestamp' 
-		and OPT_CODE in ('4103','4144','4115')
+		and OPT_CODE in ('4103','4144','4468')
 		with ur
 		"
 exec_sql $sql_buff
 
+##~   缴费类型	此字段仅取以下取值：
+	##~   1：银行代缴；
+	##~   2：银行代扣；
+	##~   3、银行托收；
+
+##~   4103	银行代收费	1	   
+##~   4144	银行代收费冲正	1	   
+##~   4115	托收缴费	1	   
+##~   4468	网上缴费	1	   
 
   #进行结果数据检查
   #1.检查chkpkunique

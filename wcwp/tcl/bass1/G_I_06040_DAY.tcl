@@ -13,9 +13,11 @@
 #编写时间：20120328
 #问题记录：
 #修改历史: 1. panzw 20120328	中国移动一级经营分析系统省级数据接口规范 (V1.7.9) 
+
+##~   20120615:经和boss张健确认，没有自发展网点，将所有渠道置为经销商。同时，为了尽量保证和22049一致，增加WHERE a.channel_type in (90105,90102) 条件。
 #######################################################################################################   
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
-      
+      ##~   set op_time 2012-05-31
       set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
       puts $timestamp
 		global app_name
@@ -25,6 +27,47 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
   #删除本期数据
 	set sql_buff "delete from bass1.g_i_06040_day where time_id=$timestamp"
 	exec_sql $sql_buff
+
+	set sql_buf "ALTER TABLE BASS1.g_i_06040_day_1 ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
+
+    exec_sql $sql_buf
+	
+	set sql_buff "
+	insert into bass1.g_i_06040_day_1
+	(
+         TIME_ID
+        ,CHRG_NBR
+        ,CMCC_ID
+        ,CHNL_ID
+        ,CHNL_TYPE	
+	)
+	select 
+	         TIME_ID
+        ,CHRG_NBR
+        ,CMCC_ID
+        ,CHNL_ID
+        ,CHNL_TYPE
+		from (
+				select 
+						$timestamp time_id
+						,a.OTHER_INFO  CHRG_NBR
+						,coalesce(bass1.fn_get_all_dim('BASS_STD1_0054',char(b.REGION_CODE)),'13101')   CMCC_ID
+						,char(a.CHANNEL_ID)   CHNL_ID
+						,'2' CHNL_TYPE
+						,row_number()over(partition by a.OTHER_INFO order by a.OTHER_INFO) rn 
+				from bass2.Dw_channel_dealer_$timestamp a
+					,bass2.dim_channel_info b 
+				where a.CHANNEL_ID = b.CHANNEL_ID
+						and a.DEALER_STATE = 1
+						and a.OTHER_INFO is not null
+						--and b.channel_type in (90105,90102)
+			) o where o.rn = 1
+	with ur 
+"
+	exec_sql $sql_buff
+
+
+
 
 	set sql_buff "
 	insert into bass1.g_i_06040_day
@@ -43,21 +86,18 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
         ,CHNL_TYPE
 		from (
 				select 
-						$timestamp time_id
-						,a.OTHER_INFO  CHRG_NBR
-						,b.REGION_CODE CMCC_ID
-						,char(a.CHANNEL_ID)   CHNL_ID
-						,case when PARTNER_CODE in ('00','01','02','03') then '2' else '1' end CHNL_TYPE
-						,row_number()over(partition by a.OTHER_INFO order by a.OTHER_INFO) rn 
-				from bass2.Dw_channel_dealer_$timestamp a
-					,bass2.dim_channel_info b 
-				where a.CHANNEL_ID = b.CHANNEL_ID
-						and a.DEALER_STATE = 1
-						and a.OTHER_INFO is not null
+					 TIME_ID
+					,CHRG_NBR
+					,CMCC_ID
+					,CHNL_ID
+					,CHNL_TYPE
+						,row_number()over(partition by a.CHNL_ID order by a.CHRG_NBR ) rn 
+				from g_i_06040_day_1 a
 			) o where o.rn = 1
 	with ur 
 "
 	exec_sql $sql_buff
+	
 	
   #进行结果数据检查
   #检查chkpkunique
