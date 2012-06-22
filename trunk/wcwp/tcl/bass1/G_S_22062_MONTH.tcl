@@ -16,7 +16,7 @@
 #######################################################################################################   
 
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
-
+		##~   set optime_month 2012-05
         #本月 yyyymm
         set op_month [string range $optime_month 0 3][string range $optime_month 5 6]   
         #上月 YYYYMM
@@ -61,7 +61,8 @@ select
 				or BUSI_NOTES  like '%新业务-139手机邮箱%元版%'
 				or BUSI_NOTES  like '%号簿管家%'
 				then RESULT else 0 end))) VAL_TYPE2_REWARD
-        ,char(bigint(sum(case when BUSI_NOTES like '%音乐随身听%' 
+       /** 
+	   ,char(bigint(sum(case when BUSI_NOTES like '%音乐随身听%' 
 				or BUSI_NOTES  like '%歌曲下载%'
 				or BUSI_NOTES  like '%12580生活播报%'
 				or BUSI_NOTES  like '%无线体育俱乐部%'
@@ -76,6 +77,16 @@ select
 				or BUSI_NOTES  like '%手机视频%'
 				or BUSI_NOTES  like '%手机游戏%'
 				or BUSI_NOTES  like '%手机电视%'
+				then RESULT else 0 end))) VAL_TYPE3_REWARD
+	  **/
+	  ,char(bigint(sum(case when BUSI_NOTES like '新业务%' 
+				and not (
+				BUSI_NOTES like '%新业务-无线音乐俱乐部%' 
+				or BUSI_NOTES  like '%新业务-彩铃%'
+				or BUSI_NOTES like '%新业务-飞信功能%' 
+				or BUSI_NOTES  like '%新业务-139手机邮箱%元版%'
+				or BUSI_NOTES  like '%号簿管家%'				
+				)
 				then RESULT else 0 end))) VAL_TYPE3_REWARD
 	,char(bigint(sum(case when BUSI_NOTES like '%移动应用商城%'  then RESULT else 0 end))) VAL_DIANBO
         ,'0' STORE_SUSIDY
@@ -92,30 +103,39 @@ with ur
 
 #删除非法CHANNEL_ID
 ##~   4.1割接前後數據不也一樣，用的表也不同
-if { $op_month == 201203 } {
+
+if { $op_month <= 201203 } {
 	set TAB06035 "G_A_06035_DAY_OLD20120331"
 } else {
 	set TAB06035 "G_A_06035_DAY"
 }
 
-set sql_buff "
-delete from G_S_22062_MONTH 
-where time_id = $op_month
-and channel_id  in (
-		select distinct channel_id from G_S_22062_MONTH where time_id = $op_month
-		except
-		select distinct channel_id
-		from
-		(
-		select a.*,row_number()over(partition by channel_id order by time_id desc ) rn 
-		from ${TAB06035} a
-		where time_id / 100 <= $op_month
-		) t where t.rn =1  and CHNL_STATE = '1'
-		) 
-"
-  exec_sql $sql_buff
+##~   set sql_buff "
+##~   delete from G_S_22062_MONTH 
+##~   where time_id = $op_month
+##~   and channel_id  in (
+		##~   select distinct channel_id from G_S_22062_MONTH where time_id = $op_month
+		##~   except
+		##~   select distinct channel_id
+		##~   from
+		##~   (
+		##~   select a.*,row_number()over(partition by channel_id order by time_id desc ) rn 
+		##~   from ${TAB06035} a
+		##~   where time_id / 100 <= $op_month
+		##~   ) t where t.rn =1  and CHNL_STATE = '1'
+		##~   ) 
+##~   "
+  ##~   exec_sql $sql_buff
   
-
+##~   来自22063
+   set sql_buff "
+				delete from (select * from bass1.g_s_22062_month  where time_id =$op_month) t 
+				where channel_id not in (select distinct channel_id from bass1.g_i_06021_month where time_id =$op_month and channel_type<>'1')
+			"
+	
+    exec_sql $sql_buff
+    
+	
   aidb_runstats bass1.G_S_22062_MONTH 3
 
   #1.检查chkpkunique
@@ -140,6 +160,42 @@ set sql_buff "
 	with ur
 "
 chkzero2 $sql_buff "22062有非法channel_id! "
+
+##~   先跑22063 少量误差，不调整
+
+##~   set sql_buff "
+	##~   select count(0)
+		##~   from (
+		##~   select TIME_ID ,channel_id
+		##~   ,sum(bigint(FH_REWARD)) FH_REWARD
+		##~   from G_S_22063_MONTH 
+		##~   where time_id = $op_month
+		##~   group by  TIME_ID ,channel_id
+		##~   ) a ,
+		##~   (
+		##~   select 			
+				 ##~   a.TIME_ID	
+				##~   ,a.channel_id         
+				##~   ,sum(bigint(NUM_ACT_REWARD))	NUM_ACT_REWARD
+				##~   ,sum(bigint(NUM_DELAY_ACT_REWARD))			
+				##~   ,sum(bigint(NUM_DELAY_ACT_REWARD)+bigint(NUM_ACT_REWARD))			
+		##~   from ( select * from G_S_22062_MONTH where time_id = $op_month ) a, ( select * from G_I_06021_MONTH where time_id = $op_month )  b 		
+		##~   where a.time_id = $op_month			
+		##~   and a.channel_id = b.channel_id
+		##~   and b.CHANNEL_STATUS = '1'
+		##~   and CHANNEL_TYPE in ('2','3')
+		##~   group by  a.time_id ,a.channel_id		
+		##~   ) b 
+		##~   where a.CHANNEL_ID = b.CHANNEL_ID
+		##~   and  FH_REWARD <> NUM_ACT_REWARD
+	##~   with ur
+##~   "
+##~   chkzero2 $sql_buff "22062 和 22063 放号酬金不一致! "
+
+##~   update (select * from G_S_22063_MONTH where time_id = $op_month ) a
+##~   set NUM_ACT_REWARD = ''
+
+
 
 return 0
 

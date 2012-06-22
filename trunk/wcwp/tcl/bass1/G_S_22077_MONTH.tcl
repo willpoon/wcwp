@@ -15,7 +15,7 @@
 #ÐÞ¸ÄÀúÊ·: 1. panzw 20110922	1.7.5 newly added
 #######################################################################################################   
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
-#set optime_month 2011-08
+	  ##~   set optime_month 2012-03
       set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]      
       set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
       puts $op_month

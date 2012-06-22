@@ -317,12 +317,12 @@ exec_sql $sql_buf
 select 
          $op_month TIME_ID
         ,'$op_month' OP_MONTH
-        ,char(count(distinct case when opt_code in ('4103') then payment_id end ))  COUNTER_REC_CNT
+        ,char(count(distinct case when opt_code in ('4103','4144') then payment_id end ))  COUNTER_REC_CNT
         ,char(count(distinct case when opt_code in ('4468') then payment_id end )) EBANK_REC_CNT
-        ,char(count(distinct case when opt_code in ('4286','4287','4179','4180','4181','4182','4310','4311','4144') then payment_id end )) OTH_REC_CNT
+        ,char(count(distinct case when opt_code in ('4286','4287','4179','4180','4181','4182','4310','4311') then payment_id end )) OTH_REC_CNT
         ,char(int(sum( case when opt_code in ('4103') then AMOUNT else 0 end )))  COUNTER_REC_FEE
         ,char(int(sum( case when opt_code in ('4468')  then AMOUNT else 0 end ))) EBANK_REC_FEE
-        ,char(int(sum( case when opt_code in ('4286','4287','4179','4180','4181','4182','4310','4311','4144') then AMOUNT else 0 end ))) OTH_REC_FEE
+        ,char(int(sum( case when opt_code in ('4286','4287','4179','4180','4181','4182','4310','4311') then AMOUNT else 0 end ))) OTH_REC_FEE
 	,'$RESULT_VAL1' BNK_TS_CNT
 	,'$RESULT_VAL2' BNK_TS_FEE
 	,char((select  int(sum(a.fee))
@@ -338,6 +338,8 @@ with ur
 	"
 	exec_sql $sql_buf
 
+
+			
   aidb_runstats bass1.G_S_22068_MONTH 3
 
 #checksum 
