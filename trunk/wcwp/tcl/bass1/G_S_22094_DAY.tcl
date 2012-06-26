@@ -65,23 +65,69 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			,case 
 				when CERTIFICATE_TYPE = '0' then '1'
 				when CERTIFICATE_TYPE = '1' then '2'
-				when opt_code = '4205' then '3' else '1'
-			end CHRG_TYPE
+				when opt_code = '4205' then '3' 
+				else '4' end CHRG_TYPE
 			,char(bigint(amount)) CHRG_AMT
 		from BASS2.dw_acct_payment_dm_$curr_month a
 		where  replace(char(a.OP_TIME),'-','') = '$timestamp' 
-		and OPT_CODE in 
-					('4205' --手机支付-用户缴费
-					,'4101'	--营业厅前台缴费
-					,'4464' --自助服务终端现金缴费
-					)
-		and key_num not like lower('d%')
-		and length(key_num)  = 11 
+			and opt_code not in (select paytype_id from bass2.dim_acct_paytype where paytype_name like '%空中充值%')
+			and lower(key_num) not like 'd%'
+			and opt_code not in ('4464','4864','4468','SJJF2','4115')
+			and length(key_num)  = 11 
 		with ur
 		"
 	
 exec_sql $sql_buff
 
+##~   电子渠道 渠道差异问题_西藏.xls
+
+		set sql_buff "
+		insert into G_S_22094_DAY
+		(
+         TIME_ID
+        ,CHRG_DT
+        ,CHRG_TM
+        ,MSISDN
+        ,CHNL_ID
+        ,CHRG_TYPE
+        ,CHRG_AMT		
+		)		
+ select 		
+			$timestamp TIME_ID
+			,'$timestamp'  CHRG_DT
+			,replace(substr(char(PEER_DATE),12,8),'.','')  CHRG_TM
+			,key_num MSISDN
+			,case when b.opt_code in ('4464','4864') then 'BASS1_ST' 
+					 when b.opt_code in ('4468') then  'BASS1_WB'
+					 else ' ' end channel_id
+			,case 
+				when CERTIFICATE_TYPE = '0' then '1'
+				when CERTIFICATE_TYPE = '1' then '2'
+				when opt_code = '4205' then '3' 
+				else '4' end CHRG_TYPE
+			,char(bigint(amount)) CHRG_AMT
+		from  bass2.dw_product_$timestamp a
+			, (select * from bass2.dw_acct_payment_dm_$curr_month where op_time = '$op_time') b
+		where a.user_id=b.user_id 
+		and b.opt_code in ('4464','4864','4468','SJJF2','4115')
+		and (case when b.opt_code in ('4464','4864') then 'BASS1_ST' 
+					 when b.opt_code in ('4468') then  'BASS1_WB'
+					 else ' ' end
+			) 
+		in ('BASS1_ST','BASS1_WB')               
+	with ur
+		"
+	
+exec_sql $sql_buff
+
+
+
+		##~   and OPT_CODE in 
+					##~   ('4205' --手机支付-用户缴费
+					##~   ,'4101'	--营业厅前台缴费
+					##~   ,'4464' --自助服务终端现金缴费
+					##~   )
+					
 
   #进行结果数据检查
   #1.检查chkpkunique

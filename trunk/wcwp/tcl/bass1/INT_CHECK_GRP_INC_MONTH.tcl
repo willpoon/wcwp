@@ -812,7 +812,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 
 select aa.dan_fee,bb.bef_fee,
-     case when bb.bef_fee=0 then 1
+     case when  bb.bef_fee=0 and aa.dan_fee = 0 then 0 when bb.bef_fee=0 and aa.dan_fee <> 0 then 1
           else decimal((aa.dan_fee-bb.bef_fee)*1.0/bb.bef_fee,10,4)
      end
   from
@@ -894,7 +894,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select
 aa.dan_fee,bb.bef_fee,
-     case when bb.bef_fee=0 then 1
+     case when bb.bef_fee=0 and aa.dan_fee = 0 then 0 when bb.bef_fee=0 and aa.dan_fee <> 0 then 1
           else decimal((aa.dan_fee-bb.bef_fee)*1.0/bb.bef_fee,10,4)
      end
   from
@@ -1062,7 +1062,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 
 select aa.dan_fee,bb.bef_fee,
-     case when bb.bef_fee=0 then 1
+     case when bb.bef_fee=0 and aa.dan_fee = 0 then 0 when bb.bef_fee=0 and aa.dan_fee <> 0 then 1
           else decimal((aa.dan_fee-bb.bef_fee)*1.0/bb.bef_fee,10,4)
      end
   from
@@ -1148,7 +1148,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 
 select aa.dan_fee,bb.bef_fee,
-     case when bb.bef_fee=0 then 1
+     case when bb.bef_fee=0 and aa.dan_fee = 0 then 0 when bb.bef_fee=0 and aa.dan_fee <> 0 then 1
           else decimal((aa.dan_fee-bb.bef_fee)*1.0/bb.bef_fee,10,4)
      end
   from
@@ -1231,7 +1231,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 
 select aa.dan_fee,bb.bef_fee,
-     case when bb.bef_fee=0 then 1
+     case when bb.bef_fee=0 and aa.dan_fee = 0 then 0 when bb.bef_fee=0 and aa.dan_fee <> 0 then 1
           else decimal((aa.dan_fee-bb.bef_fee)*1.0/bb.bef_fee,10,2)
      end
   from

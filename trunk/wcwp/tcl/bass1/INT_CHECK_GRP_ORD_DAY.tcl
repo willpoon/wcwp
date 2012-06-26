@@ -1513,7 +1513,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
    	set sql_buff "
 
 select aa.curr_cnts,bb.bef_cnts,
-     case when bb.bef_cnts=0 then 1
+     case when bb.bef_cnts=0 and aa.curr_cnts = 0 then 0 when bb.bef_cnts=0 and aa.curr_cnts <> 0 then 1
           else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,2)
      end
   from
@@ -1702,7 +1702,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 
 select aa.curr_cnts,bb.bef_cnts,
-     case when bb.bef_cnts=0 then 1
+     case when bb.bef_cnts=0 and aa.curr_cnts = 0 then 0 when bb.bef_cnts=0 and aa.curr_cnts <> 0 then 1
           else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,2)
      end
   from
@@ -1890,7 +1890,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 
 select aa.curr_cnts,bb.bef_cnts,
-     case when bb.bef_cnts=0 then 1
+     case¡¡when bb.bef_cnts=0 and aa.curr_cnts = 0 then 0 when bb.bef_cnts=0 and aa.curr_cnts <> 0 then 1
           else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,2)
      end
   from
@@ -1973,7 +1973,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 
 select aa.curr_cnts,bb.bef_cnts,
-     case when bb.bef_cnts=0 then 1
+     case when bb.bef_cnts=0 and aa.curr_cnts = 0 then 0 when bb.bef_cnts=0 and aa.curr_cnts <> 0 then 1
           else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,2)
      end
   from
@@ -2076,7 +2076,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 
 select aa.curr_cnts,bb.bef_cnts,
-     case when bb.bef_cnts=0 then 1
+     case when bb.bef_cnts=0 and aa.curr_cnts = 0 then 0 when bb.bef_cnts=0 and aa.curr_cnts <> 0 then 1
           else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,2)
      end
   from
@@ -2178,7 +2178,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 
 select cc.curr_cnts,dd.bef_cnts,
-     case when dd.bef_cnts=0 then 1
+     case when  dd.bef_cnts=0 and cc.curr_cnts = 0 then 0 when dd.bef_cnts=0 and cc.curr_cnts <> 0 then 1
           else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,2)
      end
   from

@@ -814,3 +814,207 @@ chkzero2 $sql_buff "03004 - 03005 not agree! "
 return 0  
 
 }
+
+
+
+
+
+proc Trans91003 { op_time optime_month } {
+## 本过程在每月月底跑。（1号前处理。）
+##
+##~   INT_CHECK_L2_TO_DAY.tcl
+##~   source /bassapp/bass1/tcl/INT_FIX_TMP.tcl
+##~   Trans91003 $op_time $optime_month
+##~   前提条件：BASS2.DIM_TACNUM_DEVID bass2.DIM_TERM_TAC_NEW_LOAD 已加载！
+#当天 yyyymmdd
+set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
+set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
+#当天 yyyy-mm-dd
+set optime $op_time
+set curr_month [string range $op_time 0 3][string range $op_time 5 6]
+set last_day [GetLastDay [string range $timestamp 0 7]]
+
+set sql_buff "
+rename bass2.DIM_DEVICE_INFO_EX to DIM_DEVICE_INFO_EX_BAK${timestamp}
+"
+exec_sql $sql_buff
+
+set sql_buff "
+create table bass2.DIM_DEVICE_INFO_EX like bass2.DIM_DEVICE_INFO_EX_BAK${timestamp}  DISTRIBUTE BY HASH(ROW_ID)  IN TBS_DIM
+"
+exec_sql $sql_buff
+
+set sql_buff "
+
+insert into bass2.DIM_DEVICE_INFO_EX
+select 
+         ROW_ID
+        ,DEV_ID
+        ,TERM_TYPE
+        ,TERM_BRAND
+        ,TERM_MODEL
+        ,ALIAS
+        ,MODE_2G
+        ,MODE_3G
+        ,MODE_4G
+        ,OS_ID
+        ,OS_VERSION
+        ,FRONT_CAM
+        ,REAR_CAM
+        ,SCREEN_RESOLUTION
+        ,SCREEN_SIZE
+        ,SCREEN_DEEP
+        ,IFWLAN
+        ,IFWAP
+        ,IFWWW
+        ,IFGPRS
+        ,IFGPS
+        ,IFHANDWRITE
+        ,TOUCHTYPE
+        ,TERM_DESIGN
+        ,IFJAVA
+        ,IFUSB
+        ,IFBLUETEETH
+        ,IFIFR
+        ,IFMP3
+        ,IFSTREAM
+        ,IFEDGE
+        ,IFUSSD
+from  bass2.DIM_TERM_TAC_NEW_LOAD a
+with ur
+"
+exec_sql $sql_buff
+
+
+
+
+set sql_buff "
+select count(0) from (
+select DEV_ID,count(*) from BASS2.DIM_DEVICE_INFO_EX
+group by DEV_ID
+having count(*)>1
+) a 
+with ur
+"
+
+chkzero2 $sql_buff "BASS2.DIM_DEVICE_INFO_EX 主键不唯一！"
+
+
+  aidb_runstats BASS2.DIM_DEVICE_INFO_EX 3
+
+
+
+##~   生成入DIM_TERM_TAC的中间表DIM_TERM_TAC_TRANS
+set sql_buff "
+alter table bass2.DIM_TERM_TAC_TRANS activate not logged initially with empty table
+"
+exec_sql $sql_buff
+
+
+set sql_buff "
+insert into   bass2.DIM_TERM_TAC_TRANS
+select  
+a.ROW_ID ID
+,b.TAC_NUM
+,'' TERM_ID
+,a.TERM_MODEL
+,'' TERMPROD_ID
+,a.TERM_BRAND TERMPROD_NAME
+,case when mode_2g = '1' and mode_3g = '3' then '2' else '1' end  NET_TYPE
+,case 
+	when a.MODE_2G in ('1') and a.MODE_3G in ('0','1')  and a.TERM_TYPE is null then '0'
+	when a.MODE_2G in ('1') and a.MODE_3G in ('3')  and a.TERM_TYPE = '01' then '1'
+	when a.MODE_2G in ('1') and a.MODE_3G in ('0')  and a.TERM_TYPE = '02' then '2' --02- 数据卡2
+	when a.MODE_2G in ('1') and a.MODE_3G in ('3')  and a.TERM_TYPE = '02' then '2'
+	when a.MODE_2G in ('1') and a.MODE_3G in ('3')  and a.TERM_TYPE = '03' then '5'
+	when a.MODE_2G in ('1') and a.MODE_3G in ('3')  and a.TERM_TYPE = '04' then '3'
+	when a.MODE_2G in ('1') and a.MODE_3G in ('3')  and a.TERM_TYPE = '05' then '4'
+	when a.MODE_2G in ('1') and a.MODE_3G in ('0')  and a.TERM_TYPE = '05' then '4' --05- 无线固话4
+	when a.MODE_2G in ('1') and a.MODE_3G in ('3')  and a.TERM_TYPE = '06' then '6'
+	when 												a.TERM_TYPE = '07' then '8' --8 新增，定义为 07- 平板电脑
+	when 												a.TERM_TYPE = '01' then '0'
+	when 												upper(a.TERM_MODEL) like '%IPAD%' then '8'
+	end  TERM_TYPE
+from  bass2.DIM_DEVICE_INFO_EX a
+ ,BASS2.DIM_TACNUM_DEVID b 
+where a.DEV_ID = b.DEV_ID
+with ur
+"
+exec_sql $sql_buff
+
+
+set sql_buff "
+rename bass2.DIM_TERM_TAC to DIM_TERM_TAC_BAK${timestamp}
+"
+exec_sql $sql_buff
+
+set sql_buff "
+CREATE TABLE bass2.DIM_TERM_TAC like  bass2.DIM_TERM_TAC_BAK${timestamp}  DISTRIBUTE BY HASH(ID)  IN TBS_DIM
+"
+exec_sql $sql_buff
+
+
+
+set sql_buff "
+
+insert into  bass2.DIM_TERM_TAC
+(
+         ID
+        ,TAC_NUM
+        ,TERM_ID
+        ,TERM_MODEL
+        ,TERMPROD_ID
+        ,TERMPROD_NAME
+        ,NET_TYPE
+        ,TERM_TYPE
+)
+select 
+         ID
+        ,TAC_NUM
+        ,TERM_ID
+        ,TERM_MODEL
+        ,TERMPROD_ID
+        ,TERMPROD_NAME
+        ,NET_TYPE
+        ,TERM_TYPE
+from  bass2.DIM_TERM_TAC_TRANS
+with ur
+"
+
+exec_sql $sql_buff
+
+
+
+##   加入历史数据
+set sql_buff "
+insert into  bass2.DIM_TERM_TAC
+select * from  bass2.DIM_TERM_TAC_BAK${timestamp}
+where trim(tac_num) in 
+(select trim(tac_num) from bass2.DIM_TERM_TAC where net_type <>'2'
+except
+select trim(tac_num) from bass2.DIM_TERM_TAC_TRANS
+)
+with ur
+"
+
+exec_sql $sql_buff
+
+
+set sql_buff "
+select count(0) from (
+select tac_nuM,count(*) from BASS2.DIM_TERM_TAC
+group by tac_nuM
+having count(*)>1
+) a 
+with ur
+"
+
+chkzero2 $sql_buff "BASS2.DIM_TERM_TAC 主键不唯一！"
+
+
+  aidb_runstats BASS2.DIM_TERM_TAC 3
+
+
+return 0  
+
+}

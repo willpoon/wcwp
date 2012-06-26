@@ -161,7 +161,9 @@ proc p22091 { op_time optime_month } {
 						,0
 			from BASS2.dw_acct_payment_dm_$curr_month a 
 			where a.OP_TIME = '$op_time'
-			and a.opt_code not in (select paytype_id from bass2.dim_acct_paytype where paytype_name like '%空中充值%') 			
+			and a.opt_code not in (select paytype_id from bass2.dim_acct_paytype where paytype_name like '%空中充值%')
+			and lower(key_num) not like 'd%'
+			and length(key_num)  = 11 
 			group by staff_org_id
 							,case when opt_code in ('4464','4465','4864','4865') then '2' else '1' end
 			"
