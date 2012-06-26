@@ -448,7 +448,7 @@ set sql_buff "insert into session.stat_market_channel_key_0133_tmp
 		                                 when b.opt_code in ('4468') then 5 
 		                                 else 6 end
                           )  a
-		                    group by a.region_id,105,
+		                    group by a.region_id,108,
 		                             case when a.class = 4 then 205 
                                  when a.class = 5 then 201
                             else 206 end

@@ -337,7 +337,29 @@ where comp_day_off_mark=1
 	exec_sql $sql_buff
 
 ##~   加入到达数调整脚本，目的是减少上报到达数与本地实际到达数的差距##~   修改电信移动新增，每天+10 ， 以便缩小到达数的误差。(到达数与新增需要同步调整) 	  set sqlbuf "		update (		select * from G_S_22073_DAY where time_id=int(replace(char(current date - 1 days),'-',''))		) t 		set TEL_MOBILE_NEW_ADD_CNT = char(bigint(TEL_MOBILE_NEW_ADD_CNT) + 10 )	  "	  exec_sql $sqlbuf     ##~   修改电信移动到达，每天+10 ， 以便缩小到达数的误差。	set sqlbuf "		values days(current date) - days(date('2012-05-02'))	"	set vCount [get_single $sqlbuf]if { [ expr ${vCount}*10 ] <= 8533 } { 	  set sqlbuf "		update (		select * from G_S_22073_DAY where time_id=int(replace(char(current date - 1 days),'-',''))		) t 		set TEL_MOBILE_ARRIVE_CNT = char(bigint(TEL_MOBILE_ARRIVE_CNT) - 6913-1620 + ${vCount}*10 )	  "	  exec_sql $sqlbuf}##~   20120611日超标厉害，调了到达数，现在要每天调。
-	set sqlbuf "		values days(current date) - days(date('2012-06-12'))	"	set vCount [get_single $sqlbuf]if { ${vCount} <= 50 } { 	  set sqlbuf "		update (		select * from G_S_22073_DAY where time_id=int(replace(char(current date - 1 days),'-',''))		) t 		set TEL_MOBILE_ARRIVE_CNT = char(bigint(TEL_MOBILE_ARRIVE_CNT) - 50 + ${vCount} )	  "	  exec_sql $sqlbuf##~   20120611日再次超标，调了到达数，现在要每天调。使得到达数接近实际情况。	set sqlbuf "		values days(current date) - days(date('2012-06-22'))	"	set vCount [get_single $sqlbuf]if { ${vCount} <= 79 } { 	  set sqlbuf "		update (		select * from G_S_22073_DAY where time_id=int(replace(char(current date - 1 days),'-',''))		) t 		set TEL_MOBILE_ARRIVE_CNT = char(bigint(TEL_MOBILE_ARRIVE_CNT) - 79 + ${vCount} )	  "	  exec_sql $sqlbuf}if { ${vCount} <= 56 } { 	  set sqlbuf "		update (		select * from G_S_22073_DAY where time_id=int(replace(char(current date - 1 days),'-',''))		) t 		set UNION_MOBILE_ARRIVE_CNT = char(bigint(UNION_MOBILE_ARRIVE_CNT) - 56 + ${vCount} )	  "	  exec_sql $sqlbuf}
+	set sqlbuf "		values days(current date) - days(date('2012-06-12'))	"	set vCount [get_single $sqlbuf]if { ${vCount} <= 129 } { 	  set sqlbuf "		update (		select * from G_S_22073_DAY where time_id=int(replace(char(current date - 1 days),'-',''))		) t 		set TEL_MOBILE_ARRIVE_CNT = char(bigint(TEL_MOBILE_ARRIVE_CNT) - 50 - 79 + ${vCount}   )	  "	  exec_sql $sqlbuf}if { ${vCount} <= 56 } { 	  set sqlbuf "		update (		select * from G_S_22073_DAY where time_id=int(replace(char(current date - 1 days),'-',''))		) t 		set UNION_MOBILE_ARRIVE_CNT = char(bigint(UNION_MOBILE_ARRIVE_CNT) - 56 + ${vCount}   )	  "	  exec_sql $sqlbuf}
+ 	  ##~   set sqlbuf "		##~   update (		##~   select * from G_S_22073_DAY where time_id=int(replace(char(current date - 1 days),'-',''))		##~   ) t 		##~   set UNION_MOBILE_NEW_ADD_CNT = char(bigint(UNION_MOBILE_NEW_ADD_CNT) + 1  )	  ##~   "	  ##~   exec_sql $sqlbuf
+
+##~   20120621日再次超标，调了到达数，现在要每天调。使得到达数接近实际情况。
+
+
+	##~   set sqlbuf "
+		##~   values days(current date) - days(date('2012-06-22'))
+	##~   "
+	##~   set vCount [get_single $sqlbuf]
+
+##~   if { ${vCount} <= 79 } {
+
+ 	  ##~   set sqlbuf "
+		##~   update (
+		##~   select * from G_S_22073_DAY where time_id=int(replace(char(current date - 1 days),'-',''))
+		##~   ) t 
+		##~   set TEL_MOBILE_ARRIVE_CNT = char(bigint(TEL_MOBILE_ARRIVE_CNT) - 79 )
+	  ##~   "
+	  ##~   exec_sql $sqlbuf
+
+##~   }
+
 ##############################################
 	return 0      
 }   
