@@ -2,7 +2,7 @@ putdatfile(){
 FTPHOST=172.16.9.25
 REMOTE_DIR=data
 LOCAL_DIR=/bassapp/bihome/panzw
-HOME=/bassapp/bihome/panzw
+HOME=/bassapp/bihome/panzw/config
 export HOME
 
 ftp_mac_put_dat_file=${HOME}/put_dat.mac.ftp
