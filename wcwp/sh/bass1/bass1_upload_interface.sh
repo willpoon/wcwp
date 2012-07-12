@@ -1,4 +1,10 @@
-#~ nohup sh /bassapp/bihome/panzw/tmp/06035/bass1_upload_interface.sh > /bassapp/bihome/panzw/tmp/06035/sh.out 2>&1 &
+1.替换日期区间
+2.替换接口编号
+
+interface_code=04019
+
+
+#~ nohup sh /bassapp/bihome/panzw/tmp/${interface_code}/bass1_upload_interface.sh > /bassapp/bihome/panzw/tmp/${interface_code}/sh.out 2>&1 &
 
 yesterday()
 {
@@ -56,7 +62,7 @@ time_id=$1
 interface=$2
 FTPHOST=172.16.5.130
 REMOTE_DIR=data
-LOCAL_DIR=/bassapp/bihome/panzw/tmp/06035
+LOCAL_DIR=/bassapp/bihome/panzw/tmp/04019
 HOME=/bassapp/bihome/panzw/config
 export HOME
 
@@ -78,21 +84,30 @@ echo $$
 }
 
 
-for dt in  20120610	\
-20120611	20120612	20120613	20120614	20120615	20120616	\
-20120617	20120618	20120619	20120620
+#~ begin:
+
+
+for dt in  \
+20120601	20120602	20120603	20120604	20120605	\
+20120606	20120607	20120608	20120609	20120610	\
+20120611	20120612	20120613	20120614	20120615	\
+20120616	20120617	20120618	20120619	20120620	\
+20120621	20120622	20120623	20120624	20120625	\
+20120626	20120627	20120628	20120629	20120630	\
+20120701	20120702	20120703	20120704	20120705	\
+20120706	20120707	20120708	20120709	20120710
 do
 	while [ true ]
 	do
 	yestoday=`yesterday ${dt}`
-	cat /bassapp/backapp/data/bass1/report/report_${yestoday}/r*06035_01*verf|grep "${yestoday}.*06035.*00000000" 
+	cat /bassapp/backapp/data/bass1/report/report_${yestoday}/r*${interface_code}_01*verf|grep "${yestoday}.*${interface_code}.*00000000" 
 	ret=$?
 	if [ $ret -eq 0 ];then
 		echo now next: ${dt} ...
-		if [ -f /bassapp/backapp/data/bass1/report/report_${dt}/f*06035_01*verf ];then
+		if [ -f /bassapp/backapp/data/bass1/report/report_${dt}/f*${interface_code}_01*verf ];then
 		echo ${dt} have put!
 		else 
-		putinterface ${dt} 06035
+		putinterface ${dt} ${interface_code}
 		fi
 		break
 	else
