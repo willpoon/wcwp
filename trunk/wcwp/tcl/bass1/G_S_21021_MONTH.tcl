@@ -26,6 +26,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
       #yyyy--mm-dd
       set ThisMonthFirstDay [string range $op_month 0 3][string range $op_time 4 4][string range $op_month 4 5][string range $op_time 4 4]01
       puts $ThisMonthFirstDay      
+	  set last_month [GetLastMonth [string range $op_month 0 5]]
 
         global app_name
         set app_name "G_S_21021_MONTH.tcl"
@@ -63,7 +64,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		,CELL_ID
 		,char(sum(CALL_COUNTS))
 		,char(sum(CALL_DURATION_M))
-		 from  bass2.dw_call_cell_$op_month
+		 from  bass2.dw_call_cell_$last_month
 		 where calltype_id = 0
 		 AND LAC_ID IS NOT NULL AND CELL_ID IS NOT NULL
 		group by 
@@ -115,7 +116,7 @@ select
 			,CELL_ID
 			,char(bigint(sum(UPFLOW1+UPFLOW2)/1024/1024))
 			,char(bigint(sum(DOWNFLOW1+DOWNFLOW2)/1024/1024))
-			 from  bass2.dw_newbusi_gprs_$op_month
+			 from  bass2.dw_newbusi_gprs_$last_month
 			  WHERE LAC_ID IS NOT NULL AND CELL_ID IS NOT NULL
 			group by 
 			USER_ID

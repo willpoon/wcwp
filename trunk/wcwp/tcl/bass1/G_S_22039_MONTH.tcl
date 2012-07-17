@@ -36,7 +36,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
         #本月 yyyymm
         set op_month [string range $op_time 0 3][string range $op_time 5 6]    
-              
+        set op_month 201205      
 
         #本月最后一天 yyyymmdd
         set this_month_last_day [string range $op_month 0 5][GetThisMonthDays [string range $op_month 0 5]01]
@@ -97,7 +97,10 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 ###
 ###
 
-#  由于重入网数据运行时间超长，此接口暂时造数据
+##~   puts  $last_2_day
+##~   puts  $last_1_day
+
+##~   #  由于重入网数据运行时间超长，此接口暂时造数据
 	set sql_buff "insert into bass1.G_S_22039_MONTH
 	select $op_month
 	       ,'$op_month'
@@ -111,61 +114,39 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	puts $sql_buff
   exec_sql $sql_buff
   
-	   
+
+
+	set sql_buff "
+
+insert into G_S_22039_MONTH(
+         TIME_ID
+        ,BILL_MONTH
+        ,BRAND_ID
+        ,CITY_CRW
+        ,COUNTRY_SEAT_CRW
+        ,COUNTRY_CRW
+)
+select 
+         $op_month TIME_ID
+        ,'$op_month' BILL_MONTH
+		,case when rn_base_brand_id = 100 then '1' when rn_base_brand_id = 200 then '3' else '2' end BRAND_ID
+		,char(sum( case when rn_base_county_code  in ('1001','1009','1040','1059','1032','1070','1048')  then 1 end )) CITY_CRW
+		,char(sum( case when not( rn_base_county_code   in ('1001','1009','1040','1059','1032','1070','1048') )  then 1 end)) COUNTRY_SEAT_CRW
+		,'0' COUNTRY_CRW
+from 	bass2.dmrn_user_ms  a , bass2.dw_product_$op_month b
+where substr(replace(char(a.RN_DATE),'-',''),1,6) =  '$last_month'
+and a.RN_USER_ID = b.user_id 
+and b.usertype_id in (1,2,9) 
+and b.userstatus_id in (1,2,3,6,8)
+group by 
+case when rn_base_brand_id = 100 then '1'
+     when rn_base_brand_id = 200 then '3'
+else '2' end
+with ur
+	"
+	exec_sql $sql_buff
+
 
 	return 0
 }
  
-
-
-#内部函数部分	
-proc exec_sql {MySQL} {
-
-	global env
-
-	global conn
-
-	global handle
-
-	set handle [aidb_open $conn]
-	set sql_buff $MySQL
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		puts $errmsg
-		exit -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
-	return 0
-}
-#--------------------------------------------------------------------------------------------------------------
-
-proc get_single {MySQL} {
-
-	global env
-
-	global conn
-
-	global handle
-
-	set handle [aidb_open $conn]
-	set sql_buff $MySQL
-  if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace $errmsg 1001
-		puts $errmsg
-		exit -1
-	}
-	if [catch {set result [lindex [aidb_fetch $handle] 0]} errmsg ] {
-		WriteTrace $errmsg 1002
-		puts $errmsg
-		exit -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
-	
-	
-	return $result
-}
-#--------------------------------------------------------------------------------------------------------------
-

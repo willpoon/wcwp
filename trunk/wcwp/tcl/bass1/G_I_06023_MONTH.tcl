@@ -78,8 +78,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		,value(char(b.BUILD_AREA/100),'') BUILD_AREA
 		,'' USE_AREA
 		,value(char(b.STORE_AREA/100),'20') STORE_AREA
-		,value(char(b.SEAT_NUM),'') SEAT_NUM
-		,value(char(b.EMPLOYEE_NUM),'') STORE_EMPLOYE
+		,value(char(b.SEAT_NUM),'1') SEAT_NUM
+		,value(char(b.EMPLOYEE_NUM),'1') STORE_EMPLOYE
 		,value(char(b.ENSURE_NUM),'') GUARD_EMPLOYE
 		,value(char(b.CLEAN_NUM),'') CLEAR_EMPLOYE
 		,value(char(b.HAVE_QUEUE),'') IF_WAIT_MARK

@@ -274,6 +274,14 @@ set sql_buff "
 #		aidb_close $handle
 #	
 
+##~   ÁÙÊ±µ÷Õû
+##~   set sql_buff "
+	##~   update     (select *from G_I_02006_MONTH where  time_id = 201206 and  user_id = '89157332739473' ) a 
+	##~   set ALL_POINTS = char(bigint(ALL_POINTS)+300)
+	##~   with ur
+##~   "
+	##~   exec_sql $sql_buff
+
 
 set sql_buff "
 	select count(0)

@@ -166,7 +166,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 ## 2 清理表空间
 #2.1 G_S_21003_TO_DAY
 #  mannual modify $clean_flag
-set clean_flag 0
+set clean_flag 1
 if { $clean_flag == "1" } {
 
 	set sql_buff "delete from G_S_21003_TO_DAY where time_id  < $last_month_first_day"

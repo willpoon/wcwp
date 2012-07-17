@@ -10,7 +10,8 @@
 #修改历史:  
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
-
+		
+		##~   set optime_month 2012-05
         #当天 yyyymmdd
         set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]      
 				puts $timestamp
@@ -32,7 +33,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
  	  set sql_buff "delete from  BASS1.G_RULE_CHECK 
  	  				where time_id=$op_month and rule_code in (
-						 'R296'
+						 'R292'
+						,'R296'
 						,'R297'
 						,'R302'
 						,'R307'
@@ -59,15 +61,60 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 ##~   Step2.若(当月值-上月值)/上月值*100%>30%，则违反规则。"
 
 
-##~   G_S_03017_MONTH
 
 
-##~   1180	数据专线
 
-##~   !!!无数据暂不校验！需要修复！！
-##~   select sum(int(income)) from   G_S_03017_MONTH
-##~   where ent_busi_id = '1180'
-##~   and time_id = $op_month
+   set RESULT_VAL1 0
+   set RESULT_VAL2 0
+   set RESULT_VAL3 0
+   	set sql_buff "
+select aa.dan_fee,bb.bef_fee,
+     case when bb.bef_fee=0 then 1
+          else decimal((aa.dan_fee-bb.bef_fee)*1.0/bb.bef_fee,10,4)
+     end
+  from
+(
+	select sum(int(income)) dan_fee from   G_S_03017_MONTH
+	where ent_busi_id = '1180'
+	and time_id = $op_month
+
+ ) aa
+inner join
+(
+	select value(sum(int(income)),0) bef_fee from   G_S_03017_MONTH
+	where ent_busi_id = '1180'
+	and time_id = $last_month
+) bb
+on 1=1
+with ur
+"
+
+
+   set p_row [get_row $sql_buff]
+   set RESULT_VAL1 [lindex $p_row 0]
+   set RESULT_VAL2 [lindex $p_row 1]
+   set RESULT_VAL3 [lindex $p_row 2]
+
+
+
+set RESULT_VAL3 [format %.3f [expr abs( ${RESULT_VAL3} ) ]]
+
+
+        set sql_buff "
+                INSERT INTO BASS1.G_RULE_CHECK VALUES ($op_month,'R292',$RESULT_VAL1,$RESULT_VAL2,$RESULT_VAL3,0) 
+		"
+		exec_sql $sql_buff
+
+
+        #检查合法性: 0 - 不正常； 大于0 - 正常
+        if {[format %.3f [expr ${RESULT_VAL3} ]] > 0.5 } {
+                set grade 2
+                set alarmcontent " R292 校验不通过"
+                puts ${alarmcontent}            
+                WriteAlarm $app_name $op_time $grade ${alarmcontent}
+		}
+
+
 
 
 
@@ -83,7 +130,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 ##~   R293 无数据 ，需要核查修复！
 
 
-
+##~   经和BOSS黄耀富确认，无此业务
 
 
 ##~   R296	月	02_集团客户	A类集团客户整体收入	"03004 明细账单
@@ -145,11 +192,22 @@ where a.enterprise_id = b.enterprise_id
 and b.user_id = c.user_id 
 ) a ,(
 
-select sum(bigint(INCOME)) uniq_fee
-from G_S_03017_MONTH 
-where TIME_ID = $op_month
+			select sum(bigint(INCOME)) uniq_fee
+			from (select *from G_S_03017_MONTH where TIME_ID = $op_month) a
+			,table (
+					select enterprise_id from 
+						(
+										select t.*
+										,row_number()over(partition by t.enterprise_id order by time_id desc ) rn 
+										from 
+										G_A_01004_DAY  t
+														where time_id/100 <= $op_month
+						  ) a
+						where rn = 1	and CUST_STATU_TYP_ID = '20' and    ENT_SCALE_ID in ('4','5')  
+			) b
+			where  a.enterprise_id = b.enterprise_id
 
-) b where 1 = 1
+			) b where 1 = 1
 
 		"
 	set RESULT_VAL1 0
@@ -174,9 +232,20 @@ where TIME_ID = $op_month
 		and b.user_id = c.user_id 
 		) a ,(
 
-		select sum(bigint(INCOME)) uniq_fee
-		from G_S_03017_MONTH 
-		where TIME_ID = $last_month
+			select sum(bigint(INCOME)) uniq_fee
+			from (select *from G_S_03017_MONTH where TIME_ID = $last_month) a
+			,table (
+					select enterprise_id from 
+						(
+										select t.*
+										,row_number()over(partition by t.enterprise_id order by time_id desc ) rn 
+										from 
+										G_A_01004_DAY  t
+														where time_id/100 <= $last_month
+						  ) a
+						where rn = 1	and CUST_STATU_TYP_ID = '20' and    ENT_SCALE_ID in ('4','5')  
+) b
+where  a.enterprise_id = b.enterprise_id
 
 		) b where 1 = 1
 		with ur
@@ -184,7 +253,7 @@ where TIME_ID = $op_month
 	set RESULT_VAL2 0
 	set RESULT_VAL2 [get_single $sql_buff]
 	
-	set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL1} / ${RESULT_VAL2} - 1) ]]
+	set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL1} *1.0000 / ${RESULT_VAL2} - 1) ]]
 		if {  ${RESULT_VAL3} > 0.30 } {
 		set grade 2
 	        set alarmcontent "exception:R296 指标环比异常"
@@ -228,9 +297,20 @@ where a.enterprise_id = b.enterprise_id
 and b.user_id = c.user_id 
 ) a ,(
 
-select sum(bigint(INCOME)) uniq_fee
-from G_S_03017_MONTH 
-where TIME_ID = $op_month
+		select sum(bigint(INCOME)) uniq_fee
+		from (select *from G_S_03017_MONTH where TIME_ID = $op_month) a
+		,table (
+		select enterprise_id from 
+		(
+						select t.*
+						,row_number()over(partition by t.enterprise_id order by time_id desc ) rn 
+						from 
+						G_A_01004_DAY  t
+										where time_id/100 <= $op_month
+		  ) a
+		where rn = 1	and CUST_STATU_TYP_ID = '20' and    ENT_SCALE_ID in ('6','7')  
+		) b
+		where  a.enterprise_id = b.enterprise_id
 
 ) b where 1 = 1
 
@@ -258,16 +338,27 @@ where TIME_ID = $op_month
 		) a ,(
 
 		select sum(bigint(INCOME)) uniq_fee
-		from G_S_03017_MONTH 
-		where TIME_ID = $last_month
-
+		from (select *from G_S_03017_MONTH where TIME_ID = $last_month) a
+		,table (
+		select enterprise_id from 
+		(
+						select t.*
+						,row_number()over(partition by t.enterprise_id order by time_id desc ) rn 
+						from 
+						G_A_01004_DAY  t
+										where time_id/100 <= $last_month
+		  ) a
+		where rn = 1	and CUST_STATU_TYP_ID = '20' and    ENT_SCALE_ID in ('6','7')  
+		) b
+		where  a.enterprise_id = b.enterprise_id
+		
 		) b where 1 = 1
 		with ur
 "
 	set RESULT_VAL2 0
 	set RESULT_VAL2 [get_single $sql_buff]
 	
-	set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL1} / ${RESULT_VAL2} - 1) ]]
+	set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL1} * 1.0000 / ${RESULT_VAL2} - 1) ]]
 		if {  ${RESULT_VAL3} > 0.30 } {
 		set grade 2
 	        set alarmcontent "exception:R297 指标环比异常"
@@ -329,7 +420,7 @@ exec_sql $sql_buff
    	set sql_buff "
 select aa.dan_fee,bb.bef_fee,
      case when bb.bef_fee=0 then 1
-          else decimal((aa.dan_fee-bb.bef_fee)*1.0/bb.bef_fee,10,2)
+          else decimal((aa.dan_fee-bb.bef_fee)*1.0/bb.bef_fee,10,4)
      end
   from
 (
@@ -385,7 +476,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
         #检查合法性: 0 - 不正常； 大于0 - 正常
         if {[format %.3f [expr ${RESULT_VAL3} ]] > 0.5 } {
                 set grade 2
-                set alarmcontent " R286 校验不通过"
+                set alarmcontent " R302 校验不通过"
                 puts ${alarmcontent}            
                 WriteAlarm $app_name $op_time $grade ${alarmcontent}
 		}
@@ -724,6 +815,18 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 ##~   --R319	月	02_集团客户	企业建站当月总收入	"03017 集团统付收入 03018 集团个人非统付收入"	企业建站当月总收入环比绝对值小于等于50%
 
 
+##~   201206	89103000136280      	1340	2	024	12000       	   
+##~   201206	89103000832643      	1340	2	024	12000       	   
+##~   201206	89403001443963      	1340	2	024	12000       	   
+##~   201206	89501560001508      	1340	2	024	12000       	   
+
+##~   UPDATE (
+    ##~   select *
+     ##~   from bass1.g_s_03017_month
+    ##~   where time_id=201206
+      ##~   and ent_busi_id in('1340')
+##~   ) T SET INCOME = '0'
+##~   WHERE ENTERPRISE_ID in ('89103000136280','89103000832643','89403001443963','89501560001508')
 
    set RESULT_VAL1 0
    set RESULT_VAL2 0
@@ -761,12 +864,12 @@ select
   (
     select sum(bigint(income)) income
      from bass1.g_s_03018_month
-    where time_id=$op_month
+    where time_id=$last_month
       and ent_busi_id in('1340')
     union all
     select sum(bigint(income)) income
      from bass1.g_s_03017_month
-    where time_id=$op_month
+    where time_id=$last_month
       and ent_busi_id in('1340')
    ) b
 ) bb
@@ -1232,7 +1335,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select aa.dan_fee,bb.bef_fee,
      case when bb.bef_fee=0 and aa.dan_fee = 0 then 0 when bb.bef_fee=0 and aa.dan_fee <> 0 then 1
-          else decimal((aa.dan_fee-bb.bef_fee)*1.0/bb.bef_fee,10,2)
+          else decimal((aa.dan_fee-bb.bef_fee)*1.0/bb.bef_fee,10,4)
      end
   from
 (
@@ -1393,7 +1496,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select aa.dan_fee,bb.bef_fee,
      case when bb.bef_fee=0 then 1
-          else decimal((aa.dan_fee-bb.bef_fee)*1.0/bb.bef_fee,10,2)
+          else decimal((aa.dan_fee-bb.bef_fee)*1.0/bb.bef_fee,10,4)
      end
   from
 (
@@ -1474,7 +1577,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select  dan_cnts,bef_cnts,
      case when bef_cnts=0 then 1
-          else decimal((dan_cnts-bef_cnts)*1.0/bef_cnts,10,2)
+          else decimal((dan_cnts-bef_cnts)*1.0/bef_cnts,10,4)
      end
   from 
 (
@@ -1484,7 +1587,7 @@ select value(sum(bigint(upmessage)+bigint(downmessage)),0) dan_cnts
 inner join
 (
 select value(sum(bigint(upmessage)+bigint(downmessage)),0) bef_cnts
- from bass1.G_S_22303_MONTH where time_id=$op_month
+ from bass1.G_S_22303_MONTH where time_id=$last_month
 ) b
 on 1=1
 

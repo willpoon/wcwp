@@ -99,15 +99,25 @@ and a.product_instance_id = c.user_id
     exec_sql $sql_buff      
 
 
+##~   20120627
+source /bassapp/bass1/tcl/INT_FIX_TMP.tcl
+Deal_fix22036 $op_time $optime_month
+  
+  
+
   #进行结果数据检查
   #1.检查chkpkunique
   set tabname "G_A_22036_DAY"
         set pk                  "APP_LENCODE||APNCODE"
         chkpkunique ${tabname} ${pk} ${timestamp}
         #
-  
-  
-  
+  ##   new
+  set tabname "G_A_22036_DAY"
+        set pk                  "BILL_MONTH||EC_CODE||APP_LENCODE||APNCODE||BUSI_NAME"
+        chkpkunique ${tabname} ${pk} ${timestamp}
+        #
+
+
 return 0
 
     

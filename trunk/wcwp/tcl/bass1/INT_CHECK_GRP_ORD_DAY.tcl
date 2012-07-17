@@ -33,7 +33,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 ###########################################################
 
  	  set sql_buff "delete from  BASS1.G_RULE_CHECK 
- 	  				where time_id=$last_month and rule_code in (
+ 	  				where time_id=$timestamp and rule_code in (
 					 'R265'
 					,'R286'
 					,'R287'
@@ -100,7 +100,7 @@ except
 										where  time_id / 100 <= $curr_month
                           ) a
                         where rn = 1    and OPERATE_TYPE = '1'
-										And bigint(OPEN_DATE) <= $curr_month
+										And bigint(OPEN_DATE)/100 <= $curr_month
                         
 ) a
 with ur
@@ -136,7 +136,7 @@ select
 a.curr_cnts
 ,b.bef_cnts
 ,case when bef_cnts=0 then 1
-	  else decimal((curr_cnts-bef_cnts)*1.0/bef_cnts,10,2)
+	  else decimal((curr_cnts-bef_cnts)*1.0/bef_cnts,10,4)
  end
 from table(
 select case when ENT_SCALE_ID in ('4','5') then 'A' 
@@ -217,7 +217,7 @@ select
  a.curr_cnts
 ,b.bef_cnts
 ,case when bef_cnts=0 then 1
-	  else decimal((curr_cnts-bef_cnts)*1.0/bef_cnts,10,2)
+	  else decimal((curr_cnts-bef_cnts)*1.0/bef_cnts,10,4)
  end
 from table(
 select case when ENT_SCALE_ID in ('4','5') then 'A' 
@@ -399,11 +399,11 @@ exec_sql $sql_buff
 
 	set sql_buff "
 		select count(0) from  table (
-		 select distinct APP_LENCODE from 
+			select distinct EC_CODE from 
 								(
 												select t.*
-												,row_number()over(partition by BILL_MONTH,EC_CODE,APP_LENCODE,APNCODE,BUSI_NAME 
-												order by time_id desc ) rn 
+														,row_number()over(partition by EC_CODE,CUST_TYPE
+														order by time_id desc ) rn 
 												from 
 												G_A_22036_DAY  t
 												where 
@@ -413,7 +413,7 @@ exec_sql $sql_buff
 								and bigint(OPEN_DATE)/100 <= $curr_month
 								and  CUST_TYPE = '0'
 		) t where 
-		 APP_LENCODE not in (                  
+			EC_CODE not in (                  
 		select enterprise_id
 		from  table (
 					select enterprise_id from 
@@ -424,11 +424,13 @@ exec_sql $sql_buff
 									G_A_01004_DAY  t
 													where time_id/100 <= $curr_month
 					  ) a
-					where rn = 1	and CUST_STATU_TYP_ID = '20' 
+					where rn = 1
 			)   t                     
 		)
 		with ur
 "
+
+##~   集团一经代码无此口径：and CUST_STATU_TYP_ID = '20' ，故踢去！
 
 chkzero2 $sql_buff "R291 not pass!"
 
@@ -464,7 +466,7 @@ select
 aa.curr_cnts
 ,bb.bef_cnts
 ,case when bb.bef_cnts=0 then 1
-          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,2)
+          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,4)
      end
   from
 (
@@ -545,7 +547,7 @@ cc.curr_cnts
 ,dd.bef_cnts
 ,
      case when dd.bef_cnts=0 then 1
-          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,2)
+          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,4)
      end
   from
   (
@@ -629,7 +631,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 select
 aa.curr_cnts,bb.bef_cnts,
      case when bb.bef_cnts=0 then 1
-          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,2)
+          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,4)
      end
   from
 (
@@ -708,7 +710,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 select
 cc.curr_cnts,dd.bef_cnts,
      case when dd.bef_cnts=0 then 1
-          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,2)
+          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,4)
      end
   from
   (
@@ -722,6 +724,7 @@ cc.curr_cnts,dd.bef_cnts,
            (select order_date,enterprise_busi_type,enterprise_id,user_id,status_id,
          row_number() over(partition by enterprise_id,enterprise_busi_type,user_id order by time_id desc) row_id  from bass1.g_a_02059_day
 		         where time_id/100<=$curr_month
+				 and length(trim(user_id)) = 14
 ) z
     where status_id='1'
       and row_id=1
@@ -742,6 +745,7 @@ inner join
          from (select order_date,enterprise_busi_type,enterprise_id,user_id,status_id,
          row_number() over(partition by enterprise_id,enterprise_busi_type,user_id order by time_id desc) row_id  from bass1.g_a_02059_day
 		         where time_id/100<=$last_month
+				 and length(trim(user_id)) = 14
 ) z
     where status_id='1'
       and row_id=1
@@ -799,7 +803,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select aa.curr_cnts,bb.bef_cnts,
      case when bb.bef_cnts=0 then 1
-          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,2)
+          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,4)
      end
   from
 (
@@ -880,7 +884,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select cc.curr_cnts,dd.bef_cnts,
      case when dd.bef_cnts=0 then 1
-          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,2)
+          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,4)
      end
   from
   (
@@ -894,6 +898,7 @@ select cc.curr_cnts,dd.bef_cnts,
            (select order_date,enterprise_busi_type,enterprise_id,user_id,status_id,
          row_number() over(partition by enterprise_id,enterprise_busi_type,user_id order by time_id desc) row_id  from bass1.g_a_02059_day
 		         where time_id/100<=$curr_month
+				 and length(trim(user_id)) = 14
 ) z
     where status_id='1'
       and row_id=1
@@ -914,6 +919,7 @@ inner join
          from (select order_date,enterprise_busi_type,enterprise_id,user_id,status_id,
          row_number() over(partition by enterprise_id,enterprise_busi_type,user_id order by time_id desc) row_id  from bass1.g_a_02059_day
 		         where time_id/100<=$last_month
+				 and length(trim(user_id)) = 14
 ) z
     where status_id='1'
       and row_id=1
@@ -965,7 +971,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select aa.curr_cnts,bb.bef_cnts,
      case when bb.bef_cnts=0 then 1
-          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,2)
+          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,4)
      end
   from
 (
@@ -1042,7 +1048,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select cc.curr_cnts,dd.bef_cnts,
      case when dd.bef_cnts=0 then 1
-          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,2)
+          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,4)
      end
   from
   (
@@ -1056,6 +1062,7 @@ select cc.curr_cnts,dd.bef_cnts,
            (select order_date,enterprise_busi_type,enterprise_id,user_id,status_id,
          row_number() over(partition by enterprise_id,enterprise_busi_type,user_id order by time_id desc) row_id  from bass1.g_a_02059_day
 		         where time_id/100<=$curr_month
+				 and length(trim(user_id)) = 14
 ) z
     where status_id='1'
       and row_id=1
@@ -1129,7 +1136,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select aa.curr_cnts,bb.bef_cnts,
      case when bb.bef_cnts=0 then 1
-          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,2)
+          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,4)
      end
   from
 (
@@ -1208,7 +1215,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select cc.curr_cnts,dd.bef_cnts,
      case when dd.bef_cnts=0 then 1
-          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,2)
+          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,4)
      end
   from
   (
@@ -1318,7 +1325,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select aa.curr_cnts,bb.bef_cnts,
      case when bb.bef_cnts=0 then 1
-          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,2)
+          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,4)
      end
   from
 (
@@ -1427,7 +1434,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select cc.curr_cnts,dd.bef_cnts,
      case when dd.bef_cnts=0 then 1
-          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,2)
+          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,4)
      end
   from
   (
@@ -1441,6 +1448,7 @@ select cc.curr_cnts,dd.bef_cnts,
            (select order_date,enterprise_busi_type,enterprise_id,user_id,status_id,
          row_number() over(partition by enterprise_id,enterprise_busi_type,user_id order by time_id desc) row_id  from bass1.g_a_02059_day
 		         where time_id/100<=$curr_month
+				 and length(trim(user_id)) = 14
 ) z
     where status_id='1'
       and row_id=1
@@ -1461,6 +1469,7 @@ inner join
          from (select order_date,enterprise_busi_type,enterprise_id,user_id,status_id,
          row_number() over(partition by enterprise_id,enterprise_busi_type,user_id order by time_id desc) row_id  from bass1.g_a_02059_day
 		         where time_id/100<=$last_month
+				 and length(trim(user_id)) = 14
 ) z
     where status_id='1'
       and row_id=1
@@ -1514,7 +1523,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select aa.curr_cnts,bb.bef_cnts,
      case when bb.bef_cnts=0 and aa.curr_cnts = 0 then 0 when bb.bef_cnts=0 and aa.curr_cnts <> 0 then 1
-          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,2)
+          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,4)
      end
   from
 (
@@ -1596,7 +1605,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select cc.curr_cnts,dd.bef_cnts,
      case when dd.bef_cnts=0 then 1
-          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,2)
+          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,4)
      end
   from
   (
@@ -1703,7 +1712,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select aa.curr_cnts,bb.bef_cnts,
      case when bb.bef_cnts=0 and aa.curr_cnts = 0 then 0 when bb.bef_cnts=0 and aa.curr_cnts <> 0 then 1
-          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,2)
+          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,4)
      end
   from
 (
@@ -1891,7 +1900,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select aa.curr_cnts,bb.bef_cnts,
      case　when bb.bef_cnts=0 and aa.curr_cnts = 0 then 0 when bb.bef_cnts=0 and aa.curr_cnts <> 0 then 1
-          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,2)
+          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,4)
      end
   from
 (
@@ -1974,7 +1983,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select aa.curr_cnts,bb.bef_cnts,
      case when bb.bef_cnts=0 and aa.curr_cnts = 0 then 0 when bb.bef_cnts=0 and aa.curr_cnts <> 0 then 1
-          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,2)
+          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,4)
      end
   from
 (
@@ -2077,7 +2086,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select aa.curr_cnts,bb.bef_cnts,
      case when bb.bef_cnts=0 and aa.curr_cnts = 0 then 0 when bb.bef_cnts=0 and aa.curr_cnts <> 0 then 1
-          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,2)
+          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,4)
      end
   from
 (
@@ -2179,7 +2188,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select cc.curr_cnts,dd.bef_cnts,
      case when  dd.bef_cnts=0 and cc.curr_cnts = 0 then 0 when dd.bef_cnts=0 and cc.curr_cnts <> 0 then 1
-          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,2)
+          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,4)
      end
   from
   (
@@ -2269,7 +2278,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select cc.curr_cnts,dd.bef_cnts,
      case when dd.bef_cnts=0 then 1
-          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,2)
+          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,4)
      end
   from
   (
@@ -2282,7 +2291,7 @@ select cc.curr_cnts,dd.bef_cnts,
          from 
            (select order_date,enterprise_busi_type,enterprise_id,user_id,status_id,
          row_number() over(partition by enterprise_id,enterprise_busi_type,user_id order by time_id desc) row_id  from bass1.g_a_02059_day
-		         where time_id/100<=$curr_month
+		         where time_id/100<=$curr_month and length(trim(user_id)) = 14
 ) z
     where status_id='1'
       and row_id=1
@@ -2302,7 +2311,7 @@ inner join
         select enterprise_id,user_id 
          from (select order_date,enterprise_busi_type,enterprise_id,user_id,status_id,
          row_number() over(partition by enterprise_id,enterprise_busi_type,user_id order by time_id desc) row_id  from bass1.g_a_02059_day
-		         where time_id/100<=$last_month
+		         where time_id/100<=$last_month and length(trim(user_id)) = 14
 ) z
     where status_id='1'
       and row_id=1
@@ -2360,7 +2369,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select aa.curr_cnts,bb.bef_cnts,
      case when bb.bef_cnts=0 then 1
-          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,2)
+          else decimal((aa.curr_cnts-bb.bef_cnts)*1.0/bb.bef_cnts,10,4)
      end
   from
 (
@@ -2444,7 +2453,7 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 select cc.curr_cnts,dd.bef_cnts,
      case when dd.bef_cnts=0 then 1
-          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,2)
+          else decimal((cc.curr_cnts-dd.bef_cnts)*1.0/dd.bef_cnts,10,4)
      end
   from
   (

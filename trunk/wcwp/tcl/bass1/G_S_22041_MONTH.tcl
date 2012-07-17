@@ -143,7 +143,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                  when call_counts <> 0 then 11
                  else 15
              end"
-       
+       puts $sql_buff
   if [catch {aidb_sql $handle $sql_buff} errmsg] {
     WriteTrace $errmsg 1300
     puts "errmsg:$errmsg"
@@ -152,7 +152,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
    while {[set this_row [aidb_fetch $handle]] != ""} {
              set  tmp_row_id           [lindex $this_row 0 ]
              set  tmp_count            [lindex $this_row 1 ]
-#           puts $tmp_row_id
+           puts $tmp_row_id
+           puts $tmp_count
             
           #正常使用客户号码数
           if { $tmp_row_id == 11 } {
