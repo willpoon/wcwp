@@ -188,7 +188,8 @@ select count(*) from
                "
 	chkzero 	$sql_buff 2
 
-#02020 可以包含离网的                      
+#02020 可以包含离网的       
+2012-07-03 由于上月经常发生删除号码的情况，所以多出27个用户。
   #检查在网用户是否在用户表里头
   set handle [aidb_open $conn]
 	set sql_buff "select count(*) from 

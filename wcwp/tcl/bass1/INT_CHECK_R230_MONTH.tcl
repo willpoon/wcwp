@@ -65,6 +65,14 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 ###########################################################
 #R231			新增	月	05_竞争对手	竞争对手运营商品牌为电信移动，移动号码也必须为电信	竞争对手运营商品牌为电信移动，竞争对手移动号码的前三位∈(133、153、180、189）	0.05	天津、海南除外	
 
+ 	  ##~   set sqlbuf "
+			##~   delete from G_I_21020_MONTH
+			##~   where COMP_PRODUCT_NO in ('18108914002','18108914001')
+			##~   and time_id = 201206 
+    	  ##~   "        
+
+	  ##~   exec_sql $sqlbuf
+
  	  set sqlbuf "delete from  BASS1.G_RULE_CHECK 
  	  				where time_id=$op_month and rule_code in ('R231') 
  	  "        
@@ -88,7 +96,10 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		INSERT INTO BASS1.G_RULE_CHECK VALUES ($op_month,'R231',$RESULT_VAL,0,0,0) 
 		"
 		exec_sql $sql_buff
-  
+
+
+    
+
 
 ###########################################################
 #R232			新增	月	05_竞争对手	末次通信在本月内，语音、短信或彩信次数或条数不能都为0	末次通信在统计月内，语音通话次数、短信条数、彩信条数三者不能同时为0	0.05		

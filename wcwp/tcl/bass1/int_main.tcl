@@ -1616,7 +1616,7 @@ proc ChnRatio {MySQL1 MySQL2} {
 	puts $DEC_RESULT_VAL1
 	puts $DEC_RESULT_VAL2
 	
-	set DEC_RESULT_VAL3 [format %.3f [expr abs(${DEC_RESULT_VAL1} / ${DEC_RESULT_VAL2} - 1) ]]
+	set DEC_RESULT_VAL3 [format %.3f [expr abs(${DEC_RESULT_VAL1} * 1.0000 / ${DEC_RESULT_VAL2} - 1) ]]
 	puts [format %.3f [expr (${DEC_RESULT_VAL1} / ${DEC_RESULT_VAL2} - 1) ]]
 	puts $DEC_RESULT_VAL3
 	if {  ${DEC_RESULT_VAL3} > 0.30 } {

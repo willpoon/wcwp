@@ -30,7 +30,16 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 ###########################################################
 
  	  set sql_buff "delete from  BASS1.G_RULE_CHECK 
- 	  				where time_id=$op_month and rule_code in ('R262')
+ 	  				where time_id=$op_month and rule_code in (
+					 'R262'
+					,'R270'
+					,'R271'
+					,'R272'
+					,'R278'
+					,'R279'
+					,'R282'
+					,'R283'
+					)
 			"
 
 		exec_sql $sql_buff
@@ -102,10 +111,14 @@ chkzero2 $sql_buff "R270 not pass!"
 ##~   第三步：比较前两步结果是否相等。"
 
 
+
 set sql_buff "
 
-select (  
-select count(0)
+
+select val1,val2 ,val1-val2 val3
+from 
+(
+select count(0) val1
 from 
 (select * from G_I_02020_MONTH 
 			where time_id = $op_month and bigint(PROD_VALID_DATE)/100 <= $op_month
@@ -115,28 +128,54 @@ from
 select user_id from int_02004_02008_month_$op_month
 where USERTYPE_ID not in ('2010','2020','2030','9000') and  TEST_FLAG = '0') c 
 where a.USER_ID = c.USER_ID
-) -
-(
-select count(0)
+) a 
+,(
+
+select count(0) val2
 from 
 (select * from G_I_02022_DAY where time_id = $this_month_last_day and bigint(VALID_DT) / 100 <= $op_month ) a 
 ,(
 select user_id from int_02004_02008_month_$op_month
 where USERTYPE_ID not in ('2010','2020','2030','9000') and  TEST_FLAG = '0') c 
 where a.USER_ID = c.USER_ID
-) from bass2.dual with ur
+)  b where 1 = 1
+with ur
+
+
 "
 
-chkzero2 $sql_buff "R271 not pass!"
 
-	set RESULT_VAL 0
-	set RESULT_VAL [get_single $sql_buff]
-	set sql_buff "
-		INSERT INTO BASS1.G_RULE_CHECK VALUES ($op_month,'R271',$RESULT_VAL,0,0,0) 
+
+
+
+   set p_row [get_row $sql_buff]
+   set RESULT_VAL1 [lindex $p_row 0]
+   set RESULT_VAL2 [lindex $p_row 1]
+   set RESULT_VAL3 [lindex $p_row 2]
+
+
+
+set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
+
+
+        set sql_buff "
+                INSERT INTO BASS1.G_RULE_CHECK VALUES ($op_month,'R271',$RESULT_VAL1,$RESULT_VAL2,$RESULT_VAL3,0) 
 		"
 		exec_sql $sql_buff
-  
 
+
+        #检查合法性: 0 - 不正常； 大于0 - 正常
+        if {[format %.3f [expr ${RESULT_VAL3} ]] != 0 } {
+                set grade 2
+                set alarmcontent " R271 校验不通过"
+                puts ${alarmcontent}            
+                WriteAlarm $app_name $op_time $grade ${alarmcontent}
+		}
+
+
+  
+  
+  
 
 
 
@@ -155,11 +194,16 @@ chkzero2 $sql_buff "R271 not pass!"
 
 
 
+  
+  
+
 set sql_buff "
 
 
-select (
-select count(0) 
+select val1,val2 ,val1-val2 val3
+from 
+(
+select count(0) val1
 from
 (select *
 from G_I_02021_MONTH where time_id = $op_month and bigint(PROD_VALID_DATE)/100 <= $op_month
@@ -168,33 +212,52 @@ and  OVER_PROD_ID in (select NEW_PKG_ID from  bass1.DIM_QW_QQT_PKGID where OLD_P
 where a.user_id = b.user_id
 and USERTYPE_ID not in ('2010','2020','2030','9000')
 and b.TEST_FLAG = '0'
-) -
-(
-select count(0) 
+) a 
+,(
+
+select count(0) val2
 from (
 select * from G_I_02023_DAY where time_id = $this_month_last_day
 ) a  ,int_02004_02008_month_$op_month b 
 where a.user_id = b.user_id
 and b.USERTYPE_ID not in ('2010','2020','2030','9000')
 and b.TEST_FLAG = '0'
-) from bass2.dual with ur
+
+)  b where 1 = 1
+with ur
 
 
 "
 
-chkzero2 $sql_buff "R272 not pass!"
 
-	set RESULT_VAL 0
-	set RESULT_VAL [get_single $sql_buff]
-	set sql_buff "
-		INSERT INTO BASS1.G_RULE_CHECK VALUES ($op_month,'R272',$RESULT_VAL,0,0,0) 
+
+
+
+   set p_row [get_row $sql_buff]
+   set RESULT_VAL1 [lindex $p_row 0]
+   set RESULT_VAL2 [lindex $p_row 1]
+   set RESULT_VAL3 [lindex $p_row 2]
+
+
+
+set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
+
+
+        set sql_buff "
+                INSERT INTO BASS1.G_RULE_CHECK VALUES ($op_month,'R272',$RESULT_VAL1,$RESULT_VAL2,$RESULT_VAL3,0) 
 		"
-exec_sql $sql_buff
-  
-  
-  
-  
-  
+		exec_sql $sql_buff
+
+
+        #检查合法性: 0 - 不正常； 大于0 - 正常
+        if {[format %.3f [expr ${RESULT_VAL3} ]] != 0 } {
+                set grade 2
+                set alarmcontent " R272 校验不通过"
+                puts ${alarmcontent}            
+                WriteAlarm $app_name $op_time $grade ${alarmcontent}
+		}
+
+
   
   
   
@@ -210,38 +273,60 @@ exec_sql $sql_buff
 
 
 
-
 set sql_buff "
 
-select (  
-select count(0) from G_I_06021_MONTH where time_id = $op_month
-and CHANNEL_STATUS = '1'
-) -
+
+select val1,val2 ,val1-val2 val3
+from 
 (
-select count(0)
-from
-(
-select a.*,row_number()over(partition by channel_id order by time_id desc ) rn 
-from G_A_06035_DAY a
-where time_id / 100 <= $op_month
-) t where t.rn =1  and CHNL_STATE = '1'
-) from bass2.dual with ur
+	select count(distinct channel_id) val1 from G_I_06021_MONTH where time_id = $op_month
+	and CHANNEL_STATUS = '1'
+) a 
+,(
+
+	select  count(distinct channel_id) val2
+	from
+	(
+	select a.*,row_number()over(partition by channel_id order by time_id desc ) rn 
+	from G_A_06035_DAY a
+	where time_id / 100 <= $op_month
+	) t where t.rn =1  and CHNL_STATE = '1'
+
+)  b where 1 = 1
+with ur
 
 
 "
 
-chkzero2 $sql_buff "R278 not pass!"
 
-	set RESULT_VAL 0
-	set RESULT_VAL [get_single $sql_buff]
-	set sql_buff "
-		INSERT INTO BASS1.G_RULE_CHECK VALUES ($op_month,'R278',$RESULT_VAL,0,0,0) 
+
+
+
+   set p_row [get_row $sql_buff]
+   set RESULT_VAL1 [lindex $p_row 0]
+   set RESULT_VAL2 [lindex $p_row 1]
+   set RESULT_VAL3 [lindex $p_row 2]
+
+
+
+set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
+
+
+        set sql_buff "
+                INSERT INTO BASS1.G_RULE_CHECK VALUES ($op_month,'R278',$RESULT_VAL1,$RESULT_VAL2,$RESULT_VAL3,0) 
 		"
-exec_sql $sql_buff
-  
-  
-  
-  
+		exec_sql $sql_buff
+
+
+        #检查合法性: 0 - 不正常； 大于0 - 正常
+        if {[format %.3f [expr ${RESULT_VAL3} ]] != 0 } {
+                set grade 2
+                set alarmcontent " R278 校验不通过"
+                puts ${alarmcontent}            
+                WriteAlarm $app_name $op_time $grade ${alarmcontent}
+		}
+
+
 
 
 ##~   R279	月	09_渠道运营	实体渠道购建或租赁信息日月关系	"06022 实体渠道购建或租赁信息
@@ -257,46 +342,85 @@ exec_sql $sql_buff
 
 
 
+
 set sql_buff "
 
-select (
-select count(0)
-from 
-(				
-select * from G_I_06022_MONTH where time_id = $op_month ) a,
-(select * from G_I_06021_MONTH where time_id = $op_month
-and CHANNEL_STATUS = '1')  b
-where a.channel_id = b.channel_id 
-) -
-(
-select count(0)
+
+select val1,val2 ,val1-val2 val3
 from 
 (
-	select *
+
+	select count(distinct a.channel_id) val1
+	from 
+	(				
+		select * from G_I_06022_MONTH where time_id = $op_month ) a,
+		(select * from G_I_06021_MONTH where time_id = $op_month
+		and CHANNEL_STATUS = '1')  b
+		where a.channel_id = b.channel_id 
+		
+) a 
+,(
+
+
+	select count(distinct a.channel_id) val2
+	from 
+	(
+		select *
+		from
+		(
+		select a.*,row_number()over(partition by channel_id order by time_id desc ) rn 
+		from G_A_06036_DAY a
+		where time_id / 100 <= $op_month
+		) t where t.rn =1  
+	) a
+	,TABLE (
+	select CHANNEL_ID
 	from
 	(
-	select a.*,row_number()over(partition by channel_id order by time_id desc ) rn 
-	from G_A_06036_DAY a
-	where time_id / 100 <= $op_month
-	) t where t.rn =1  
-) a,(select * from G_I_06021_MONTH where time_id = $op_month and CHANNEL_STATUS = '1')  b
-where a.channel_id = b.channel_id
-) from bass2.dual with ur
+	 select 
+	 a.*
+	 ,row_number()over(partition by CHANNEL_ID order by TIME_ID desc )  rn 
+	 from G_A_06035_DAY  a
+	 where time_id/100 <= $op_month
+	) o where o.rn = 1
+	and CHNL_STATE = '1'
+	) B 
+	where a.channel_id = b.channel_id
 
+
+)  b where 1 = 1
+with ur
 
 
 "
 
-chkzero2 $sql_buff "R279 not pass!"
 
-	set RESULT_VAL 0
-	set RESULT_VAL [get_single $sql_buff]
-	set sql_buff "
-		INSERT INTO BASS1.G_RULE_CHECK VALUES ($op_month,'R279',$RESULT_VAL,0,0,0) 
+
+
+
+   set p_row [get_row $sql_buff]
+   set RESULT_VAL1 [lindex $p_row 0]
+   set RESULT_VAL2 [lindex $p_row 1]
+   set RESULT_VAL3 [lindex $p_row 2]
+
+
+
+set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
+
+
+        set sql_buff "
+                INSERT INTO BASS1.G_RULE_CHECK VALUES ($op_month,'R279',$RESULT_VAL1,$RESULT_VAL2,$RESULT_VAL3,0) 
 		"
-exec_sql $sql_buff
-  
-  
+		exec_sql $sql_buff
+
+
+        #检查合法性: 0 - 不正常； 大于0 - 正常
+        if {[format %.3f [expr ${RESULT_VAL3} ]] != 0 } {
+                set grade 2
+                set alarmcontent " R279 校验不通过"
+                puts ${alarmcontent}            
+                WriteAlarm $app_name $op_time $grade ${alarmcontent}
+		}
 
 
 
@@ -320,40 +444,73 @@ exec_sql $sql_buff
 set sql_buff "
 
 
-select (
-select count(0)
+select val1,val2 ,val1-val2 val3
 from 
-(select * from G_I_06023_MONTH a  where time_id = $op_month ) a
-,(select * from G_I_06021_MONTH a where time_id = $op_month and CHANNEL_STATUS = '1')  b
+(
+
+
+select count(DISTINCT A.CHANNEL_ID) val1
+from 
+(select * from G_I_06023_MONTH a  where time_id = ${op_month} ) a
+,(select * from G_I_06021_MONTH a where time_id = ${op_month} and CHANNEL_STATUS = '1')  b
 where a.CHANNEL_ID = b.CHANNEL_ID 
 
-) - (
-select count(0) from 
+) a 
+,(
+
+select  count(DISTINCT A.CHANNEL_ID) val2
+from 
 (
-		select *
-		from
-		(
-		select a.*,row_number()over(partition by channel_id order by time_id desc ) rn 
-		from G_A_06037_DAY a
-		where time_id / 100 <= $op_month
-		) t where t.rn =1  
-) a ,(select * from G_I_06021_MONTH a where time_id = $op_month and CHANNEL_STATUS = '1')  b
+                select *
+                from
+                (
+                select a.*,row_number()over(partition by channel_id order by time_id desc ) rn 
+                from G_A_06037_DAY a
+                where time_id / 100 <= ${op_month}
+                ) t where t.rn =1  
+) a ,TABLE (
+	select CHANNEL_ID
+	from
+	(
+	 select 
+	 a.*
+	 ,row_number()over(partition by CHANNEL_ID order by TIME_ID desc )  rn 
+	 from G_A_06035_DAY  a
+	 where time_id/100 <= $op_month
+	) o where o.rn = 1
+	and CHNL_STATE = '1'
+	) B 
 where a.CHANNEL_ID = b.CHANNEL_ID 
-) from bass2.dual with ur
+
+)  b where 1 = 1
+with ur
 
 
 "
 
-chkzero2 $sql_buff "R280 not pass!"
+   set p_row [get_row $sql_buff]
+   set RESULT_VAL1 [lindex $p_row 0]
+   set RESULT_VAL2 [lindex $p_row 1]
+   set RESULT_VAL3 [lindex $p_row 2]
 
-	set RESULT_VAL 0
-	set RESULT_VAL [get_single $sql_buff]
-	set sql_buff "
-		INSERT INTO BASS1.G_RULE_CHECK VALUES ($op_month,'R280',$RESULT_VAL,0,0,0) 
+
+
+set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
+
+
+        set sql_buff "
+                INSERT INTO BASS1.G_RULE_CHECK VALUES ($op_month,'R280',$RESULT_VAL1,$RESULT_VAL2,$RESULT_VAL3,0) 
 		"
-exec_sql $sql_buff
-  
-  
+		exec_sql $sql_buff
+
+
+        #检查合法性: 0 - 不正常； 大于0 - 正常
+        if {[format %.3f [expr ${RESULT_VAL3} ]] != 0 } {
+                set grade 2
+                set alarmcontent " R280 校验不通过"
+                puts ${alarmcontent}            
+                WriteAlarm $app_name $op_time $grade ${alarmcontent}
+		}
 
 
 ##~   --~   R282	月	10_积分计划	非全球通品牌的客户不应上传品牌奖励积分	02006 用户积分情况	非全球通品牌的客户不应上传品牌奖励积分	0.05	

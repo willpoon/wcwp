@@ -50,7 +50,31 @@ join (select distinct  school_id,SCHOOL_NAME
 		from  bass2.Dim_xysc_maintenance_info ) b on a.SCHOOL_NAME = b.SCHOOL_NAME
   "
   exec_sql $sql_buff
-  
+
+
+
+##~  20120707 由于本月校园市场出得有问题，并且时间紧急，故‘T’的数据用上月的报。仅此一次。
+  ##~   set sql_buff "
+  ##~   insert into G_I_02031_MONTH
+  ##~   (
+         ##~   TIME_ID
+        ##~   ,USER_ID
+        ##~   ,SCHOOL_ID
+        ##~   ,MARK_TYPE
+  ##~   )
+##~   select distinct 
+	##~   $op_month
+        ##~   ,a.USER_ID
+        ##~   ,b.school_id
+        ##~   ,'1' MARK_TYPE        
+##~   from    bass2.DW_XYSC_SCHOOL_REAL_USER_DT_201205 a
+##~   join (select distinct  school_id,SCHOOL_NAME 
+		##~   from  bass2.Dim_xysc_maintenance_info ) b on a.SCHOOL_NAME = b.SCHOOL_NAME
+##~   where  upper(a.PHONE_TYPE) = 'T'				
+  ##~   "
+  ##~   exec_sql $sql_buff
+
+
   #进行结果数据检查
   #1.检查chkpkunique
   set tabname "G_I_02031_MONTH"

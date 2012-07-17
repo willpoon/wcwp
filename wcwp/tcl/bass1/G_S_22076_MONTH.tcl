@@ -234,6 +234,11 @@ exec_sql $sql_buff
 
 #	09	点对点彩信-网内-省内-上行	统计周期本省移动用户发送至本省移动用户的彩信（含集团彩信上行）。	number(15)	单位：条
 
+#20120704 : 原有的口径：SVCITEM_ID in  (400001)
+#替换成： and drtype_id in (90605,103)
+# and app_type = 0 
+
+
 set sql_buff "
 insert into G_S_22076_MONTH_1
 select 'P09'
@@ -245,8 +250,9 @@ select 'P09'
 			end ),1,7) hlr_code   
 			from bass2.DW_NEWBUSI_MMS_$op_month a 
  where a.SEND_STATUS in (0,1,2,3) 
- and a.SVCITEM_ID in  (400001)
- and  a.calltype_id in (0)
+ and a.drtype_id in (90605,103)
+ and a.app_type = 0 
+ and a.calltype_id in (0)
  ) a
  ,(select distinct  hlr_code  from   bass2.DIM_GSM_HLR_INFO
                 where prov_code = '891'
@@ -269,7 +275,8 @@ select 'P10'
  select a.user_id,counts,substr((case when substr(a.opp_number,1,2) = '86' then substr(a.opp_number,3,11) else a.opp_number
 			end ),1,7) hlr_code   from bass2.DW_NEWBUSI_MMS_$op_month a 
  where a.SEND_STATUS in (0,1,2,3) 
- and a.SVCITEM_ID in  (400001)
+ and a.drtype_id in (90605,103)
+ and a.app_type = 0 
  and  a.calltype_id in (0)
  ) a
  ,session.G_S_22076_MONTH_2 c
@@ -292,7 +299,8 @@ select 'P11'
  select a.user_id,counts,substr((case when substr(a.opp_number,1,2) = '86' then substr(a.opp_number,3,11) else a.opp_number
 			end ),1,7) hlr_code   from bass2.DW_NEWBUSI_MMS_$op_month a 
  where a.SEND_STATUS in (0,1,2,3) 
- and a.SVCITEM_ID in  (400001)
+ and a.drtype_id in (90605,103)
+ and a.app_type = 0 
  and  a.calltype_id in (1)
  ) a
  ,session.G_S_22076_MONTH_2 c

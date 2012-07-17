@@ -40,6 +40,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 					,'R045'
 					,'R046'
 					,'R047'
+					,'R048'
 					)
  	  "        
 
@@ -240,6 +241,26 @@ select distinct SCHOOL_ID from G_I_02031_MONTH where TIME_ID = $op_month
 
 chkzero2 $sql_buff "校园基本信息表未找到校园区域本网用户"
 
+
+
+
+#R048 当月校园位置信息表中的学校标识不在校园基本信息表中存在的记录数 > 0
+set sql_buff "
+	select count(0) from G_I_06002_MONTH where time_id = $op_month
+	and SCHOOL_ID not in 
+	(select distinct SCHOOL_ID from G_I_06001_MONTH where TIME_ID = $op_month)
+	with ur
+"
+
+  set RESULT_VAL 0
+ 	set RESULT_VAL [get_single $sql_buff]
+
+chkzero2 $sql_buff "R048 not pass!"
+
+set sql_buff "
+	INSERT INTO BASS1.G_RULE_CHECK VALUES ($op_month,'R048',$RESULT_VAL,0,0,0) 
+"
+exec_sql $sql_buff
 
 
 

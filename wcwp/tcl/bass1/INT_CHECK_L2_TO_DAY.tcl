@@ -194,8 +194,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 ####}
 ##################################END#######################
 
-##~   INT_CHECK_L2_TO_DAY.tcl
+##   INT_CHECK_L2_TO_DAY.tcl
 source /bassapp/bass1/tcl/INT_FIX_TMP.tcl
-##~   Trans91003 $op_time $optime_month
+Trans91003 $op_time $optime_month
 	return 0
 }    

@@ -22,6 +22,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 #        set op_time 2008-06-01
 #        set optime_month 2008-05-31
+        set optime_month 2012-05
         set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
         puts $timestamp
         #----求上月最后一天---#,格式 yyyymmdd
@@ -459,6 +460,29 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	with ur
 	"
 	exec_sql $sql_buff
+
+
+
+
+##2012-06-29  1180 数据专线 for R292 校验
+	set sql_buff "
+	insert into session.tmp03017
+	select
+	a.enterprise_id as enterprise_id
+	,'1180' ent_busi_id
+	,'3' manage_mod
+	,'030'  account_item
+	,sum(a.unipay_fee)*100 as income
+       from  bass2.dw_enterprise_new_unipay_$op_month a
+	where a.test_mark = 0
+	and a.service_id in  (912002)
+	group by
+	a.enterprise_id
+	,'030'
+	with ur
+	"
+	exec_sql $sql_buff
+
 
 
 ##2011-08-05  1230 400业务
