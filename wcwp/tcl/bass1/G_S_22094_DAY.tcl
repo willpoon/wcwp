@@ -60,7 +60,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			$timestamp time_id
 			,'$timestamp'  CHRG_DT
 			,replace(substr(char(PEER_DATE),12,8),'.','')  CHRG_TM
-			,key_num MSISDN
+			,case when b.product_no is not null then '0' else a.key_num end  MSISDN
 			,case when opt_code = '4464' then 'BASS1_ST' else char(staff_org_id) end channel_id
 			,case 
 				when CERTIFICATE_TYPE = '0' then '1'
@@ -68,12 +68,17 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 				when opt_code = '4205' then '3' 
 				else '4' end CHRG_TYPE
 			,char(bigint(amount)) CHRG_AMT
-		from BASS2.dw_acct_payment_dm_$curr_month a
+		from BASS2.dw_acct_payment_dm_$curr_month a 
+		left join (
+				select product_no from bass2.dw_product_$timestamp
+				where USERTYPE_ID = 8	
+				and USERSTATUS_ID in (1,2,3,6,8)
+				) b on a.MSISDN = b.product_no
 		where  replace(char(a.OP_TIME),'-','') = '$timestamp' 
 			and opt_code not in (select paytype_id from bass2.dim_acct_paytype where paytype_name like '%ø’÷–≥‰÷µ%')
 			and lower(key_num) not like 'd%'
 			and opt_code not in ('4464','4864','4468','SJJF2','4115')
-			and length(key_num)  = 11 
+			and (length(key_num)  = 11 or b.product_no is not null)
 		with ur
 		"
 	

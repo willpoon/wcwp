@@ -150,7 +150,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			where DATE(A.done_date)='$op_time'
 			  and A.SERVICE_ID = B.SERVICE_ID
 			  and a.SERVICE_ID = c.XZBAS_VALUE
-				and c.BASS1_VALUE not in ('1310','1320','1430','1440','1450','1340','1210','1170','3000','1230','1220')
+				 and c.BASS1_VALUE not in ('1310','1320','1430','1440','1450','1340','1210','1170','3000','1230','1220','1520','1560')
 		 group by A.ENTERPRISE_ID,C.BASS1_VALUE,
 		 		case
 					when C.BASS1_VALUE='1290' then '2'

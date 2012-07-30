@@ -64,7 +64,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 		,CELL_ID
 		,char(sum(CALL_COUNTS))
 		,char(sum(CALL_DURATION_M))
-		 from  bass2.dw_call_cell_$last_month
+		 from  bass2.dw_call_cell_$op_month
 		 where calltype_id = 0
 		 AND LAC_ID IS NOT NULL AND CELL_ID IS NOT NULL
 		group by 
@@ -114,9 +114,9 @@ select
 			USER_ID
 			,LAC_ID
 			,CELL_ID
-			,char(bigint(sum(UPFLOW1+UPFLOW2)/1024/1024))
-			,char(bigint(sum(DOWNFLOW1+DOWNFLOW2)/1024/1024))
-			 from  bass2.dw_newbusi_gprs_$last_month
+			,char(bigint(sum(UPFLOW1+UPFLOW2)/1024))
+			,char(bigint(sum(DOWNFLOW1+DOWNFLOW2)/1024))
+			 from  bass2.dw_newbusi_gprs_$op_month
 			  WHERE LAC_ID IS NOT NULL AND CELL_ID IS NOT NULL
 			group by 
 			USER_ID

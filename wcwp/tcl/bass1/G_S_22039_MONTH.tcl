@@ -36,7 +36,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
         #本月 yyyymm
         set op_month [string range $op_time 0 3][string range $op_time 5 6]    
-        set op_month 201205      
+        ##~   set op_month 201205      
 
         #本月最后一天 yyyymmdd
         set this_month_last_day [string range $op_month 0 5][GetThisMonthDays [string range $op_month 0 5]01]
@@ -101,18 +101,18 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 ##~   puts  $last_1_day
 
 ##~   #  由于重入网数据运行时间超长，此接口暂时造数据
-	set sql_buff "insert into bass1.G_S_22039_MONTH
-	select $op_month
-	       ,'$op_month'
-				 ,brand_id
-		     ,char(int((rand()*10+95)*bigint(city_crw)/100))
-		     ,char(int((rand()*10+95)*bigint(country_seat_crw)/100))
-		     ,char(int((rand()*10+95)*bigint(country_crw)/100))
-		from bass1.G_S_22039_MONTH
-	 where time_id=$last_month
-	 "
-	puts $sql_buff
-  exec_sql $sql_buff
+	##~   set sql_buff "insert into bass1.G_S_22039_MONTH
+	##~   select $op_month
+	       ##~   ,'$op_month'
+				 ##~   ,brand_id
+		     ##~   ,char(int((rand()*10+95)*bigint(city_crw)/100))
+		     ##~   ,char(int((rand()*10+95)*bigint(country_seat_crw)/100))
+		     ##~   ,char(int((rand()*10+95)*bigint(country_crw)/100))
+		##~   from bass1.G_S_22039_MONTH
+	 ##~   where time_id=$last_month
+	 ##~   "
+	##~   puts $sql_buff
+  ##~   exec_sql $sql_buff
   
 
 
