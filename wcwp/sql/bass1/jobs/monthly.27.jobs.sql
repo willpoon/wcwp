@@ -82,6 +82,8 @@ delete from BASS2.DIM_TERM_TAC;
 insert into BASS2.DIM_TERM_TAC
 select * from BASS2.DIM_TERM_TAC_MID
 ;
+
+
  insert into BASS2.DIM_TERM_TAC
 select 
 ID,
@@ -93,7 +95,7 @@ TERMPROD_NAME,
 NET_TYPE,
 TERM_TYPE from BASS2.DIM_TERM_TAC_20120529BAK
 where net_type <>'2';
-
+--~   2-3G£¨TD£©
 
 select tac_nuM,count(*) from BASS2.DIM_TERM_TAC
 group by tac_nuM
@@ -164,4 +166,3 @@ select count(0) from    BASS2.DIM_TERM_TAC
 
 
 
-    
