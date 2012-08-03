@@ -1,10 +1,11 @@
-1.替换日期区间
-2.替换接口编号
+#~ 1.替换日期区间
+#~ 2.替换接口编号
 
 interface_code=04019
 
 
-#~ nohup sh /bassapp/bihome/panzw/tmp/${interface_code}/bass1_upload_interface.sh > /bassapp/bihome/panzw/tmp/${interface_code}/sh.out 2>&1 &
+#~ nohup sh /bassapp/bihome/panzw/tmp/${interface_code}/bass1_upload_interface.sh \
+#~ > /bassapp/bihome/panzw/tmp/${interface_code}/sh.out 2>&1 &
 
 yesterday()
 {
@@ -71,6 +72,7 @@ ftp_mac_file=/bassapp/bihome/panzw/tmp/put_verf.mac.ftp
 
 #生成ftp命令文件
 echo "cd ${REMOTE_DIR}" > ${ftp_mac_file}
+echo "lcd ${LOCAL_DIR}" >> ${ftp_mac_file}
 echo "bin" >> ${ftp_mac_file}
 echo "prompt off" >> ${ftp_mac_file}
 echo "put *${time_id}*${interface}*dat" >> ${ftp_mac_file}
