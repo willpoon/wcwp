@@ -1,8 +1,17 @@
+#~ functions:
+#~ 1.从设定的起始日期开始，自动上传后续日期，重复调用程序可以自动跳过已上传的日期。
+#~ notes:
 #~ 1.替换日期区间
 #~ 2.替换接口编号
+#~ 3.辅助脚本： find /bassapp/backapp/data/bass1/export -name  "*20120[6]*06035_01*" -exec cp {} /bassapp/bihome/panzw/tmp/06035 \;
 
-interface_code=04019
-
+if [ $# -ne 3 ];then
+	echo $0 interface_code batch_no start_date
+	exit
+fi
+interface_code=$1
+batch_no=$2
+start_date=$3
 
 #~ nohup sh /bassapp/bihome/panzw/tmp/${interface_code}/bass1_upload_interface.sh \
 #~ > /bassapp/bihome/panzw/tmp/${interface_code}/sh.out 2>&1 &
@@ -63,7 +72,7 @@ time_id=$1
 interface=$2
 FTPHOST=172.16.5.130
 REMOTE_DIR=data
-LOCAL_DIR=/bassapp/bihome/panzw/tmp/04019
+LOCAL_DIR=/bassapp/bihome/panzw/tmp/${interface_code}
 HOME=/bassapp/bihome/panzw/config
 export HOME
 
@@ -90,31 +99,47 @@ echo $$
 
 
 for dt in  \
-20120601	20120602	20120603	20120604	20120605	\
-20120606	20120607	20120608	20120609	20120610	\
-20120611	20120612	20120613	20120614	20120615	\
-20120616	20120617	20120618	20120619	20120620	\
-20120621	20120622	20120623	20120624	20120625	\
-20120626	20120627	20120628	20120629	20120630	\
 20120701	20120702	20120703	20120704	20120705	\
-20120706	20120707	20120708	20120709	20120710
+20120706	20120707	20120708	20120709	20120710	\
+20120711	20120712	20120713	20120714	20120715	\
+20120716	20120717	20120718	20120719	20120720	\
+20120721	20120722	20120723	20120724	20120725	\
+20120726	20120727	20120728	20120729	20120730	\
+20120731
 do
+
+	#~ upload the first date of a series interfaces
+	
+	if [ $dt -eq $start_date ];then	
+		if [ -f /bassapp/backapp/data/bass1/report/report_${dt}/f*${interface_code}_${batch_no}*verf ];then
+		echo ${dt} have put!
+		else 
+		putinterface ${dt} ${interface_code}
+		fi
+	fi
+
 	while [ true ]
 	do
 	yestoday=`yesterday ${dt}`
-	cat /bassapp/backapp/data/bass1/report/report_${yestoday}/r*${interface_code}_01*verf|grep "${yestoday}.*${interface_code}.*00000000" 
+	
+	
+	if [ $yestoday -lt $start_date ];then
+		break
+	fi
+	
+	cat /bassapp/backapp/data/bass1/report/report_${yestoday}/r*${interface_code}_${batch_no}*verf 2>/dev/null|grep "${yestoday}.*${interface_code}.*00000000" 
 	ret=$?
 	if [ $ret -eq 0 ];then
 		echo now next: ${dt} ...
-		if [ -f /bassapp/backapp/data/bass1/report/report_${dt}/f*${interface_code}_01*verf ];then
+		if [ -f /bassapp/backapp/data/bass1/report/report_${dt}/f*${interface_code}_${batch_no}*verf ];then
 		echo ${dt} have put!
 		else 
 		putinterface ${dt} ${interface_code}
 		fi
 		break
 	else
-	echo ${yestoday} not return 
-	/bassapp/backapp/bin/bass1_report/bass1_report>/dev/null 2>&1
+		echo ${yestoday} not return 
+		/bassapp/backapp/bin/bass1_report/bass1_report>/dev/null 2>&1
 	fi
 	sleep 10
 	done
