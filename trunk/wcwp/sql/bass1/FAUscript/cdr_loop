@@ -1,0 +1,28 @@
+declare global temporary table session.t1 (
+			  time_id integer,
+              OPP_CITY_ID   varchar(7)
+          )
+          partitioning key
+        	(
+        	  time_id,OPP_CITY_ID
+        	) using hashing
+        with replace on commit preserve rows not logged in tbs_user_temp
+
+
+for dt in 20120501	20120502	20120503	20120504	20120505	20120506	20120507	\
+	20120508	20120509	20120510	20120511	20120512	20120513	20120514	\
+20120515	20120516	20120517	20120518	20120519	20120520	20120521	\
+20120522	20120523	20120524	20120525	20120526	20120527	20120528	\
+20120529	20120530	20120531
+do
+echo $dt
+db2 "
+insert into session.t1
+select distinct $dt, OPP_CITY_ID 
+	from bass2.Cdr_call_dtl_$dt a 
+	where roamtype_id in (0,1,2,4,6,7,8)
+	and tolltype_id in (3,4,5,103,104,105,6,7,12,13,106,107,112,113,8,9,10,11,108,109,110,111,99,999)
+	and calltype_id in (0,1,2,3)
+"
+
+done

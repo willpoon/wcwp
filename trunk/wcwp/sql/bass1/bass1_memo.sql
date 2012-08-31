@@ -1,5 +1,6 @@
 my user_id : 89160001196765
 
+njailkBI!@#$0719
 
 cd /bassapp/bass1/tcl
 
@@ -12,6 +13,11 @@ cd /bassapp/bass1/tcl
 	. /bassapp/bihome/panzw/.profile
 	. /bassapp/bihome/panzw/config/cds
 
+
+http://bass.hq.cmcc/prx/000/http/10.1.26.3/login.jsp 
+wangji@xz.cmcc  fCrmp73%　
+	   
+	   
 
 27-1
 192.168.0.124
@@ -178,7 +184,16 @@ where	task_id	in	('I03013')
 select * from etl_task_log  
 where	task_id	in	('I03013')	
 
- 
+
+update (
+select *from app.g_runlog where time_id = 20120825 and unit_code = '04002'
+) set return_flag = 0
+where return_flag = 1
+
+
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 04002 20120824 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+
+
 nohup /bassapp/bihome/panzw/bass1_mon.sh >> bass1_mon.sh.out 2>&1 &
 nohup /bassapp/bihome/panzw/bass1_mon.sh  >> /bassapp/bihome/panzw/tmp/bass1_mon.sh.out 2>&1 &
 
@@ -192,6 +207,22 @@ nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 02006 201204 >> /bassapp/bi
 
 
 nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 21003 201205 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+
+
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 22039 201205 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+
+
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 22075 201201 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 22077 201201 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+
+
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 22075 201202 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 22077 201202 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+
+
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 22075 201203 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 22077 201203 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+
 
 set ip_num ('17950','17951')
 	
@@ -7024,7 +7055,7 @@ http://baike.baidu.com/view/982208.htm#sub982208
 
 
 
- http://132.32.22.9/public/cmschema/N10_New_WXKH/WXKH_ViewMonth_Total.asp?Date=2010-7
+ http://132.32.22.9/public/cmschema/N10_New_WXKH/WXKH_ViewMonth_Total.asp?Date=2012-5
 
 
 user:    chinamobile\cs891   
@@ -7094,7 +7125,7 @@ G_I_02023_DAY
 !
 drwxr-xr-x    2 500      503          4096 Apr 01 09:13 sample
 
-/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_04015_DAY 2012-04-21 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_22038_DAY 2012-06-11 &
 
 
 /bassapp/backapp/bin/bass1_export/bass1_export bass1.G_I_77780_DAY 2012-03-31 &
@@ -7111,6 +7142,31 @@ drwxr-xr-x    2 500      503          4096 Apr 01 09:13 sample
 /bassapp/backapp/bin/bass1_export/bass1_export bass1.G_I_02006_MONTH 2012-02 &
 /bassapp/backapp/bin/bass1_export/bass1_export bass1.G_I_02006_MONTH 2012-03 &
 /bassapp/backapp/bin/bass1_export/bass1_export bass1.G_I_02006_MONTH 2012-04 &
+
+
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_03017_MONTH 2012-05 &
+
+
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_22063_MONTH 2012-05 &
+
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_22039_MONTH 2012-05 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_22039_MONTH 2012-06 &
+
+
+for yyyy_mm_dd in 2012-06-01	2012-06-02	2012-06-03	2012-06-04	2012-06-05	\
+	2012-06-06	2012-06-07	2012-06-08	2012-06-09	2012-06-10	\
+2012-06-11	2012-06-12	2012-06-13	2012-06-14	2012-06-15	\
+2012-06-16	2012-06-17	2012-06-18	2012-06-19	2012-06-20	\
+2012-06-21	2012-06-22	2012-06-23	2012-06-24	2012-06-25	\
+2012-06-26	2012-06-27	2012-06-28	2012-06-29	2012-06-30	\
+2012-07-01	2012-07-02	2012-07-03	2012-07-04	2012-07-05	\
+2012-07-06	2012-07-07	2012-07-08	2012-07-09	2012-07-10
+do
+echo /bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_04019_DAY $yyyy_mm_dd	
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_04019_DAY $yyyy_mm_dd
+done
+
+
 
 
 update (
@@ -7340,11 +7396,19 @@ db2 'get snapshot for application agentid 2516'
 db2inst1
 nfjd@BASSDB
 
+
+
 $ ./tablelock1.sh DIM_GSM_HLR_INFO
 
 db2 "force application(2516)"
 db2 "force application(1224)"
 $ db2 "force application(2516)"
+DB20000I  The FORCE APPLICATION command completed successfully.
+DB21024I  This command is asynchronous and may not be effective immediately.
+
+$ pwd            
+/db2home/db2inst1
+$ db2 "force application(470)"
 DB20000I  The FORCE APPLICATION command completed successfully.
 DB21024I  This command is asynchronous and may not be effective immediately.
 
@@ -7551,7 +7615,7 @@ a.state in ('1','4','6','8','M','7','C','9')
 ,J-保号期
 ,K-有效期停主叫。
 
-nohup sh load_imei.sh > load_imei.201205.out 2>&1 &
+nohup sh load_imei.sh > load_imei.201206.out 2>&1 &
 
 zto 618159082802 pan
 zto 618158726217 wang
@@ -7823,6 +7887,13 @@ find /bassapp/backapp/data/bass1/export -name "*22066*" -atime 0 -exec cp {} . \
 find /bassapp/backapp/data/bass1/export -name "*22066*" -atime 0 -exec cp {} . \;
 
 
+find .. -name "*20120[6]*06035_01*"
+find ./export* -name "*20120[6]*06035_01*"
+
+$ find . -name "*20120[5-6]*06035_01*" -exec cp {} ./tmp06035/ \;
+
+find /bassapp/backapp/data/bass1/export -name  "*20120[6]*06035_01*" -exec cp {} /bassapp/bihome/panzw/tmp/06035 \;
+
 09:05
 10:55	
 贡嘎机场
@@ -8056,6 +8127,7 @@ db2 connect reset
  USER=bass2;export USER
 db2look -d bassdb -e -i bass2 -w bass2 -z bass2 -t TRANS_ENTERPRISE_ID_20100625
 
+db2look -d bassdb -e -i bass2 -w bass2 -z bass2 -t sens_one_stage
 
 
 
@@ -8268,6 +8340,11 @@ echo $prev_val
 
 
 http://218.206.191.179/public/cmschema/N11_New_WXKH/WXKH_viewday_YiJing_memo.asp?PublishTime=2012-2-10&BranchCode=010&BranchDec=北京
+
+http://218.206.191.179/public/cmschema/N11_New_WXKH/WXKH_viewday_YiJing_memo.asp?PublishTime=2012-2-10&BranchCode=010&BranchDec=%B1%B1%BE%A9
+
+http://218.206.191.179/public/cmschema/N12_New_WXKH/WXKH_ViewMonth_YiJing_Pre_ZQX.asp?Date=2012-7&BranchCode=020&BranchDec=广东
+
 
 
 http://218.206.191.179/public/cmschema/N11_New_WXKH/WXKH_ViewDay_YiJing.asp
@@ -8594,7 +8671,7 @@ MODULE	PROGRAM_NAME	CONTROL_CODE
 		
 		
 
-for logfile in `ls -1 *CHECK*201206`
+for logfile in `ls -1 *CHECK*201208`
 do
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>start: $logfile"
 tail -20 $logfile
@@ -9146,4 +9223,412 @@ admin123
 
 
 !done检查校验阈值。
+
+
+各省业务支撑部门：
+
+近日从总部综合部通知获取，自本月起总部各类固定电话（包括传真机）统一更换了号码，业务支撑系统部信息管理处传真号码由原来的 66006452 变更为 52616452，敬请周知。
+
+请各省相关工作人员在日后的考核申告、指标确认单上报、系统账号申请等需要发传真的工作环节中，注意及时变更。谢谢！
+
+
+
+update (
+select * from app.g_runlog where unit_code in ('22075','22077')
+and time_id in (201201,201202,201203)
+) set RETURN_FLAG = 0
+where RETURN_FLAG = 1
+
+质量管理平台。
+2369　2314
+
+
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_I_77781_DAY 2012-03-31 &
+
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_22049_MONTH 2012-04 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_22049_MONTH 2012-05 &
+
+update (
+select * from app.g_runlog where unit_code = '22049'
+and time_id in (201204,201205)
+) set RETURN_FLAG = 0
+where RETURN_FLAG = 1
+
+
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-04-30 &
+
+
+update (
+select * from app.g_runlog where unit_code = '06035'
+and time_id in (20120430)
+) set RETURN_FLAG = 0
+where RETURN_FLAG = 1
+
+
+update (
+select * from app.g_runlog where unit_code = '06040'
+and time_id in (20120430,20120531)
+) set RETURN_FLAG = 0
+where RETURN_FLAG = 1
+
+
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_I_06040_DAY 2012-05-31 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_I_06040_DAY 2012-04-30 &
+
+
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 22049 201204 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 22049 201205 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+
+
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 06040 20120430 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 22036 20120731 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+
+
+
+s_13100_201204_22049_01_001.dat         1005      22049033
+s_13100_201204_22049_01_001.dat         399       22049033
+s_13100_201204_22049_01_001.dat         539       22049033
+s_13100_201204_22049_01_001.dat         543       22049033
+s_13100_201204_22049_01_001.dat         749       22049033
+s_13100_201204_22049_01_001.dat         752       22049033
+s_13100_201204_22049_01_001.dat         766       22049033
+s_13100_201204_22049_01_001.dat         803       22049033
+s_13100_201204_22049_01_001.dat         918       22049033
+s_13100_201204_22049_01_001.dat         979       22049033
+
+
+非guifan bianma
+!
+
+2397
+guo
+lianfeng
+
+
+
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_06035_DAY 2012-05-01 &
+
+
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 06035 20120501 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 06035 20120502 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 06035 20120620 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_22062_MONTH 2012-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_22062_MONTH 2012-02 && \
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_22062_MONTH 2012-03 && \
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_22062_MONTH 2012-04 && \
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_22062_MONTH 2012-05 &&
+
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 22062 201205 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+
+
+nohup  sh /bassapp/bihome/panzw/bin/bass1_mon_one.sh 22062 201205 >> /bassapp/bihome/panzw/tmp/bass1_mon_one.sh.out 2>&1 &
+
+
+
+CONTROL_CODE                                       ALARMTIME                  FLAG        CONTENT                                                                                             
+-------------------------------------------------- -------------------------- ----------- ----------------------------------------------------------------------------------------------------
+BASS1_INT_CHECK_GRP_ORD_DAY.tcl                    2012-06-22-21.54.26.023706          -1 R333 校验不通过                                                                                     
+BASS1_INT_CHECK_GRP_ORD_DAY.tcl                    2012-06-22-21.54.18.194877          -1 R331 校验不通过                                                                                     
+BASS1_INT_CHECK_GRP_ORD_DAY.tcl                    2012-06-22-21.54.11.789858          -1 R329 校验不通过                                                                                     
+BASS1_INT_CHECK_GRP_ORD_DAY.tcl                    2012-06-22-21.54.07.648268          -1 R327 校验不通过                                                                                     
+BASS1_INT_CHECK_GRP_ORD_DAY.tcl                    2012-06-22-21.54.02.590413          -1 R323 校验不通过                                                                                     
+BASS1_INT_CHECK_GRP_ORD_DAY.tcl                    2012-06-22-21.53.57.401619          -1 R320 校验不通过                                                                                     
+BASS1_INT_CHECK_GRP_ORD_DAY.tcl                    2012-06-22-21.53.29.284231          -1 exception:R291 not pass!:1907.000                                                                   
+BASS1_INT_CHECK_GRP_ORD_DAY.tcl                    2012-06-22-21.52.07.696684          -1 exception:R265 not pass!:8.000        
+
+
+
+
+CONTROL_CODE                                       ALARMTIME                  FLAG        CONTENT                                                                                             
+-------------------------------------------------- -------------------------- ----------- ----------------------------------------------------------------------------------------------------
+BASS1_INT_CHECK_GRP_ORD_DAY.tcl                    2012-06-24-10.44.15.463714          -1 exception:R291 not pass!:1908.000                                                                   
+BASS1_INT_CHECK_GRP_ORD_DAY.tcl                    2012-06-24-10.43.31.456011          -1 exception:R265 not pass!:8.000                                                                      
+
+  2 record(s) selected.
+
+
+
+
+
+CONTROL_CODE                                       ALARMTIME                  FLAG        CONTENT                                                                                             
+-------------------------------------------------- -------------------------- ----------- ----------------------------------------------------------------------------------------------------
+BASS1_INT_CHECK_GRP_INC_MONTH.tcl                  2012-06-24-10.52.38.282221          -1 R332 校验不通过                                                                                     
+BASS1_INT_CHECK_GRP_INC_MONTH.tcl                  2012-06-24-10.52.34.710164          -1 R330 校验不通过                                                                                     
+BASS1_INT_CHECK_GRP_INC_MONTH.tcl                  2012-06-24-10.52.30.075694          -1 R328 校验不通过                                                                                     
+BASS1_INT_CHECK_GRP_INC_MONTH.tcl                  2012-06-24-10.52.22.882711          -1 R324 校验不通过                                                                                     
+BASS1_INT_CHECK_GRP_INC_MONTH.tcl                  2012-06-24-10.52.17.852932          -1 R322 校验不通过                                                                                     
+
+
+
+R265	月规则	0.05	20120500	行业网关短信话单中的服务代码都在集团客户端口资源使用情况接口的行业应用代码全码	当月行业网关短信话单中的服务代码不在集团客户端口资源使用情况接口的行业应用代码全码中的记录数 > 0	7.000000	           
+R280	月规则	0.05	20120500	实体渠道资源配置信息日月关系	当月06023中的实体渠道个数 <> 当月06037月末快照中的实体渠道个数	3967.000000	3040.000000
+R292	月规则	0.05	20120500	数据专线统一付费收入月变动率	环比波动超过-30%或30%，数值不能为0	.0000	.0000
+R330	月规则	0.05	20120500	企业邮箱当月总收入月变化率	环比波动超过-50%或50%，数值不能为0	.0000	.0000
+R332	月规则	0.05	20120500	商户管家总收入	环比波动超过-50%或50%，数值不能为0	.0000	.0000
+
+由于数据差异核对需要，特申请下发此接口，请集团审批。
+
+
+select control_code from app.sch_control_task where control_code like '%BASS2%product_ms%tcl'
+
+insert into app.sch_control_before
+values 
+('BASS1_G_S_21021_MONTH.tcl','BASS2_Dw_product_ms.tcl')
+
+
+CONTROL_CODE                                       ALARMTIME                  FLAG        CONTENT                                                                                             
+-------------------------------------------------- -------------------------- ----------- ----------------------------------------------------------------------------------------------------
+BASS1_G_S_21021_MONTH.tcl                          2012-07-01-12.16.44.914570          -1 Error info:[IBM][CLI Driver][DB2/SUN64] SQL0204N  "BASS2.DW_PRODUCT_201206" is an undefined name.  S
+BASS1_G_S_21022_MONTH.tcl                          2012-07-01-12.12.14.569188          -1 Error info:[IBM][CLI Driver][DB2/SUN64] SQL0204N  "BASS2.DW_PRODUCT_201206" is an undefined name.  S
+BASS1_INT_CHECK_R262_MONTH.tcl                     2012-07-01-08.38.01.823993          -1 R280 校验不通过                                                                                     
+BASS1_INT_CHECK_R262_MONTH.tcl                     2012-07-01-08.37.56.765247          -1 R279 校验不通过                                                                                     
+BASS1_INT_CHECK_R262_MONTH.tcl                     2012-07-01-08.37.52.223046          -1 R278 校验不通过                                                                                     
+BASS1_EXP_G_S_22075_MONTH                          2012-07-01-01.27.08.747965          -1 不能上传空文件                                                                                      
+BASS1_G_S_02067_MONTH.tcl                          2012-07-01-01.04.43.398560          -1 Error info:[IBM][CLI Driver][DB2/SUN64] SQL0204N  "BASS2.DW_PROD_UP_APPORT_RULE_20120630" is an unde
+BASS1_G_S_22090_MONTH.tcl                          2012-07-01-00.27.18.236486          -1 Error info:[IBM][CLI Driver][DB2/SUN64] SQL0204N  "BASS2.DW_PRODUCT_INS_OFF_INS_PROD_201206" is an u
+
+  8 record(s) selected.
+  
+
+insert into app.sch_control_before
+values 
+('BASS1_G_S_21022_MONTH.tcl','BASS2_Dw_product_ms.tcl')
+
+
+select *from app.sch_control_before where control_code like '%G_S_22075_MONTH%'
+
+
+BASS2_Dw_call_cell_dt.tcl
+
+
+insert into app.sch_control_before
+values 
+('BASS1_G_S_21021_MONTH.tcl','BASS2_Dw_call_cell_dt.tcl')
+
+
+
+省经上传接口04019（国际长途语音话单）aipview.tb_net_intl_long_voic_cdr，呼叫类型主叫和呼转（01，03），拨打IP业务类型为未使用IP‘ 1000’  ，长途类型为国际(51,52) ，通话时长之和
+
+
+SELECT 
+from G_S_04019_DAY
+where CALL_TYPE_CD ('01','03')
+and IP_TYPE in ('1000')
+and TOLL_TYPE in ('051','052')
+
+省经上传接口04019（国际长途语音话单），呼叫类型主叫和呼转（01，03），拨打IP业务类型为（2101，2102,2103,2199）  ，长途类型为港澳台“040”，计费时长之和
+
+SELECT 
+sum(bigint(BILL_DUR))
+,sum(bigint(CALL_DUR))
+from G_S_04019_DAY
+where CALL_TYPE_CD in ('01','03')
+and IP_TYPE in ('2101','2102','2103','2199')
+and TOLL_TYPE in ('040')
+
+
+No control connection for command: 传送终点未被接上
+
+
+find /bassapp/backapp/data/bass1/export -name  "*20120[6-7]*04019_02*" -exec cp {} /bassapp/bihome/panzw/tmp/04019 \;
+
+
+4A插件安装及IE环境配置二 
+2012-04-25 14:26:51 至 2012-12-31 16:42:36
+ 
+sysadmin 
+3、杀毒软件、防木马软件会将单点登录控件误报为木马，控件文件名sso.exe和SSOContainer.dll，请设置杀毒软件，将这两个文件设置为信任4、IE环境：将4A地址http://172.16.22.140和http://172.16.22.141添加为信任站点，将IE高级设置还原为默认设置，IE9登录4A请使用兼容模式，访问citrix资源时，下载sso.ica需要用IE直接打 
+启用账号密码自学习功能注意事项 
+2012-06-21 15:35:48 至 2012-07-31 21:26:53
+ 
+sysadmin 
+登录系统资源出现提示信息，请点击该资源类型窗体最大化按钮，在从账号后点击密码自学习，输入该从账号正确的密码（密码有复杂度策略），下次登录资源可不用再次输入，假如密码经过登录验证是错误的，可以重新自学习，登录资源提示没有从账号请联系管理员重新授权,没有实际账号密码的资源可以任意自学习一个账号密码。 
+citrix单点登录控件更新 
+2012-07-27 16:05:21 至 2012-08-27 14:56:27
+ 
+sysadmin 
+为保证citrix单点登录稳定性，请更新终端上citrix控件版本，如果控制面板-添加删除程序中显示为Citrix 联机插件-web ，请卸载，然后在portal界面快速链接中下载citrix-XenAppWeb客户端，安装前需关闭所有已打开的citrix登录窗口，或注销用户，安装完以后，添加删除程序显示为Citrix XenApp Web Plugin 
+
+
+
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_S_22038_DAY 2012-08-01 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_02004_DAY 2012-08-23 &
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_02008_DAY 2012-08-23 &
+
+
+/bassapp/backapp/bin/bass1_export/bass1_export bass1.G_A_02011_DAY 2012-08-23 &
+
+
+select PRODUCT_ITEM_ID,name from bass2.dim_prod_up_product_item where
+char(PRODUCT_ITEM_ID) in (
+select pkg_id
+from (
+select BASE_PROD_ID pkg_id from g_i_02018_month
+union
+select OVER_PROD_ID pkg_id from G_I_02019_MONTH
+) a 
+except
+select OLD_PKG_ID
+from G_I_02026_MONTH_LOAD
+)
+
+
+db2 "export to ${base_dir}/$1`date +%Y%m%d`.txt of del \
+MODIFIED BY nochardel coldel$  STRIPLZEROS decplusblank \
+select * from $1 "
+
+export to /bassapp/bihome/panzw/tmp/pkg.txt of del
+MODIFIED BY nochardel  STRIPLZEROS decplusblank
+select PRODUCT_ITEM_ID,name from bass2.dim_prod_up_product_item 
+where char(PRODUCT_ITEM_ID) in (
+select pkg_id
+from (
+select BASE_PROD_ID pkg_id from g_i_02018_month
+union
+select OVER_PROD_ID pkg_id from G_I_02019_MONTH
+) a 
+except
+select OLD_PKG_ID
+from G_I_02026_MONTH_LOAD
+)
+
+陕西：
+1	运营分析部	王创	男	经理	管理部门工作，主管BI系统、结算系统	13991230000-3998	13571861092
+2	运营分析部	施岭婷	女	副经理	负责日报、月报工作，结算、数据业务、基础业务	13991230000-3932	13609200080
+3	运营分析部	胡治西	男	员工	经分、MIS接口，数据质量、元数据	13991230000-3962	13572959583
+
+1	经分数据室	孙德志	男	主任	经营分析系统	无	13904649097
+2	经分数据室	孟志军	女	员工	需求分析与实施	13945077455	13945077455
+3	经分数据室	何卫萍	女	员工	需求分析与实施	13904510200	13904510200
+4	经分数据室	鲁峰	男	员工	需求分析与实施	无	13904510166
+5	经分数据室	张硕	女	员工	应用优化、一经	无	13704510003
+6	经分数据室	王典隆	男	员工	软件优化、一经	无	13904510869
+7	经分数据室	王斌	男	员工	经分应用推广	无	13845117860
+8	经分数据室	赵洪松	男	员工	经分应用推广	13804512006	13804512006
+9	经分数据室	战晔	女	员工	经分应用推广	无	13796609696
+10	经分数据室	张美鸥	女	员工	一经、经分应用推广	15945694885	13936445155
+11	经分数据室	杨庆新	男	员工	网间结算维护及报表	13704847917	13704847917
+
+
+
+export to /bassapp/bihome/panzw/tmp/pkg.txt of del
+MODIFIED BY nochardel  STRIPLZEROS decplusblank
+select PRODUCT_ITEM_ID,name from bass2.dim_prod_up_product_item 
+where char(PRODUCT_ITEM_ID) in (
+select pkg_id
+from (
+select distinct  BASE_PROD_ID pkg_id from g_i_02018_month a,
+) a 
+except
+select OLD_PKG_ID
+from G_I_02026_MONTH_LOAD
+)
+
+
+11108 主资费
+11103 主资费
+
+export to /bassapp/bihome/panzw/tmp/main_pkg.txt of del
+MODIFIED BY nochardel  STRIPLZEROS decplusblank
+select char(PRODUCT_ITEM_ID),name from bass2.dim_prod_up_product_item 
+where  char(PRODUCT_ITEM_ID) like '11108%'
+and item_type = 'OFFER_PLAN' 
+and product_item_id in 
+(
+select offer_id 
+from bass2.dw_product_ins_off_ins_prod_201207 where EXPIRE_DATE >= '2012-07-01'
+group by offer_id
+)
+except
+select OLD_PKG_ID,name
+from G_I_02026_MONTH_LOAD a, bass2.dim_prod_up_product_item  b
+where a.OLD_PKG_ID = char(PRODUCT_ITEM_ID)
+order by 2
+
+
+export to /bassapp/bihome/panzw/tmp/add_pkg.txt of del
+MODIFIED BY nochardel  STRIPLZEROS decplusblank
+select char(PRODUCT_ITEM_ID),name from bass2.dim_prod_up_product_item  a
+where  char(PRODUCT_ITEM_ID) like '11109%'
+and a.item_type = 'OFFER_PLAN' 
+and product_item_id in 
+(
+select offer_id 
+from bass2.dw_product_ins_off_ins_prod_201207 where EXPIRE_DATE >= '2012-07-01'
+group by offer_id
+)
+except
+select OLD_PKG_ID,name
+from G_I_02026_MONTH_LOAD a, bass2.dim_prod_up_product_item  b
+where a.OLD_PKG_ID = char(PRODUCT_ITEM_ID)
+order by 2
+
 
