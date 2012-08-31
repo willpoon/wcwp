@@ -47,3 +47,9 @@ select * from G_S_22073_DAY where time_id = 20120611
 set UNION_MOBILE_ARRIVE_CNT = char(bigint(UNION_MOBILE_ARRIVE_CNT) - 55)
 
 
+
+
+update (
+select * from G_S_22073_DAY where time_id = 20120716
+) t 
+set UNION_MOBILE_ARRIVE_CNT = char(bigint(UNION_MOBILE_ARRIVE_CNT) - 55)
