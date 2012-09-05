@@ -82,7 +82,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
    set RESULT_VAL2 0
    set RESULT_VAL3 0
         set sql_buff "
-			select sum(bigint(TERM_SALE_CNT))
+			select sum(bigint(CONTRACT_DZ_SALE_ALLCNT))
 			from G_S_22066_DAY 
 			where E_CHANNEL_TYPE = '03'
 			and time_id = $timestamp

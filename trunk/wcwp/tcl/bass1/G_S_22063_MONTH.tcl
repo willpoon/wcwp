@@ -35,6 +35,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
     set this_month_last_day [string range $op_month 0 3][string range $op_time 4 4][string range $op_month 4 5][string range $op_time 4 4][GetThisMonthDays [string range $op_month 0 5]01]
     puts $this_month_last_day
 
+		global app_name
 		set app_name "G_S_22063_MONTH.tcl"        
 
 
@@ -250,7 +251,21 @@ where channel_id not in
 	"
 
 	ChnRatio $sql_buff1 $sql_buff2
-	
+
+
+			set grade 2
+	        set alarmcontent "检查渠道酬金报表002数据是否为空！"
+	        WriteAlarm $app_name $op_month $grade ${alarmcontent}
+
+
+
+##~   select OP_TIME 
+##~   ,  count(distinct RESULT ) 
+##~   from bass2.stat_channel_reward_0002 
+##~   group by  OP_TIME 
+##~   order by 1 
+
+
 	return 0
 }
 

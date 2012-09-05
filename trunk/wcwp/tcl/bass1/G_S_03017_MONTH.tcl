@@ -22,7 +22,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 #        set op_time 2008-06-01
 #        set optime_month 2008-05-31
-        set optime_month 2012-05
+        ##~   set optime_month 2012-05
         set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
         puts $timestamp
         #----求上月最后一天---#,格式 yyyymmdd
@@ -561,29 +561,11 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 }
 
 
-proc get_single {MySQL} {
 
-        global env
-
-        global conn
-
-        global handle
-
-        set handle [aidb_open $conn]
-        set sql_buff $MySQL
-  if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-                WriteTrace $errmsg 1001
-                puts $errmsg
-                exit -1
-        }
-        if [catch {set result [lindex [aidb_fetch $handle] 0]} errmsg ] {
-                WriteTrace $errmsg 1002
-                puts $errmsg
-                exit -1
-        }
-        aidb_commit $conn
-        aidb_close $handle
-        
-        
-        return $result
-}
+	##~   20120904: for R292
+##~   delete from (
+	##~   select * from   G_S_03017_MONTH
+	##~   where ent_busi_id = '1180'
+	##~   and time_id = 201208
+	##~   and ENTERPRISE_ID  in ('89100000064267','89100000064527')
+	##~   ) t

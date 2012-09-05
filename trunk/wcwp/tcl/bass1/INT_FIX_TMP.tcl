@@ -833,6 +833,7 @@ set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
 set optime $op_time
 set curr_month [string range $op_time 0 3][string range $op_time 5 6]
 set last_day [GetLastDay [string range $timestamp 0 7]]
+set app_name "INT_CHECK_L2_TO_DAY.tcl"
 
 set sql_buff "
 rename bass2.DIM_DEVICE_INFO_EX to DIM_DEVICE_INFO_EX_BAK${timestamp}
@@ -909,6 +910,38 @@ alter table bass2.DIM_TERM_TAC_TRANS activate not logged initially with empty ta
 exec_sql $sql_buff
 
 
+##~   0-2G手机
+##~   1-3G手机
+##~   2-3G数据卡
+##~   3-家庭网关
+##~   4-无线固话
+##~   5-上网本
+##~   6-阅读器
+##~   7-家庭手机
+##~   8-平板电脑
+##~   NULL – 集团公司未定义
+
+##~   01- 手机
+##~   02- 数据卡
+##~   03- 上网本
+##~   04- 家庭网关
+##~   05- 无线固话
+##~   06- 手机阅读
+##~   07- 平板电脑
+
+
+##~   select MODE_2G ,MODE_3G ,c.TERM_TYPE ,b.TERM_TYPE,count(0)
+##~   from bass2.DIM_TACNUM_DEVID a
+##~   ,bass2.DIM_TERM_TAC b
+##~   ,bass2.DIM_TERM_TAC_NEW_LOAD c
+##~   where 
+##~   a.TAC_NUM = b.TAC_NUM 
+##~   and a.DEV_ID = c.DEV_ID
+##~   and c.MODE_2G= '3'
+##~   group by MODE_2G ,MODE_3G ,c.TERM_TYPE ,b.TERM_TYPE
+##~   order by 3
+
+
 set sql_buff "
 insert into   bass2.DIM_TERM_TAC_TRANS
 select  
@@ -918,7 +951,7 @@ a.ROW_ID ID
 ,a.TERM_MODEL
 ,'' TERMPROD_ID
 ,a.TERM_BRAND TERMPROD_NAME
-,case when  mode_3g = '3' then '2' else '1' end  NET_TYPE
+,case when  MODE_3G = '3' then '2' else '1' end  NET_TYPE
 ,case 
 	when a.MODE_2G in ('1') and a.MODE_3G in ('0','1')  and a.TERM_TYPE is null then '0'
 	when a.MODE_2G in ('1') and a.MODE_3G in ('3')  and a.TERM_TYPE = '01' then '1'
@@ -929,6 +962,11 @@ a.ROW_ID ID
 	when a.MODE_2G in ('1') and a.MODE_3G in ('3')  and a.TERM_TYPE = '05' then '4'
 	when a.MODE_2G in ('1') and a.MODE_3G in ('0')  and a.TERM_TYPE = '05' then '4' --05- 无线固话4
 	when a.MODE_2G in ('1') and a.MODE_3G in ('3')  and a.TERM_TYPE = '06' then '6'
+	when a.MODE_2G in ('3') and a.MODE_3G in ('1','2','3')  and a.TERM_TYPE = '01' then '1' -- 1-3G手机
+	when a.MODE_2G in ('3') and a.MODE_3G in ('0')  		and a.TERM_TYPE = '01' then '0' -- 0-2G手机
+	when a.MODE_2G in ('3') and a.MODE_3G in ('1','2','3')  and a.TERM_TYPE = '02' then '2' -- 02- 数据卡2
+	when a.MODE_2G in ('3') and a.MODE_3G in ('1','2','3')  and a.TERM_TYPE = '03' then '5' -- 03- 上网本- 5-上网本
+	when a.MODE_2G in ('3') and a.MODE_3G in ('1','2','3')  and a.TERM_TYPE = '07' then '8'  --8 新增，定义为 07- 平板电脑
 	when 												a.TERM_TYPE = '07' then '8' --8 新增，定义为 07- 平板电脑
 	when 												a.TERM_TYPE = '01' then '0'
 	when 												upper(a.TERM_MODEL) like '%IPAD%' then '8'
@@ -1013,6 +1051,8 @@ chkzero2 $sql_buff "BASS2.DIM_TERM_TAC 主键不唯一！"
   aidb_runstats BASS2.DIM_TERM_TAC 3
 
 
+##~   delete from BASS2.DIM_TERM_TAC where TAC_NUM = '宏达'
+
 return 0  
 
 }
@@ -1020,7 +1060,7 @@ return 0
 
 
 
-proc Deal_fix22036 { op_time optime_month } {
+proc Deal_fix22036_20120627 { op_time optime_month } {
 ## 把R265校验中 ， 22036 中没有的 “行业应用代码全码” 加入，修复！
 ##
 
@@ -1082,8 +1122,118 @@ with ur
 "
 exec_sql $sql_buff
 
+return 0  
+
+}
+
+
+proc Deal_fix22036 { op_time optime_month } {
+## 把R265校验中 ， 22036 中没有的 “行业应用代码全码” 加入，修复！
+##
+
+#当天 yyyymmdd
+set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
+set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
+#当天 yyyy-mm-dd
+set optime $op_time
+set curr_month [string range $op_time 0 3][string range $op_time 5 6]
+set last_day [GetLastDay [string range $timestamp 0 7]]
+
+# fetch canceled
+
+set sql_buff "
+alter table bass1.G_A_22036_DAY_FIX20120731 activate not logged initially with empty table
+"
+exec_sql $sql_buff
+
+
+
+         ##~   ${timestamp} TIME_ID
+        ##~   ,'201206' BILL_MONTH
+        ##~   ,'1' CUST_TYPE --客户类型
+        ##~   ,'' EC_CODE --集团客户标识
+        ##~   ,'' SINAME --SI名称 当“客户类型” =1时必须填写
+        ##~   ,'1' OPERATE_TYPE
+        ##~   ,a.SERV_CODE APP_LENCODE --行业应用代码全码
+        ##~   ,'' APNCODE --当“业务类型”=3时填写
+        ##~   ,'' BUSI_NAME --集团业务名称
+        ##~   ,'${timestamp}' OPEN_DATE
+        ##~   ,'1' STS
+
+set sql_buff "
+insert into G_A_22036_DAY_FIX20120731
+select 
+         ${timestamp} TIME_ID
+        --,'201206' BILL_MONTH
+        ,'1' CUST_TYPE 
+        ,'' EC_CODE 
+        ,'' SINAME
+        ,'1' OPERATE_TYPE
+        ,a.SERV_CODE APP_LENCODE
+        ,'' APNCODE
+        ,'' BUSI_NAME
+        ,'${timestamp}' OPEN_DATE
+        ,'1' STS
+from bass1.G_S_04016_DAY_TMP_SERV_CODE a 
+with ur
+"
+exec_sql $sql_buff
+
+
+set sql_buff "
+insert into G_A_22036_DAY
+select a.*
+from bass1.G_A_22036_DAY_FIX20120731 a 
+where time_id = 20120731
+with ur
+"
+exec_sql $sql_buff
 
 return 0  
 
 }
 
+##~   select count(0) from bass2.DIM_TERM_TAC where NET_TYPE = '2'
+
+
+
+
+
+proc Deal_fix02064 { op_time optime_month } {
+## 剔除已经失效的数据 ，通过把02062中为“有效”的用户和用户表中失效的用户关联。
+##
+
+#当天 yyyymmdd
+set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
+set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
+#当天 yyyy-mm-dd
+set optime $op_time
+set curr_month [string range $op_time 0 3][string range $op_time 5 6]
+set last_day [GetLastDay [string range $timestamp 0 7]]
+
+# fetch canceled
+set sql_buff "
+insert into BASS1.G_A_02064_DAY
+(
+         TIME_ID
+        ,ENTERPRISE_ID
+        ,NUMBER400
+        ,BIND_CNT
+        ,BIND_CMC_CNT
+        ,BIND_OTH_CNT
+        ,OPEN_DT
+        ,IF_ORD_CALLSHIELD
+        ,IF_ORD_CALLLIMIT
+        ,IF_ORD_PSWDACCESS
+        ,IF_ORD_BLACKLIST
+        ,IF_ORD_SMS
+        ,ORD_STS
+)
+select * from G_A_02064_DAY_FIX20120813 where time_id = 20120813
+with ur
+"
+exec_sql $sql_buff
+
+return 0  
+
+}

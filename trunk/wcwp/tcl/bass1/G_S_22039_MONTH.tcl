@@ -150,3 +150,9 @@ with ur
 	return 0
 }
  
+
+##~   20120903£º
+##~   update (
+##~   select *from app.sch_control_task where control_code = 'BASS1_G_S_22039_MONTH.tcl'
+##~   ) set TIME_VALUE = 816
+

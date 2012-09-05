@@ -72,7 +72,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                 )
                partitioning key (ENTERPRISE_ID) using hashing
                with replace on commit preserve rows not logged in tbs_user_temp"
- 	puts $sql_buff
+ 	
 	exec_sql $sql_buff
 	puts "建立G_S_22303_MONTH的session表，表名session.tmp22303"
 	
@@ -87,7 +87,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                 )
                partitioning key (plan_id) using hashing
                with replace on commit preserve rows not logged in tbs_user_temp"
- 	puts $sql_buff
+ 	
 	exec_sql $sql_buff
 	puts "建立G_S_22303_MONTH的session表，表名session.tmp22303"
 		
@@ -119,7 +119,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                 )
                partitioning key (user_id) using hashing
                with replace on commit preserve rows not logged in tbs_user_temp"
- 	puts $sql_buff
+ 	
 	exec_sql $sql_buff
 	puts "建立G_S_22303_MONTH的session表，表名session.tmp22303"
 
@@ -180,7 +180,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 						where a.service_id = b.service_id
 						  and a.service_id = c.xzbas_value"
           
-  puts $sql_buff        
+          
 	exec_sql $sql_buff
 	puts "插入到session表中的业务结构信息完成"	
 	
@@ -232,7 +232,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 						where a.service_id = b.xzbas_value
 						  and a.service_id = c.service_id"
           
-  puts $sql_buff        
+          
 	exec_sql $sql_buff
 	puts "插入到session.tmp22303_temp1集团业务类型临时表完成"	
 
@@ -296,7 +296,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 								else '3'
 							end"
           
-  puts $sql_buff        
+          
 	exec_sql $sql_buff
 	puts "插入到session.tmp22303_temp2表中的计费时长指标信息完成"	
 
@@ -360,7 +360,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 								##~   else '3'
 							##~   end"
           
-  ##~   puts $sql_buff        
+  ##~           
 	##~   exec_sql $sql_buff
 	##~   puts "插入到session.tmp22303_temp2表中的上行、下行短信条数指标信息完成"	
 		
@@ -418,7 +418,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 						with ur
 						"
           
-  puts $sql_buff        
+          
 	exec_sql $sql_buff
 	puts "插入到session.tmp22303_temp2表中的上行、下行短信条数指标信息完成"	
 		
@@ -484,7 +484,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 								else '3'
 							end"
           
-  puts $sql_buff        
+          
 	exec_sql $sql_buff
 	puts "插入到session.tmp22303_temp2表中的上行、下行流量指标信息完成"	
 	
@@ -548,7 +548,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 								else '3'
 							end"
           
-  puts $sql_buff        
+          
 	exec_sql $sql_buff
 	puts "插入到session.tmp22303_temp2表中的彩信业务量指标信息完成"	
 
@@ -612,7 +612,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 								else '3'
 							end"
           
-  puts $sql_buff        
+          
 	exec_sql $sql_buff
 	puts "插入到session.tmp22303_temp2表中的WAP业务量指标信息完成"	
 
@@ -681,7 +681,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 								else '3'
 							end"
           
-  puts $sql_buff        
+          
 	exec_sql $sql_buff
 	puts "插入到session.tmp22303_temp2表中的黑莓、手机邮箱的国际/国内流量指标信息完成"	
 
@@ -735,7 +735,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 						where a.user_id = b.user_id
 					 group by a.enterprise_id,b.ent_busi_id,b.manage_mod"
           
-  puts $sql_buff        
+          
 	exec_sql $sql_buff
 	puts "插入到session.tmp22303表中指标信息基本汇总完成"	
 
@@ -824,7 +824,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                   when 5 then '3'
               end"
           
-  puts $sql_buff        
+          
 	exec_sql $sql_buff
 	puts "插入到session.tmp22303表中的当月使用客户数指标信息完成"	
 
@@ -908,7 +908,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                   when 5 then '3'
               end"
           
-  puts $sql_buff        
+          
 	exec_sql $sql_buff
 	puts "插入到session.tmp22303表中的当月计费客户数指标信息完成"	
 
@@ -1003,7 +1003,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                   when 5 then '3'
               end"
           
-  puts $sql_buff        
+          
 	exec_sql $sql_buff
 	puts "插入到session.tmp22303表中的累计使用客户数指标信息完成"	
 
@@ -1058,14 +1058,14 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 						from session.tmp22303
 					group by enterprise_id,ent_busi_id,manage_mod"
           
-	  puts $sql_buff        
+	          
 		exec_sql $sql_buff
 		puts "插入到目标表中bass1.G_S_22303_MONTH 各信息完成"	
 
    
     #剔除测试集团
     set sql_buff " delete from  BASS1.G_S_22303_MONTH where time_id = $op_month and enterprise_id in ('891910006274')"
-    puts $sql_buff      
+          
     exec_sql $sql_buff      
 
 
@@ -1074,59 +1074,4 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 	return 0
 }
-
-
-
-
-#内部函数部分	
-proc exec_sql {MySQL} {
-
-	global env
-
-	global conn
-
-	global handle
-
-	set handle [aidb_open $conn]
-	set sql_buff $MySQL
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		puts $errmsg
-		exit -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
-	return 0
-}
-#--------------------------------------------------------------------------------------------------------------
-
-proc get_single {MySQL} {
-
-	global env
-
-	global conn
-
-	global handle
-
-	set handle [aidb_open $conn]
-	set sql_buff $MySQL
-  if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace $errmsg 1001
-		puts $errmsg
-		exit -1
-	}
-	if [catch {set result [lindex [aidb_fetch $handle] 0]} errmsg ] {
-		WriteTrace $errmsg 1002
-		puts $errmsg
-		exit -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
-	
-	
-	return $result
-}
-#--------------------------------------------------------------------------------------------------------------
-
 

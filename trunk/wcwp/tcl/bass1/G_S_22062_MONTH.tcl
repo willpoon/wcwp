@@ -39,8 +39,8 @@ select
         $op_month TIME_ID
         ,'$op_month' OP_MONTH
         ,char(CHANNEL_ID) CHANNEL_ID
-        ,char(bigint(sum(case when BUSI_NOTES like '%放号%'  then RESULT else 0 end))) NUM_ACT_REWARD
-        ,char(bigint(sum(case when BUSI_NOTES like '%放号%'  then RESULT else 0 end))) NUM_SHLD_REWARD
+        --,char(bigint(sum(case when BUSI_NOTES like '%放号%'  then RESULT else 0 end))) NUM_ACT_REWARD
+        --,char(bigint(sum(case when BUSI_NOTES like '%放号%'  then RESULT else 0 end))) NUM_SHLD_REWARD
         ,char(bigint(sum(case when BUSI_NOTES like '%放号%' and MONTHS like '%当月%'  then RESULT else 0 end))) NUM_INIT_REWARD
         ,char(bigint(sum(case when BUSI_NOTES like '%放号%' and MONTHS not like '%当月%'  then RESULT else 0 end))) NUM_DELAY_ACT_REWARD
         ,char(bigint(sum(case when BUSI_NOTES like '%放号%' and MONTHS not like '%当月%'  then RESULT else 0 end))) NUM_DELAY_SHLD_REWARD
@@ -194,6 +194,19 @@ chkzero2 $sql_buff "22062有非法channel_id! "
 
 ##~   update (select * from G_S_22063_MONTH where time_id = $op_month ) a
 ##~   set NUM_ACT_REWARD = ''
+
+
+			set grade 2
+	        set alarmcontent "检查渠道酬金报表0019数据是否为空或正常！"
+	        WriteAlarm $app_name $op_month $grade ${alarmcontent}
+
+
+select OP_TIME , count(0) 
+,  count(distinct COUNTS ) 
+,  count(distinct RESULT ) 
+from bass2.stat_channel_reward_0019 
+group by  OP_TIME 
+order by 1 
 
 
 

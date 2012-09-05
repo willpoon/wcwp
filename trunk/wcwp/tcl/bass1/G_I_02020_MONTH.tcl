@@ -142,6 +142,7 @@ insert into 	 bass1.g_i_02020_month
 			(select 1 from  bass2.dw_product_test_phone_$op_month e 
 				where a.product_instance_id     = e.user_id and  e.sts=1
 			)
+		and b.test_mark = 0
 	"
 exec_sql $sql_buff
 
@@ -189,7 +190,7 @@ select count(*) from
 	chkzero 	$sql_buff 2
 
 #02020 可以包含离网的       
-2012-07-03 由于上月经常发生删除号码的情况，所以多出27个用户。
+##~   2012-07-03 由于上月经常发生删除号码的情况，所以多出27个用户。
   #检查在网用户是否在用户表里头
   set handle [aidb_open $conn]
 	set sql_buff "select count(*) from 

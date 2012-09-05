@@ -18,11 +18,12 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
       puts $op_month				
         #自然月
 				puts $op_time 
-        set curr_month 201206
-        ##~   set curr_month [string range $op_time 0 3][string range $op_time 5 6]
+        ##~   set curr_month 201207
+        set curr_month [string range $op_time 0 3][string range $op_time 5 6]
 				puts $curr_month
-        set last_month 201205		
-        ##~   set last_month [GetLastMonth [string range $op_month 0 5]]
+        ##~   set last_month 201206		
+        ##~   set last_month [GetLastMonth [string range $op_month 0 5]] op_month改用curr_month
+        set last_month [GetLastMonth [string range $curr_month 0 5]]
 		
         #程序名
         global app_name
@@ -94,7 +95,7 @@ except
                         select distinct APP_LENCODE from 
                         (
                                         select t.*
-                                        ,row_number()over(partition by BILL_MONTH,EC_CODE,APP_LENCODE,APNCODE,BUSI_NAME order by time_id desc ) rn 
+                                        ,row_number()over(partition by EC_CODE,APP_LENCODE,APNCODE,BUSI_NAME order by time_id desc ) rn 
                                         from 
                                         G_A_22036_DAY  t
 										where  time_id / 100 <= $curr_month
@@ -1786,9 +1787,6 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 ##~   --R325	月	02_集团客户	移动400使用集团客户到达数	"02054 集团客户业务订购关系 02064 移动400业务订购情况"	移动400使用集团客户到达数环比绝对值小于等于50%
 
 
-
-
-
    set RESULT_VAL1 0
    set RESULT_VAL2 0
    set RESULT_VAL3 0
@@ -1817,14 +1815,14 @@ select
         and bigint(order_date)/100<=$curr_month
     union all
     select enterprise_id
-      from (select order_date,enterprise_busi_type,enterprise_id,status_id,
-         row_number() over(partition by enterprise_id,enterprise_busi_type order by time_id desc) row_id  from bass1.G_A_02064_DAY 
+      from (select OPEN_DT,enterprise_id,ORD_STS,
+         row_number() over(partition by enterprise_id order by time_id desc) row_id  from bass1.G_A_02064_DAY 
 		         where time_id/100<=$curr_month
 ) z
-    where status_id='1'
+    where ORD_STS='1'
       and row_id=1
-	and enterprise_busi_type in ('1520')
-        and bigint(order_date)/100<=$curr_month
+	--and enterprise_busi_type in ('1520')
+        and bigint(OPEN_DT)/100<=$curr_month
     ) a
 ) aa
 inner join
@@ -1844,14 +1842,14 @@ select
         and bigint(order_date)/100<=$last_month
     union all
     select enterprise_id
-      from (select order_date,enterprise_busi_type,enterprise_id,status_id,
-         row_number() over(partition by enterprise_id,enterprise_busi_type order by time_id desc) row_id  from bass1.G_A_02064_DAY
+      from (select OPEN_DT,enterprise_id,ORD_STS,
+         row_number() over(partition by enterprise_id order by time_id desc) row_id  from bass1.G_A_02064_DAY
 		         where time_id/100<=$last_month
 ) z
-    where status_id='1'
+    where ORD_STS='1'
       and row_id=1
-	and enterprise_busi_type in ('1520')
-        and bigint(order_date)/100<=$last_month
+	--and enterprise_busi_type in ('1520')
+        and bigint(OPEN_DT)/100<=$last_month
     ) a
 ) bb
 on 1=1
@@ -2105,13 +2103,13 @@ select
         and bigint(order_date)/100<=$curr_month
     union all
     select enterprise_id
-      from (select order_dt,ent_busi_id,enterprise_id,sts_cd,
-         row_number() over(partition by enterprise_id,ent_busi_id order by time_id desc) row_id  from bass1.G_A_02065_DAY
+      from (select order_dt,enterprise_id,sts_cd,
+         row_number() over(partition by enterprise_id order by time_id desc) row_id  from bass1.G_A_02065_DAY
 		         where time_id/100<=$curr_month
 ) z
     where STS_CD='1'
       and row_id=1
-	and ent_busi_id in ('1560')
+	--and ent_busi_id in ('1560')
         and bigint(ORDER_DT)/100<=$curr_month
     ) a
 ) aa
@@ -2132,13 +2130,13 @@ select
         and bigint(order_date)/100<=$last_month
     union all
     select enterprise_id
-      from (select order_dt,ent_busi_id,enterprise_id,sts_cd,
-         row_number() over(partition by enterprise_id,ent_busi_id order by time_id desc) row_id  from bass1.G_A_02065_DAY 
+      from (select order_dt,enterprise_id,sts_cd,
+         row_number() over(partition by enterprise_id order by time_id desc) row_id  from bass1.G_A_02065_DAY 
 		         where time_id/100<=$last_month
 ) z
     where STS_CD='1'
       and row_id=1
-	and ent_busi_id in ('1560')
+	--and ent_busi_id in ('1560')
         and bigint(ORDER_DT)/100<=$last_month
     ) a
 ) bb

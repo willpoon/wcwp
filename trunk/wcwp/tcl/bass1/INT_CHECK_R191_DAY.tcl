@@ -39,11 +39,11 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 			select count(0) from 
 			(
 			                select t.*
-			                ,row_number()over(partition by t.enterprise_id ,ENTERPRISE_BUSI_TYPE order by time_id desc ) rn 
+			                ,row_number()over(partition by t.enterprise_id  order by time_id desc ) rn 
 			                from 
 			                G_A_02064_DAY  t
 			  ) a
-			where rn = 1	and STATUS_ID = '1'
+			where rn = 1	and ORD_STS = '1'
 			and not exists (select 1 from (select distinct value(b.NEW_ENTERPRISE_ID,a.enterprise_id) enterprise_id from bass1.G_A_01004_DAY a 
 LEFT JOIN bass1.dim_trans_enterprise_id B on  A.enterprise_id = B.ENTERPRISE_ID  ) t where a.enterprise_id = t.enterprise_id )
 		with ur				

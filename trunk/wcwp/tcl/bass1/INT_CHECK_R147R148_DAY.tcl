@@ -10,7 +10,7 @@
 #修改历史:  
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
-		##~   set op_time 2012-05-27
+		##~   set op_time 2012-08-25
         #当天 yyyymmdd
         set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]      
 				puts $timestamp
@@ -20,6 +20,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
         set curr_month [string range $op_time 0 3][string range $op_time 5 6]
 				puts $curr_month
 	set last_day [GetLastDay [string range $timestamp 0 7]]
+#for WriteAlarm
+set optime $op_time
         
         #程序名
         set app_name "INT_CHECK_R147R148_DAY.tcl"
@@ -109,7 +111,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	if {$RESULT_VAL3>=0.45 || $RESULT_VAL3<=-0.45 } {
 		set grade 2
 	    set alarmcontent "R148 波动性检查使用TD网络的客户在T网上的数据流量超出45%，接近50%"
-	    WriteAlarm $app_name $optime $grade ${alarmcontent}
+	    WriteAlarm $app_name $timestamp $grade ${alarmcontent}
 	} 
 
    puts "R148 end---------------------------------------"

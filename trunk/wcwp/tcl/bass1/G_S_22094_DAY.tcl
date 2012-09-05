@@ -73,7 +73,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 				select product_no from bass2.dw_product_$timestamp
 				where USERTYPE_ID = 8	
 				and USERSTATUS_ID in (1,2,3,6,8)
-				) b on a.MSISDN = b.product_no
+				) b on a.key_num = b.product_no
 		where  replace(char(a.OP_TIME),'-','') = '$timestamp' 
 			and opt_code not in (select paytype_id from bass2.dim_acct_paytype where paytype_name like '%ø’÷–≥‰÷µ%')
 			and lower(key_num) not like 'd%'
