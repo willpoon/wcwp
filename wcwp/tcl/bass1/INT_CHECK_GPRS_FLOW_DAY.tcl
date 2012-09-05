@@ -11,7 +11,6 @@
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
 
-        
         #当天 yyyymmdd
         set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]
         #当天 yyyy-mm-dd
@@ -109,6 +108,8 @@ exec_sql $sql_buff
 	set RESULT_VAL1 [lindex $p_row 0]
 	set RESULT_VAL11 [lindex $p_row 1]
 
+puts $RESULT_VAL1
+puts $RESULT_VAL11
 
    set sqlbuf " 
 				 select  sum(bigint(a.UP_FLOWS)) val1
@@ -120,7 +121,8 @@ exec_sql $sql_buff
 	set p_row [get_row $sqlbuf]
 	set RESULT_VAL2 [lindex $p_row 0]
 	set RESULT_VAL22 [lindex $p_row 1]
-
+puts $RESULT_VAL2
+puts $RESULT_VAL22
    set sqlbuf " 
 			values decimal(1.00*($RESULT_VAL1-$RESULT_VAL2)/$RESULT_VAL2,9,4)
 			"

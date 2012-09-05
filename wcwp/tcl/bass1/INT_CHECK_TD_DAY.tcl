@@ -12,6 +12,7 @@
 #######################################################################################################
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
 
+
 #        #±¾ÔÂ yyyymm
 #        set op_month [string range $optime_month 0 3][string range $optime_month 5 6]
 #            

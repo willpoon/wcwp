@@ -384,4 +384,24 @@ proc get_single {MySQL} {
 }
 #--------------------------------------------------------------------------------------------------------------
 
+##~   20120903£º 22305 ÔÂ ÏÂÏß£º
 
+  ##~   delete from (
+  ##~   select *from app.sch_control_task where control_code like '%22305%MONTH%'
+  ##~   ) t 
+  
+  
+##~   CONTROL_CODE                                       BEFORE_CONTROL_CODE                               
+##~   -------------------------------------------------- --------------------------------------------------
+##~   BASS1_EXP_G_S_22305_MONTH                          BASS1_G_S_22305_MONTH.tcl                         
+##~   BASS1_G_S_22305_MONTH.tcl                          BASS2_Dw_enterprise_extsub_rela_ds.tcl            
+##~   BASS1_G_S_22305_MONTH.tcl                          BASS2_Dw_newbusi_ismg_dt.tcl                      
+##~   BASS1_G_S_22305_MONTH.tcl                          BASS2_Dw_call_dt.tcl                              
+##~   BASS1_G_S_22305_MONTH.tcl                          BASS2_Dw_enterprise_member_mid_ms.tcl   
+
+  ##~   delete from (
+    ##~   select *from app.sch_control_before where control_code like 'BASS1%22305%MONTH%'
+  ##~   ) t 
+  
+  
+  

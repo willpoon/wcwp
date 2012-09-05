@@ -231,34 +231,36 @@ proc get_single {MySQL} {
 }
 
 
-#
-#
-#  select * from
-#                (select * from 
-#                (
-#                select user_id,chg_vip_time,row_number()over(partition by user_id order by time_id desc) row_id from BASS1.G_I_02005_MONTH
-#                where time_id=201108
-#                ) k
-#                where k.row_id =1) a
-#                left outer join 
-#                (
-#                select * from
-#                (
-#                select user_id,create_date,row_number()over(partition by user_id order by time_id desc) row_id 
-#                from BASS1.G_A_02004_DAY
-#                where time_id<=20110831
-#                ) k
-#                where k.row_id=1) b
-#                on a.user_id=b.user_id
-#                where bigint(chg_vip_time)<bigint(create_date)
-#                with ur
-#                
-#89160001048760      	20110924	1	89160001048760      	20110929	1
-#
-#update BASS1.G_I_02005_MONTH
-#set CHG_VIP_TIME = '20110929'
-#where user_id = '89160001048760'
-#and time_id = 201108
-#
-#
+
+
+
+
+  ##~   select * from
+                ##~   (select * from 
+                ##~   (
+                ##~   select user_id,chg_vip_time,row_number()over(partition by user_id order by time_id desc) row_id from BASS1.G_I_02005_MONTH
+                ##~   where time_id=201208
+                ##~   ) k
+                ##~   where k.row_id =1) a
+                ##~   left outer join 
+                ##~   (
+                ##~   select * from
+                ##~   (
+                ##~   select user_id,create_date,row_number()over(partition by user_id order by time_id desc) row_id 
+                ##~   from BASS1.G_A_02004_DAY
+                ##~   where time_id<=20120831
+                ##~   ) k
+                ##~   where k.row_id=1) b
+                ##~   on a.user_id=b.user_id
+                ##~   where bigint(chg_vip_time)<bigint(create_date)
+                ##~   with ur
+                
+##~   89160001048760      	20110924	1	89160001048760      	20110929	1
+
+##~   update BASS1.G_I_02005_MONTH
+##~   set CHG_VIP_TIME = '20120322'
+##~   where user_id = '89160001996771'
+##~   and time_id = 201208
+
+
 

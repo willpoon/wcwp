@@ -23,6 +23,11 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
     puts $this_month_last_day
     #本月最后一天 yyyy-mm-dd
 	##~   set last_month_day [GetLastDay [string range $timestamp 0 5]01]
+
+
+	global app_name
+	set app_name "G_S_22049_MONTH.tcl"    
+	
 	
         #删除本期数据
 	set sql_buff "delete from bass1.g_s_22049_month where time_id=$op_month"
@@ -134,6 +139,23 @@ with ur
   set tabname "G_S_22049_MONTH"
         set pk                  "STATMONTH||CHRG_NBR||CMCC_ID"
         chkpkunique ${tabname} ${pk} ${op_month}
-		
+
+
+
+			set grade 2
+	        set alarmcontent "检查渠道酬金报表0007数据是否为空或正常！"
+	        WriteAlarm $app_name $op_month $grade ${alarmcontent}
+
+
+
+select OP_TIME , count(0) 
+,  sum( PRE_FEE ) 
+,  sum( FEE ) 
+from bass2.stat_channel_reward_0007 
+group by  OP_TIME 
+order by 1 
+
+
+
 	return 0
 }

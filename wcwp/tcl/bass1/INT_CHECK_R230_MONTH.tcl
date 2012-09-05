@@ -68,7 +68,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
  	  ##~   set sqlbuf "
 			##~   delete from G_I_21020_MONTH
 			##~   where COMP_PRODUCT_NO in ('18108914002','18108914001')
-			##~   and time_id = 201206 
+			##~   and time_id = 201207
     	  ##~   "        
 
 	  ##~   exec_sql $sqlbuf

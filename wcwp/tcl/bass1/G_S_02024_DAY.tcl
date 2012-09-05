@@ -86,7 +86,7 @@ with ur
 
 	set sql_buff "	
 insert into bass1.G_S_02024_DAY
-select t.time_id
+select distinct t.time_id
 ,t.user_id
 ,value(b.new_pkg_id ,t.BASE_PKG_ID) BASE_PKG_ID
 ,t.CHANNEL_ID

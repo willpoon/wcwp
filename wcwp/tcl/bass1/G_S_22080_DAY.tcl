@@ -42,18 +42,84 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	set sql_buff "delete from bass1.G_S_22080_DAY where time_id=$timestamp"
 	exec_sql $sql_buff
 	
-set sql_buff "
-	select count(distinct PHONE_ID) cnt3 
-from     BASS2.DW_PRODUCT_UNITE_CANCEL_ORDER_DM_$op_month
-	where replace(char(CREATE_DATE),'-','') = '$timestamp'
-with ur
-"
+##~   set sql_buff "
+	##~   select count(distinct PHONE_ID) cnt3 
+##~   from     BASS2.DW_PRODUCT_UNITE_CANCEL_ORDER_DM_$op_month
+	##~   where replace(char(CREATE_DATE),'-','') = '$timestamp'
+##~   with ur
+##~   "
 
-set RESULT_VAL [get_single $sql_buff]
+##~   set RESULT_VAL [get_single $sql_buff]
 
-  #直接来源于二经用户表数据，新的接口表
-  #更新业务退订量CANCEL_BUSI_CNT（可能不是很准，规范指的是每次查询后，发起所退订的业务量?）
-  #CANCEL_CNT口径也要重新确认。
+  ##~   #直接来源于二经用户表数据，新的接口表
+  ##~   #更新业务退订量CANCEL_BUSI_CNT（可能不是很准，规范指的是每次查询后，发起所退订的业务量?）
+  ##~   #CANCEL_CNT口径也要重新确认。
+	##~   set sql_buff "
+	##~   insert into bass1.G_S_22080_DAY
+		  ##~   (
+         ##~   TIME_ID
+        ##~   ,OP_TIME
+        ##~   ,QRY_CNT
+        ##~   ,CANCEL_CNT
+        ##~   ,CANCEL_FAIL_CNT
+        ##~   ,COMPLAINT_CNT
+        ##~   ,CANCEL_BUSI_TYPE_CNT
+		  ##~   )
+ ##~   select      $timestamp TIME_ID
+             ##~   ,replace(char(date(a.create_date)),'-','') op_time
+             ##~   ,char(a.TYCX_QUERY)             qry_cnt
+             ##~   ,'${RESULT_VAL}'                cancel_cnt
+             ##~   ,char(a.TYCX_TUIDING_FAIL)      cancel_fail_cnt
+             ##~   ,char(a.TYCX_TOUSU_LIANG)       complaint_cnt
+             ##~   ,char( case when (${RESULT_VAL} - a.TYCX_TUIDING_FAIL) < 0 
+			##~   then 0 else (${RESULT_VAL} - a.TYCX_TUIDING_FAIL) 
+		   ##~   end 
+		  ##~   ) CANCEL_BUSI_CNT
+        ##~   from  bass2.DW_THREE_ITEM_STAT_DM_$op_month a ,
+              ##~   (select  replace(char(date(a.create_date)),'-','') op_time
+              					##~   ,count(0) CANCEL_BUSI_CNT
+                       ##~   from   
+                       	##~   BASS2.DW_PRODUCT_UNITE_CANCEL_ORDER_DM_$op_month a
+                        ##~   where replace(char(date(a.create_date)),'-','') =  '$timestamp'  
+                        ##~   group by replace(char(date(a.create_date)),'-','')
+                    ##~   ) b 
+        ##~   where replace(char(date(a.create_date)),'-','') = '$timestamp' 
+##~   and    replace(char(date(a.create_date)),'-','') = b.op_time
+##~   with ur
+  ##~   "
+	##~   exec_sql $sql_buff
+
+
+### 市场部通报，退订率偏大，吴春要求修改口径。
+
+##~   --查询量
+	set sql_buff "
+	select count(0) FROM BASS2.DW_KF_SMS_DYNAMIC_PARA_$timestamp a
+	,bass2.dw_kf_sms_cmd_receive_dm_$curr_month b 
+	where a.SMS_ID = b.SMS_ID and date( b.STS_DATE) = '$op_time' 
+	and substr(dyn_key,1,6)= '405003'
+	with ur
+	"
+set RESULT_VAL1 [get_single $sql_buff]
+
+##~   --退订量
+	set sql_buff "
+	select count(0) from  BASS2.DW_PRODUCT_UNITE_CANCEL_ORDER_DM_$curr_month
+	where CREATE_DATE = '$op_time'
+	with ur
+	"
+
+set RESULT_VAL2 [get_single $sql_buff]
+
+##~   --退订失败量
+	set sql_buff "
+	select count(0) from  BASS2.DW_PRODUCT_UNITE_CANCEL_ORDER_DM_$curr_month 
+	where  CREATE_DATE = '$op_time' and STS = 0
+	with ur
+	"
+set RESULT_VAL3 [get_single $sql_buff]
+
+
 	set sql_buff "
 	insert into bass1.G_S_22080_DAY
 		  (
@@ -66,28 +132,59 @@ set RESULT_VAL [get_single $sql_buff]
         ,CANCEL_BUSI_TYPE_CNT
 		  )
  select      $timestamp TIME_ID
-             ,replace(char(date(a.create_date)),'-','') op_time
-             ,char(a.TYCX_QUERY)             qry_cnt
-             ,'${RESULT_VAL}'                cancel_cnt
-             ,char(a.TYCX_TUIDING_FAIL)      cancel_fail_cnt
-             ,char(a.TYCX_TOUSU_LIANG)       complaint_cnt
-             ,char( case when (${RESULT_VAL} - a.TYCX_TUIDING_FAIL) < 0 
-			then 0 else (${RESULT_VAL} - a.TYCX_TUIDING_FAIL) 
-		   end 
-		  ) CANCEL_BUSI_CNT
-        from  bass2.DW_THREE_ITEM_STAT_DM_$op_month a ,
-              (select  replace(char(date(a.create_date)),'-','') op_time
-              					,count(0) CANCEL_BUSI_CNT
-                       from   
-                       	BASS2.DW_PRODUCT_UNITE_CANCEL_ORDER_DM_$op_month a
-                        where replace(char(date(a.create_date)),'-','') =  '$timestamp'  
-                        group by replace(char(date(a.create_date)),'-','')
-                    ) b 
-        where replace(char(date(a.create_date)),'-','') = '$timestamp' 
-and    replace(char(date(a.create_date)),'-','') = b.op_time
+			,'$timestamp' OP_TIME
+			,'$RESULT_VAL1' QRY_CNT
+			,'$RESULT_VAL2' CANCEL_CNT
+			,'$RESULT_VAL3' CANCEL_FAIL_CNT
+			,'0' COMPLAINT_CNT
+             ,char( case when (${RESULT_VAL1} - $RESULT_VAL3) < 0 
+					then 0 else (${RESULT_VAL1} - $RESULT_VAL3) 
+				end ) CANCEL_BUSI_TYPE_CNT			
+from bass2.dual
 with ur
   "
 	exec_sql $sql_buff
+
+
+
+##~   --退订量
+##~   select count(*) from KF.TONGYI_TUIDING where  
+##~   to_char(create_date ,'yyyymmdd') between '20120701' and '20120731';
+
+##~   select count(0) from  BASS2.DW_PRODUCT_UNITE_CANCEL_ORDER_DM_201207 
+##~   where CREATE_DATE between '2012-07-01' and  '2012-07-31'
+
+##~   37018
+
+
+##~   --退订失败量
+##~   select count(*) from KF.TONGYI_TUIDING where sts=0 and 
+##~   to_char(create_date ,'yyyymmdd') between '20120801' and '20120825'; 
+
+##~   select count(0) from  BASS2.DW_PRODUCT_UNITE_CANCEL_ORDER_DM_201207 
+##~   where CREATE_DATE between '2012-07-01' and  '2012-07-31' and STS = 0
+##~   1070
+
+
+##~   --退订成功量
+##~   select count(*) from KF.TONGYI_TUIDING where sts in(1,2) and 
+##~   to_char(create_date ,'yyyymmdd') between '20120801' and '20120825'; 
+
+##~   select count(0) from  BASS2.DW_PRODUCT_UNITE_CANCEL_ORDER_DM_201207 
+##~   where CREATE_DATE between '2012-07-01' and  '2012-07-31' and sts in(1,2)
+
+##~   35948
+
+
+
+##~   退订率=(退订量/查询量)*100%
+##~   退订失败率=(退订失败量/退订量)*100%
+##~   退订成功率=(退订成功量/退订量)*100%
+
+
+##~   其他相关附件1口径，后续统计；如统计时间没明确规定，请经分需要时找我，谢谢！
+
+
 
 
   #进行结果数据检查

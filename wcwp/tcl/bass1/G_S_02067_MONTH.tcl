@@ -104,7 +104,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
  ##~   when e.TIMES = 1 then 0 
  ##~   else bigint(FEE_VALUE/100/TIMES) 
  ##~   end GIFT_FEE
-if { $op_month == 201205 }  {
+if { $op_month == 201207 }  {
     set sql_buff "
 	    insert into G_S_02067_MONTH_3
 					  (
@@ -131,7 +131,7 @@ if { $op_month == 201205 }  {
 						,char(b.PROM_APPOR) PREPAY_FEE
 						,char(b.RES_FEE) PHONE_COST
 						,value(char( 
-						,case 
+						     case 
 							 when upper(rule_val) = 'A' then  bigint(FEE_VALUE/100/TIMES)
 							 when RULE_CODE like '%|%' then  bigint(FEE_VALUE/100)
 							 when e.TIMES = 1 then 0 
@@ -157,8 +157,42 @@ if { $op_month == 201205 }  {
 
     exec_sql $sql_buff 
 
+#2011年部分
+
+    set sql_buff "
+insert into G_S_02067_MONTH_3
+select 
+	$op_month TIME_ID
+	, a.USER_ID
+	,value(c.imei,'35470604221430') IMEI
+	,a.COND_NAME PLAN_DESC
+	, substr(replace(char(date(a.VALID_DATE)),'-',''),1,8) EFF_DT
+	,char((year(date(EXPIRE_DATE))-year(date(VALID_DATE)))*12+(month(date(EXPIRE_DATE))-month(date(VALID_DATE))) + 1) PLAN_DUR
+	,value(char(d.MIN),'0')MIN_CONSUME
+	,char(d.PREPAY) PREPAY_FEE
+	,char(d.RES_FEE) PHONE_COST
+	,char(case when APPORT > 0 then APPORT/((year(date(EXPIRE_DATE))-year(date(VALID_DATE)))*12+(month(date(EXPIRE_DATE))-month(date(VALID_DATE))) + 1) else 1 end) GIFT_FEE
+    ,char((year(date(EXPIRE_DATE))-year(date(VALID_DATE)))*12+(month(date(EXPIRE_DATE))-month(date(VALID_DATE))) + 1) GIFT_DUR
+from bass2.dw_product_user_promo_$op_month a 
+left join (                                     
+	select user_id,max(imei) imei from 
+	bass2.dw_product_mobilefunc_$op_month a
+	where USERSTATUS_ID in (1,2,3,6,8)
+	and  usertype_id in (1,2,9) 
+	and a.imei is not null
+	group by user_id 
+) c on a.user_id = c.user_id
+ join G_S_02067_MONTH_2011 d on a.cond_id = d.product_item_id
+where  substr(replace(char(date(a.VALID_DATE)),'-',''),1,6)  < '201201'                                 
+and (year(date(EXPIRE_DATE))-year(date(VALID_DATE)))*12+(month(date(EXPIRE_DATE))-month(date(VALID_DATE))) + 1 > 0
+and (case when APPORT > 0 then APPORT/((year(date(EXPIRE_DATE))-year(date(VALID_DATE)))*12+(month(date(EXPIRE_DATE))-month(date(VALID_DATE))) + 1) else 1 end) >= 10
+with ur
+	    "
+    exec_sql $sql_buff 
+
 } else {
 
+# 后续月份正常抽取：
     set sql_buff "
 	    insert into G_S_02067_MONTH_3
 					  (
@@ -230,20 +264,20 @@ if { $op_month == 201205 }  {
 						,GIFT_DUR
 						)
 		select 
-		TIME_ID
-        ,USER_ID
-        ,IMEI
-        ,PLAN_DESC
-        ,EFF_DT
-        ,PLAN_DUR
-        ,MIN_CONSUME
-        ,PREPAY_FEE
-        ,PHONE_COST
-        ,GIFT_FEE
-        ,GIFT_DUR
+		o.TIME_ID
+        ,o.USER_ID
+        ,o.IMEI
+        ,o.PLAN_DESC
+        ,o.EFF_DT
+        ,o.PLAN_DUR
+        ,o.MIN_CONSUME
+        ,o.PREPAY_FEE
+        ,o.PHONE_COST
+        ,o.GIFT_FEE
+        ,o.GIFT_DUR
 		from (
 			select i.*
-			,row_number()over(partition by USER_ID ,IMEI order by PLAN_DUR desc ) rn 
+			,row_number()over(partition by i.USER_ID ,IMEI order by PLAN_DUR desc ) rn 
 			from G_S_02067_MONTH_3 i 
 		) o , bass2.dw_product_$op_month p 		
 		where o.rn= 1 
@@ -264,12 +298,39 @@ if { $op_month == 201205 }  {
         
   aidb_runstats bass1.G_S_02067_MONTH 3
 
-		set grade 3
-	        set alarmcontent "检查 product.up_res_tiem 维表更新情况"
-	        WriteAlarm $app_name $op_month $grade ${alarmcontent}
+
+## 由于 product.up_res_tiem  默认没有2011 年的方案，需要boss添加。但他们没有添加，为手工提供。20120903：不再告警。
+		##~   set grade 3
+	        ##~   set alarmcontent "检查 product.up_res_tiem 维表更新情况"
+	        ##~   WriteAlarm $app_name $op_month $grade ${alarmcontent}
 
 
 	return 0
 }
 
+
+
+##~   数据调整 加强 imei 唯一性
+
+##~   update(
+
+##~   select * from G_S_02067_MONTH where  TIME_ID = 201207 and imei in 
+ ##~   (
+##~   select imei
+##~   from G_S_02067_MONTH 
+##~   where TIME_ID = 201207
+##~   and  imei <> 'FFFFFFFFFFFFFF'
+##~   group by  imei having count(0)   > 1
+##~   ) 
+##~   ) t set imei = char(bigint(imei)+bigint(rand(1)*10000))
+
+
+
+
+##~   select TIME_ID , substr(EFF_DT,1,6) ,count(0) 
+##~   --,  count(distinct TIME_ID ) 
+##~   from G_S_02067_MONTH 
+##~   where TIME_ID = 201207
+##~   group by  TIME_ID , substr(EFF_DT,1,6) 
+##~   order by 1 ,2
 

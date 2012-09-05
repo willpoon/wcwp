@@ -811,17 +811,21 @@ insert into G_S_22066_DAY
         ,E_CHANNEL_TYPE
         ,BUSI_REC_CNT
         ,ACTIVATE_CNT
-        ,TERM_SALE_CNT
+        --,TERM_SALE_CNT
         ,VAL_BUSI_REC_CNT
         ,VAL_BUSI_CANCEL_CNT
         ,CHRG_REC_CNT
         ,CHRG_REC_FEE
         ,ACCESS_CNT
         ,QRY_REC_CNT
-	,TERM_CONTRACT_SALE_CNT
-	,TERM_SINGLE_SALE_CNT
-	,TERM_MOBILE_SALE_CNT
-	,TERM_UNITE_SALE_CNT
+        ,CONTRACT_DZ_SALE_ALLCNT
+        ,CONTRACT_DZ_SALE_MOBCNT
+        ,CONTRACT_FEIDZ_SALE_CNT
+        ,CONTRACT_FEIDZ_SALE_MOBCNT
+        ,NAKE_DZ_SALE_CNT
+        ,NAKE_DZ_SALE_MOBCNT
+        ,NAKE_FEIDZ_SALE_CNT
+        ,NAKE_FEIDZ_SALE_MOBCNT			
 )                           
 select 
 $timestamp
@@ -836,7 +840,7 @@ else '00'
 end E_CHANNEL_TYPE
 ,char(int(sum(case when a.s_index_id = 101 then value else 0 end ))) BUSI_REC_CNT
 ,char(int(sum(case when a.s_index_id = 102 then value else 0 end ))) ACTIVATE_CNT
-,char(int(sum(case when a.s_index_id = 103 then value else 0 end ))) TERM_SALE_CNT
+--,char(int(sum(case when a.s_index_id = 103 then value else 0 end ))) TERM_SALE_CNT
 ,char(int(sum(case when a.s_index_id = 104 then value else 0 end ))) VAL_BUSI_REC_CNT
 ,char(int(sum(case when a.s_index_id = 109 then value else 0 end ))) VAL_BUSI_CANCEL_CNT
 ,char(int(sum(case when a.s_index_id = 108 then value else 0 end ))) CHRG_REC_CNT
@@ -844,10 +848,19 @@ end E_CHANNEL_TYPE
 ,char(int(sum(case when a.s_index_id = 106 then value else 0 end ))) ACCESS_CNT
 ,char(int(sum(case when a.s_index_id = 107 then value else 0 end ))) QRY_REC_CNT
 -- 2011.12.01 1.7.7 新增4个字段无法提取，报0 
-	,'0' TERM_CONTRACT_SALE_CNT
-	,'0' TERM_SINGLE_SALE_CNT
-	,'0' TERM_MOBILE_SALE_CNT
-	,'0' TERM_UNITE_SALE_CNT
+--~   ,'0' TERM_CONTRACT_SALE_CNT
+--~   ,'0' TERM_SINGLE_SALE_CNT
+--~   ,'0' TERM_MOBILE_SALE_CNT
+--~   ,'0' TERM_UNITE_SALE_CNT
+-- 2012.08.01 1.8.2 新增8个字段无法提取，报0 
+        ,'0'  CONTRACT_DZ_SALE_ALLCNT
+        ,'0'  CONTRACT_DZ_SALE_MOBCNT
+        ,'0'  CONTRACT_FEIDZ_SALE_CNT
+        ,'0'  CONTRACT_FEIDZ_SALE_MOBCNT
+        ,'0'  NAKE_DZ_SALE_CNT
+        ,'0'  NAKE_DZ_SALE_MOBCNT
+        ,'0'  NAKE_FEIDZ_SALE_CNT
+        ,'0'  NAKE_FEIDZ_SALE_MOBCNT		
 from G_S_22066_DAY_stat a
 where a.T_INDEX_ID in (201,202,203,204,205)
 group by 

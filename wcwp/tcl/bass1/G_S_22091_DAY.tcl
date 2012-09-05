@@ -451,10 +451,13 @@ Deal_imp $op_time $optime_month
 			      ,0
 			      ,0
 						,0
-						,sum( case when offer_name like '%购机%' then 1 else 0 end )
-						,sum( case when log_type=1 and busi_id in (191000000012,191000000013,191000000014,191000000015,191000000016,191000000060,191000000065,191000000072,191000001021) then 1 else 0 end )
-						,sum( case when log_type<>1 then 1 else 0 end )
-						,sum( case when log_type=1 and busi_id in (193000000001,193000000002,191000000007,191000000008) then 1 else 0 end )
+						--,sum( case when offer_name like '%购机%' then 1 else 0 end ) OTHER_SALE_CNT
+						,0
+						,sum( case when log_type=1 
+						and busi_id in (191000000012,191000000013,191000000014,191000000015,191000000016,191000000060,191000000065,191000000072,191000001021) 
+						then 1 else 0 end ) ACCEPT_BAS_CNT
+						,sum( case when log_type<>1 then 1 else 0 end ) QUERY_BAS_CNT
+						,sum( case when log_type=1 and busi_id in (193000000001,193000000002,191000000007,191000000008) then 1 else 0 end ) OFF_ACCEPT_CNT
 			from BASS2.dw_product_ord_so_log_dm_$curr_month
 			where op_time = '$op_time'
 			group by org_id
@@ -731,14 +734,20 @@ Deal_imp $op_time $optime_month
         ,VAL_BUSI_REC_CNT
         ,VAL_BUSI_OPEN_CNT
         ,IMP_VAL_OPEN_CNT
-        ,TERM_SALE_CNT
-        ,MOBILE_SALE_CNT
+		--,TERM_SALE_CNT
+        --,MOBILE_SALE_CNT
         ,BASE_REC_CNT
         ,QRY_REC_CNT	
 	--2011.12.01 1.7.7 以下新增三个指标暂无法提取，报0
-	,TERM_CONTRACT_SALE_CNT
-	,TERM_SINGLE_SALE_CNT
-	,TERM_UNITE_SALE_CNT
+	--2012.08.01 1.8.2 以下新增8个指标暂无法提取，报0
+        ,CONTRACT_DZ_SALE_ALLCNT
+        ,CONTRACT_DZ_SALE_MOBCNT
+        ,CONTRACT_FEIDZ_SALE_CNT
+        ,CONTRACT_FEIDZ_SALE_MOBCNT
+        ,NAKE_DZ_SALE_CNT
+        ,NAKE_DZ_SALE_MOBCNT
+        ,NAKE_FEIDZ_SALE_CNT
+        ,NAKE_FEIDZ_SALE_MOBCNT			
 	  )
 	SELECT
 	           TIME_ID
@@ -752,13 +761,18 @@ Deal_imp $op_time $optime_month
 	,char(sum(bigint(VAL_BUSI_REC_CNT))) VAL_BUSI_REC_CNT
 	,char(sum(bigint(VAL_BUSI_OPEN_CNT))) VAL_BUSI_OPEN_CNT
 	,char(sum(bigint(IMP_VAL_OPEN_CNT))) IMP_VAL_OPEN_CNT
-	,char(sum(bigint(TERM_SALE_CNT))) TERM_SALE_CNT
-	,char(sum(bigint(MOBILE_SALE_CNT))) MOBILE_SALE_CNT
+	--,char(sum(bigint(TERM_SALE_CNT))) TERM_SALE_CNT
+	--,char(sum(bigint(MOBILE_SALE_CNT))) MOBILE_SALE_CNT
 	,char(sum(bigint(BASE_REC_CNT))) BASE_REC_CNT
 	,char(sum(bigint(QRY_REC_CNT))) QRY_REC_CNT
-	,'0' TERM_CONTRACT_SALE_CNT
-	,'0' TERM_CONTRACT_SALE_CNT
-	,'0' TERM_CONTRACT_SALE_CNT
+        ,char(sum(bigint(TERM_SALE_CNT)))  CONTRACT_DZ_SALE_ALLCNT
+        ,char(sum(bigint(MOBILE_SALE_CNT)))  CONTRACT_DZ_SALE_MOBCNT
+        ,'0'  CONTRACT_FEIDZ_SALE_CNT
+        ,'0'  CONTRACT_FEIDZ_SALE_MOBCNT
+        ,'0'  NAKE_DZ_SALE_CNT
+        ,'0'  NAKE_DZ_SALE_MOBCNT
+        ,'0'  NAKE_FEIDZ_SALE_CNT
+        ,'0'  NAKE_FEIDZ_SALE_MOBCNT		
 	from G_S_22091_DAY_1 a
 	where time_id = $timestamp
 	group by TIME_ID,DEAL_DATE,CHANNEL_ID,DEAL_TYPE

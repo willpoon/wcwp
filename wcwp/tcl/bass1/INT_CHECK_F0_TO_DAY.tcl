@@ -59,7 +59,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
         ##~   set app_name "INT_CHECK_F0_TO_DAY.tcl"
 		
 		source /bassapp/bass1/tcl/TMP_TEST.tcl
-		getUserList $op_time $optime_month
+		#getUserList $op_time $optime_month
 		
 ####
 ####

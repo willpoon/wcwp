@@ -309,9 +309,11 @@ exec_sql $sql_buf
         ,COUNTER_REC_FEE
         ,EBANK_REC_FEE
         ,OTH_REC_FEE
-	,BNK_TS_CNT
-	,BNK_TS_FEE
+		,BNK_TS_CNT
+		,BNK_TS_FEE
         ,REWARD_FEE
+		,ATM_REC_CNT
+		,ATM_REC_FEE
 			)
 			 
 select 
@@ -332,6 +334,8 @@ select
           + int(sum( case when opt_code in ('4468')  then AMOUNT else 0 end )*0.016) 
           )
 				 REWARD_FEE
+	,'0' ATM_REC_CNT
+	,'0' ATM_REC_FEE
 from bass2.dw_acct_payment_dm_$op_month a 
 where opt_code in ('4286','4287','4179','4180','4181','4182','4310','4311','4103','4144','4468')
 with ur 

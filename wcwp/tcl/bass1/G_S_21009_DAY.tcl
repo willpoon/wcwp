@@ -21,12 +21,12 @@
 
 proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp_data_dir semi_data_dir final_data_dir conn conn_ctl src_data obj_data final_data } {
 
-##        #当天 yyyy-mm-dd
-##	set optime $op_time
-##	#当天 yyyymmdd
-##        set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]       
-##        #本月 yyyymm
-##        set op_month [string range $op_time 0 3][string range $op_time 5 6]
+        #当天 yyyy-mm-dd
+	set optime $op_time
+	#当天 yyyymmdd
+        set timestamp [string range $op_time 0 3][string range $op_time 5 6][string range $op_time 8 9]       
+        #本月 yyyymm
+        set op_month [string range $op_time 0 3][string range $op_time 5 6]
 ##        
 ##        #删除本期数据
 ##        set handle [aidb_open $conn]
@@ -96,6 +96,35 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 ##	}
 ##	aidb_commit $conn
 ##	aidb_close $handle
+
+
+
+ ##~   set sql_buff "insert into bass1.G_S_21009_DAY                         
+##~   select 
+         ##~   $timestamp TIME_ID
+        ##~   ,'$timestamp' BILL_DATE
+        ##~   ,a.product_no　PRODUCT_NO
+        ##~   ,coalesce(bass1.fn_get_all_dim('BASS_STD2_0001',char(tolltype_id)),'010') as TOLL_TYPE_ID
+        ##~   ,coalesce(bass1.fn_get_all_dim('BASS_STD2_0012',char(roamtype_id)),'500') as roam_type_id
+		##~   ,coalesce(bass1.fn_get_all_dim('BASS_STD2_0011',char(calltype_id)),'01') as call_type_id
+        ##~   ,char(count(0)) CALL_COUNTS
+        ##~   ,char(sum(call_duration))　	　CALL_DURATION
+	    ##~   ,char(sum(call_duration_m))　	　base_bill_duration
+	    ##~   ,char(sum(call_duration_s)*60)	　toll_bill_duration
+        ##~   ,char(bigint(sum(basecall_fee)*100))	 as favoured_basecall_fee
+        ##~   ,char(bigint(sum(toll_fee)*100))	     as favoured_tollcall_fee
+        ##~   ,char(bigint(sum(basecall_fee + toll_fee+other_fee+info_fee)*100))	as favoured_call_fee
+		 ##~   FROM bass2.cdr_call_dtl_$timestamp  a
+		##~   WHERE netcall_mark　=　1
+        ##~   group by 
+        ##~   a.product_no　
+        ##~   ,coalesce(bass1.fn_get_all_dim('BASS_STD2_0001',char(tolltype_id)),'010') 
+        ##~   ,coalesce(bass1.fn_get_all_dim('BASS_STD2_0012',char(roamtype_id)),'500') 
+		##~   ,coalesce(bass1.fn_get_all_dim('BASS_STD2_0011',char(calltype_id)),'01')        
+##~   with ur
+##~   "
+
+##~   exec_sql $sql_buff
 
 	return 0
 }
