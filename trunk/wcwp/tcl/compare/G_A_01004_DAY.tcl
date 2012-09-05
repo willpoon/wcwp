@@ -126,7 +126,7 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
                       end as ent_def_mode
 		             ,' ' as prt_grp_cust_id
                      ,substr(a.group_name,1,60) as enterprise_name
-                     ,value(substr(a.owner_name,1,20),' ') as owner_name 
+                     ,value(substr(a.owner_name,1,20),' ') as owner_name <div></div>
                      ,value(a.net_address,' ')
                      ,value(a.fax_id, ' ') as fax_no
                      ,case group_level
