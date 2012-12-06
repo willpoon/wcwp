@@ -226,3 +226,50 @@ return 0
 ##~   ) t
 ##~   with ur
 
+
+
+##~   ----20120918:
+##~   1.
+##~   select distinct  SERV_CODE from G_S_04016_DAY where time_id / 100 = 201209 and SEND_STATUS = '0'
+##~   except
+                        ##~   select distinct APP_LENCODE from 
+                        ##~   (
+                                        ##~   select t.*
+                                        ##~   ,row_number()over(partition by EC_CODE,APP_LENCODE,APNCODE,BUSI_NAME order by time_id desc ) rn 
+                                        ##~   from 
+                                        ##~   G_A_22036_DAY  t
+                                                                                ##~   where  time_id / 100 <= 201209
+                          ##~   ) a
+                        ##~   where rn = 1    and OPERATE_TYPE = '1'
+                                                                                ##~   And bigint(OPEN_DATE)/100 <= 201209
+
+##~   1                    
+##~   ---------------------
+##~   125829941816  
+##~   2.
+##~   select distinct time_id from G_S_04016_DAY where SERV_CODE = '125829941816'
+
+##~   3.
+##~   delete from (
+##~   select *from G_S_04016_DAY where time_id = 20120917
+##~   ) t
+##~   where SERV_CODE = '125829941816'
+
+##~  -- or -------
+
+
+##~   insert into G_A_22036_DAY
+##~   select 
+         ##~   20121116 TIME_ID
+        ##~   --,'201206' BILL_MONTH
+        ##~   ,'1' CUST_TYPE 
+        ##~   ,' ' EC_CODE 
+        ##~   ,' ' SINAME
+        ##~   ,'1' OPERATE_TYPE
+        ##~   ,'12582880486' APP_LENCODE
+        ##~   ,' ' APNCODE
+        ##~   ,' ' BUSI_NAME
+        ##~   ,'20121116' OPEN_DATE
+        ##~   ,'1' STS
+##~   from bass2.dual a 
+##~   with ur

@@ -269,3 +269,25 @@ with ur
 	return 0
 }
 
+
+
+
+
+##~   select count(0) from (
+##~   select distinct user_id,OVER_PROD_ID from bass1.g_i_02021_month a where time_id = 201209 and  OVER_PROD_ID like '99991222%'
+##~   except
+##~   select  distinct user_id,ADD_PKG_ID from bass1.g_i_02023_day a where time_id = 20120930
+##~   ) t 
+
+
+##~   USER_ID              2                             
+##~   -------------------- ------------------------------
+##~   89460000077602       999912221010006001            
+##~   89460000698159       999912221010006001     
+
+
+##~   delete from (
+##~   select *from bass1.g_i_02021_month a where time_id = 201209 and  OVER_PROD_ID like '99991222%' and user_id in ('89460000077602','89460000698159') 
+##~   and OVER_PROD_ID in ('999912221010006001')
+##~   ) t
+

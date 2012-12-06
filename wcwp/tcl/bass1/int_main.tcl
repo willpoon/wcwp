@@ -1621,7 +1621,7 @@ proc ChnRatio {MySQL1 MySQL2} {
 	puts $DEC_RESULT_VAL3
 	if {  ${DEC_RESULT_VAL3} > 0.30 } {
 		set grade 2
-	        set alarmcontent "exception:指标环比异常"
+	        set alarmcontent "ChnRatio:exception"
 	        WriteAlarm $app_name $op_time $grade ${alarmcontent}
 	   			return -1
 	} else {

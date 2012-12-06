@@ -176,4 +176,4 @@ proc get_single {MySQL} {
 
 	
 	return $result
-}
+}##~   delete from (##~   select *from BASS1.G_S_03005_MONTH a                 ##~   where a.time_id=201209				 ##~   and user_id = '89160001951122'##~   ) t ##~   delete from (##~   select *from BASS1.G_S_03004_MONTH a                 ##~   where a.time_id=201209				 ##~   and user_id = '89160001951122'##~   ) t 

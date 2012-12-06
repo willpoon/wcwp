@@ -31,7 +31,9 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
       set this_month_last_day [string range $op_month 0 5][GetThisMonthDays [string range $op_month 0 5]01]
       puts $op_time
       puts $op_month
-
+    global app_name
+		set app_name "G_I_02018_MONTH.tcl"        
+		
   #删除本期数据
 	set sql_buff "delete from bass1.g_i_02018_month where time_id=$op_month"
  	puts $sql_buff
@@ -315,7 +317,38 @@ set sql_buff "
 	with ur
  "
 
- 	puts $sql_buff
+	exec_sql $sql_buff
+
+	set sql_buff "
+	insert into bass1.g_i_02018_month
+		  (
+		   time_id
+	    ,base_prod_id
+			,base_prod_name
+			,base_prod_type
+			,prod_status
+			,prod_begin_time
+			,prod_end_time
+			,data_cnts
+		  )
+		select
+		   $op_month
+		   ,NEW_PKG_ID base_prod_id
+		   ,PKG_NAME  base_prod_name
+		   ,case 
+		   when PKG_NAME like '%全球通%上网%' then '111'
+		   when PKG_NAME like '%全球通%商旅%' then '112'
+		   when PKG_NAME like '%全球通%本地%' then '113'
+		   else '900' end
+		   ,'1'
+		   ,'20120917'
+		   ,'20300101'
+		   ,'0'
+		   from bass1.DIM_QW_QQT_PKGID
+		   where PKG_NAME like '%2012版%'
+		   with ur
+"
+
 	exec_sql $sql_buff
 
 	
@@ -324,6 +357,12 @@ set sql_buff "
 	set pk 			"base_prod_id"
 	chkpkunique ${tabname} ${pk} ${op_month}
 	
+
+
+##套餐ID 检查 02018
+	##~   set sql_buff "select 2 from bass2.dual
+	            ##~   "
+	##~   chkzero2 $sql_buff "检查02024 02018 一致性 因新增了2012版套餐"
 
 
 	return 0

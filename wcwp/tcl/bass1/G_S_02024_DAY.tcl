@@ -88,7 +88,7 @@ with ur
 insert into bass1.G_S_02024_DAY
 select distinct t.time_id
 ,t.user_id
-,value(b.new_pkg_id ,t.BASE_PKG_ID) BASE_PKG_ID
+,value(value(b.new_pkg_id ,t.BASE_PKG_ID),b1.new_pkg_id) BASE_PKG_ID
 ,t.CHANNEL_ID
 ,t.REC_DT
 ,t.VALID_DT
@@ -108,11 +108,47 @@ where a.base_pkg_id not in (SELECT
 and BASS1_VALUE  not like '%QW%')
 ) t 
 left join bass1.DIM_QW_QQT_PKGID  b on t.BASE_PKG_ID = b.old_pkg_id
+left join bass1.DIM_QW_QQT_PKGID  b1 on t.BASE_PKG_ID = b1.old_pkg_id
 with ur
 "
 
 	exec_sql $sql_buff
-	
+
+
+
+###~   20120920:
+
+set sql_buff "
+insert into bass1.G_S_02024_DAY
+select distinct 
+	$timestamp time_id
+	,a.PRODUCT_INSTANCE_ID USER_ID
+	,c.new_pkg_id BASE_PKG_ID
+	,char(a.ORG_ID) CHANNEL_ID
+	,replace(char(date(a.CREATE_DATE)),'-','') REC_DT
+	,replace(char(date(a.VALID_DATE) ),'-','') VALID_DT
+from  bass2.Dw_product_ins_off_ins_prod_ds a 
+	, bass2.dw_product_$timestamp b 
+	,  bass1.DIM_QW_QQT_PKGID c
+where  a.state =1 
+	and a.PRODUCT_INSTANCE_ID=b.user_id 
+	and char(a.offer_id) = c.OLD_PKG_ID
+	and b.usertype_id in (1,2,9) 
+	and b.userstatus_id in (1,2,3,6,8)
+	and a.valid_type in (1,2)
+	and date(a.expire_date) >= '$op_time'
+	and not exists ( 
+			 select 1 from bass2.dwd_product_test_phone_$timestamp b 
+			 where a.product_instance_id = b.USER_ID  and b.sts = 1
+			)   
+
+with ur
+
+  "
+	exec_sql $sql_buff
+
+
+
   #进行结果数据检查
   #1.检查chkpkunique
 	set tabname "G_S_02024_DAY"
@@ -133,19 +169,19 @@ with ur
 	            "
 	chkzero2 $sql_buff "有用户不在用户表里头"
 
-##套餐ID 检查 02018
-	set sql_buff "select count(*) from 
-	            (
-		     select distinct BASE_PKG_ID from bass1.G_S_02024_DAY
-		      where time_id =$timestamp
-		       except
-		      select distinct value(b.new_pkg_id,BASE_PROD_ID) 
-			from G_I_02018_MONTH a 
-			left join bass1.DIM_QW_QQT_PKGID  b on a.BASE_PROD_ID = b.old_pkg_id
-			where time_id = $last_month
-	            ) as a
-	            "
-	chkzero2 $sql_buff "有套餐不在 02018 中"
+##~   ##套餐ID 检查 02018
+	##~   set sql_buff "select count(*) from 
+	            ##~   (
+		     ##~   select distinct BASE_PKG_ID from bass1.G_S_02024_DAY
+		      ##~   where time_id =$timestamp
+		       ##~   except
+		      ##~   select distinct value(b.new_pkg_id,BASE_PROD_ID) 
+			##~   from G_I_02018_MONTH a 
+			##~   left join bass1.DIM_QW_QQT_PKGID  b on a.BASE_PROD_ID = b.old_pkg_id
+			##~   where time_id = $last_month
+	            ##~   ) as a
+	            ##~   "
+	##~   chkzero2 $sql_buff "有套餐不在 02018 中"
 
 #### 增加 1个用户多条办理的校验
 #

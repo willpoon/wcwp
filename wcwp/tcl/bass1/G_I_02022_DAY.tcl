@@ -84,6 +84,47 @@ from (
 	exec_sql $sql_buff
 
 
+
+##~   1.8.2 20120920：增加2012版套餐订购
+  #直接来源于二经用户表数据，新的接口表
+	set sql_buff "
+	insert into bass1.g_i_02022_day
+		  (
+			 TIME_ID
+			,USER_ID
+			,BASE_PKG_ID
+			,VALID_DT
+		  )
+select 	TIME_ID,USER_ID,BASE_PKG_ID,VALID_DT
+from (
+	select 
+		$timestamp TIME_ID
+		,char(a.product_instance_id)  USER_ID
+		,e.NEW_PKG_ID BASE_PKG_ID
+		,replace(char(date(a.VALID_DATE)),'-','') VALID_DT
+		,row_number()over(partition by a.product_instance_id order by expire_date desc ,VALID_DATE desc ) rn 
+	from  bass2.Dw_product_ins_off_ins_prod_ds a
+	,(select user_id from bass2.dw_product_$timestamp
+		    where usertype_id in (1,2,9) 
+		    and userstatus_id in (1,2,3,6,8)
+		    and test_mark<>1) d
+	,bass1.DIM_QW_QQT_PKGID e
+	where  char(a.product_instance_id)  = d.user_id
+	  and char(a.offer_id) = e.OLD_PKG_ID
+	  and a.state =1
+	  and a.valid_type in (1,2)
+	  and a.OP_TIME = '$op_time'	  
+	  and date(a.VALID_DATE)<='$op_time'	
+    and date(a.expire_date) >= '$op_time'
+	  and not exists (	select 1 from bass2.dwd_product_test_phone_$timestamp b 
+				where a.product_instance_id = b.USER_ID  and b.sts = 1
+			 ) 
+) t where t.rn = 1
+	 with ur
+  "
+	exec_sql $sql_buff
+
+
   #进行结果数据检查
   #检查chkpkunique
   set tabname "g_i_02022_day"

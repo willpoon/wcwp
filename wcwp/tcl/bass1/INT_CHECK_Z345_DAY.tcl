@@ -209,500 +209,500 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 
 
-################################################################################
-  set handle [aidb_open $conn]
-	set sql_buff "delete from bass1.g_rule_check where time_id=${timestamp} 
-		        and rule_code in ('R020','R021','R022') "
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-        aidb_close $handle
+##~   ################################################################################
+  ##~   set handle [aidb_open $conn]
+	##~   set sql_buff "delete from bass1.g_rule_check where time_id=${timestamp} 
+		        ##~   and rule_code in ('R020','R021','R022') "
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+        ##~   aidb_close $handle
   
   
- ############################
- # 20091125 modify 建立临时表，供下面使用
- ############################
+ ##~   ############################
+ ##~   # 20091125 modify 建立临时表，供下面使用
+ ##~   ############################
  
- 	set handle [aidb_open $conn]
-	set sql_buff "ALTER TABLE check_temp_02004_now ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
-        puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
+ 	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "ALTER TABLE check_temp_02004_now ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
+        ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle
 
- 	set handle [aidb_open $conn]
-	set sql_buff "insert into check_temp_02004_now 
-	              SELECT USER_ID,MAX(TIME_ID) AS TIME_ID FROM BASS1.G_A_02004_DAY
-    	 	         WHERE TIME_ID <= INT($timestamp)
-    	  	       GROUP BY USER_ID
-	    "
-        puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
-
-
- 	set handle [aidb_open $conn]
-	set sql_buff "ALTER TABLE check_temp_02004_last ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
-        puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
-
- 	set handle [aidb_open $conn]
-	set sql_buff "insert into check_temp_02004_last 
-	              SELECT USER_ID,MAX(TIME_ID) AS TIME_ID FROM BASS1.G_A_02004_DAY
-    	 	         WHERE TIME_ID <= INT($last_day)
-    	  	       GROUP BY USER_ID
-	    "
-        puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
+ 	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "insert into check_temp_02004_now 
+	              ##~   SELECT USER_ID,MAX(TIME_ID) AS TIME_ID FROM BASS1.G_A_02004_DAY
+    	 	         ##~   WHERE TIME_ID <= INT($timestamp)
+    	  	       ##~   GROUP BY USER_ID
+	    ##~   "
+        ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle
 
 
- 	set handle [aidb_open $conn]
-	set sql_buff "ALTER TABLE check_temp_02008_now ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
-        puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
+ 	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "ALTER TABLE check_temp_02004_last ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
+        ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle
 
- 	set handle [aidb_open $conn]
-	set sql_buff "insert into check_temp_02008_now 
-	              SELECT USER_ID,MAX(TIME_ID) AS TIME_ID FROM BASS1.G_A_02008_DAY
-    		 				WHERE TIME_ID <= INT($timestamp)
-    		 				GROUP BY USER_ID
-	    "
-  puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
+ 	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "insert into check_temp_02004_last 
+	              ##~   SELECT USER_ID,MAX(TIME_ID) AS TIME_ID FROM BASS1.G_A_02004_DAY
+    	 	         ##~   WHERE TIME_ID <= INT($last_day)
+    	  	       ##~   GROUP BY USER_ID
+	    ##~   "
+        ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle
+
+
+ 	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "ALTER TABLE check_temp_02008_now ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
+        ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle
+
+ 	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "insert into check_temp_02008_now 
+	              ##~   SELECT USER_ID,MAX(TIME_ID) AS TIME_ID FROM BASS1.G_A_02008_DAY
+    		 				##~   WHERE TIME_ID <= INT($timestamp)
+    		 				##~   GROUP BY USER_ID
+	    ##~   "
+  ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle
 
 
 
- 	set handle [aidb_open $conn]
-	set sql_buff "ALTER TABLE check_temp_02008_last ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
-        puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
+ 	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "ALTER TABLE check_temp_02008_last ACTIVATE NOT LOGGED INITIALLY WITH EMPTY TABLE"
+        ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle
 
- 	set handle [aidb_open $conn]
-	set sql_buff "insert into check_temp_02008_last 
-	              SELECT USER_ID,MAX(TIME_ID) AS TIME_ID FROM BASS1.G_A_02008_DAY
-    		 				WHERE TIME_ID <= INT($last_day)
-    		 				GROUP BY USER_ID
-	    "
-  puts $sql_buff
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
-	aidb_close $handle
+ 	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "insert into check_temp_02008_last 
+	              ##~   SELECT USER_ID,MAX(TIME_ID) AS TIME_ID FROM BASS1.G_A_02008_DAY
+    		 				##~   WHERE TIME_ID <= INT($last_day)
+    		 				##~   GROUP BY USER_ID
+	    ##~   "
+  ##~   puts $sql_buff
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   aidb_close $handle
 
-  exec db2 connect to bassdb user bass1 using bass1
+  ##~   exec db2 connect to bassdb user bass1 using bass1
   
-  exec db2 runstats on table bass1.g_a_02008_day with distribution and detailed indexes all
+  ##~   exec db2 runstats on table bass1.g_a_02008_day with distribution and detailed indexes all
   
-  exec db2 runstats on table bass1.check_temp_02004_now with distribution and detailed indexes all
+  ##~   exec db2 runstats on table bass1.check_temp_02004_now with distribution and detailed indexes all
   
-  exec db2 terminate
+  ##~   exec db2 terminate
   
-  exec db2 connect to bassdb user bass1 using bass1
+  ##~   exec db2 connect to bassdb user bass1 using bass1
   
-  exec db2 runstats on table bass1.g_a_02008_day with distribution and detailed indexes all
+  ##~   exec db2 runstats on table bass1.g_a_02008_day with distribution and detailed indexes all
   
-  exec db2 runstats on table bass1.check_temp_02008_now with distribution and detailed indexes all
+  ##~   exec db2 runstats on table bass1.check_temp_02008_now with distribution and detailed indexes all
   
-  exec db2 terminate    
+  ##~   exec db2 terminate    
 
-	#--R020:全球通用户到达数变动率
-	#--本日全球通用户到达数
-        set handle [aidb_open $conn]
-	set sql_buff "SELECT
-    		COUNT(*)
-    	FROM
-    		(SELECT
-    		 	A.TIME_ID,
-    		 	A.USER_ID,
-    		 	A.USERTYPE_ID,
-    		 	A.SIM_CODE
-    		FROM BASS1.G_A_02004_DAY  A,
-    		     BASS1.check_temp_02004_now B
-    	    WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID AND A.BRAND_ID='1'
-    	    )T,
+	##~   #--R020:全球通用户到达数变动率
+	##~   #--本日全球通用户到达数
+        ##~   set handle [aidb_open $conn]
+	##~   set sql_buff "SELECT
+    		##~   COUNT(*)
+    	##~   FROM
+    		##~   (SELECT
+    		 	##~   A.TIME_ID,
+    		 	##~   A.USER_ID,
+    		 	##~   A.USERTYPE_ID,
+    		 	##~   A.SIM_CODE
+    		##~   FROM BASS1.G_A_02004_DAY  A,
+    		     ##~   BASS1.check_temp_02004_now B
+    	    ##~   WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID AND A.BRAND_ID='1'
+    	    ##~   )T,
 
-    		(SELECT
-    	 		A.TIME_ID,
-    	 		A.USER_ID,
-    	 		A.USERTYPE_ID
-    		 FROM BASS1.G_A_02008_DAY A,
-    		      BASS1.check_temp_02008_now B
-    		WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID
-    		) M
-   		WHERE T.USER_ID = M.USER_ID
-    		  AND T.TIME_ID <= INT($timestamp)
-    		  AND M.TIME_ID <= INT($timestamp)
-    		  AND T.USERTYPE_ID <> '3'
-    		  AND M.USERTYPE_ID NOT IN ('2010','2020','2030','9000');"
-     puts $sql_buff
-	 if [catch { aidb_sql $handle $sql_buff  } errmsg ] {
-		WriteTrace $errmsg 1001
-		return -1
-	}
-	if [catch {set DEC_RESULT_VAL1 [lindex [aidb_fetch $handle] 0]} errmsg ] {
-		WriteTrace $errmsg 1002
-		return -1
-	}
-	aidb_commit $conn
-	set DEC_RESULT_VAL1 [format "%.3f" [expr ${DEC_RESULT_VAL1} /1.00]]
+    		##~   (SELECT
+    	 		##~   A.TIME_ID,
+    	 		##~   A.USER_ID,
+    	 		##~   A.USERTYPE_ID
+    		 ##~   FROM BASS1.G_A_02008_DAY A,
+    		      ##~   BASS1.check_temp_02008_now B
+    		##~   WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID
+    		##~   ) M
+   		##~   WHERE T.USER_ID = M.USER_ID
+    		  ##~   AND T.TIME_ID <= INT($timestamp)
+    		  ##~   AND M.TIME_ID <= INT($timestamp)
+    		  ##~   AND T.USERTYPE_ID <> '3'
+    		  ##~   AND M.USERTYPE_ID NOT IN ('2010','2020','2030','9000');"
+     ##~   puts $sql_buff
+	 ##~   if [catch { aidb_sql $handle $sql_buff  } errmsg ] {
+		##~   WriteTrace $errmsg 1001
+		##~   return -1
+	##~   }
+	##~   if [catch {set DEC_RESULT_VAL1 [lindex [aidb_fetch $handle] 0]} errmsg ] {
+		##~   WriteTrace $errmsg 1002
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
+	##~   set DEC_RESULT_VAL1 [format "%.3f" [expr ${DEC_RESULT_VAL1} /1.00]]
 
-	#puts $DEC_RESULT_VAL1
+	##~   #puts $DEC_RESULT_VAL1
 
-	#--昨日全球通用户到达数
-	set handle [aidb_open $conn]
+	##~   #--昨日全球通用户到达数
+	##~   set handle [aidb_open $conn]
 
-	set sql_buff "SELECT
-    		COUNT(*)
-    	FROM
-    		(SELECT
-    		 	A.TIME_ID,
-    		 	A.USER_ID,
-    		 	A.USERTYPE_ID,
-    		 	A.SIM_CODE
-    		FROM BASS1.G_A_02004_DAY  A,
-             BASS1.check_temp_02004_last B
-    	    WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID AND A.BRAND_ID='1'
-    	    )T,
+	##~   set sql_buff "SELECT
+    		##~   COUNT(*)
+    	##~   FROM
+    		##~   (SELECT
+    		 	##~   A.TIME_ID,
+    		 	##~   A.USER_ID,
+    		 	##~   A.USERTYPE_ID,
+    		 	##~   A.SIM_CODE
+    		##~   FROM BASS1.G_A_02004_DAY  A,
+             ##~   BASS1.check_temp_02004_last B
+    	    ##~   WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID AND A.BRAND_ID='1'
+    	    ##~   )T,
 
-    		(SELECT
-    	 		A.TIME_ID,
-    	 		A.USER_ID,
-    	 		A.USERTYPE_ID
-    		 FROM BASS1.G_A_02008_DAY A,
-              BASS1.check_temp_02008_last B
-    		WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID
-    		) M
-   		WHERE T.USER_ID = M.USER_ID
-    		  AND T.TIME_ID <= INT($last_day)
-    		  AND M.TIME_ID <= INT($last_day)
-    		  AND T.USERTYPE_ID <> '3'
-    		  AND M.USERTYPE_ID NOT IN ('2010','2020','2030','9000');"
+    		##~   (SELECT
+    	 		##~   A.TIME_ID,
+    	 		##~   A.USER_ID,
+    	 		##~   A.USERTYPE_ID
+    		 ##~   FROM BASS1.G_A_02008_DAY A,
+              ##~   BASS1.check_temp_02008_last B
+    		##~   WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID
+    		##~   ) M
+   		##~   WHERE T.USER_ID = M.USER_ID
+    		  ##~   AND T.TIME_ID <= INT($last_day)
+    		  ##~   AND M.TIME_ID <= INT($last_day)
+    		  ##~   AND T.USERTYPE_ID <> '3'
+    		  ##~   AND M.USERTYPE_ID NOT IN ('2010','2020','2030','9000');"
      
-     puts $sql_buff
-	 if [catch { aidb_sql $handle $sql_buff  } errmsg ] {
-		WriteTrace $errmsg 1003
-		return -1
-	}
+     ##~   puts $sql_buff
+	 ##~   if [catch { aidb_sql $handle $sql_buff  } errmsg ] {
+		##~   WriteTrace $errmsg 1003
+		##~   return -1
+	##~   }
 
-	if [catch {set DEC_RESULT_VAL2 [lindex [aidb_fetch $handle] 0]} errmsg ] {
-		WriteTrace $errmsg 1004
-		return -1
-	}
+	##~   if [catch {set DEC_RESULT_VAL2 [lindex [aidb_fetch $handle] 0]} errmsg ] {
+		##~   WriteTrace $errmsg 1004
+		##~   return -1
+	##~   }
 
-	aidb_commit $conn
+	##~   aidb_commit $conn
 
-	set DEC_RESULT_VAL2 [format "%.3f" [expr ${DEC_RESULT_VAL2} /1.00]]
+	##~   set DEC_RESULT_VAL2 [format "%.3f" [expr ${DEC_RESULT_VAL2} /1.00]]
 
-	#puts $DEC_RESULT_VAL2
+	##~   #puts $DEC_RESULT_VAL2
 
-	#--将校验值插入校验结果表
-	set handle [aidb_open $conn]
-	set sql_buff "\
-		INSERT INTO BASS1.G_RULE_CHECK VALUES ($timestamp,'R020',$DEC_RESULT_VAL1,$DEC_RESULT_VAL2,1.000 * $DEC_RESULT_VAL1 / $DEC_RESULT_VAL2 - 1,0) "
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
+	##~   #--将校验值插入校验结果表
+	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "\
+		##~   INSERT INTO BASS1.G_RULE_CHECK VALUES ($timestamp,'R020',$DEC_RESULT_VAL1,$DEC_RESULT_VAL2,1.000 * $DEC_RESULT_VAL1 / $DEC_RESULT_VAL2 - 1,0) "
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
 
-	#--判断
-	#--异常
-	#--1：全球通用户到达数变动率<= 3%超标
+	##~   #--判断
+	##~   #--异常
+	##~   #--1：全球通用户到达数变动率<= 3%超标
 
-	#set DEC_RESULT_VAL2 "0.2"
-	#set DEC_RESULT_VAL1 "0.1"
+	##~   #set DEC_RESULT_VAL2 "0.2"
+	##~   #set DEC_RESULT_VAL1 "0.1"
 
-	if {[format "%.3f" [expr ${DEC_RESULT_VAL1} / ${DEC_RESULT_VAL2} -1]]>0.030 || [format "%.3f" [expr ${DEC_RESULT_VAL1} / ${DEC_RESULT_VAL2} -1]]<-0.030} {
-		set grade 2
-	        set alarmcontent "准确性指标R020：全球通用户到达数变动率超出集团考核范围"
-	        WriteAlarm $app_name $optime $grade ${alarmcontent}
-		 }
+	##~   if {[format "%.3f" [expr ${DEC_RESULT_VAL1} / ${DEC_RESULT_VAL2} -1]]>0.030 || [format "%.3f" [expr ${DEC_RESULT_VAL1} / ${DEC_RESULT_VAL2} -1]]<-0.030} {
+		##~   set grade 2
+	        ##~   set alarmcontent "准确性指标R020：全球通用户到达数变动率超出集团考核范围"
+	        ##~   WriteAlarm $app_name $optime $grade ${alarmcontent}
+		 ##~   }
 
-	 #--------------------------------------------------------------------
-	 #--R021:神州行用户到达数变动率
-         #--本日神州行用户到达数
-        set handle [aidb_open $conn]
+	 ##~   #--------------------------------------------------------------------
+	 ##~   #--R021:神州行用户到达数变动率
+         ##~   #--本日神州行用户到达数
+        ##~   set handle [aidb_open $conn]
 
-	set sql_buff "SELECT
-    		COUNT(*)
-    	FROM
-    		(SELECT
-    		 	A.TIME_ID,
-    		 	A.USER_ID,
-    		 	A.USERTYPE_ID,
-    		 	A.SIM_CODE
-    		FROM BASS1.G_A_02004_DAY  A,
-             BASS1.check_temp_02004_now B
-    	    WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID AND A.BRAND_ID='2'
-    	    )T,
+	##~   set sql_buff "SELECT
+    		##~   COUNT(*)
+    	##~   FROM
+    		##~   (SELECT
+    		 	##~   A.TIME_ID,
+    		 	##~   A.USER_ID,
+    		 	##~   A.USERTYPE_ID,
+    		 	##~   A.SIM_CODE
+    		##~   FROM BASS1.G_A_02004_DAY  A,
+             ##~   BASS1.check_temp_02004_now B
+    	    ##~   WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID AND A.BRAND_ID='2'
+    	    ##~   )T,
 
-    		(SELECT
-    	 		A.TIME_ID,
-    	 		A.USER_ID,
-    	 		A.USERTYPE_ID
-    		 FROM BASS1.G_A_02008_DAY A,
-              BASS1.check_temp_02008_now B
-    		WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID
-    		) M
-   		WHERE T.USER_ID = M.USER_ID
-    		  AND T.TIME_ID <= INT($timestamp)
-    		  AND M.TIME_ID <= INT($timestamp)
-    		  AND T.USERTYPE_ID <> '3'
-    		  AND M.USERTYPE_ID NOT IN ('2010','2020','2030','9000');"
+    		##~   (SELECT
+    	 		##~   A.TIME_ID,
+    	 		##~   A.USER_ID,
+    	 		##~   A.USERTYPE_ID
+    		 ##~   FROM BASS1.G_A_02008_DAY A,
+              ##~   BASS1.check_temp_02008_now B
+    		##~   WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID
+    		##~   ) M
+   		##~   WHERE T.USER_ID = M.USER_ID
+    		  ##~   AND T.TIME_ID <= INT($timestamp)
+    		  ##~   AND M.TIME_ID <= INT($timestamp)
+    		  ##~   AND T.USERTYPE_ID <> '3'
+    		  ##~   AND M.USERTYPE_ID NOT IN ('2010','2020','2030','9000');"
      
-     puts $sql_buff
-	 if [catch { aidb_sql $handle $sql_buff  } errmsg ] {
-		WriteTrace $errmsg 1001
-		return -1
-	}
+     ##~   puts $sql_buff
+	 ##~   if [catch { aidb_sql $handle $sql_buff  } errmsg ] {
+		##~   WriteTrace $errmsg 1001
+		##~   return -1
+	##~   }
 
-	if [catch {set SZX_RESULT_VAL1 [lindex [aidb_fetch $handle] 0]} errmsg ] {
-		WriteTrace $errmsg 1002
-		return -1
-	}
+	##~   if [catch {set SZX_RESULT_VAL1 [lindex [aidb_fetch $handle] 0]} errmsg ] {
+		##~   WriteTrace $errmsg 1002
+		##~   return -1
+	##~   }
 
-	aidb_commit $conn
-	set SZX_RESULT_VAL1 [format "%.3f" [expr ${SZX_RESULT_VAL1} /1.00]]
-	#puts $SZX_RESULT_VAL1
+	##~   aidb_commit $conn
+	##~   set SZX_RESULT_VAL1 [format "%.3f" [expr ${SZX_RESULT_VAL1} /1.00]]
+	##~   #puts $SZX_RESULT_VAL1
 
-	#--昨日神州行用户到达数
-	set handle [aidb_open $conn]
+	##~   #--昨日神州行用户到达数
+	##~   set handle [aidb_open $conn]
 
-	set sql_buff "SELECT
-    		COUNT(*)
-    	FROM
-    		(SELECT
-    		 	A.TIME_ID,
-    		 	A.USER_ID,
-    		 	A.USERTYPE_ID,
-    		 	A.SIM_CODE
-    		FROM BASS1.G_A_02004_DAY  A,
-             BASS1.check_temp_02004_last B
-    	    WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID AND A.BRAND_ID='2'
-    	    )T,
+	##~   set sql_buff "SELECT
+    		##~   COUNT(*)
+    	##~   FROM
+    		##~   (SELECT
+    		 	##~   A.TIME_ID,
+    		 	##~   A.USER_ID,
+    		 	##~   A.USERTYPE_ID,
+    		 	##~   A.SIM_CODE
+    		##~   FROM BASS1.G_A_02004_DAY  A,
+             ##~   BASS1.check_temp_02004_last B
+    	    ##~   WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID AND A.BRAND_ID='2'
+    	    ##~   )T,
 
-    		(SELECT
-    	 		A.TIME_ID,
-    	 		A.USER_ID,
-    	 		A.USERTYPE_ID
-    		 FROM BASS1.G_A_02008_DAY A,
-              BASS1.check_temp_02008_last B
-    		WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID
-    		) M
-   		WHERE T.USER_ID = M.USER_ID
-    		  AND T.TIME_ID <= INT($last_day)
-    		  AND M.TIME_ID <= INT($last_day)
-    		  AND T.USERTYPE_ID <> '3'
-    		  AND M.USERTYPE_ID NOT IN ('2010','2020','2030','9000');"
+    		##~   (SELECT
+    	 		##~   A.TIME_ID,
+    	 		##~   A.USER_ID,
+    	 		##~   A.USERTYPE_ID
+    		 ##~   FROM BASS1.G_A_02008_DAY A,
+              ##~   BASS1.check_temp_02008_last B
+    		##~   WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID
+    		##~   ) M
+   		##~   WHERE T.USER_ID = M.USER_ID
+    		  ##~   AND T.TIME_ID <= INT($last_day)
+    		  ##~   AND M.TIME_ID <= INT($last_day)
+    		  ##~   AND T.USERTYPE_ID <> '3'
+    		  ##~   AND M.USERTYPE_ID NOT IN ('2010','2020','2030','9000');"
      
-     puts $sql_buff
-	 if [catch { aidb_sql $handle $sql_buff  } errmsg ] {
-		WriteTrace $errmsg 1003
-		return -1
-	}
+     ##~   puts $sql_buff
+	 ##~   if [catch { aidb_sql $handle $sql_buff  } errmsg ] {
+		##~   WriteTrace $errmsg 1003
+		##~   return -1
+	##~   }
 
-	if [catch {set SZX_RESULT_VAL2 [lindex [aidb_fetch $handle] 0]} errmsg ] {
-		WriteTrace $errmsg 1004
-		return -1
-	}
+	##~   if [catch {set SZX_RESULT_VAL2 [lindex [aidb_fetch $handle] 0]} errmsg ] {
+		##~   WriteTrace $errmsg 1004
+		##~   return -1
+	##~   }
 
-	aidb_commit $conn
+	##~   aidb_commit $conn
 
-	set SZX_RESULT_VAL2 [format "%.3f" [expr ${SZX_RESULT_VAL2} /1.00]]
+	##~   set SZX_RESULT_VAL2 [format "%.3f" [expr ${SZX_RESULT_VAL2} /1.00]]
 
-	#puts $SZX_RESULT_VAL2
+	##~   #puts $SZX_RESULT_VAL2
 
-	##--将校验值插入校验结果表
-	set handle [aidb_open $conn]
-	set sql_buff "\
-		INSERT INTO BASS1.G_RULE_CHECK VALUES ($timestamp,'R021',$SZX_RESULT_VAL1,$SZX_RESULT_VAL2,1.000 * $SZX_RESULT_VAL1 / $SZX_RESULT_VAL2 - 1,0) "
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
+	##~   ##--将校验值插入校验结果表
+	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "\
+		##~   INSERT INTO BASS1.G_RULE_CHECK VALUES ($timestamp,'R021',$SZX_RESULT_VAL1,$SZX_RESULT_VAL2,1.000 * $SZX_RESULT_VAL1 / $SZX_RESULT_VAL2 - 1,0) "
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
 
-	 #--判断
-         #--异常：
-         #--1：神州行用户到达数变动率<= 2%超标
+	 ##~   #--判断
+         ##~   #--异常：
+         ##~   #--1：神州行用户到达数变动率<= 2%超标
 
-         #set SZX_RESULT_VAL2 "0.2"
-	 #set SZX_RESULT_VAL1 "0.1"
+         ##~   #set SZX_RESULT_VAL2 "0.2"
+	 ##~   #set SZX_RESULT_VAL1 "0.1"
 
-	 if {[format "%.3f" [expr ${SZX_RESULT_VAL1} / ${SZX_RESULT_VAL2} -1]]>0.020 || [format "%.3f" [expr ${SZX_RESULT_VAL1} / ${SZX_RESULT_VAL2} -1]]<-0.020} {
-	 	set grade 2
-	        set alarmcontent "准确性指标R021：神州行用户到达数变动率超出集团考核范围"
-	        WriteAlarm $app_name $optime $grade ${alarmcontent}
-	 	  	}
+	 ##~   if {[format "%.3f" [expr ${SZX_RESULT_VAL1} / ${SZX_RESULT_VAL2} -1]]>0.020 || [format "%.3f" [expr ${SZX_RESULT_VAL1} / ${SZX_RESULT_VAL2} -1]]<-0.020} {
+	 	##~   set grade 2
+	        ##~   set alarmcontent "准确性指标R021：神州行用户到达数变动率超出集团考核范围"
+	        ##~   WriteAlarm $app_name $optime $grade ${alarmcontent}
+	 	  	##~   }
 
-   #-----------------------------------------------------------------------
-   #--R022:动感地带用户到达数变动率
-         #--本日动感地带用户到达数
-        set handle [aidb_open $conn]
+   ##~   #-----------------------------------------------------------------------
+   ##~   #--R022:动感地带用户到达数变动率
+         ##~   #--本日动感地带用户到达数
+        ##~   set handle [aidb_open $conn]
 
-	set sql_buff "SELECT
-    		COUNT(*)
-    	FROM
-    		(SELECT
-    		 	A.TIME_ID,
-    		 	A.USER_ID,
-    		 	A.USERTYPE_ID,
-    		 	A.SIM_CODE
-    		FROM BASS1.G_A_02004_DAY  A,
-             BASS1.check_temp_02004_now B
-    	    WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID AND A.BRAND_ID='3'
-    	    )T,
+	##~   set sql_buff "SELECT
+    		##~   COUNT(*)
+    	##~   FROM
+    		##~   (SELECT
+    		 	##~   A.TIME_ID,
+    		 	##~   A.USER_ID,
+    		 	##~   A.USERTYPE_ID,
+    		 	##~   A.SIM_CODE
+    		##~   FROM BASS1.G_A_02004_DAY  A,
+             ##~   BASS1.check_temp_02004_now B
+    	    ##~   WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID AND A.BRAND_ID='3'
+    	    ##~   )T,
 
-    		(SELECT
-    	 		A.TIME_ID,
-    	 		A.USER_ID,
-    	 		A.USERTYPE_ID
-    		 FROM BASS1.G_A_02008_DAY A,
-              BASS1.check_temp_02008_now B
-    		WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID
-    		) M
-   		WHERE T.USER_ID = M.USER_ID
-    		  AND T.TIME_ID <= INT($timestamp)
-    		  AND M.TIME_ID <= INT($timestamp)
-    		  AND T.USERTYPE_ID <> '3'
-    		  AND M.USERTYPE_ID NOT IN ('2010','2020','2030','9000');"
+    		##~   (SELECT
+    	 		##~   A.TIME_ID,
+    	 		##~   A.USER_ID,
+    	 		##~   A.USERTYPE_ID
+    		 ##~   FROM BASS1.G_A_02008_DAY A,
+              ##~   BASS1.check_temp_02008_now B
+    		##~   WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID
+    		##~   ) M
+   		##~   WHERE T.USER_ID = M.USER_ID
+    		  ##~   AND T.TIME_ID <= INT($timestamp)
+    		  ##~   AND M.TIME_ID <= INT($timestamp)
+    		  ##~   AND T.USERTYPE_ID <> '3'
+    		  ##~   AND M.USERTYPE_ID NOT IN ('2010','2020','2030','9000');"
      
-     puts $sql_buff
-	 if [catch { aidb_sql $handle $sql_buff  } errmsg ] {
-		WriteTrace $errmsg 1001
-		return -1
-	}
+     ##~   puts $sql_buff
+	 ##~   if [catch { aidb_sql $handle $sql_buff  } errmsg ] {
+		##~   WriteTrace $errmsg 1001
+		##~   return -1
+	##~   }
 
-	if [catch {set MZONE_RESULT_VAL1 [lindex [aidb_fetch $handle] 0]} errmsg ] {
-		WriteTrace $errmsg 1002
-		return -1
-	}
+	##~   if [catch {set MZONE_RESULT_VAL1 [lindex [aidb_fetch $handle] 0]} errmsg ] {
+		##~   WriteTrace $errmsg 1002
+		##~   return -1
+	##~   }
 
-	aidb_commit $conn
-	set MZONE_RESULT_VAL1 [format "%.3f" [expr ${MZONE_RESULT_VAL1} /1.00]]
-	#puts $MZONE_RESULT_VAL1
+	##~   aidb_commit $conn
+	##~   set MZONE_RESULT_VAL1 [format "%.3f" [expr ${MZONE_RESULT_VAL1} /1.00]]
+	##~   #puts $MZONE_RESULT_VAL1
 
-	#--昨日动感地带用户到达数
-	set handle [aidb_open $conn]
+	##~   #--昨日动感地带用户到达数
+	##~   set handle [aidb_open $conn]
 
-	set sql_buff "SELECT
-    		COUNT(*)
-    	FROM
-    		(SELECT
-    		 	A.TIME_ID,
-    		 	A.USER_ID,
-    		 	A.USERTYPE_ID,
-    		 	A.SIM_CODE
-    		FROM BASS1.G_A_02004_DAY  A,
-             BASS1.check_temp_02004_last B
-    	    WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID AND A.BRAND_ID='3'
-    	    )T,
+	##~   set sql_buff "SELECT
+    		##~   COUNT(*)
+    	##~   FROM
+    		##~   (SELECT
+    		 	##~   A.TIME_ID,
+    		 	##~   A.USER_ID,
+    		 	##~   A.USERTYPE_ID,
+    		 	##~   A.SIM_CODE
+    		##~   FROM BASS1.G_A_02004_DAY  A,
+             ##~   BASS1.check_temp_02004_last B
+    	    ##~   WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID AND A.BRAND_ID='3'
+    	    ##~   )T,
 
-    		(SELECT
-    	 		A.TIME_ID,
-    	 		A.USER_ID,
-    	 		A.USERTYPE_ID
-    		 FROM BASS1.G_A_02008_DAY A,
-              BASS1.check_temp_02008_last B
-    		WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID
-    		) M
-   		WHERE T.USER_ID = M.USER_ID
-    		  AND T.TIME_ID <= INT($last_day)
-    		  AND M.TIME_ID <= INT($last_day)
-    		  AND T.USERTYPE_ID <> '3'
-    		  AND M.USERTYPE_ID NOT IN ('2010','2020','2030','9000');"
+    		##~   (SELECT
+    	 		##~   A.TIME_ID,
+    	 		##~   A.USER_ID,
+    	 		##~   A.USERTYPE_ID
+    		 ##~   FROM BASS1.G_A_02008_DAY A,
+              ##~   BASS1.check_temp_02008_last B
+    		##~   WHERE A.USER_ID = B.USER_ID AND A.TIME_ID = B.TIME_ID
+    		##~   ) M
+   		##~   WHERE T.USER_ID = M.USER_ID
+    		  ##~   AND T.TIME_ID <= INT($last_day)
+    		  ##~   AND M.TIME_ID <= INT($last_day)
+    		  ##~   AND T.USERTYPE_ID <> '3'
+    		  ##~   AND M.USERTYPE_ID NOT IN ('2010','2020','2030','9000');"
      
-     puts $sql_buff
-	 if [catch { aidb_sql $handle $sql_buff  } errmsg ] {
-		WriteTrace $errmsg 1003
-		return -1
-	}
+     ##~   puts $sql_buff
+	 ##~   if [catch { aidb_sql $handle $sql_buff  } errmsg ] {
+		##~   WriteTrace $errmsg 1003
+		##~   return -1
+	##~   }
 
-	if [catch {set MZONE_RESULT_VAL2 [lindex [aidb_fetch $handle] 0]} errmsg ] {
-		WriteTrace $errmsg 1004
-		return -1
-	}
+	##~   if [catch {set MZONE_RESULT_VAL2 [lindex [aidb_fetch $handle] 0]} errmsg ] {
+		##~   WriteTrace $errmsg 1004
+		##~   return -1
+	##~   }
 
-	aidb_commit $conn
+	##~   aidb_commit $conn
 
-	set MZONE_RESULT_VAL2 [format "%.3f" [expr ${MZONE_RESULT_VAL2} /1.00]]
+	##~   set MZONE_RESULT_VAL2 [format "%.3f" [expr ${MZONE_RESULT_VAL2} /1.00]]
 
-	#puts $MZONE_RESULT_VAL2
+	##~   #puts $MZONE_RESULT_VAL2
 
-	##--将校验值插入校验结果表
-	set handle [aidb_open $conn]
-	set sql_buff "\
-		INSERT INTO BASS1.G_RULE_CHECK VALUES ($timestamp,'R022',$MZONE_RESULT_VAL1,$MZONE_RESULT_VAL2,1.000 * $MZONE_RESULT_VAL1 / $MZONE_RESULT_VAL2 - 1,0) "
-	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
-		WriteTrace "$errmsg" 2005
-		aidb_close $handle
-		return -1
-	}
-	aidb_commit $conn
+	##~   ##--将校验值插入校验结果表
+	##~   set handle [aidb_open $conn]
+	##~   set sql_buff "\
+		##~   INSERT INTO BASS1.G_RULE_CHECK VALUES ($timestamp,'R022',$MZONE_RESULT_VAL1,$MZONE_RESULT_VAL2,1.000 * $MZONE_RESULT_VAL1 / $MZONE_RESULT_VAL2 - 1,0) "
+	##~   if [catch { aidb_sql $handle $sql_buff } errmsg ] {
+		##~   WriteTrace "$errmsg" 2005
+		##~   aidb_close $handle
+		##~   return -1
+	##~   }
+	##~   aidb_commit $conn
 
-	 #--判断
-         #--异常：
-         #--1：动感地带用户到达数变动率<=3%超标
+	 ##~   #--判断
+         ##~   #--异常：
+         ##~   #--1：动感地带用户到达数变动率<=3%超标
 
-         #set MZONE_RESULT_VAL2 "0.2"
-	 #set MZONE_RESULT_VAL1 "0.1"
+         ##~   #set MZONE_RESULT_VAL2 "0.2"
+	 ##~   #set MZONE_RESULT_VAL1 "0.1"
 
-	 if {[format "%.3f" [expr ${MZONE_RESULT_VAL1} / ${MZONE_RESULT_VAL2} -1]]>0.030 || [format "%.3f" [expr ${MZONE_RESULT_VAL1} / ${MZONE_RESULT_VAL2} -1]]<-0.030} {
-	 	set grade 2
-	        set alarmcontent "准确性指标R022：动感地带用户到达数变动率超出集团考核范围"
-	        WriteAlarm $app_name $optime $grade ${alarmcontent}
+	 ##~   if {[format "%.3f" [expr ${MZONE_RESULT_VAL1} / ${MZONE_RESULT_VAL2} -1]]>0.030 || [format "%.3f" [expr ${MZONE_RESULT_VAL1} / ${MZONE_RESULT_VAL2} -1]]<-0.030} {
+	 	##~   set grade 2
+	        ##~   set alarmcontent "准确性指标R022：动感地带用户到达数变动率超出集团考核范围"
+	        ##~   WriteAlarm $app_name $optime $grade ${alarmcontent}
 
-	 	}
+	 	##~   }
 
 
-	aidb_close $handle
+	##~   aidb_close $handle
 
 	return 0
 }
