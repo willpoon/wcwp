@@ -67,7 +67,8 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 	               ,user_id
                 from bass2.cdr_sms_dtl_$timestamp
                where calltype_id=0
-                 and svcitem_id in (200001,200002,200003,200004,200005,200006)"
+                 and svcitem_id in (200001,200002,200003,200004,200005,200006)
+				 and brand_id is not null "
   puts $sql_buff
 	if [catch { aidb_sql $handle $sql_buff } errmsg ] {
 		WriteTrace "$errmsg" 2020

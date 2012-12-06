@@ -127,6 +127,38 @@ chkzero2 $sql_buff "02026 src data pk check not pass!"
   exec_sql $sql_buff
 
 
+	set sql_buff "
+	insert into bass1.G_I_02026_MONTH
+		  (
+			 TIME_ID
+			,PKG_ID
+			,PKG_NAME
+			,PKG_DESC
+			,PKG_STS
+			,STOP_DT
+		  )
+		select
+		   $op_month
+		   ,NEW_PKG_ID PKG_ID
+		   ,PKG_NAME  PKG_NAME
+		   ,' ' PKG_DESC
+		   ,'2' PKG_STS
+		   ,'20300101' STOP_DT
+		   from bass1.DIM_QW_QQT_PKGID a
+		   where PKG_NAME like '%2012°æ%'
+				and (substr(a.new_pkg_id,1,4) between '3101' and '3107' or substr(a.new_pkg_id,1,4) = '9999')
+				and substr(a.new_pkg_id,5,1) between '1' and '3'
+				and substr(a.new_pkg_id,6,1) between '1' and '6'
+				and substr(a.new_pkg_id,7,1) between '1' and '7'
+				and substr(a.new_pkg_id,8,1) between '1' and '2'
+				and substr(a.new_pkg_id,9,3) between '001' and '147'
+				and substr(a.new_pkg_id,12,4) between '0000' and '9999'
+				and substr(a.new_pkg_id,16,3) between '001' and '999'		   
+		   with ur
+"
+
+	exec_sql $sql_buff
+
   #1.¼ì²échkpkunique
 	set tabname "G_I_02026_MONTH"
 	set pk 			"PKG_ID"

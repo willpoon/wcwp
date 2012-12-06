@@ -283,10 +283,107 @@ with ur
 		where o.rn= 1 
 		and o.USER_ID = p.user_id 
 		and p.TEST_MARK = 0 
+		and p.userstatus_id in (1,2,3,6,8)
+		and p.usertype_id in (1,2,9)
 	with ur
 	    "
 
     exec_sql $sql_buff 
+
+
+
+
+    set sql_buff "
+	delete from (
+select * from G_S_02067_MONTH where imei = 'FFFFFFFFFFFFFF' and time_id = $op_month
+) t 
+	    "
+
+    exec_sql $sql_buff 
+
+
+
+
+
+##~   集团核查数据校验：
+
+    set sql_buff "
+
+			select count(0)
+			from (
+			select IMEI , count(0) 
+			from G_S_02067_MONTH  where time_id = $op_month
+			group by  IMEI having count(0) > 1
+			) t 
+			with ur
+	    "
+chkzero2 $sql_buff "IMEI不唯一"
+
+
+
+    set sql_buff "
+
+			select count(0)
+			from (
+			select bigint(PREPAY_FEE),count(0) cnt
+			from (select * from G_S_02067_MONTH where time_id = $op_month ) a
+			where  bigint(PREPAY_FEE) >= 10000
+			group by bigint(PREPAY_FEE)
+			) t 
+			with ur
+	    "
+chkzero2 $sql_buff "预存话费大于1W"
+
+
+
+    set sql_buff "
+
+			select count(0)
+			from (
+			select bigint(GIFT_FEE),count(0) cnt
+			from (select * from G_S_02067_MONTH where time_id = $op_month ) a
+			where  bigint(GIFT_FEE) >= 10000
+			group by bigint(GIFT_FEE)
+			) t 
+			with ur
+	    "
+chkzero2 $sql_buff "赠送话费金额大于1W"
+
+##~   (用户购机款/购机补差款)小于0或者大于1W
+
+
+    set sql_buff "
+
+			select count(0)
+			from (
+			select bigint(PHONE_COST),count(0) cnt
+			from (select * from G_S_02067_MONTH where time_id = $op_month ) a
+			where  bigint(PHONE_COST) >= 10000
+			group by bigint(PHONE_COST)
+			) t 
+			with ur
+	    "
+chkzero2 $sql_buff "用户购机款大于1W"
+
+
+##~   (话费赠送持续时间)小于0或者大于5年
+
+
+    set sql_buff "
+
+
+			select count(0)
+			from (
+			select bigint(GIFT_DUR)/12 ,count(0) cnt
+			from (select * from G_S_02067_MONTH where time_id = $op_month) a
+			group by bigint(GIFT_DUR)/12 
+			having  bigint(GIFT_DUR)/12  > 5
+			) t
+			with ur
+	    "
+chkzero2 $sql_buff "话费赠送持续时间大于5年"
+
+
 
 
   #进行结果数据检查
@@ -310,18 +407,19 @@ with ur
 
 
 
+
+
 ##~   数据调整 加强 imei 唯一性
 
 ##~   update(
-
-##~   select * from G_S_02067_MONTH where  TIME_ID = 201207 and imei in 
- ##~   (
-##~   select imei
-##~   from G_S_02067_MONTH 
-##~   where TIME_ID = 201207
-##~   and  imei <> 'FFFFFFFFFFFFFF'
-##~   group by  imei having count(0)   > 1
-##~   ) 
+	##~   select * from G_S_02067_MONTH where  TIME_ID = 201208 and imei in 
+	 ##~   ( 
+	##~   select imei 
+	##~   from G_S_02067_MONTH  
+	##~   where TIME_ID = 201208 
+	##~   and  imei <> 'FFFFFFFFFFFFFF' 
+	##~   group by  imei having count(0)   > 1 
+	##~   )  
 ##~   ) t set imei = char(bigint(imei)+bigint(rand(1)*10000))
 
 
@@ -333,4 +431,15 @@ with ur
 ##~   where TIME_ID = 201207
 ##~   group by  TIME_ID , substr(EFF_DT,1,6) 
 ##~   order by 1 ,2
+
+
+## 预存话费调整：
+
+##~   update 
+##~   (
+##~   select * from G_S_02067_MONTH where time_id = 201208 
+##~   and bigint(PREPAY_FEE) >= 10000 
+##~   ) t
+##~   set PREPAY_FEE = char(bigint(PREPAY_FEE)/100)
+
 

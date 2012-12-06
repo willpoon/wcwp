@@ -201,14 +201,6 @@ chkzero2 $sql_buff "22062有非法channel_id! "
 	        WriteAlarm $app_name $op_month $grade ${alarmcontent}
 
 
-select OP_TIME , count(0) 
-,  count(distinct COUNTS ) 
-,  count(distinct RESULT ) 
-from bass2.stat_channel_reward_0019 
-group by  OP_TIME 
-order by 1 
-
-
 
 return 0
 
@@ -238,3 +230,13 @@ return 0
 #	x20		奖励酬金	单位：元	NUMBER(10)	
 #	x21		B类目录酬金	单位：元	NUMBER(10)	
 #	
+
+
+##~   select OP_TIME , count(0) 
+##~   ,  count(distinct COUNTS ) 
+##~   ,  count(distinct RESULT ) 
+##~   from bass2.stat_channel_reward_0019 
+##~   group by  OP_TIME 
+##~   order by 1 
+
+

@@ -62,6 +62,26 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
 
 
 
+##~   UPDATE (
+    ##~   select *
+     ##~   from bass1.g_s_03017_month
+    ##~   where time_id=201209
+      ##~   and ent_busi_id in('1180')
+##~   ) T SET INCOME = '0'
+##~   WHERE ENTERPRISE_ID in ('89100000064527','89101560000118','89200000067739')
+
+
+
+##~   UPDATE (
+    ##~   select *
+     ##~   from bass1.g_s_03017_month
+    ##~   where time_id=201210
+      ##~   and ent_busi_id in('1180')
+##~   ) T SET INCOME = '0'
+##~   WHERE ENTERPRISE_ID in ('89100000064267')
+
+
+
 
 
    set RESULT_VAL1 0
@@ -831,10 +851,8 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
    set RESULT_VAL1 0
    set RESULT_VAL2 0
    set RESULT_VAL3 0
-   	set sql_buff "
 
-
-
+set sql_buff "
 select aa.dan_fee,bb.bef_fee,
      case when bb.bef_fee=0 then 1
           else decimal((aa.dan_fee-bb.bef_fee)*1.0/bb.bef_fee,10,4)
@@ -1069,6 +1087,17 @@ set RESULT_VAL3 [format %.3f [expr abs(${RESULT_VAL3}) ]]
 
 ##~   --R326	月	02_集团客户	移动400当月总收入	"03017 集团统付收入 03018 集团个人非统付收入"	移动400当月总收入环比绝对值小于等于50%
 
+
+
+	 
+##~   update(	 
+	         ##~   select *
+     ##~   from bass1.g_s_03017_month
+    ##~   where time_id=201210
+      ##~   and ent_busi_id in('1520')
+##~   ) t 
+##~   set INCOME  = '0'
+##~   where ENTERPRISE_ID in ('89100000067880','89201560000657','89103001632461','89301560001331')
 
 
 

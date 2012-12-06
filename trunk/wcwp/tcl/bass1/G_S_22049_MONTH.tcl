@@ -148,14 +148,16 @@ with ur
 
 
 
-select OP_TIME , count(0) 
-,  sum( PRE_FEE ) 
-,  sum( FEE ) 
-from bass2.stat_channel_reward_0007 
-group by  OP_TIME 
-order by 1 
-
 
 
 	return 0
 }
+
+
+##~   select OP_TIME , count(0) 
+##~   ,  sum( PRE_FEE ) 
+##~   ,  sum( FEE ) 
+##~   from bass2.stat_channel_reward_0007 
+##~   group by  OP_TIME 
+##~   order by 1 
+

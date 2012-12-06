@@ -80,6 +80,43 @@ proc Deal { op_time optime_month province_id redo_number trace_fd bass1_dir temp
   exec_sql $sql_buff
 
 
+	set sql_buff "
+	insert into bass1.G_I_02027_MONTH
+		  (
+			 TIME_ID
+			,USER_ID
+			,PKG_ID
+			,EFF_DT
+		  )
+	select distinct
+	  $op_month TIME_ID
+	  ,c.user_id
+	  ,b.NEW_PKG_ID
+	  ,c.valid_date
+	from  bass1.DIM_QW_QQT_PKGID b
+	join ( select user_id,offer_id,valid_date 
+			from (
+				select user_id,offer_id,valid_date
+						,row_number()over(partition by user_id,offer_id order by valid_date desc ) rn 
+				from (
+					select b.user_id ,char(a.OFFER_ID) OFFER_ID 
+						, replace(char(a.VALID_DATE),'-','') VALID_DATE 
+						from bass2.DW_PRODUCT_INS_OFF_INS_PROD_$op_month  a
+						,bass2.dw_product_$op_month b
+						where  char(a.product_instance_id) = b.user_id
+								and (b.USERSTATUS_ID in (1,2,3,6,8) or b.MONTH_OFF_MARK = 1) 
+								and b.USERTYPE_ID in (1,2,9)
+								and replace(char(a.VALID_DATE),'-','') <= '$this_month_last_day'
+								and replace(char(a.expire_date ),'-','') >= '$ThisMonthFirstDay'
+								and a.valid_type = 1
+				) i
+			) o where o.rn = 1
+		  ) c on b.OLD_PKG_ID = c.OFFER_ID
+	  with ur
+  "     
+  exec_sql $sql_buff
+
+
 
 	set sql_buff "
 	select count(0) from  G_I_02027_MONTH a
